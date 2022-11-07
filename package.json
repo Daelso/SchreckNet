@@ -1,8 +1,8 @@
 {
-  "name": "login-system",
+  "name": "SchreckNet",
   "version": "0.0.1",
-  "description": "A template for vue-based user authentication",
-  "productName": "Login System",
+  "description": "A web app designed to create, generate, manage, find and enjoy various World of Darkness characters. We offer characters from vampire the masquerade, werewolf the apocalypse, hunter the reckoning and many other White Wolf RPG lines.",
+  "productName": "SchreckNet",
   "author": "Chase Murtaugh <Chasemurtaugh@gmail.com>",
   "private": true,
   "scripts": {

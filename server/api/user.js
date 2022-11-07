@@ -50,7 +50,7 @@ router.route("/register").post(async (req, res) => {
     if (process.env.ENV === "DEV") {
       activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${req.body.username}`;
     } else {
-      activateLink = `https://schrecknet-live.herokuapp.com/activateAccount?token=${token}&username=${req.body.username}`;
+      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${req.body.username}`;
     }
 
     mailer.sendActivationEmail(req.body.email, req.body.username, activateLink);
@@ -164,7 +164,7 @@ router.route("/passwordForgot").post(async (req, res) => {
       "user_id"
     )}?token=${token}`;
   } else {
-    resetLink = `https://schrecknet-live.herokuapp.com/passwordReset/${resetUser.get(
+    resetLink = `https://www.schrecknet.live/passwordReset/${resetUser.get(
       "user_id"
     )}?token=${token}`;
   }
@@ -210,7 +210,7 @@ router.route("/passwordForgot").post(async (req, res) => {
       "user_id"
     )}?token=${token}`;
   } else {
-    resetLink = `https://schrecknet-live.herokuapp.com/passwordReset/${resetUser.get(
+    resetLink = `https://www.schrecknet.live/passwordReset/${resetUser.get(
       "user_id"
     )}?token=${token}`;
   }
@@ -264,7 +264,7 @@ router
     if (process.env.ENV === "DEV") {
       activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${req.currentUser.username}`;
     } else {
-      activateLink = `https://schrecknet-live.herokuapp.com/activateAccount?token=${token}&username=${req.currentUser.username}`;
+      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${req.currentUser.username}`;
     }
     try {
       mailer.sendActivationEmail(

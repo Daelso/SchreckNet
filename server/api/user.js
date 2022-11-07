@@ -50,7 +50,9 @@ router.route("/register").post(async (req, res) => {
     if (process.env.ENV === "DEV") {
       activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${req.body.username}`;
     } else {
-      activateLink = `https://wod-char-maker.herokuapp.com/activateAccount?token=${token}&username=${req.body.username}`;
+      activateLink =
+        window.location.origin +
+        `/activateAccount?token=${token}&username=${req.body.username}`;
     }
 
     mailer.sendActivationEmail(req.body.email, req.body.username, activateLink);
@@ -264,7 +266,9 @@ router
     if (process.env.ENV === "DEV") {
       activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${req.currentUser.username}`;
     } else {
-      activateLink = `https://wod-char-maker.herokuapp.com/activateAccount?token=${token}&username=${req.currentUser.username}`;
+      activateLink =
+        window.location.origin +
+        `/activateAccount?token=${token}&username=${req.currentUser.username}`;
     }
     try {
       mailer.sendActivationEmail(

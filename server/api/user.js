@@ -166,9 +166,9 @@ router.route("/passwordForgot").post(async (req, res) => {
       "user_id"
     )}?token=${token}`;
   } else {
-    resetLink = `https://wod-char-maker.herokuapp.com/passwordReset/${resetUser.get(
-      "user_id"
-    )}?token=${token}`;
+    resetLink =
+      window.location.origin +
+      `/passwordReset/${resetUser.get("user_id")}?token=${token}`;
   }
 
   mailer.sendResetEmail(req.body.email, resetUser.get("username"), resetLink);
@@ -212,9 +212,9 @@ router.route("/passwordForgot").post(async (req, res) => {
       "user_id"
     )}?token=${token}`;
   } else {
-    resetLink = `https://wod-char-maker.herokuapp.com/passwordReset/${resetUser.get(
-      "user_id"
-    )}?token=${token}`;
+    resetLink =
+      window.location.origin +
+      `/passwordReset/${resetUser.get("user_id")}?token=${token}`;
   }
 
   mailer.sendResetEmail(req.body.email, resetUser.get("username"), resetLink);

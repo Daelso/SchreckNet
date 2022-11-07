@@ -28,7 +28,7 @@ if (process.env.ENV !== "prod") {
   app.use(cors(corsOptions));
 } else {
   let corsOptions = {
-    origin: ["https://wod-char-maker.herokuapp.com/"],
+    origin: ["https://schrecknet-live.herokuapp.com/"],
     credentials: true,
     optionsSuccessStatus: 200,
   };

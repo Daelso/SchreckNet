@@ -20,10 +20,6 @@ const Users = db.sequelize.define("users", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  age: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
   terms_accepted: {
     type: Sequelize.INTEGER,
     allowNull: false,

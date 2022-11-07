@@ -74,22 +74,6 @@
         ]"
       />
 
-      <q-input
-        filled
-        type="number"
-        v-model="age"
-        bg-color="white"
-        hint="Strictly 18+"
-        label="Your age *"
-        lazy-rules
-        :rules="[
-          (val) => (val !== null && val !== '') || 'Please type your age',
-          (val) =>
-            (val >= 18 && val < 100) ||
-            'We accept users between the ages of 18-100',
-        ]"
-      />
-
       <q-toggle
         v-model="accept"
         label="I hereby certify that I have read, understand and agree to the terms of use and privacy policy."
@@ -122,7 +106,6 @@ export default {
     const email = ref(null);
     const password = ref(null);
     const passwordVerify = ref(null);
-    const age = ref(null);
     const accept = ref(false);
     const router = useRouter();
 
@@ -138,7 +121,6 @@ export default {
       email,
       password,
       passwordVerify,
-      age,
       accept,
 
       onSubmit() {
@@ -153,7 +135,6 @@ export default {
         } else {
           let registryInfo = {
             username: userName.value,
-            age: age.value,
             email: email.value,
             password: password.value,
             acceptance: accept.value,

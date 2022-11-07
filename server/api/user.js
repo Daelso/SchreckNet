@@ -37,7 +37,6 @@ router.route("/register").post(async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-      age: req.body.age,
       terms_accepted: req.body.acceptance,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -75,7 +74,6 @@ router.route("/login").post(lib.limiter, async (req, res) => {
         id: user.user_id,
         username: user.username,
         email: user.email,
-        age: user.age,
         activated: user.activated,
       };
       const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, {
@@ -126,7 +124,6 @@ router.route("/token").post(async (req, res) => {
         {
           username: user.username,
           email: user.email,
-          age: user.age,
           id: user.id,
           activated: user.activated,
         },

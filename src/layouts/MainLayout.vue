@@ -38,7 +38,6 @@
     >
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
-
         <EssentialLink />
       </q-list>
     </q-drawer>
@@ -67,7 +66,7 @@
       <router-link to="/privacy">Privacy</router-link> |
       <router-link to="/terms">Terms of Use</router-link> |
       <router-link to="/contact">Contact</router-link> |
-      <router-link to="/dark-pack">Dark Pack</router-link>
+      <router-link to="/darkpack">Dark Pack</router-link>
     </q-footer>
   </q-layout>
 </template>
@@ -85,7 +84,6 @@ a:active {
 <script>
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
-import profileLinks from "components/profileLinks.vue";
 import ProfileLinks from "components/profileLinks.vue";
 
 const linksList = [

@@ -48,6 +48,11 @@ const routes = [
         path: "contact",
         component: () => import("pages/policy/contact.vue"),
       },
+      {
+        name: "darkpack",
+        path: "darkpack",
+        component: () => import("pages/policy/darkpack.vue"),
+      },
     ],
   },
 

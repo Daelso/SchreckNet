@@ -1,6 +1,8 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md" style="max-width: 400px">
+      <header>We'll do our best to get back to you ASAP!</header>
+      <br />
       <q-form @submit="onSubmit" class="q-gutter-md">
         <q-input
           filled
@@ -93,7 +95,7 @@ export default defineComponent({
               color: "green-4",
               textColor: "white",
               icon: "cloud_done",
-              message: "Sent!",
+              message: "Message sent!",
             });
             router.push({ name: "home" });
           })

@@ -37,8 +37,59 @@
       style="background-color: #171a1e; border-color: red"
     >
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header> Create a Character </q-item-label>
         <EssentialLink />
+        <q-item-label header> Coming Soon </q-item-label>
+        <q-item style="color: red">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="app:ankh" style="scale: 150%" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Vampire: The Masquerade</q-item-label>
+            <q-item-label caption style="color: white">20th</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item style="color: red">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="app:claws" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Werewolf the Apocalypse</q-item-label>
+            <q-item-label caption style="color: white">20th/5E</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item style="color: red">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="app:claws" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Hunter the Reckoning</q-item-label>
+            <q-item-label caption style="color: white">1E/5E</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item style="color: red">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="school" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Mage the Ascension</q-item-label>
+            <q-item-label caption style="color: white">20th/5E</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item style="color: red">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="school" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Changeling: The Dreaming</q-item-label>
+            <q-item-label caption style="color: white">20th</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -85,51 +136,9 @@ a:active {
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import ProfileLinks from "components/profileLinks.vue";
-
-const linksList = [
-  {
-    title: "Docs",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "login",
-  },
-  {
-    title: "Github",
-    caption: "github.com/quasarframework",
-    icon: "code",
-    link: "https://github.com/quasarframework",
-  },
-  {
-    title: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev",
-  },
-  {
-    title: "Forum",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev",
-  },
-  {
-    title: "Twitter",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev",
-  },
-  {
-    title: "Facebook",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev",
-  },
-  {
-    title: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev",
-  },
-];
+import ankh from "../assets/images/ankh.png";
+import claws from "../assets/images/claws.png";
+import { useQuasar } from "quasar";
 
 export default defineComponent({
   name: "MainLayout",
@@ -140,15 +149,28 @@ export default defineComponent({
   },
 
   setup() {
+    const $q = useQuasar();
+    const myIcons = {
+      "app:ankh": `img:${ankh}`,
+      "app:claws": `img:${claws}`,
+    };
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
     let currentUser = ref(false);
     let loggedIn = ref(false);
 
+    $q.iconMapFn = (iconName) => {
+      const icon = myIcons[iconName];
+      if (icon !== void 0) {
+        return { icon: icon };
+      }
+    };
+
     return {
       currentUser,
       loggedIn,
-      essentialLinks: linksList,
+      ankh,
+      claws,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;

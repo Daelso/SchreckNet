@@ -1,7 +1,7 @@
 <template>
   <q-item clickable style="color: red" to="login">
     <q-item-section avatar>
-      <q-icon color="secondary" name="app:ankh" style="scale: 150%" />
+      <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
     </q-item-section>
 
     <q-item-section>

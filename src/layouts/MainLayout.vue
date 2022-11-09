@@ -42,7 +42,7 @@
         <q-item-label header> Coming Soon </q-item-label>
         <q-item style="color: red">
           <q-item-section avatar>
-            <q-icon color="secondary" name="app:ankh" style="scale: 150%" />
+            <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
           </q-item-section>
 
           <q-item-section>
@@ -62,7 +62,7 @@
         </q-item>
         <q-item style="color: red">
           <q-item-section avatar>
-            <q-icon color="secondary" name="app:claws" />
+            <q-icon color="secondary" name="app:hunter" style="scale: 145%" />
           </q-item-section>
 
           <q-item-section>
@@ -72,7 +72,7 @@
         </q-item>
         <q-item style="color: red">
           <q-item-section avatar>
-            <q-icon color="secondary" name="school" />
+            <q-icon color="secondary" name="app:mage" />
           </q-item-section>
 
           <q-item-section>
@@ -82,7 +82,11 @@
         </q-item>
         <q-item style="color: red">
           <q-item-section avatar>
-            <q-icon color="secondary" name="school" />
+            <q-icon
+              color="secondary"
+              name="app:changeling"
+              style="scale: 150%"
+            />
           </q-item-section>
 
           <q-item-section>
@@ -138,6 +142,9 @@ import EssentialLink from "components/EssentialLink.vue";
 import ProfileLinks from "components/profileLinks.vue";
 import ankh from "../assets/images/ankh.png";
 import claws from "../assets/images/claws.png";
+import mage from "../assets/images/mage.png";
+import hunter from "../assets/images/hunter.png";
+import changeling from "../assets/images/changeling.png";
 import { useQuasar } from "quasar";
 
 export default defineComponent({
@@ -153,6 +160,9 @@ export default defineComponent({
     const myIcons = {
       "app:ankh": `img:${ankh}`,
       "app:claws": `img:${claws}`,
+      "app:mage": `img:${mage}`,
+      "app:hunter": `img:${hunter}`,
+      "app:changeling": `img:${changeling}`,
     };
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
@@ -171,6 +181,9 @@ export default defineComponent({
       loggedIn,
       ankh,
       claws,
+      mage,
+      hunter,
+      changeling,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;

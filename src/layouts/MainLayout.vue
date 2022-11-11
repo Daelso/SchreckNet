@@ -33,67 +33,14 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
+      overlay
       style="background-color: #171a1e; border-color: red"
     >
       <q-list>
         <q-item-label header> Create a Character </q-item-label>
         <EssentialLink />
-        <q-item-label header> Coming Soon </q-item-label>
-        <q-item style="color: red">
-          <q-item-section avatar>
-            <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Vampire: The Masquerade</q-item-label>
-            <q-item-label caption style="color: white">20th</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item style="color: red">
-          <q-item-section avatar>
-            <q-icon color="secondary" name="app:claws" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Werewolf the Apocalypse</q-item-label>
-            <q-item-label caption style="color: white">20th/5E</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item style="color: red">
-          <q-item-section avatar>
-            <q-icon color="secondary" name="app:hunter" style="scale: 145%" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Hunter the Reckoning</q-item-label>
-            <q-item-label caption style="color: white">1E/5E</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item style="color: red">
-          <q-item-section avatar>
-            <q-icon color="secondary" name="app:mage" />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Mage the Ascension</q-item-label>
-            <q-item-label caption style="color: white">20th/5E</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item style="color: red">
-          <q-item-section avatar>
-            <q-icon
-              color="secondary"
-              name="app:changeling"
-              style="scale: 150%"
-            />
-          </q-item-section>
-
-          <q-item-section>
-            <q-item-label>Changeling: The Dreaming</q-item-label>
-            <q-item-label caption style="color: white">20th</q-item-label>
-          </q-item-section>
-        </q-item>
+        <comingSoonLinks />
+        <socialLinks />
       </q-list>
     </q-drawer>
 
@@ -138,13 +85,16 @@ a:active {
 
 <script>
 import { defineComponent, ref } from "vue";
-import EssentialLink from "components/EssentialLink.vue";
-import ProfileLinks from "components/profileLinks.vue";
+import EssentialLink from "components/links/EssentialLink.vue";
+import ProfileLinks from "components/links/profileLinks.vue";
+import comingSoonLinks from "components/links/comingSoonLinks.vue";
+import socialLinks from "components/links/socialLinks.vue";
 import ankh from "../assets/images/ankh.png";
 import claws from "../assets/images/claws.png";
 import mage from "../assets/images/mage.png";
 import hunter from "../assets/images/hunter.png";
 import changeling from "../assets/images/changeling.png";
+import wod from "../assets/images/WoDLogo.png";
 import { useQuasar } from "quasar";
 
 export default defineComponent({
@@ -153,6 +103,8 @@ export default defineComponent({
   components: {
     EssentialLink,
     ProfileLinks,
+    comingSoonLinks,
+    socialLinks,
   },
 
   setup() {
@@ -163,6 +115,7 @@ export default defineComponent({
       "app:mage": `img:${mage}`,
       "app:hunter": `img:${hunter}`,
       "app:changeling": `img:${changeling}`,
+      "app:wod": `img:${wod}`,
     };
     const leftDrawerOpen = ref(false);
     const rightDrawerOpen = ref(false);
@@ -184,6 +137,7 @@ export default defineComponent({
       mage,
       hunter,
       changeling,
+      wod,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;

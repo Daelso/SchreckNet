@@ -267,12 +267,9 @@ export default {
             // ...more..props...
           },
         })
-        .onOk(() => {
-          console.log("OK");
-        })
-        .onDismiss(() => {
+        .onOk((data) => {
           console.log("Saved");
-          console.log(this.emits);
+          this.clan = data;
         });
     },
   },

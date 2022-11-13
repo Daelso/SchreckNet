@@ -3,7 +3,7 @@
 </template>
 <style>
 body {
-  background-color: #121212;
+  background-color: #171a1e;
   color: #c4171d;
   font-family: monospace;
 }

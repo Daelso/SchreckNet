@@ -53,6 +53,11 @@ const routes = [
         path: "darkpack",
         component: () => import("pages/policy/darkpack.vue"),
       },
+      {
+        name: "vampire5e",
+        path: "vampire/5e",
+        component: () => import("pages/character_creator/vtm/vamp5e.vue"),
+      },
     ],
   },
 

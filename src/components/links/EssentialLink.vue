@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable style="color: red" to="login">
+  <q-item clickable style="color: red" :to="{ name: 'vampire5e' }">
     <q-item-section avatar>
       <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
     </q-item-section>

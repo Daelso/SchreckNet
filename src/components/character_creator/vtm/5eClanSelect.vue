@@ -1,10 +1,10 @@
 <template>
-  <q-dialog persistent v-model="layout">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent v-model="layout">
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
           <q-toolbar-title>Affiliations</q-toolbar-title>
-          <q-btn flat v-close-popup round dense> Save </q-btn>
+          <q-btn color="primary" label="OK" @click="onOKClick" />
         </q-toolbar>
       </q-header>
 
@@ -26,7 +26,6 @@
                 style="margin-bottom: 20px"
                 class="select"
                 label-color="primary"
-                @update:model-value="clanSelected"
               />
               <q-separator />
               For each ad campaign that you create, you can control how much
@@ -109,18 +108,27 @@
 <script>
 import { defineComponent } from "vue";
 import { ref, computed } from "vue";
+import { useDialogPluginComponent } from "quasar";
 
 export default defineComponent({
   name: "5eClanSelect",
   props: ["info"],
-  setup() {
-    const moreContent = ref(true);
+  emits: [...useDialogPluginComponent.emits],
+  setup(props) {
+    const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
+      useDialogPluginComponent();
+    const clan = ref(props.info.clan);
+    const sect = ref(props.info.sect);
+    const archtype = ref(props.info.archtype);
 
     return {
+      clan,
+      sect,
+      archtype,
       step: ref(1),
-
-      moreContent,
-      contentSize: computed(() => (moreContent.value ? 150 : 5)),
+      dialogRef,
+      onDialogHide,
+      test: ref("kfhnweiuohfihkwjebfwe"),
 
       clanOptions: [
         "Brujah",
@@ -136,22 +144,19 @@ export default defineComponent({
       sectOptions: ["Camarilla", "Anarchs", "Sabbat"],
 
       archtypeOptions: ["Murderhobo", "Hobo"],
+
+      onOKClick() {
+        onDialogOK(clan);
+      },
+
+      // we can passthrough onDialogCancel directly
+      onCancelClick: onDialogCancel,
     };
   },
   data() {
     return {
       layout: false,
-      clan: this.info.clan,
-      sect: this.info.sect,
-      archtype: this.info.archtype,
     };
-  },
-
-  methods: {
-    clanSelected() {
-      console.log(this.clan);
-      this.$emit("newClan", this.clan);
-    },
   },
 });
 </script>

@@ -15,13 +15,13 @@
         <q-list>
           <q-item clickable @click="clanSelected">
             <q-item-section avatar>
-              <q-icon color="primary" name="local_bar" />
+              <q-icon color="primary" name="app:ankh" style="scale: 170%" />
             </q-item-section>
 
             <q-item-section>
               <q-item-label>Affiliations:</q-item-label>
               <q-item-label caption class="text-white"
-                >Manage things like clan, sire, sect.</q-item-label
+                >Manage things like clan, disciplines, sire, sect.</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -269,7 +269,7 @@ export default {
         })
         .onOk((data) => {
           console.log("Saved");
-          this.clan = data;
+          this.clan = data.clan;
         });
     },
   },

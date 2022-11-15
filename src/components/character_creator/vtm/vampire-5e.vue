@@ -287,8 +287,6 @@ export default {
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])
           );
-
-          console.log(this.disciplines);
         });
     },
   },

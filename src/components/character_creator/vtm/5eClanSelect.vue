@@ -87,7 +87,7 @@
             <q-step
               :name="2"
               title="Sire and Generation"
-              icon="create_new_folder"
+              icon="remove_red_eye"
               :done="step > 2"
             >
               <q-input
@@ -463,6 +463,29 @@ export default defineComponent({
             "The sculpting of flesh into unnatural forms",
           ];
           break;
+        case "Gangrel":
+          this.clanDesc = "The feral “Outlanders” blend vampire and beast.";
+          this.clanBane =
+            "In frenzy, Gangrel gain one or more animal features: a physical trait, a smell, or a behavioral tic. These features last for one more night afterward, lingering like a hangover following debauchery.";
+          this.clanDisciplines = ["Animalism", "Fortitude", "Protean"];
+          this.discExplained = [
+            "Supernatural affinity with and control of animals",
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
+            "Shape-changing, from growing claws to melding with the earth",
+          ];
+          break;
+        case "Hecata":
+          this.clanDesc =
+            "'The Clan of Death' is more an amalgamation of bloodlines that may have descended from a common progenitor whom the Giovanni destroyed.";
+          this.clanBane =
+            "The Hecata's kiss is torture to their prey. The pain is unbearable and all encompassing.";
+          this.clanDisciplines = ["Auspex", "Fortitude", "Oblivion"];
+          this.discExplained = [
+            "Extrasensory perception, awareness, and premonitions",
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
+            "Control over shadows and spirits",
+          ];
+          break;
         case "Malkavian":
           this.clanDesc =
             "The madness of the 'Lunatics' conceals and reveals truths.";
@@ -474,9 +497,6 @@ export default defineComponent({
             "Mind control practiced through one’s piercing gaze",
             "The ability to remain obscure and unseen, even in crowds",
           ];
-          break;
-        case y:
-          // code block
           break;
         default:
           this.clanBane =

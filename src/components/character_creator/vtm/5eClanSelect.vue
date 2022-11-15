@@ -20,6 +20,7 @@
             <q-step
               :name="1"
               title="Select a clan"
+              caption="Assign disciplines as well"
               icon="settings"
               :done="step > 1"
             >
@@ -29,7 +30,7 @@
                 :options="clanOptions"
                 bg-color="grey-3"
                 filled
-                style="margin-bottom: 20px"
+                style="margin-bottom: 20px; width: 100%"
                 class="select"
                 label-color="primary"
                 @update:model-value="clanSelected"
@@ -54,8 +55,9 @@
                   </q-tooltip>
                 </q-item>
                 <q-rating
-                  size="1.5em"
-                  icon="thumb_up"
+                  size="2.5em"
+                  icon="app:ankh"
+                  color="white"
                   :max="2"
                   v-model="discChoices[key]"
                   @update:model-value="discSelected()"
@@ -64,22 +66,6 @@
               <q-separator />
               Bane: {{ clanBane }}
               <q-separator />
-              <q-input
-                filled
-                bg-color="grey-3"
-                v-model="sire"
-                label="Your sire's name, if you know *"
-                autogrow
-                lazy-rules
-                style="margin-top: 15px"
-                label-color="primary"
-                :rules="[
-                  (val) =>
-                    val === null ||
-                    val.length <= 2000 ||
-                    'Please keep this field under 2000 characters',
-                ]"
-              />
 
               <q-stepper-navigation>
                 <q-btn @click="step = 2" color="primary" label="Continue" />
@@ -88,13 +74,27 @@
 
             <q-step
               :name="2"
-              title="Create an ad group"
+              title="Sire and Generation"
               caption="Optional"
               icon="create_new_folder"
               :done="step > 2"
             >
-              An ad group contains one or more ads which target a shared set of
-              keywords.
+              <q-input
+                filled
+                bg-color="grey-3"
+                v-model="sire"
+                label="Your sire's name, if you know *"
+                autogrow
+                lazy-rules
+                style="margin-top: 15px; width: 100%"
+                label-color="primary"
+                :rules="[
+                  (val) =>
+                    val === null ||
+                    val.length <= 2000 ||
+                    'Please keep this field under 2000 characters',
+                ]"
+              />
 
               <q-stepper-navigation>
                 <q-btn @click="step = 4" color="primary" label="Continue" />
@@ -176,7 +176,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 
 export default defineComponent({
@@ -184,29 +184,57 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
+    const discArr = Object.entries(props.info.disciplines).map((arr) => ({
+      discipline: arr[0],
+      choice: arr[1],
+    }));
+
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
     const clan = ref(props.info.clan);
     const sect = ref(props.info.sect);
     const archtype = ref(props.info.archtype);
+    let newBane = ref(props.info.bane);
+    let newTips = ref(props.info.tooltips);
     const sire = ref(null);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
     );
-    const clanDisciplines = ref(["Celerity", "Potence", "Presence"]);
+    const clanDisciplines = ref([]);
+    const discChoices = ref([]);
+    const clanBane = ref(
+      "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die"
+    );
     const discExplained = ref([
       "Supernatural quickness and reflexes",
       "The Discipline of physical vigor and strength",
       "The ability to attract, sway, and control emotions",
     ]);
-    const clanBane = ref(
-      "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die"
-    );
+    if (discArr.length === 0) {
+      clanDisciplines.value = ["Celerity", "Potence", "Presence"];
 
-    const discChoices = ref([0, 0, 0]);
+      discChoices.value = [0, 0, 0];
+    } else {
+      clanDisciplines.value = [
+        discArr[0].discipline,
+        discArr[1].discipline,
+        discArr[2].discipline,
+      ];
+
+      discChoices.value = [
+        discArr[0].choice,
+        discArr[1].choice,
+        discArr[2].choice,
+      ];
+
+      clanBane.value = newBane;
+      discExplained.value = newTips.value;
+    }
 
     const discChoicesRemaining = ref(3);
     const disableRating = ref(false);
+
+    console.log(discExplained);
 
     return {
       clan,
@@ -251,7 +279,13 @@ export default defineComponent({
       archtypeOptions: ["Murderhobo", "Hobo"],
 
       onOKClick() {
-        onDialogOK({ clan: clan });
+        onDialogOK({
+          clan: clan,
+          disciplines: clanDisciplines,
+          disciplineChoices: discChoices,
+          bane: clanBane,
+          tooltips: discExplained,
+        });
       },
 
       // we can passthrough onDialogCancel directly
@@ -267,9 +301,23 @@ export default defineComponent({
     clanSelected() {
       console.log(this.clan);
       switch (this.clan) {
+        case "Brujah":
+          this.clanDesc =
+            "The 'Rabble' rebel against power and rage against tyranny.";
+          this.clanBane =
+            "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die";
+          this.clanDisciplines = ["Celerity", "Potence", "Presence"];
+          this.discExplained = [
+            "Supernatural quickness and reflexes",
+            "The Discipline of physical vigor and strength",
+            "The ability to attract, sway, and control emotions",
+          ];
+          break;
         case "Malkavian":
           this.clanDesc =
             "The madness of the 'Lunatics' conceals and reveals truths.";
+          this.clanBane =
+            "Derangement: When the Malkavian suffers a Bestial Failure or a Compulsion, their curse comes to the fore. Suffer a penalty equal to your character’s Bane Severity to one category of dice pools (Physical, Social, or Mental) for the entire scene. This is in addition to any penalties incurred by Compulsions.";
           this.clanDisciplines = ["Auspex", "Dominate", "Obfuscate"];
           this.discExplained = [
             "Extrasensory perception, awareness, and premonitions",
@@ -283,6 +331,12 @@ export default defineComponent({
         default:
           this.clanDesc =
             "The 'Rabble' rebel against power and rage against tyranny.";
+          this.clanDisciplines = ["Celerity", "Potence", "Presence"];
+          this.discExplained = [
+            "Supernatural quickness and reflexes",
+            "The Discipline of physical vigor and strength",
+            "The ability to attract, sway, and control emotions",
+          ];
       }
     },
     discSelected() {

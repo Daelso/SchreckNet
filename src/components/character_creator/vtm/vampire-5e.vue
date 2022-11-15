@@ -3,8 +3,14 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" inline-actions rounded dark>
         Name: {{ charName }} Clan: {{ clan }} Generation:
-        {{ generation }} Remaining XP: {{ xp }}
         {{ generation }}
+        Remaining XP: {{ xp }}
+        <br />
+        Disciplines:
+
+        <div v-for="(discipline, key) in disciplines" :key="key">
+          {{ key }}: {{ discipline }}
+        </div>
         <template v-slot:action>
           <q-btn flat label="Save Character" type="submit" color="white" />
         </template>
@@ -149,17 +155,6 @@
             <q-input
               filled
               bg-color="grey-3"
-              v-model="sire"
-              label-color="primary"
-              label="Your sire (if known) *"
-              lazy-rules
-              :rules="[
-                (val) => typeof val === 'string' || 'Please enter a string',
-              ]"
-            />
-            <q-input
-              filled
-              bg-color="grey-3"
               v-model="title"
               label="Your character's title *"
               lazy-rules
@@ -210,7 +205,6 @@ import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 
 export default {
-  emits: ["newClan"],
   setup() {
     const $q = useQuasar();
     const axios = require("axios");
@@ -235,14 +229,23 @@ export default {
       title: "",
       archtypeModel: ref(null),
       clan: ref("Brujah"),
+      clanBane: ref(
+        "The 'Rabble' rebel against power and rage against tyranny."
+      ),
+      disciplines: {},
       sect: ref("Camarilla"),
-      sire: "",
+      sire: null,
       job: "",
       generation: 5,
       embracedWhen: "",
       embracedWhere: "",
       whereNow: "",
       xp: 0,
+      tooltips: ref([
+        "Supernatural quickness and reflexes",
+        "The Discipline of physical vigor and strength",
+        "The ability to attract, sway, and control emotions",
+      ]),
     };
   },
   methods: {
@@ -257,19 +260,28 @@ export default {
         .dialog({
           component: clanSelect,
           persistent: true,
-          // props forwarded to your custom component
           componentProps: {
             info: {
               clan: this.clan,
+              bane: this.clanBane,
               sect: this.sect,
               archtype: this.archtypeModel,
+              disciplines: this.disciplines,
+              tooltips: this.tooltips,
             },
-            // ...more..props...
           },
         })
         .onOk((data) => {
-          console.log("Saved");
           this.clan = data.clan;
+          this.clanBane = data.bane;
+          let selectedDisc = data.disciplines._rawValue;
+          let discChoices = data.disciplineChoices._rawValue;
+          this.disciplines = {};
+          this.tooltips = data.tooltips;
+
+          selectedDisc.forEach(
+            (key, i) => (this.disciplines[key] = discChoices[i])
+          );
         });
     },
   },

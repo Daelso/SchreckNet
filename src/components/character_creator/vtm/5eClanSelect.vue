@@ -66,7 +66,8 @@
               <q-separator />
               Bane: {{ clanBane }}
               <q-separator />
-
+              <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
+              <q-separator />
               <q-stepper-navigation>
                 <q-btn
                   @click="step = 2"
@@ -208,6 +209,7 @@ export default defineComponent({
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
+    const compulsion = ref(props.info.compulsion);
     const sire = ref(null);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
@@ -252,6 +254,8 @@ export default defineComponent({
       } else {
         discChoices.value = [0, 0, 0];
         clanDisciplines.value = ["Celerity", "Potence", "Presence"];
+        compulsion.value =
+          "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them.";
       }
     } else {
       if (clan.value === "Caitiff") {
@@ -325,6 +329,7 @@ export default defineComponent({
       clanBane,
       clanDesc,
       clanDisciplines,
+      compulsion,
       disableRating,
       discChoices,
       discExplained,
@@ -364,6 +369,7 @@ export default defineComponent({
       onOKClick() {
         onDialogOK({
           clan: clan,
+          compulsion: compulsion,
           desc: clanDesc,
           disciplines: clanDisciplines,
           disciplineChoices: discChoices,
@@ -390,6 +396,8 @@ export default defineComponent({
             "The “Assamite” viziers, sorcerers, and warriors recently admitted to the Camarilla seek to defend themselves from the judgement of Alamut.";
           this.clanBane =
             "When one of the Judges tastes the Blood of another Cainite, they find it very hard to stop. Slaking at least one Hunger level with vampiric vitae provokes a Hunger Frenzy test at a Difficulty 2 + Bane Severity.[4] If the test is failed they attempt to gorge themselves on vampire Blood, sometimes until they diablerize their Kindred victim.";
+          this.compulsion =
+            "Judgment: Banu Haqim are compelled to punish anyone seen to transgress against their personal creed, taking their blood as just vengeance for the crime. For one scene the vampire must slake at least one Hunger level from anyone, friend or foe, who acts against a personal Conviction of theirs. Failure to do so results in a three-dice penalty to all rolls until the compulsion is satisfied or the scene ends. (If the one fed from is a vampire, it also triggers their Bane.)";
           this.clanDisciplines = ["Blood Sorcery", "Celerity", "Obfuscate"];
           this.discExplained = [
             "The use of the Blood to perform magic",
@@ -400,6 +408,9 @@ export default defineComponent({
         case "Brujah":
           this.clanDesc =
             "The 'Rabble' rebel against power and rage against tyranny.";
+          this.compulsion =
+            "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them.";
+
           this.clanBane =
             "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die";
           this.clanDisciplines = ["Celerity", "Potence", "Presence"];

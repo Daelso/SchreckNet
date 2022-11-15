@@ -235,6 +235,9 @@ export default {
       clanDesc: ref(
         "The 'Rabble' rebel against power and rage against tyranny."
       ),
+      clanCompulsion: ref(
+        "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them."
+      ),
       disciplines: {},
       sect: ref("Camarilla"),
       sire: null,
@@ -272,6 +275,7 @@ export default {
               archtype: this.archtypeModel,
               disciplines: this.disciplines,
               tooltips: this.tooltips,
+              compulsion: this.compulsion,
             },
           },
         })
@@ -283,6 +287,7 @@ export default {
           this.disciplines = {};
           this.tooltips = data.tooltips;
           this.clanDesc = data.desc;
+          this.compulsion = data.compulsion;
 
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])

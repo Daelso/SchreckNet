@@ -230,6 +230,9 @@ export default {
       archtypeModel: ref(null),
       clan: ref("Brujah"),
       clanBane: ref(
+        "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die"
+      ),
+      clanDesc: ref(
         "The 'Rabble' rebel against power and rage against tyranny."
       ),
       disciplines: {},
@@ -264,6 +267,7 @@ export default {
             info: {
               clan: this.clan,
               bane: this.clanBane,
+              desc: this.clanDesc,
               sect: this.sect,
               archtype: this.archtypeModel,
               disciplines: this.disciplines,
@@ -278,10 +282,13 @@ export default {
           let discChoices = data.disciplineChoices._rawValue;
           this.disciplines = {};
           this.tooltips = data.tooltips;
+          this.clanDesc = data.desc;
 
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])
           );
+
+          console.log(this.disciplines);
         });
     },
   },

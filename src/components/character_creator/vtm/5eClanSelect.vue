@@ -68,14 +68,25 @@
               <q-separator />
 
               <q-stepper-navigation>
-                <q-btn @click="step = 2" color="primary" label="Continue" />
+                <q-btn
+                  @click="step = 2"
+                  color="primary"
+                  label="Continue"
+                  :disable="stepOne()"
+                >
+                  <q-tooltip
+                    v-if="stepOne()"
+                    class="bg-dark text-body2"
+                    :offset="[1, 1]"
+                    >Please select your disciplines</q-tooltip
+                  >
+                </q-btn>
               </q-stepper-navigation>
             </q-step>
 
             <q-step
               :name="2"
               title="Sire and Generation"
-              caption="Optional"
               icon="create_new_folder"
               :done="step > 2"
             >
@@ -196,6 +207,7 @@ export default defineComponent({
     const archtype = ref(props.info.archtype);
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
+    let newDesc = ref(props.info.desc);
     const sire = ref(null);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
@@ -211,30 +223,102 @@ export default defineComponent({
       "The ability to attract, sway, and control emotions",
     ]);
     if (discArr.length === 0) {
-      clanDisciplines.value = ["Celerity", "Potence", "Presence"];
-
-      discChoices.value = [0, 0, 0];
+      if (clan.value === "Caitiff") {
+        discChoices.value = [
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ];
+        clanDisciplines.value = [
+          "Animalism",
+          "Auspex",
+          "Blood Sorcery",
+          "Celerity",
+          "Chimerstry",
+          "Dementation",
+          "Dominate",
+          "Fortitude",
+          "Necromancy",
+          "Obfuscate",
+          "Oblivion",
+          "Obtenebration",
+          "Potence",
+          "Presence",
+          "Protean",
+          "Quietus",
+          "Serpentis",
+          "Thaumaturgy",
+          "Thin-Blood Alchemy",
+          "Vicissitude",
+        ];
+      } else {
+        discChoices.value = [0, 0, 0];
+        clanDisciplines.value = ["Celerity", "Potence", "Presence"];
+      }
     } else {
-      clanDisciplines.value = [
-        discArr[0].discipline,
-        discArr[1].discipline,
-        discArr[2].discipline,
-      ];
+      if (clan.value === "Caitiff") {
+        clanDisciplines.value = [
+          discArr[0].discipline,
+          discArr[1].discipline,
+          discArr[2].discipline,
+          discArr[3].discipline,
+          discArr[4].discipline,
+          discArr[5].discipline,
+          discArr[6].discipline,
+          discArr[7].discipline,
+          discArr[8].discipline,
+          discArr[9].discipline,
+          discArr[10].discipline,
+          discArr[11].discipline,
+          discArr[12].discipline,
+          discArr[13].discipline,
+          discArr[14].discipline,
+          discArr[15].discipline,
+          discArr[16].discipline,
+          discArr[17].discipline,
+          discArr[18].discipline,
+          discArr[19].discipline,
+        ];
+        discChoices.value = [
+          discArr[0].choice,
+          discArr[1].choice,
+          discArr[2].choice,
+          discArr[3].choice,
+          discArr[4].choice,
+          discArr[5].choice,
+          discArr[6].choice,
+          discArr[7].choice,
+          discArr[8].choice,
+          discArr[9].choice,
+          discArr[10].choice,
+          discArr[11].choice,
+          discArr[12].choice,
+          discArr[13].choice,
+          discArr[14].choice,
+          discArr[15].choice,
+          discArr[16].choice,
+          discArr[17].choice,
+          discArr[18].choice,
+          discArr[19].choice,
+        ];
+      } else {
+        clanDisciplines.value = [
+          discArr[0].discipline,
+          discArr[1].discipline,
+          discArr[2].discipline,
+        ];
 
-      discChoices.value = [
-        discArr[0].choice,
-        discArr[1].choice,
-        discArr[2].choice,
-      ];
+        discChoices.value = [
+          discArr[0].choice,
+          discArr[1].choice,
+          discArr[2].choice,
+        ];
+      }
 
       clanBane.value = newBane;
       discExplained.value = newTips.value;
+      clanDesc.value = newDesc;
     }
 
-    const discChoicesRemaining = ref(3);
     const disableRating = ref(false);
-
-    console.log(discExplained);
 
     return {
       clan,
@@ -243,7 +327,6 @@ export default defineComponent({
       clanDisciplines,
       disableRating,
       discChoices,
-      discChoicesRemaining,
       discExplained,
       sect,
       sire,
@@ -281,6 +364,7 @@ export default defineComponent({
       onOKClick() {
         onDialogOK({
           clan: clan,
+          desc: clanDesc,
           disciplines: clanDisciplines,
           disciplineChoices: discChoices,
           bane: clanBane,
@@ -301,6 +385,18 @@ export default defineComponent({
     clanSelected() {
       console.log(this.clan);
       switch (this.clan) {
+        case "Banu Haqim":
+          this.clanDesc =
+            "The “Assamite” viziers, sorcerers, and warriors recently admitted to the Camarilla seek to defend themselves from the judgement of Alamut.";
+          this.clanBane =
+            "When one of the Judges tastes the Blood of another Cainite, they find it very hard to stop. Slaking at least one Hunger level with vampiric vitae provokes a Hunger Frenzy test at a Difficulty 2 + Bane Severity.[4] If the test is failed they attempt to gorge themselves on vampire Blood, sometimes until they diablerize their Kindred victim.";
+          this.clanDisciplines = ["Blood Sorcery", "Celerity", "Obfuscate"];
+          this.discExplained = [
+            "The use of the Blood to perform magic",
+            "Supernatural quickness and reflexes",
+            "The ability to remain obscure and unseen, even in crowds",
+          ];
+          break;
         case "Brujah":
           this.clanDesc =
             "The 'Rabble' rebel against power and rage against tyranny.";
@@ -311,6 +407,60 @@ export default defineComponent({
             "Supernatural quickness and reflexes",
             "The Discipline of physical vigor and strength",
             "The ability to attract, sway, and control emotions",
+          ];
+          break;
+
+        case "Caitiff":
+          this.discChoices = [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          ];
+          this.clanDesc =
+            "The “Clanless” show no common traits, except to find themselves outcast by vampires of distinct lineage.";
+          this.clanBane =
+            "Caitiff characters begin with the Suspect (•) Flaw and you may not purchase positive Status for them during character creation. The Storyteller may always impose a one or two dice penalty on Social tests against fellow Kindred who know they are Caitiff, regardless of their eventual Status. Further, to improve one of the Disciplines of a Caitiff costs six times the level purchased in experience points ";
+          this.clanDisciplines = [
+            "Animalism",
+            "Auspex",
+            "Blood Sorcery",
+            "Celerity",
+            "Chimerstry",
+            "Dementation",
+            "Dominate",
+            "Fortitude",
+            "Necromancy",
+            "Obfuscate",
+            "Oblivion",
+            "Obtenebration",
+            "Potence",
+            "Presence",
+            "Protean",
+            "Quietus",
+            "Serpentis",
+            "Thaumaturgy",
+            "Thin-Blood Alchemy",
+            "Vicissitude",
+          ];
+          this.discExplained = [
+            "Supernatural affinity with and control of animals",
+            "Extrasensory perception, awareness, and premonitions",
+            "The use of the Blood to perform magic",
+            "Supernatural quickness and reflexes",
+            "Illusions made real or at least tangible",
+            "See AUSPEX and DOMINATE. Gift your foes with madness",
+            "Mind control practiced through one’s piercing gaze",
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
+            "See OBLIVION. Control of the dead, both spirit and corpse",
+            "The ability to remain obscure and unseen, even in crowds",
+            "Control over shadows and spirits",
+            "See OBLIVION. Manipulation of abyssal darkness",
+            "The Discipline of physical vigor and strength",
+            "The ability to attract, sway, and control emotions",
+            "Shape-changing, from growing claws to melding with the earth",
+            "See BLOOD SORCERY and OBFUSCATE. Art of the silent death",
+            "See PRESENCE and PROTEAN. Acquire the physicality of serpents",
+            "See BLOOD SORCERY. The use of the Blood to perform magic",
+            "Mixing blood, emotion, and other ingredients to create powerful effects",
+            "The sculpting of flesh into unnatural forms",
           ];
           break;
         case "Malkavian":
@@ -329,6 +479,8 @@ export default defineComponent({
           // code block
           break;
         default:
+          this.clanBane =
+            "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die";
           this.clanDesc =
             "The 'Rabble' rebel against power and rage against tyranny.";
           this.clanDisciplines = ["Celerity", "Potence", "Presence"];
@@ -354,13 +506,30 @@ export default defineComponent({
       }
 
       if (sum > 3 || arrayEquals([1, 1, 1], this.discChoices)) {
-        this.discChoices = [0, 0, 0];
+        if (this.clan === "Caitiff") {
+          this.discChoices = [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          ];
+        } else {
+          this.discChoices = [0, 0, 0];
+        }
         this.$q.notify({
           type: "negative",
           textColor: "white",
           message: "Please re-read the discipline instructions.",
         });
       }
+    },
+
+    stepOne() {
+      let sum = 0;
+      this.discChoices.forEach((choice) => (sum += choice));
+
+      if (sum < 3) {
+        return true;
+      }
+
+      return false;
     },
   },
 });

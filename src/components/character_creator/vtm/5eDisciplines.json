@@ -1,0 +1,25 @@
+{
+  "Disciplines": {
+    "Animalism": {
+      "type": "Mental",
+      "threat": 2,
+      "resonance": "Animal Blood",
+      "skills": {
+        "level1": [
+          {
+            "name": "Bond Famulas",
+            "desc": "Create a blood-bond with an animal, will cause it to fight in self-defense and in defense of it's master.",
+            "dice": "Charisma + Animal Ken",
+            "cost": "The animal must be fed the user’s Blood on three separate nights, each of which requires a Rouse Check by the user. The amount of Blood needed to sustain the ghoul state of the animal after this is negligible. Players starting with this power have completed this process and can chose a famulus for free."
+          },
+          {
+            "name": "Sense the Beast",
+            "desc": "The vampire can sense the beast within other vampires, mortals and supernatural creatures.​​",
+            "dice": "Resolve + Animalism vs Composure + Subterfuge",
+            "cost": "Free"
+          }
+        ]
+      }
+    }
+  }
+}

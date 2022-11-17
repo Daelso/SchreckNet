@@ -71,113 +71,12 @@
           </q-item>
         </q-list>
       </q-card>
-    </div>
-
-    <div class="q-pa-md row justify-center text-center">
-      <q-card class="bg-primary">
-        <q-tabs
-          v-model="tab"
-          class="bg-primary"
-          active-color="secondary"
-          indicator-color="secondary"
-          align="justify"
-          narrow-indicator
-        >
-          <q-tab name="basicInfo" label="Core Concept" />
-          <q-tab name="alarms" label="Alarms" />
-          <q-tab name="movies" label="Movies" />
-        </q-tabs>
-
-        <q-separator />
-
-        <q-tab-panels v-model="tab" animated class="bg-primary">
-          <q-tab-panel name="basicInfo" class="q-m-b-xl">
-            <q-input
-              filled
-              class="select"
-              bg-color="grey-3"
-              v-model="charName"
-              label="Your character's name *"
-              lazy-rules
-              label-color="primary"
-              :rules="[
-                (val) =>
-                  (typeof val === 'string' &&
-                    val.length > 3 &&
-                    val.length <= 128) ||
-                  'Please enter a valid name, between 3-128 characters',
-              ]"
-            />
-            <q-input
-              filled
-              bg-color="grey-3"
-              v-model="job"
-              label="What did you do in life *"
-              autogrow
-              lazy-rules
-              label-color="primary"
-              :rules="[
-                (val) =>
-                  (typeof val === 'string' && val.length <= 2000) ||
-                  'Please keep this field under 2000 characters',
-              ]"
-            />
-            <q-input
-              filled
-              bg-color="grey-3"
-              v-model="embracedWhere"
-              label="Where were you embraced *"
-              autogrow
-              lazy-rules
-              label-color="primary"
-              :rules="[
-                (val) =>
-                  (typeof val === 'string' && val.length <= 2000) ||
-                  'Please keep this field under 2000 characters',
-              ]"
-            />
-            <q-input
-              filled
-              bg-color="grey-3"
-              v-model="whereNow"
-              label="Where do you call home now *"
-              autogrow
-              label-color="primary"
-              lazy-rules
-              :rules="[
-                (val) =>
-                  (typeof val === 'string' && val.length <= 2000) ||
-                  'Please keep this field under 2000 characters',
-              ]"
-            />
-            <q-input
-              filled
-              bg-color="grey-3"
-              v-model="title"
-              label="Your character's title *"
-              lazy-rules
-              label-color="primary"
-              :rules="[
-                (val) =>
-                  (typeof val === 'string' &&
-                    val.length > 3 &&
-                    val.length <= 128) ||
-                  'Please enter a valid title, between 3-128 characters',
-              ]"
-            />
-          </q-tab-panel>
-
-          <q-tab-panel name="alarms">
-            <div class="text-h6">Alarms</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
-
-          <q-tab-panel name="movies">
-            <div class="text-h6">Movies</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
-        </q-tab-panels>
-      </q-card>
+      <tabs
+        @charName="handleCharName($event)"
+        @concept="handleConcept($event)"
+        @ambition="handleAmbition($event)"
+        @desire="handleDesire($event)"
+      />
     </div>
   </q-form>
 </template>
@@ -188,6 +87,10 @@
 }
 .q-field__counter {
   color: white;
+}
+.q-field__bottom {
+  color: white;
+  margin-bottom: 3px;
 }
 @media only screen and (max-width: 600px) {
   .select {
@@ -201,8 +104,12 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
+import tabs from "../vtm/tabs.vue";
 
 export default {
+  components: {
+    tabs,
+  },
   setup() {
     const $q = useQuasar();
     const axios = require("axios");
@@ -224,9 +131,10 @@ export default {
 
     return {
       age: { label: "Childer", bonusXp: 0 },
+      ambition: "",
       charName: "",
-      title: "",
       archtypeModel: ref(null),
+      chronicle: "",
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -237,14 +145,13 @@ export default {
       clanCompulsion: ref(
         "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)"
       ),
+      desire: "",
       disciplines: {},
       humanity: 7,
       sect: ref("Camarilla"),
       sire: null,
-      job: "",
+      concept: "",
       generation: { label: "12th", potency: 1, maxPotency: 3 },
-      embracedWhere: "",
-      whereNow: "",
       xp: 0,
       tooltips: ref([
         "Supernatural quickness and reflexes",
@@ -256,9 +163,20 @@ export default {
   methods: {
     onSubmit() {
       console.log(this.charName);
-      console.log(this.title);
       console.log(this.archtypeModel);
       console.log(this.clan);
+    },
+    handleCharName(data) {
+      this.charName = data;
+    },
+    handleConcept(data) {
+      this.concept = data;
+    },
+    handleAmbition(data) {
+      this.ambition = data;
+    },
+    handleDesire(data) {
+      this.desire = data;
     },
     clanSelected() {
       this.$q

@@ -15,7 +15,7 @@
           style="font-family: TMUnicorn; text-shadow: 3px 2px 3px black"
           class="text-secondary"
         >
-          <router-link to="/">SchreckNet (Alpha)</router-link>
+          <router-link to="/" class="titleLogo">SchreckNet (Alpha)</router-link>
         </q-toolbar-title>
 
         <q-item v-if="!logInCheck" clickable>
@@ -83,6 +83,11 @@ a:hover,
 a:active {
   color: inherit;
   text-decoration: none;
+}
+@media only screen and (max-width: 600px) {
+  .titleLogo {
+    font-size: smaller;
+  }
 }
 </style>
 

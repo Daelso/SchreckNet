@@ -11,8 +11,11 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title style="font-family: TMUnicorn">
-          <router-link to="/">SchreckNet</router-link>
+        <q-toolbar-title
+          style="font-family: TMUnicorn; text-shadow: 3px 2px 3px black"
+          class="text-secondary"
+        >
+          <router-link to="/">SchreckNet (Alpha)</router-link>
         </q-toolbar-title>
 
         <q-item v-if="!logInCheck" clickable>

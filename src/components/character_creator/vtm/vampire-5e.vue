@@ -2,8 +2,20 @@
   <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 1200px">
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" inline-actions rounded dark>
-        Name: {{ charName }} Clan: {{ clan }} Generation:
-        {{ generation }}
+        Name: {{ charName }}
+        <br />
+        Clan: {{ clan }}
+        <br />
+        Age:
+        {{ age.label }}
+        <br />
+        Generation:
+        {{ generation.label }}
+        <br />
+        Potency: {{ generation.potency }}/{{ generation.maxPotency }}
+        <br />
+        Humanity: {{ humanity }}
+        <br />
         Remaining XP: {{ xp }}
         <br />
         Disciplines:
@@ -101,20 +113,6 @@
               bg-color="grey-3"
               v-model="job"
               label="What did you do in life *"
-              autogrow
-              lazy-rules
-              label-color="primary"
-              :rules="[
-                (val) =>
-                  (typeof val === 'string' && val.length <= 2000) ||
-                  'Please keep this field under 2000 characters',
-              ]"
-            />
-            <q-input
-              filled
-              bg-color="grey-3"
-              v-model="embracedWhen"
-              label="When were you embraced *"
               autogrow
               lazy-rules
               label-color="primary"
@@ -225,25 +223,26 @@ export default {
     const router = useRouter();
 
     return {
+      age: { label: "Childer", bonusXp: 0 },
       charName: "",
       title: "",
       archtypeModel: ref(null),
       clan: ref("Brujah"),
       clanBane: ref(
-        "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die"
+        "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
       ),
       clanDesc: ref(
         "The 'Rabble' rebel against power and rage against tyranny."
       ),
       clanCompulsion: ref(
-        "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them."
+        "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)"
       ),
       disciplines: {},
+      humanity: 7,
       sect: ref("Camarilla"),
       sire: null,
       job: "",
-      generation: 5,
-      embracedWhen: "",
+      generation: { label: "12th", potency: 1, maxPotency: 3 },
       embracedWhere: "",
       whereNow: "",
       xp: 0,
@@ -268,18 +267,24 @@ export default {
           persistent: true,
           componentProps: {
             info: {
-              clan: this.clan,
-              bane: this.clanBane,
-              desc: this.clanDesc,
-              sect: this.sect,
+              age: this.age,
               archtype: this.archtypeModel,
-              disciplines: this.disciplines,
-              tooltips: this.tooltips,
+              bane: this.clanBane,
+              clan: this.clan,
               compulsion: this.compulsion,
+              desc: this.clanDesc,
+              disciplines: this.disciplines,
+              generation: this.generation,
+              humanity: this.humanity,
+              sect: this.sect,
+              sire: this.sire,
+              tooltips: this.tooltips,
+              xp: this.xp,
             },
           },
         })
         .onOk((data) => {
+          this.age = data.age;
           this.clan = data.clan;
           this.clanBane = data.bane;
           let selectedDisc = data.disciplines._rawValue;
@@ -288,6 +293,11 @@ export default {
           this.tooltips = data.tooltips;
           this.clanDesc = data.desc;
           this.compulsion = data.compulsion;
+          this.sire = data.sire;
+          this.archtypeModel = data.archtype;
+          this.generation = data.generation;
+          this.humanity = data.humanity;
+          this.xp = data.xp;
 
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])

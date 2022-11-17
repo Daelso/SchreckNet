@@ -95,7 +95,7 @@
                 filled
                 bg-color="grey-3"
                 v-model="sire"
-                label="Your sire's name, if you know *"
+                label="Your sire's name, if you know"
                 autogrow
                 lazy-rules
                 style="margin-top: 15px; width: 100%"
@@ -107,12 +107,45 @@
                     'Please keep this field under 2000 characters',
                 ]"
               />
+              <q-separator />
+              <q-select
+                v-model="generation"
+                label="Generation"
+                :options="generationOptions"
+                bg-color="grey-3"
+                filled
+                style="margin-bottom: 20px; width: 100%"
+                class="select"
+                label-color="primary"
+                option-label="label"
+                @update:model-value="generationSelected"
+              />
+              <q-separator />
+              <div>Blood Potency: {{ generation.potency }}</div>
+              <q-separator />
+              <div class="q-mb-md">
+                Max Blood Potency: {{ generation.maxPotency }}
+              </div>
+              <q-select
+                v-model="age"
+                label="Coterie Age"
+                :options="ageOptions"
+                bg-color="grey-3"
+                filled
+                style="margin-bottom: 20px; width: 100%"
+                class="select"
+                label-color="primary"
+                option-label="label"
+                @update:model-value="ageSelected"
+              />
+              <q-separator />
+              Bonus XP: {{ age.bonusXp }}
               <q-stepper-navigation>
                 <q-btn @click="step = 3" color="primary" label="Continue" />
                 <q-btn
                   flat
                   @click="step = 1"
-                  color="primary"
+                  color="secondary"
                   label="Back"
                   class="q-ml-sm"
                 />
@@ -206,6 +239,7 @@ export default defineComponent({
 
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
+    const age = ref(props.info.age);
     const clan = ref(props.info.clan);
     const sect = ref(props.info.sect);
     const archtype = ref(props.info.archtype);
@@ -213,14 +247,17 @@ export default defineComponent({
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
     const compulsion = ref(props.info.compulsion);
-    const sire = ref(null);
+    const generation = ref(props.info.generation);
+    const sire = ref(props.info.sire);
+    const xp = ref(props.info.xp);
+    const humanity = ref(props.info.humanity);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
     );
     const clanDisciplines = ref([]);
     const discChoices = ref([]);
     const clanBane = ref(
-      "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die"
+      "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die. (V5 Corebook p.67)"
     );
     const discExplained = ref([
       "Supernatural quickness and reflexes",
@@ -261,7 +298,7 @@ export default defineComponent({
         discChoices.value = [0, 0, 0];
         clanDisciplines.value = ["Celerity", "Potence", "Presence"];
         compulsion.value =
-          "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them.";
+          "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)";
       }
     } else {
       if (clan.value === "Caitiff") {
@@ -335,6 +372,7 @@ export default defineComponent({
     const disableRating = ref(false);
 
     return {
+      age,
       clan,
       clanBane,
       clanDesc,
@@ -343,12 +381,26 @@ export default defineComponent({
       disableRating,
       discChoices,
       discExplained,
+      generation,
+      humanity,
       sect,
       sire,
+      xp,
       archtype,
       step: ref(1),
       dialogRef,
       onDialogHide,
+
+      ageOptions: [
+        { label: "Childer", bonusXp: 0 },
+        { label: "Neonate", bonusXp: 15 },
+        {
+          label: "Ancillae",
+          bonusXp: 35,
+          other:
+            "Adds 1 dot in Blood Potency, two dots of advantages, two dots of Flaws and costs you a point of humanity.",
+        },
+      ],
 
       clanOptions: [
         "Banu Haqim",
@@ -359,12 +411,23 @@ export default defineComponent({
         "Lasombra",
         "Malkavian",
         "Nosferatu",
+        "Ravnos",
+        "Salubri",
         "Toreador",
         "Tremere",
         "Tzimisce",
         "Ventrue",
         "The Ministry",
         "Thin-Blood",
+      ],
+      generationOptions: [
+        { label: "16th", potency: 0, maxPotency: 0 },
+        { label: "15th", potency: 0, maxPotency: 0 },
+        { label: "14th", potency: 0, maxPotency: 0 },
+        { label: "13th", potency: 1, maxPotency: 3 },
+        { label: "12th", potency: 1, maxPotency: 3 },
+        { label: "11th", potency: 2, maxPotency: 4 },
+        { label: "10th", potency: 2, maxPotency: 4 },
       ],
       sectOptions: [
         "Anarchs",
@@ -378,6 +441,7 @@ export default defineComponent({
 
       onOKClick() {
         onDialogOK({
+          age: age,
           clan: clan,
           compulsion: compulsion,
           desc: clanDesc,
@@ -385,6 +449,11 @@ export default defineComponent({
           disciplineChoices: discChoices,
           bane: clanBane,
           tooltips: discExplained,
+          sire: sire,
+          archtype: archtype,
+          generation: generation,
+          humanity: humanity,
+          xp: xp,
         });
       },
 
@@ -472,7 +541,7 @@ export default defineComponent({
             "Supernatural quickness and reflexes",
             "Illusions made real or at least tangible",
             "See AUSPEX and DOMINATE. Gift your foes with madness",
-            "Mind control practiced through one’s piercing gaze",
+            "Mind control practiced through one's piercing gaze",
             "Unearthly toughness, even to the point of resisting fire and sunlight",
             "See OBLIVION. Control of the dead, both spirit and corpse",
             "The ability to remain obscure and unseen, even in crowds",
@@ -529,7 +598,7 @@ export default defineComponent({
             this.citation(6, "289-295");
           this.clanDisciplines = ["Dominate", "Oblivion", "Potence"];
           this.discExplained = [
-            "Mind control practiced through one’s piercing gaze",
+            "Mind control practiced through one's piercing gaze",
             "Control over shadows and spirits",
             "The Discipline of physical vigor and strength",
           ];
@@ -538,15 +607,15 @@ export default defineComponent({
           this.clanDesc =
             "The madness of the 'Lunatics' conceals and reveals truths.";
           this.compulsion =
-            "Delusion: Malkavian's extrasensory gifts running wild, the vampire experiences what might be truths or portents, but what others call figments of imagination, dredged up by Hunger. While still functional, the vampire’s mind and perceptions are skewed. They receive a two-dice penalty to rolls involving Dexterity, Manipulation, Composure, and Wits as well as on rolls to resist terror frenzy, for one scene. " +
+            "Delusion: Malkavian's extrasensory gifts running wild, the vampire experiences what might be truths or portents, but what others call figments of imagination, dredged up by Hunger. While still functional, the vampire's mind and perceptions are skewed. They receive a two-dice penalty to rolls involving Dexterity, Manipulation, Composure, and Wits as well as on rolls to resist terror frenzy, for one scene. " +
             this.citation(1, 210);
           this.clanBane =
-            "Derangement: When the Malkavian suffers a Bestial Failure or a Compulsion, their curse comes to the fore. Suffer a penalty equal to your character’s Bane Severity to one category of dice pools (Physical, Social, or Mental) for the entire scene. This is in addition to any penalties incurred by Compulsions. " +
+            "Derangement: When the Malkavian suffers a Bestial Failure or a Compulsion, their curse comes to the fore. Suffer a penalty equal to your character's Bane Severity to one category of dice pools (Physical, Social, or Mental) for the entire scene. This is in addition to any penalties incurred by Compulsions. " +
             this.citation(1, 79);
           this.clanDisciplines = ["Auspex", "Dominate", "Obfuscate"];
           this.discExplained = [
             "Extrasensory perception, awareness, and premonitions",
-            "Mind control practiced through one’s piercing gaze",
+            "Mind control practiced through one's piercing gaze",
             "The ability to remain obscure and unseen, even in crowds",
           ];
           break;
@@ -564,6 +633,38 @@ export default defineComponent({
             "Supernatural affinity with and control of animals",
             "The ability to remain obscure and unseen, even in crowds",
             "The Discipline of physical vigor and strength",
+          ];
+          break;
+        case "Ravnos":
+          this.clanDesc =
+            " Reduced to a population of that of a bloodline, the “Deceivers” of Romani heritage were all but destroyed during the Week of Nightmares.";
+          this.compulsion =
+            "Tempting Fate: The Ravnos vampire is driven by their Blood to court danger. Haunted as they are by righteous fire burning its way up their lineage, why not? The next time the vampire is faced with a problem to solve, any attempt at a solution short of the most daring or dangerous incurs a two-dice penalty. (Suitably flashy and risky attempts can even merit bonus dice for this occasion.) The Daredevil is free to convince any fellows to do things their way, but is just as likely to go at it alone. The Compulsion persists until the problem is solved or further attempts become impossible. " +
+            this.citation(7, "6-10");
+          this.clanBane =
+            "Doomed: A Ravnos' Bane is that the sun's fire that incinerated their founder rages through the Blood of the clan, erupting from their very flesh if they ever settle down for long. If they slumber in the same place more than once in seven nights, roll a number of dice equal to their Bane Severity. They receive aggravated damage equal to the number of 10’s (critical results) rolled as they are scorched from within. This happens every time they spend the day in a location they've already slumbered less than a week before. What constitutes a location in this regard depends on the scope of the chronicle, but unless otherwise stated, two resting places need to be at least a mile apart to avoid triggering the Bane. Furthermore, a mobile haven, such as a movers’ truck, is safe so long as the place where the truck is parked is at least a mile from the last location. " +
+            this.citation(7, "6-10");
+          this.clanDisciplines = ["Animalism", "Obfuscate", "Presence"];
+          this.discExplained = [
+            "Supernatural affinity with and control of animals",
+            "The ability to remain obscure and unseen, even in crowds",
+            "The ability to attract, sway, and control emotions",
+          ];
+          break;
+        case "Salubri":
+          this.clanDesc =
+            "The rarest clan in the modern nights, the Salubri are healers, warriors and watchers.";
+          this.compulsion =
+            "Affective Empathy: When a Salubri suffers a Compulsion, the Kindred becomes overwhelmed with empathy for a personal problem that afflicts someone in the scene, seeking to further its resolution. The scale of the personal problem isn’t important; the Salubri understands that sometimes suffering is part of a cumulative situation and not an isolated stimulus. Any action not taken toward mitigating that personal tragedy incurs a two dice penalty. The Compulsion persists until the sufferer's burden is eased or a more immediate crisis supersedes it, or the end of the scene.  " +
+            this.citation(7, "13-15");
+          this.clanBane =
+            "Hunted: A Salubri's Bane is that the Kindred of other clans are especially appreciative of Salubri vitae. When a non-Salubri partakes of the blood of a Cyclops, they often find it difficult to pull themselves away. Consuming enough to abate at least one Hunger level requires a Hunger Frenzy test. If the test fails, they just keep consuming, to the point that they may have to be physically fought off. Additionally, the third eye that Saulot opened while on one of his many journeys passes down through the bloodline every time a Salubri Embraces. This third eye is not always recognizably human in origin, and rumors persist of vertical, serpentine pupils, or even wormlike eyespots. While this third eye can be physically covered, such as with a headscarf or hood, it is always present, and no supernatural power can obscure it. Any time a Salubri activates a Discipline power, the third eye weeps vitae, its intensity correlating to the level of the Discipline being used, from welling up to a torrential flow. The blood flow from the third eye triggers a Hunger Frenzy test from nearby vampires with Hunger 4 or more.  " +
+            this.citation(7, "13-15");
+          this.clanDisciplines = ["Auspex", "Dominate", "Fortitude"];
+          this.discExplained = [
+            "Extrasensory perception, awareness, and premonitions",
+            "Mind control practiced through one's piercing gaze",
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
           ];
           break;
         case "Toreador":
@@ -703,6 +804,27 @@ export default defineComponent({
           message: "Please re-read the discipline instructions.",
         });
       }
+    },
+
+    ageSelected() {
+      switch (this.age.label) {
+        case "Childer":
+          this.xp = 0;
+          break;
+        case "Neonate":
+          this.xp = 15;
+          break;
+        case "Ancillae":
+          this.xp = 35;
+          this.humanity = 6;
+          break;
+        default:
+          this.xp += 0;
+      }
+    },
+
+    generationSelected() {
+      console.log(this.age);
     },
 
     stepOne() {

@@ -5,7 +5,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Vampire: The Masquerade</q-item-label>
+      <q-item-label>Vampire: The Masquerade (Early Alpha)</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>

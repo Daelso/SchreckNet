@@ -20,6 +20,12 @@
         <br />
         Remaining XP: {{ xp }}
         <br />
+        Concept: {{ !concept ? "None" : concept }}
+        <br />
+        Ambition: {{ !ambition ? "None" : ambition }}
+        <br />
+        Desire: {{ !desire ? "None" : desire }}
+        <br />
         Convictions: {{ convictions.length < 1 ? "None" : convictions }}
         <br />
         Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
@@ -36,9 +42,21 @@
         </template>
       </q-banner>
     </div>
-    <div class="q-pa-md col justify-left text-center">
-      <q-card class="bg-primary text-white">
+    <div class="q-pa-md col justify-center text-center">
+      <q-card class="bg-primary text-white container">
         <q-list>
+          <q-item clickable @click="attributes">
+            <q-item-section avatar>
+              <q-icon color="secondary" name="attribution" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Attributes</q-item-label>
+              <q-item-label caption class="text-white"
+                >Fill out your primary talents</q-item-label
+              >
+            </q-item-section>
+          </q-item>
           <q-item clickable @click="clanSelected">
             <q-item-section avatar>
               <q-icon color="primary" name="app:ankh" style="scale: 170%" />
@@ -51,20 +69,6 @@
               >
             </q-item-section>
           </q-item>
-
-          <q-item clickable>
-            <q-item-section avatar>
-              <q-icon color="red" name="local_gas_station" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Gas Station</q-item-label>
-              <q-item-label caption class="text-white"
-                >Fill your gas tank.</q-item-label
-              >
-            </q-item-section>
-          </q-item>
-
           <q-item clickable>
             <q-item-section avatar>
               <q-icon color="amber" name="local_movies" />
@@ -117,6 +121,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
+import attributes from "../vtm/5eAttributes.vue";
+import attributeInfo from "../vtm/5eAttributes.json";
 
 export default {
   components: {
@@ -126,6 +132,7 @@ export default {
     const $q = useQuasar();
     const axios = require("axios");
     const router = useRouter();
+    console.log(attributeInfo);
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
@@ -143,9 +150,19 @@ export default {
 
     return {
       age: { label: "Childer", bonusXp: 0 },
-      ambition: "",
-      charName: "",
       archtypeModel: ref(null),
+      ambition: "",
+      attributePoints: 22,
+      charName: "",
+      charisma: 0,
+      composure: 0,
+      dexterity: 0,
+      intelligence: 0,
+      manipulation: 0,
+      resolve: 0,
+      stamina: 0,
+      strength: 0,
+      wits: 0,
       chronicle: "",
       convictions: [],
       clan: ref("Brujah"),
@@ -243,6 +260,41 @@ export default {
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])
           );
+        });
+    },
+    attributes() {
+      this.$q
+        .dialog({
+          component: attributes,
+          persistent: true,
+          componentProps: {
+            info: {
+              attributePoints: this.attributePoints,
+              charisma: this.charisma,
+              composure: this.composure,
+              dexterity: this.dexterity,
+              intelligence: this.intelligence,
+              manipulation: this.manipulation,
+              resolve: this.resolve,
+              stamina: this.stamina,
+              strength: this.strength,
+              wits: this.wits,
+              xp: this.xp,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.attributePoints = data.attributePoints;
+          this.charisma = data.charisma;
+          this.composure = data.composure;
+          this.dexterity = data.dexterity;
+          this.intelligence = data.intelligence;
+          this.manipulation = data.manipulation;
+          this.resolve = data.resolve;
+          this.stamina = data.stamina;
+          this.strength = data.strength;
+          this.wits = data.wits;
+          this.xp = data.xp;
         });
     },
   },

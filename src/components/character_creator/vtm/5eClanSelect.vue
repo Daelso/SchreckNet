@@ -410,8 +410,6 @@ export default defineComponent({
         { label: "10th", potency: 2, maxPotency: 4 },
       ],
 
-      archtypeOptions: ["Murderhobo", "Hobo"],
-
       onOKClick() {
         onDialogOK({
           age: age,
@@ -423,7 +421,6 @@ export default defineComponent({
           bane: clanBane,
           tooltips: discExplained,
           sire: sire,
-          archtype: archtype,
           generation: generation,
           humanity: humanity,
           xp: xp,

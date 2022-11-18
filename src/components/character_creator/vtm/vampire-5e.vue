@@ -6,6 +6,8 @@
         <br />
         Clan: {{ clan }}
         <br />
+        Sect: {{ sect }}
+        <br />
         Age:
         {{ age.label }}
         <br />
@@ -18,9 +20,11 @@
         <br />
         Remaining XP: {{ xp }}
         <br />
-        Convictions: {{ convictions }}
+        Convictions: {{ convictions.length < 1 ? "None" : convictions }}
         <br />
-        Touchstones: {{ touchstones }}
+        Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
+        <br />
+        Archetype: {{ !archtypeModel ? "None" : archtypeModel }}
         <br />
         Disciplines:
 
@@ -41,9 +45,9 @@
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Affiliations:</q-item-label>
+              <q-item-label>Clan/Coterie</q-item-label>
               <q-item-label caption class="text-white"
-                >Manage things like clan, disciplines, sire, sect.</q-item-label
+                >Manage things like clan, disciplines and coterie.</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -82,6 +86,8 @@
         @desire="handleDesire($event)"
         @convictions="handleConvictions($event)"
         @touchstones="handleTouchstones($event)"
+        @archetype="handleArchetype($event)"
+        @sect="handleSect($event)"
       />
     </div>
   </q-form>
@@ -192,6 +198,12 @@ export default {
     handleTouchstones(data) {
       this.touchstones = data;
     },
+    handleArchetype(data) {
+      this.archtypeModel = data;
+    },
+    handleSect(data) {
+      this.sect = data;
+    },
     clanSelected() {
       this.$q
         .dialog({
@@ -200,7 +212,6 @@ export default {
           componentProps: {
             info: {
               age: this.age,
-              archtype: this.archtypeModel,
               bane: this.clanBane,
               clan: this.clan,
               compulsion: this.compulsion,
@@ -208,7 +219,6 @@ export default {
               disciplines: this.disciplines,
               generation: this.generation,
               humanity: this.humanity,
-              sect: this.sect,
               sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
@@ -226,7 +236,6 @@ export default {
           this.clanDesc = data.desc;
           this.compulsion = data.compulsion;
           this.sire = data.sire;
-          this.archtypeModel = data.archtype;
           this.generation = data.generation;
           this.humanity = data.humanity;
           this.xp = data.xp;

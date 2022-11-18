@@ -11,7 +11,7 @@
       >
         <q-tab name="coreConcept" label="Core Concept" />
         <q-tab name="touchstones" label="Touchstones/Convictions" />
-        <q-tab name="movies" label="Movies" />
+        <q-tab name="sect" label="Sect/Archtype" />
       </q-tabs>
 
       <q-separator />
@@ -91,6 +91,9 @@
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">
+          <div class="q-mb-sm">
+            Must have 1-3 convictions and as many touchstones as convictions.
+          </div>
           <q-input
             filled
             bg-color="grey-3"
@@ -169,9 +172,35 @@
           </q-list>
         </q-tab-panel>
 
-        <q-tab-panel name="movies">
-          <div class="text-h6">Movies</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="sect">
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="archetype"
+            label="Archetype *"
+            hint="Regain willpower when you fulfill your purpose. Examples: Judge, Guru, Gambler, Masochist "
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            @update:model-value="this.$emit('archetype', this.archetype)"
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 2000) ||
+                'Please keep this field under 2000 characters',
+            ]"
+          />
+          <q-separator />
+          <q-select
+            v-model="sect"
+            :options="sectOptions"
+            label="Sect"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+            @update:model-value="this.$emit('sect', this.sect)"
+          />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -192,14 +221,23 @@ export default defineComponent({
   data() {
     return {
       ambition: "",
+      archetype: "",
       charName: "",
       convictionInput: "",
       touchStoneInput: "",
-      convictions: ["poop"],
+      convictions: [],
       touchstones: [],
       chronicle: "",
       desire: "",
       concept: "",
+      sect: "Camarilla",
+      sectOptions: [
+        "Anarchs",
+        "Camarilla",
+        "Independent",
+        "Sabbat",
+        "Clanless",
+      ],
     };
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 1200px">
+  <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" inline-actions rounded dark>
         Name: {{ charName }}
@@ -18,6 +18,10 @@
         <br />
         Remaining XP: {{ xp }}
         <br />
+        Convictions: {{ convictions }}
+        <br />
+        Touchstones: {{ touchstones }}
+        <br />
         Disciplines:
 
         <div v-for="(discipline, key) in disciplines" :key="key">
@@ -29,7 +33,7 @@
       </q-banner>
     </div>
     <div class="q-pa-md col justify-left text-center">
-      <q-card class="my-card bg-primary text-white">
+      <q-card class="bg-primary text-white">
         <q-list>
           <q-item clickable @click="clanSelected">
             <q-item-section avatar>
@@ -76,6 +80,8 @@
         @concept="handleConcept($event)"
         @ambition="handleAmbition($event)"
         @desire="handleDesire($event)"
+        @convictions="handleConvictions($event)"
+        @touchstones="handleTouchstones($event)"
       />
     </div>
   </q-form>
@@ -135,6 +141,7 @@ export default {
       charName: "",
       archtypeModel: ref(null),
       chronicle: "",
+      convictions: [],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -152,6 +159,7 @@ export default {
       sire: null,
       concept: "",
       generation: { label: "12th", potency: 1, maxPotency: 3 },
+      touchstones: [],
       xp: 0,
       tooltips: ref([
         "Supernatural quickness and reflexes",
@@ -177,6 +185,12 @@ export default {
     },
     handleDesire(data) {
       this.desire = data;
+    },
+    handleConvictions(data) {
+      this.convictions = data;
+    },
+    handleTouchstones(data) {
+      this.touchstones = data;
     },
     clanSelected() {
       this.$q

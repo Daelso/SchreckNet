@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent v-model="layout">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
@@ -429,11 +429,6 @@ export default defineComponent({
 
       // we can passthrough onDialogCancel directly
       onCancelClick: onDialogCancel,
-    };
-  },
-  data() {
-    return {
-      layout: false,
     };
   },
   methods: {

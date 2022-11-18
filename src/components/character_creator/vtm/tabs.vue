@@ -3,7 +3,7 @@
     <q-card class="bg-primary">
       <q-tabs
         v-model="tab"
-        class="bg-primary"
+        class="bg-primary tabs"
         active-color="secondary"
         indicator-color="secondary"
         align="justify"
@@ -11,7 +11,6 @@
       >
         <q-tab name="coreConcept" label="Core Concept" />
         <q-tab name="touchstones" label="Touchstones/Convictions" />
-        <q-tab name="sect" label="Sect/Archtype" />
       </q-tabs>
 
       <q-separator />
@@ -38,6 +37,7 @@
           <q-input
             filled
             bg-color="grey-3"
+            class="select"
             v-model="concept"
             label="Character Concept *"
             autogrow
@@ -58,6 +58,7 @@
             filled
             bg-color="grey-3"
             v-model="ambition"
+            class="select"
             label="Ambition *"
             hint="Long term goals"
             hide-hint
@@ -75,6 +76,7 @@
             filled
             bg-color="grey-3"
             v-model="desire"
+            class="select"
             label="Desire *"
             hint="Specific, short-term goal"
             hide-hint
@@ -87,6 +89,33 @@
                 (typeof val === 'string' && val.length <= 2000) ||
                 'Please keep this field under 2000 characters',
             ]"
+          />
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="archetype"
+            label="Archetype *"
+            hint="Regain willpower when you fulfill your purpose. Examples: Judge, Guru, Gambler, Masochist "
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            @update:model-value="this.$emit('archetype', this.archetype)"
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 2000) ||
+                'Please keep this field under 2000 characters',
+            ]"
+          />
+          <q-select
+            v-model="sect"
+            :options="sectOptions"
+            label="Sect"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+            @update:model-value="this.$emit('sect', this.sect)"
           />
         </q-tab-panel>
 
@@ -171,41 +200,31 @@
             </q-item>
           </q-list>
         </q-tab-panel>
-
-        <q-tab-panel name="sect">
-          <q-input
-            filled
-            bg-color="grey-3"
-            v-model="archetype"
-            label="Archetype *"
-            hint="Regain willpower when you fulfill your purpose. Examples: Judge, Guru, Gambler, Masochist "
-            hide-hint
-            autogrow
-            class="select"
-            label-color="primary"
-            lazy-rules
-            @update:model-value="this.$emit('archetype', this.archetype)"
-            :rules="[
-              (val) =>
-                (typeof val === 'string' && val.length <= 2000) ||
-                'Please keep this field under 2000 characters',
-            ]"
-          />
-          <q-separator />
-          <q-select
-            v-model="sect"
-            :options="sectOptions"
-            label="Sect"
-            label-color="primary"
-            bg-color="grey-3"
-            filled
-            @update:model-value="this.$emit('sect', this.sect)"
-          />
-        </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
 </template>
+
+<style>
+.select {
+  width: 800px;
+}
+.q-field__counter {
+  color: white;
+}
+.q-field__bottom {
+  color: white;
+  margin-bottom: 3px;
+}
+@media only screen and (max-width: 600px) {
+  .select {
+    width: 300px;
+  }
+  .tabs {
+    width: 300px;
+  }
+}
+</style>
 
 <script>
 import { defineComponent } from "vue";
@@ -231,13 +250,7 @@ export default defineComponent({
       desire: "",
       concept: "",
       sect: "Camarilla",
-      sectOptions: [
-        "Anarchs",
-        "Camarilla",
-        "Independent",
-        "Sabbat",
-        "Clanless",
-      ],
+      sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
     };
   },
   methods: {

@@ -167,23 +167,7 @@
             </q-step>
 
             <q-step :name="4" title="Sect and Archtype" icon="help">
-              <q-select
-                v-model="archtype"
-                :options="archtypeOptions"
-                label="Archtype"
-                label-color="primary"
-                bg-color="grey-3"
-                filled
-                style="margin-bottom: 20px"
-              />
-              <q-select
-                v-model="sect"
-                :options="sectOptions"
-                label="Sect"
-                label-color="primary"
-                bg-color="grey-3"
-                filled
-              />
+              efwefwefew
               <q-stepper-navigation>
                 <q-btn color="primary" label="Finish" />
                 <q-btn
@@ -241,8 +225,6 @@ export default defineComponent({
       useDialogPluginComponent();
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
-    const sect = ref(props.info.sect);
-    const archtype = ref(props.info.archtype);
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
@@ -383,10 +365,8 @@ export default defineComponent({
       discExplained,
       generation,
       humanity,
-      sect,
       sire,
       xp,
-      archtype,
       step: ref(1),
       dialogRef,
       onDialogHide,
@@ -428,13 +408,6 @@ export default defineComponent({
         { label: "12th", potency: 1, maxPotency: 3 },
         { label: "11th", potency: 2, maxPotency: 4 },
         { label: "10th", potency: 2, maxPotency: 4 },
-      ],
-      sectOptions: [
-        "Anarchs",
-        "Camarilla",
-        "Independent",
-        "Sabbat",
-        "Clanless",
       ],
 
       archtypeOptions: ["Murderhobo", "Hobo"],

@@ -10,7 +10,7 @@
         narrow-indicator
       >
         <q-tab name="coreConcept" label="Core Concept" />
-        <q-tab name="alarms" label="Alarms" />
+        <q-tab name="touchstones" label="Touchstones/Convictions" />
         <q-tab name="movies" label="Movies" />
       </q-tabs>
 
@@ -90,9 +90,83 @@
           />
         </q-tab-panel>
 
-        <q-tab-panel name="alarms">
-          <div class="text-h6">Alarms</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel name="touchstones">
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="convictionInput"
+            label="Convictions *"
+            hint="Human values your coterie attempts to uphold even after death. Must have 1-3. (Press enter to confirm)"
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            v-on:keydown.enter.prevent="
+              () => {
+                this.convictions.push(this.convictionInput);
+                this.convictionInput = '';
+                this.$emit('convictions', this.convictions);
+              }
+            "
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 2000) ||
+                'Please keep this field under 2000 characters',
+            ]"
+          />
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="touchStoneInput"
+            label="Touchstone *"
+            hint="A specific human who embodies one of your convictions. You must have a touchstone for each conviction."
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            v-on:keydown.enter.prevent="
+              () => {
+                this.touchstones.push(this.touchStoneInput);
+                this.touchStoneInput = '';
+                this.$emit('touchstones', this.touchstones);
+              }
+            "
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 2000) ||
+                'Please keep this field under 2000 characters',
+            ]"
+          />
+          <q-separator />
+          <div class="text-h6" style="font-family: monospace">Convictions</div>
+
+          <q-list bordered separator>
+            <q-item
+              v-for="(conviction, key) in convictions"
+              :key="key"
+              clickable
+              v-ripple
+              @click="removeConviction($event.target.id)"
+            >
+              <q-item-section :id="key">{{ conviction }}</q-item-section>
+            </q-item>
+          </q-list>
+
+          <q-separator />
+          <div class="text-h6" style="font-family: monospace">Touchstones</div>
+          <q-list bordered separator>
+            <q-item
+              v-for="(touchstone, key) in touchstones"
+              :key="key"
+              clickable
+              v-ripple
+              @click="removeTouchstone($event.target.id)"
+            >
+              <q-item-section :id="key">{{ touchstone }}</q-item-section>
+            </q-item>
+          </q-list>
         </q-tab-panel>
 
         <q-tab-panel name="movies">
@@ -119,10 +193,22 @@ export default defineComponent({
     return {
       ambition: "",
       charName: "",
+      convictionInput: "",
+      touchStoneInput: "",
+      convictions: ["poop"],
+      touchstones: [],
       chronicle: "",
       desire: "",
       concept: "",
     };
+  },
+  methods: {
+    removeConviction(event) {
+      this.convictions.splice(event, 1);
+    },
+    removeTouchstone(event) {
+      this.touchstones.splice(event, 1);
+    },
   },
 });
 </script>

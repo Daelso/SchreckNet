@@ -10,35 +10,82 @@
       <q-page-container>
         <q-page padding class="bg-dark">
           <div class="q-pa-md doc-container">
-            <q-badge>Current XP: {{ this.xp }}</q-badge>
-            <br />
             <q-badge
               >Attribute Points Remaining: {{ this.attributePoints }}</q-badge
             >
+            <br />
             <div class="row items-center">
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Strength</div>
+                <q-btn
+                  id="strength"
+                  round
+                  color="primary"
+                  icon="remove_circle"
+                  text-color="secondary"
+                  size="12px"
+                  @click="subtractSkill()"
+                />
+                {{ strength }}
+                <q-btn
+                  id="strength"
+                  round
+                  color="primary"
+                  icon="add_circle"
+                  text-color="white"
+                  size="12px"
+                  @click="addSkill()"
+                />
+              </div>
               <q-separator vertical />
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Dexterity</div>
+                One of three cols
+              </div>
               <q-separator vertical />
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Stamina</div>
+                One of three cols
+              </div>
             </div>
             <div class="row items-center">
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Charisma</div>
+                One of three cols
+              </div>
               <q-separator vertical />
 
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Manipulation</div>
+                One of three cols
+              </div>
               <q-separator vertical />
 
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Composure</div>
+
+                One of three cols
+              </div>
             </div>
             <div class="row items-center">
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Intelligence</div>
+
+                One of three cols
+              </div>
               <q-separator vertical />
 
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Wits</div>
+                One of three cols
+              </div>
               <q-separator vertical />
 
-              <div class="col">One of three cols</div>
+              <div class="col">
+                <div class="attName">Resolve</div>
+
+                One of three cols
+              </div>
             </div>
           </div>
         </q-page>
@@ -49,7 +96,7 @@
 
 <style scoped>
 .row {
-  height: 5rem;
+  height: 7rem;
   background: #222831;
 }
 .row > div {
@@ -59,6 +106,12 @@
 }
 .doc-container > div + div {
   margin-top: 1rem;
+}
+
+.attName {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 12px;
 }
 </style>
 

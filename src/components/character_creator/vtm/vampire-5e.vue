@@ -65,19 +65,20 @@
             <q-item-section>
               <q-item-label>Clan/Coterie</q-item-label>
               <q-item-label caption class="text-white"
-                >Manage things like clan, disciplines and coterie.</q-item-label
+                >Manage things like clan, disciplines and coterie</q-item-label
               >
             </q-item-section>
           </q-item>
           <q-item clickable>
             <q-item-section avatar>
-              <q-icon color="amber" name="local_movies" />
+              <q-icon color="secondary" name="upgrade" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Cinema XYZ</q-item-label>
+              <q-item-label>Spend XP</q-item-label>
               <q-item-label caption class="text-white"
-                >Watch a movie.</q-item-label
+                >Upgrade your abilities by spending your remaining
+                xp</q-item-label
               >
             </q-item-section>
           </q-item>

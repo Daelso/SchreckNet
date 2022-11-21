@@ -18,6 +18,10 @@
         <br />
         Humanity: {{ humanity }}
         <br />
+        Health: {{ stamina + 3 }}
+        <br />
+        Willpower: {{ composure + resolve }}
+        <br />
         Remaining XP: {{ xp }}
         <br />
         Concept: {{ !concept ? "None" : concept }}
@@ -36,6 +40,11 @@
 
         <div v-for="(discipline, key) in disciplines" :key="key">
           {{ key }}: {{ discipline }}
+        </div>
+
+        Attributes:
+        <div v-for="(attribute, key) in attributeInfo.Attributes" :key="key">
+          {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
         </div>
         <template v-slot:action>
           <q-btn flat label="Save Character" type="submit" color="white" />
@@ -133,7 +142,6 @@ export default {
     const $q = useQuasar();
     const axios = require("axios");
     const router = useRouter();
-    console.log(attributeInfo.Attributes);
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
@@ -150,6 +158,7 @@ export default {
     const router = useRouter();
 
     return {
+      attributeInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
       ambition: "",

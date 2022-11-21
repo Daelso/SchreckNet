@@ -10,81 +10,44 @@
       <q-page-container>
         <q-page padding class="bg-dark">
           <div class="q-pa-md doc-container">
+            <q-badge>Current XP: {{ this.xp }}</q-badge>
+            <br />
             <q-badge
               >Attribute Points Remaining: {{ this.attributePoints }}</q-badge
             >
             <br />
-            <div class="row items-center">
-              <div class="col">
-                <div class="attName">Strength</div>
+            <q-badge>Cost to Level: New Level * 5</q-badge>
+            <div
+              class="row items-center"
+              v-for="i in Math.ceil(attributeList.length / 3)"
+              :key="i"
+            >
+              <div
+                class="col"
+                v-for="attribute in attributeList.slice((i - 1) * 3, i * 3)"
+                :key="attribute"
+              >
+                <q-separator vertical />
+                <div class="attName">{{ attribute }}</div>
                 <q-btn
-                  id="strength"
+                  :id="attribute.toLowerCase()"
                   round
                   color="primary"
                   icon="remove_circle"
                   text-color="secondary"
                   size="12px"
-                  @click="subtractSkill()"
+                  @click="subtractSkill($event.currentTarget.id)"
                 />
-                {{ strength }}
+                {{ this[attribute.toLowerCase()] }}
                 <q-btn
-                  id="strength"
+                  :id="attribute.toLowerCase()"
                   round
                   color="primary"
                   icon="add_circle"
                   text-color="white"
                   size="12px"
-                  @click="addSkill()"
+                  @click="addSkill($event.currentTarget.id)"
                 />
-              </div>
-              <q-separator vertical />
-              <div class="col">
-                <div class="attName">Dexterity</div>
-                One of three cols
-              </div>
-              <q-separator vertical />
-              <div class="col">
-                <div class="attName">Stamina</div>
-                One of three cols
-              </div>
-            </div>
-            <div class="row items-center">
-              <div class="col">
-                <div class="attName">Charisma</div>
-                One of three cols
-              </div>
-              <q-separator vertical />
-
-              <div class="col">
-                <div class="attName">Manipulation</div>
-                One of three cols
-              </div>
-              <q-separator vertical />
-
-              <div class="col">
-                <div class="attName">Composure</div>
-
-                One of three cols
-              </div>
-            </div>
-            <div class="row items-center">
-              <div class="col">
-                <div class="attName">Intelligence</div>
-
-                One of three cols
-              </div>
-              <q-separator vertical />
-
-              <div class="col">
-                <div class="attName">Wits</div>
-                One of three cols
-              </div>
-              <q-separator vertical />
-
-              <div class="col">
-                <div class="attName">Resolve</div>
-
-                One of three cols
               </div>
             </div>
           </div>
@@ -175,8 +138,16 @@ export default defineComponent({
   },
   data() {
     return {
-      attributeList: attributeInfo,
+      attributeList: attributeInfo.Attributes,
     };
+  },
+  methods: {
+    addSkill(data) {
+      console.log(data);
+    },
+    subtractSkill(data) {
+      console.log(data);
+    },
   },
 });
 </script>

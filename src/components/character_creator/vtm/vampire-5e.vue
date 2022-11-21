@@ -133,7 +133,7 @@ export default {
     const $q = useQuasar();
     const axios = require("axios");
     const router = useRouter();
-    console.log(attributeInfo);
+    console.log(attributeInfo.Attributes);
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {

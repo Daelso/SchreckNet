@@ -3,7 +3,7 @@
     <q-card class="bg-primary">
       <q-tabs
         v-model="tab"
-        class="bg-primary"
+        class="bg-primary tabs"
         active-color="secondary"
         indicator-color="secondary"
         align="justify"
@@ -11,7 +11,6 @@
       >
         <q-tab name="coreConcept" label="Core Concept" />
         <q-tab name="touchstones" label="Touchstones/Convictions" />
-        <q-tab name="movies" label="Movies" />
       </q-tabs>
 
       <q-separator />
@@ -38,6 +37,7 @@
           <q-input
             filled
             bg-color="grey-3"
+            class="select"
             v-model="concept"
             label="Character Concept *"
             autogrow
@@ -58,6 +58,7 @@
             filled
             bg-color="grey-3"
             v-model="ambition"
+            class="select"
             label="Ambition *"
             hint="Long term goals"
             hide-hint
@@ -75,6 +76,7 @@
             filled
             bg-color="grey-3"
             v-model="desire"
+            class="select"
             label="Desire *"
             hint="Specific, short-term goal"
             hide-hint
@@ -88,9 +90,39 @@
                 'Please keep this field under 2000 characters',
             ]"
           />
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="archetype"
+            label="Archetype *"
+            hint="Regain willpower when you fulfill your purpose. Examples: Judge, Guru, Gambler, Masochist "
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            @update:model-value="this.$emit('archetype', this.archetype)"
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 2000) ||
+                'Please keep this field under 2000 characters',
+            ]"
+          />
+          <q-select
+            v-model="sect"
+            :options="sectOptions"
+            label="Sect"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+            @update:model-value="this.$emit('sect', this.sect)"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">
+          <div class="q-mb-sm">
+            Must have 1-3 convictions and as many touchstones as convictions.
+          </div>
           <q-input
             filled
             bg-color="grey-3"
@@ -150,7 +182,12 @@
               v-ripple
               @click="removeConviction($event.target.id)"
             >
-              <q-item-section :id="key">{{ conviction }}</q-item-section>
+              <q-item-section :id="key"
+                >{{ conviction }}
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                >
+              </q-item-section>
             </q-item>
           </q-list>
 
@@ -164,19 +201,40 @@
               v-ripple
               @click="removeTouchstone($event.target.id)"
             >
-              <q-item-section :id="key">{{ touchstone }}</q-item-section>
+              <q-item-section :id="key"
+                >{{ touchstone }}
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                ></q-item-section
+              >
             </q-item>
           </q-list>
-        </q-tab-panel>
-
-        <q-tab-panel name="movies">
-          <div class="text-h6">Movies</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
 </template>
+
+<style>
+.select {
+  width: 800px;
+}
+.q-field__counter {
+  color: white;
+}
+.q-field__bottom {
+  color: white;
+  margin-bottom: 3px;
+}
+@media only screen and (max-width: 600px) {
+  .select {
+    width: 300px;
+  }
+  .tabs {
+    width: 300px;
+  }
+}
+</style>
 
 <script>
 import { defineComponent } from "vue";
@@ -192,14 +250,17 @@ export default defineComponent({
   data() {
     return {
       ambition: "",
+      archetype: "",
       charName: "",
       convictionInput: "",
       touchStoneInput: "",
-      convictions: ["poop"],
+      convictions: [],
       touchstones: [],
       chronicle: "",
       desire: "",
       concept: "",
+      sect: "Camarilla",
+      sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
     };
   },
   methods: {

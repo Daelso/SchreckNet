@@ -466,6 +466,7 @@ export default defineComponent({
   methods: {
     clanSelected() {
       this.skillsSelected = [];
+      this.discChoices = [0, 0, 0];
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -500,9 +501,7 @@ export default defineComponent({
           break;
 
         case "Caitiff":
-          this.discChoices = [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          ];
+          this.discChoices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
           this.clanDesc =
             "The “Clanless” show no common traits, except to find themselves outcast by vampires of distinct lineage.";
           this.clanBane =
@@ -756,6 +755,7 @@ export default defineComponent({
       }
     },
     discSelected() {
+      this.skillsSelected = []; //reset it
       let sum = 0;
 
       this.discChoices.forEach((choice) => (sum += choice));
@@ -771,9 +771,7 @@ export default defineComponent({
 
       if (sum > 3 || arrayEquals([1, 1, 1], this.discChoices)) {
         if (this.clan === "Caitiff") {
-          this.discChoices = [
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          ];
+          this.discChoices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         } else if (this.clan === "Thin-Blood") {
           this.discChoices = [0];
         } else {
@@ -847,8 +845,6 @@ export default defineComponent({
     },
 
     disciplineOptions(data, points) {
-      console.log(data);
-      console.log(points);
       let mergedOptions = [];
       for (let i = 0; i < points; i++) {
         this.disciplineSkills.Disciplines[data].skills[i].forEach((x) => {
@@ -881,16 +877,18 @@ export default defineComponent({
   computed: {
     discChoicesWithLevel() {
       //holy cow do I hate this
-      let filteredChoices = this.discChoices.filter((x) => {
-        return x > 0;
-      });
+      // let filteredChoices = this.discChoices.filter((x) => {
+      //   return x > 0;
+      // });
+
       const mergeArrToJSON = (a, b) =>
         a
           .map((item, i) => ({ [item]: b[i] }))
           .reduce((json, val) => Object.assign({}, json, val));
-      let newArr = mergeArrToJSON(this.clanDisciplines, filteredChoices);
+      let newArr = mergeArrToJSON(this.clanDisciplines, this.discChoices);
+
       for (var property in newArr) {
-        if (typeof newArr[property] == "undefined") {
+        if (newArr[property] == 0) {
           delete newArr[property];
         }
       }

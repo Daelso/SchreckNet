@@ -45,7 +45,13 @@
         <div v-for="(discipline, key) in disciplines" :key="key">
           {{ key }}: {{ discipline }}
         </div>
+        <br />
+        Disciplines Skills:
 
+        <div v-for="(discipline, key) in disciplineSkills" :key="key">
+          {{ discipline.discipline }}: {{ discipline.skill }}
+        </div>
+        <br />
         Attributes:
         <div v-for="(attribute, key) in attributeInfo.Attributes" :key="key">
           {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
@@ -192,6 +198,7 @@ export default {
       advantages: 7,
       chronicle: "",
       convictions: [],
+      disciplineSkills: [],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -261,6 +268,7 @@ export default {
               compulsion: this.compulsion,
               desc: this.clanDesc,
               disciplines: this.disciplines,
+              discSkills: this.disciplineSkills,
               generation: this.generation,
               humanity: this.humanity,
               sire: this.sire,
@@ -285,6 +293,7 @@ export default {
           this.xp = data.xp;
           this.advantages = this.baseAdvantages + data.advantages.value;
           this.flaws = this.baseFlaws + data.flaws.value;
+          this.disciplineSkills = data.discSkillsSelected;
 
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])

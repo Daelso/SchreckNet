@@ -118,7 +118,6 @@
                 class="select"
                 label-color="primary"
                 option-label="label"
-                @update:model-value="generationSelected"
               />
               <q-separator />
               <div>Blood Potency: {{ generation.potency }}</div>
@@ -153,7 +152,44 @@
             </q-step>
 
             <q-step :name="3" title="Select Discipline Skills" icon="sort">
-              Filler
+              Select disciplines available to you:
+              <div v-for="(discPoints, key) in discChoicesWithLevel" :key="key">
+                Choose: {{ this.discPointsRemaining[key] }}
+                <q-select
+                  v-model="disciplineChoice[key]"
+                  :label="key"
+                  :options="disciplineOptions(key, discPoints)"
+                  bg-color="grey-3"
+                  filled
+                  style="margin-bottom: 20px; width: 100%"
+                  class="select"
+                  label-color="primary"
+                  option-label="label"
+                  @update:model-value="
+                    skillPicked(this.disciplineChoice[key], key)
+                  "
+                  v-bind:on-loadstart="setDiscPoints(key, discPoints)"
+                />
+                <q-separator />
+              </div>
+              <q-list bordered separator>
+                <q-item
+                  v-for="(skill, key) in skillsSelected"
+                  :key="key"
+                  clickable
+                  v-ripple
+                  @click="removeDiscSkill($event.target.id)"
+                >
+                  <q-item-section :id="key"
+                    >Discipline: {{ skill.discipline }} - Skill:
+                    {{ skill.skill }}
+                    <q-tooltip class="bg-dark text-body2"
+                      >Click to delete</q-tooltip
+                    >
+                  </q-item-section>
+                </q-item>
+              </q-list>
+
               <q-stepper-navigation>
                 <q-btn @click="step = 4" color="primary" label="Continue" />
                 <q-btn
@@ -210,6 +246,7 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import disciplineSkills from "../vtm/5eDisciplines.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -228,16 +265,22 @@ export default defineComponent({
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
+    const skillsSelected = ref(props.info.discSkills);
+
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
     const sire = ref(props.info.sire);
     const xp = ref(props.info.xp);
+    const discPointsRemaining = ref({});
     const flaws = ref(0);
     const advantages = ref(0);
     const humanity = ref(props.info.humanity);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
     );
+    const disciplineChoice = ref({});
+    const discSpecificArr = ref([]);
+    const discSkillsArr = ref([]);
     const clanDisciplines = ref([]);
     const discChoices = ref([]);
     const clanBane = ref(
@@ -364,12 +407,18 @@ export default defineComponent({
       clanDisciplines,
       compulsion,
       disableRating,
+      disciplineSkills,
       discChoices,
+      disciplineChoice,
+      discSkillsArr,
+      discSpecificArr,
+      discPointsRemaining,
       discExplained,
       flaws,
       generation,
       humanity,
       sire,
+      skillsSelected,
       xp,
       step: ref(1),
       dialogRef,
@@ -421,6 +470,7 @@ export default defineComponent({
           compulsion: compulsion,
           desc: clanDesc,
           disciplines: clanDisciplines,
+          discSkillsSelected: skillsSelected,
           disciplineChoices: discChoices,
           flaws: flaws,
           advantages: advantages,
@@ -439,7 +489,6 @@ export default defineComponent({
   },
   methods: {
     clanSelected() {
-      console.log(this.clan);
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -795,10 +844,6 @@ export default defineComponent({
       }
     },
 
-    generationSelected() {
-      console.log(this.age);
-    },
-
     stepOne() {
       let sum = 0;
       this.discChoices.forEach((choice) => (sum += choice));
@@ -838,6 +883,55 @@ export default defineComponent({
       }
 
       return `(V5 ${bookName}, p.${pageNum})`;
+    },
+
+    disciplineOptions(data, points) {
+      let mergedOptions = [];
+      for (let i = 0; i < points; i++) {
+        this.disciplineSkills.Disciplines[data].skills[i].forEach((x) => {
+          mergedOptions.push(x);
+        });
+      }
+      return mergedOptions;
+    },
+
+    skillPicked(skill, discipline) {
+      if (this.skillsSelected.length === 3) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message:
+            "You have selected all possible skills, please remove one to pick again.",
+        });
+        return;
+      }
+      let newSkill = { discipline: discipline, skill: skill };
+      this.skillsSelected.push(newSkill);
+    },
+    removeDiscSkill(event) {
+      this.skillsSelected.splice(event, 1);
+    },
+    setDiscPoints(key, discPoints) {
+      this.discPointsRemaining[key] = discPoints;
+    },
+  },
+  computed: {
+    discChoicesWithLevel() {
+      //holy cow do I hate this
+      let filteredChoices = this.discChoices.filter((x) => {
+        return x > 0;
+      });
+      const mergeArrToJSON = (a, b) =>
+        a
+          .map((item, i) => ({ [item]: b[i] }))
+          .reduce((json, val) => Object.assign({}, json, val));
+      let newArr = mergeArrToJSON(this.clanDisciplines, filteredChoices);
+      for (var property in newArr) {
+        if (typeof newArr[property] == "undefined") {
+          delete newArr[property];
+        }
+      }
+      return newArr;
     },
   },
 });

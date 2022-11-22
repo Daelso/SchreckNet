@@ -14,6 +14,9 @@
         Generation:
         {{ generation.label }}
         <br />
+        Predator Type:
+        {{ predatorType }}
+        <br />
         Potency: {{ generation.potency }}/{{ generation.maxPotency }}
         <br />
         Humanity: {{ humanity }}
@@ -72,7 +75,7 @@
             <q-item-section>
               <q-item-label>Attributes</q-item-label>
               <q-item-label caption class="text-white"
-                >Fill out your primary talents</q-item-label
+                >Set your base, unmodified, attributes</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -199,6 +202,7 @@ export default {
       chronicle: "",
       convictions: [],
       disciplineSkills: [],
+      predatorType: "",
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -271,6 +275,7 @@ export default {
               discSkills: this.disciplineSkills,
               generation: this.generation,
               humanity: this.humanity,
+              predatorType: this.predatorType,
               sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
@@ -281,9 +286,7 @@ export default {
           this.age = data.age;
           this.clan = data.clan;
           this.clanBane = data.bane;
-          let selectedDisc = data.disciplines._rawValue;
-          let discChoices = data.disciplineChoices._rawValue;
-          this.disciplines = {};
+          this.disciplines = data.disciplines;
           this.tooltips = data.tooltips;
           this.clanDesc = data.desc;
           this.compulsion = data.compulsion;
@@ -294,10 +297,7 @@ export default {
           this.advantages = this.baseAdvantages + data.advantages.value;
           this.flaws = this.baseFlaws + data.flaws.value;
           this.disciplineSkills = data.discSkillsSelected;
-
-          selectedDisc.forEach(
-            (key, i) => (this.disciplines[key] = discChoices[i])
-          );
+          this.predatorType = data.predatorType;
         });
     },
     attributes() {

@@ -337,52 +337,10 @@ export default defineComponent({
           "Rebellion: The vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)";
       }
     } else {
-      if (clan.value === "Caitiff") {
-        clanDisciplines.value = [
-          discArr[0].discipline,
-          discArr[1].discipline,
-          discArr[2].discipline,
-          discArr[3].discipline,
-          discArr[4].discipline,
-          discArr[5].discipline,
-          discArr[6].discipline,
-          discArr[7].discipline,
-          discArr[8].discipline,
-          discArr[9].discipline,
-          discArr[10].discipline,
-          discArr[11].discipline,
-        ];
-        discChoices.value = [
-          discArr[0].choice,
-          discArr[1].choice,
-          discArr[2].choice,
-          discArr[3].choice,
-          discArr[4].choice,
-          discArr[5].choice,
-          discArr[6].choice,
-          discArr[7].choice,
-          discArr[8].choice,
-          discArr[9].choice,
-          discArr[10].choice,
-          discArr[11].choice,
-        ];
-      } else if (clan.value === "Thin-Blood") {
-        clanDisciplines.value = [discArr[0].discipline];
-
-        discChoices.value = [discArr[0].choice];
-      } else {
-        clanDisciplines.value = [
-          discArr[0].discipline,
-          discArr[1].discipline,
-          discArr[2].discipline,
-        ];
-
-        discChoices.value = [
-          discArr[0].choice,
-          discArr[1].choice,
-          discArr[2].choice,
-        ];
-      }
+      discArr.forEach((x) => {
+        clanDisciplines.value.push(x.discipline);
+        discChoices.value.push(x.choice);
+      });
 
       clanBane.value = newBane;
       discExplained.value = newTips.value;
@@ -809,6 +767,7 @@ export default defineComponent({
           message: "Please re-read the discipline instructions.",
         });
       }
+      console.log(this.disciplineObj);
     },
 
     ageSelected() {
@@ -899,6 +858,8 @@ export default defineComponent({
         });
         return;
       }
+
+      console.log(this.disciplineObj);
 
       let newSkill = { discipline: discipline, skill: skill };
       this.skillsSelected.push(newSkill);

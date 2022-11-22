@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-layout view="Lhh lpR fff" container>
@@ -181,24 +182,25 @@
             </q-step>
             <q-step :name="4" title="Select Discipline Skills" icon="sort">
               Select disciplines available to you:
-              <div v-for="(discPoints, key) in discChoicesWithLevel" :key="key">
-                Choose: {{ this.discPointsRemaining[key] }}
-                <q-select
-                  v-model="disciplineChoice[key]"
-                  :label="key"
-                  :options="disciplineOptions(key, discPoints)"
-                  bg-color="grey-3"
-                  filled
-                  style="margin-bottom: 20px; width: 100%"
-                  class="select"
-                  label-color="primary"
-                  option-label="label"
-                  @update:model-value="
-                    skillPicked(this.disciplineChoice[key], key)
-                  "
-                  v-bind:on-loadstart="setDiscPoints(key, discPoints)"
-                />
-                <q-separator />
+              <div v-for="(discPoints, key) in disciplineObj" :key="key">
+                <div v-if="discPoints > 0">
+                  Choose: {{ discPoints }}
+                  <q-select
+                    v-model="disciplineChoice[key]"
+                    :label="key"
+                    :options="disciplineOptions(key, discPoints)"
+                    bg-color="grey-3"
+                    filled
+                    style="margin-bottom: 20px; width: 100%"
+                    class="select"
+                    label-color="primary"
+                    option-label="label"
+                    @update:model-value="
+                      skillPicked(this.disciplineChoice[key], key)
+                    "
+                  />
+                  <q-separator />
+                </div>
               </div>
               <q-list bordered separator>
                 <q-item
@@ -288,7 +290,6 @@ export default defineComponent({
     const generation = ref(props.info.generation);
     const sire = ref(props.info.sire);
     const xp = ref(props.info.xp);
-    const discPointsRemaining = ref({});
     const flaws = ref(0);
     const advantages = ref(0);
     const humanity = ref(props.info.humanity);
@@ -365,7 +366,6 @@ export default defineComponent({
       disciplineChoice,
       discSkillsArr,
       discSpecificArr,
-      discPointsRemaining,
       discExplained,
       flaws,
       generation,
@@ -767,7 +767,6 @@ export default defineComponent({
           message: "Please re-read the discipline instructions.",
         });
       }
-      console.log(this.disciplineObj);
     },
 
     ageSelected() {
@@ -867,9 +866,7 @@ export default defineComponent({
     removeDiscSkill(event) {
       this.skillsSelected.splice(event, 1);
     },
-    setDiscPoints(key, discPoints) {
-      this.discPointsRemaining[key] = discPoints;
-    },
+
     modifyPredatorTypes() {
       let modifiedArr = this.allPredatorTypes.predator;
       if (this.clan === "Thin-Blood" || this.age.label === "Fledgling") {
@@ -883,19 +880,6 @@ export default defineComponent({
     },
     predatorPicked() {
       console.log(this.disciplineObj);
-    },
-  },
-  computed: {
-    discChoicesWithLevel() {
-      //holy cow do I hate this
-      let newObj = this.disciplineObj;
-
-      for (var property in newObj) {
-        if (newObj[property] == 0) {
-          delete newObj[property];
-        }
-      }
-      return newObj;
     },
   },
 });

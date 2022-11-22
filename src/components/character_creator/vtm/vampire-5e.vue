@@ -22,6 +22,10 @@
         <br />
         Willpower: {{ composure + resolve }}
         <br />
+        Advantage Points: {{ advantages }}
+        <br />
+        Flaw Points: {{ flaws }}
+        <br />
         Remaining XP: {{ xp }}
         <br />
         Concept: {{ !concept ? "None" : concept }}
@@ -164,6 +168,15 @@ export default {
       ambition: "",
       attributePoints: 22,
       charName: "",
+      baseCharisma: 0,
+      baseComposure: 0,
+      baseDexterity: 0,
+      baseIntelligence: 0,
+      baseManipulation: 0,
+      baseResolve: 0,
+      baseStamina: 0,
+      baseStrength: 0,
+      baseWits: 0,
       charisma: 0,
       composure: 0,
       dexterity: 0,
@@ -173,6 +186,10 @@ export default {
       stamina: 0,
       strength: 0,
       wits: 0,
+      baseFlaws: 2,
+      baseAdvantages: 7,
+      flaws: 2,
+      advantages: 7,
       chronicle: "",
       convictions: [],
       clan: ref("Brujah"),
@@ -266,6 +283,8 @@ export default {
           this.generation = data.generation;
           this.humanity = data.humanity;
           this.xp = data.xp;
+          this.advantages = this.baseAdvantages + data.advantages.value;
+          this.flaws = this.baseFlaws + data.flaws.value;
 
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])
@@ -280,32 +299,44 @@ export default {
           componentProps: {
             info: {
               attributePoints: this.attributePoints,
-              charisma: this.charisma,
-              composure: this.composure,
-              dexterity: this.dexterity,
-              intelligence: this.intelligence,
-              manipulation: this.manipulation,
-              resolve: this.resolve,
-              stamina: this.stamina,
-              strength: this.strength,
-              wits: this.wits,
+              charisma: this.baseCharisma,
+              composure: this.baseComposure,
+              dexterity: this.baseDexterity,
+              intelligence: this.baseIntelligence,
+              manipulation: this.baseManipulation,
+              resolve: this.baseResolve,
+              stamina: this.baseStamina,
+              strength: this.baseStrength,
+              wits: this.baseWits,
               xp: this.xp,
             },
           },
         })
         .onOk((data) => {
           this.attributePoints = data.attributePoints;
-          this.charisma = data.charisma;
-          this.composure = data.composure;
-          this.dexterity = data.dexterity;
-          this.intelligence = data.intelligence;
-          this.manipulation = data.manipulation;
-          this.resolve = data.resolve;
-          this.stamina = data.stamina;
-          this.strength = data.strength;
-          this.wits = data.wits;
+          this.baseCharisma = data.charisma;
+          this.baseComposure = data.composure;
+          this.baseDexterity = data.dexterity;
+          this.baseIntelligence = data.intelligence;
+          this.baseManipulation = data.manipulation;
+          this.baseResolve = data.resolve;
+          this.baseStamina = data.stamina;
+          this.baseStrength = data.strength;
+          this.baseWits = data.wits;
           this.xp = data.xp;
+          this.addModifiers();
         });
+    },
+    addModifiers() {
+      this.charisma = this.baseCharisma + 1;
+      this.composure = this.baseComposure + 1;
+      this.dexterity = this.baseDexterity + 1;
+      this.intelligence = this.baseIntelligence + 1;
+      this.manipulation = this.baseManipulation + 1;
+      this.resolve = this.baseResolve + 1;
+      this.stamina = this.baseStamina + 1;
+      this.strength = this.baseStrength + 1;
+      this.wits = this.baseWits + 1;
     },
   },
 };

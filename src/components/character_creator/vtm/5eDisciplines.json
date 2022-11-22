@@ -10,15 +10,202 @@
             "name": "Bond Famulas",
             "desc": "Create a blood-bond with an animal, will cause it to fight in self-defense and in defense of it's master.",
             "dice": "Charisma + Animal Ken",
-            "cost": "The animal must be fed the user’s Blood on three separate nights, each of which requires a Rouse Check by the user. The amount of Blood needed to sustain the ghoul state of the animal after this is negligible. Players starting with this power have completed this process and can chose a famulus for free."
+            "cost": "The animal must be fed the user's Blood on three separate nights, each of which requires a Rouse Check by the user. The amount of Blood needed to sustain the ghoul state of the animal after this is negligible. Players starting with this power have completed this process and can chose a famulus for free."
           },
           {
             "name": "Sense the Beast",
-            "desc": "The vampire can sense the beast within other vampires, mortals and supernatural creatures.​​",
+            "desc": "The vampire can sense the beast within other vampires, mortals and supernatural creatures.",
             "dice": "Resolve + Animalism vs Composure + Subterfuge",
             "cost": "Free"
           }
+        ],
+        "level2": [
+          {
+            "name": "Feral Whispers",
+            "desc": "Two-way communication between vampire and animal. Can also summon a chosen animal.",
+            "dice": "Manipulation + Animalism, Charisma + Animalism",
+            "cost": "One rouse check per type of animal. Allows one summon and unlimited communication. Free for famulas."
+          }
+        ],
+        "level3": [
+          {
+            "name": "Animal succulence",
+            "desc": "The vampire can slake additional hunger by feeding on animals. Gain additional bonuses from feeding on famula.",
+            "dice": "None",
+            "cost": "Free"
+          },
+          {
+            "name": "Quell the Beast",
+            "desc": "The vampire can lock eyes with another vampire and attempt to calm their beast. Mortals simply become apathetic.",
+            "dice": "Charisma + Animalism vs Stamina + Resolve",
+            "cost": "One rouse check"
+          },
+          {
+            "name": "Unliving Hive",
+            "desc": "Extends command over animals to swarms of insects.",
+            "dice": "None",
+            "cost": "None",
+            "amalgam": "Obuscate 2"
+          }
+        ],
+        "level4": [
+          {
+            "name": "Subsume the Spirit",
+            "desc": "Allows a vampire to transfer their mind into the body of an animal. Their own body becomes immobile.",
+            "dice": "Manipulation + Animalism",
+            "cost": "One rouse check, free if used on famulas."
+          }
         ]
+      }
+    },
+    "Auspex": {
+      "type": "Mental",
+      "threat": 1,
+      "resonance": "Phlegmatic",
+      "skills": {
+        "level1": [
+          {
+            "name": "Heightened Senses",
+            "desc": "Supernaturally heightens a vampires senses.",
+            "dice": "Wits + Resolve",
+            "cost": "Free"
+          },
+          {
+            "name": "Sense the Unseen",
+            "desc": "Allows the vampire to see into other dimensions giving vision to things like obfuscate, a ghost, another auspex user.",
+            "dice": "Wits + Auspex or Resolve + Auspex",
+            "cost": "Free"
+          }
+        ],
+        "level2": [
+          {
+            "name": "Premonition",
+            "desc": "The vampire experiences flashes of insight.",
+            "dice": "Resolve + Auspex",
+            "cost": "Free or one rouse check"
+          }
+        ],
+        "level3": [
+          {
+            "name": "Scry the Soul",
+            "desc": "The vampire can perceive a targets psyche as a shifting aura of colors.",
+            "dice": "Intelligence + Auspex vs Composure + Subterfuge",
+            "cost": "One rouse check"
+          },
+          {
+            "name": "Share the Senses",
+            "desc": "The vampire can tap into anothers senses, be they kindred or mortal.",
+            "dice": "Resolve + Auspex",
+            "cost": "One rouse check"
+          }
+        ],
+        "level4": [
+          {
+            "name": "Spirit's touch",
+            "desc": "Allows a vampire to touch an inanimate object and sense lingering emotional residue left by those who visited or came before.",
+            "dice": "Intelligence + Auspex",
+            "cost": "One rouse check."
+          }
+        ]
+      }
+    },
+    "Celerity": {
+      "type": "Physical",
+      "threat": 3,
+      "resonance": "Choleric",
+      "skills": {
+        "level1": ["Cat's Grace", "Rapid Reflexes"],
+        "level2": ["Fleetness"],
+        "level3": ["Blink", "Traversal"],
+        "level4": ["Draught of Elegance", "Unerring Aim"]
+      }
+    },
+    "Dominate": {
+      "type": "Mental",
+      "threat": 1,
+      "resonance": "Phlegmatic",
+      "skills": {
+        "level1": ["Cloud Memory", "Compel"],
+        "level2": ["Mesmerize", "Dementation"],
+        "level3": ["The Forgetful Mind", "Submerged Directive"],
+        "level4": ["Rationalize", "Unerring Aim"]
+      }
+    },
+    "Fortitude": {
+      "type": "Physical",
+      "threat": 2,
+      "resonance": "Melancholic",
+      "skills": {
+        "level1": ["Resilience", "Unswayable Mind"],
+        "level2": ["Toughness", "Enduring Beasts"],
+        "level3": ["Defy Bane", "Fortify the Inner Facade"],
+        "level4": ["Draught of Endurance"]
+      }
+    },
+    "Obfuscate": {
+      "type": "Mental",
+      "threat": 1,
+      "resonance": "Melancholic",
+      "skills": {
+        "level1": ["Cloak of Shadows", "Silence of Death"],
+        "level2": ["Unseen Passage"],
+        "level3": ["Ghost in the Machine", "Mask of a Thousand Faces"],
+        "level4": ["Conceal", "Vanish"]
+      }
+    },
+    "Potence": {
+      "type": "Physical",
+      "threat": 3,
+      "resonance": "Choleric",
+      "skills": {
+        "level1": ["Lethal Body", "Soaring Leap"],
+        "level2": ["Prowess"],
+        "level3": ["Brutal Feed", "Spark of Rage", "Uncanny Grip"],
+        "level4": ["Draught of Might"]
+      }
+    },
+    "Presence": {
+      "type": "Mental",
+      "threat": 2,
+      "resonance": "Sanguine",
+      "skills": {
+        "level1": ["Awe", "Daunt"],
+        "level2": ["Lingering Kiss"],
+        "level3": ["Dread Gaze", "Entrancement"],
+        "level4": ["Irresistable Voice", "Summon"]
+      }
+    },
+    "Protean": {
+      "type": "Physical",
+      "threat": 4,
+      "resonance": "Animal Blood",
+      "skills": {
+        "level1": ["Eyes of the Beast", "Weight of the Feather"],
+        "level2": ["Feral Weapons"],
+        "level3": ["Earth Meld", "Shapechange"],
+        "level4": ["Metamorphosis"]
+      }
+    },
+    "Blood Sorcery": {
+      "type": "Sorcery",
+      "threat": 3,
+      "resonance": "Sanguine",
+      "skills": {
+        "level1": ["Corrosive Vitae", "A Taste For Blood"],
+        "level2": ["Extinguish Vitae"],
+        "level3": ["Blood of Potency", "Scorpion's Touch"],
+        "level4": ["Theft of Vitae"]
+      }
+    },
+    "Thin-Blood Alchemy": {
+      "type": "Alchemical",
+      "threat": 2,
+      "resonance": "Varies",
+      "skills": {
+        "level1": ["Far Reach", "Haze"],
+        "level2": ["Envelop"],
+        "level3": ["Defractionate", "Profane Heiros Gamos"],
+        "level4": ["Airborne Momentum"]
       }
     }
   }

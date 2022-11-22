@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent v-model="layout">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
@@ -87,7 +87,7 @@
 
             <q-step
               :name="2"
-              title="Sire, Generation, Coterie Age, Predator Type"
+              title="Sire, Generation, Coterie Age"
               icon="remove_red_eye"
               :done="step > 2"
             >
@@ -118,7 +118,6 @@
                 class="select"
                 label-color="primary"
                 option-label="label"
-                @update:model-value="generationSelected"
               />
               <q-separator />
               <div>Blood Potency: {{ generation.potency }}</div>
@@ -153,43 +152,64 @@
             </q-step>
 
             <q-step :name="3" title="Select Discipline Skills" icon="sort">
-              Filler
+              Select disciplines available to you:
+              <div v-for="(discPoints, key) in discChoicesWithLevel" :key="key">
+                Choose: {{ this.discPointsRemaining[key] }}
+                <q-select
+                  v-model="disciplineChoice[key]"
+                  :label="key"
+                  :options="disciplineOptions(key, discPoints)"
+                  bg-color="grey-3"
+                  filled
+                  style="margin-bottom: 20px; width: 100%"
+                  class="select"
+                  label-color="primary"
+                  option-label="label"
+                  @update:model-value="
+                    skillPicked(this.disciplineChoice[key], key)
+                  "
+                  v-bind:on-loadstart="setDiscPoints(key, discPoints)"
+                />
+                <q-separator />
+              </div>
+              <q-list bordered separator>
+                <q-item
+                  v-for="(skill, key) in skillsSelected"
+                  :key="key"
+                  clickable
+                  v-ripple
+                  @click="removeDiscSkill($event.target.id)"
+                >
+                  <q-item-section :id="key"
+                    >Discipline: {{ skill.discipline }} - Skill:
+                    {{ skill.skill }}
+                    <q-tooltip class="bg-dark text-body2"
+                      >Click to delete</q-tooltip
+                    >
+                  </q-item-section>
+                </q-item>
+              </q-list>
+
               <q-stepper-navigation>
                 <q-btn @click="step = 4" color="primary" label="Continue" />
                 <q-btn
                   flat
-                  @click="step = 1"
-                  color="primary"
+                  @click="step = 2"
+                  color="secondary"
                   label="Back"
                   class="q-ml-sm"
                 />
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="4" title="Sect and Archtype" icon="help">
-              <q-select
-                v-model="archtype"
-                :options="archtypeOptions"
-                label="Archtype"
-                label-color="primary"
-                bg-color="grey-3"
-                filled
-                style="margin-bottom: 20px"
-              />
-              <q-select
-                v-model="sect"
-                :options="sectOptions"
-                label="Sect"
-                label-color="primary"
-                bg-color="grey-3"
-                filled
-              />
+            <q-step :name="4" title="Predator Type" icon="directions_run">
+              efwefwefew
               <q-stepper-navigation>
                 <q-btn color="primary" label="Finish" />
                 <q-btn
                   flat
-                  @click="step = 2"
-                  color="primary"
+                  @click="step = 3"
+                  color="secondary"
                   label="Back"
                   class="q-ml-sm"
                 />
@@ -226,6 +246,7 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import disciplineSkills from "../vtm/5eDisciplines.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -241,19 +262,25 @@ export default defineComponent({
       useDialogPluginComponent();
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
-    const sect = ref(props.info.sect);
-    const archtype = ref(props.info.archtype);
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
+    const skillsSelected = ref(props.info.discSkills);
+
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
     const sire = ref(props.info.sire);
     const xp = ref(props.info.xp);
+    const discPointsRemaining = ref({});
+    const flaws = ref(0);
+    const advantages = ref(0);
     const humanity = ref(props.info.humanity);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
     );
+    const disciplineChoice = ref({});
+    const discSpecificArr = ref([]);
+    const discSkillsArr = ref([]);
     const clanDisciplines = ref([]);
     const discChoices = ref([]);
     const clanBane = ref(
@@ -274,22 +301,14 @@ export default defineComponent({
           "Auspex",
           "Blood Sorcery",
           "Celerity",
-          "Chimerstry",
-          "Dementation",
           "Dominate",
           "Fortitude",
-          "Necromancy",
           "Obfuscate",
           "Oblivion",
-          "Obtenebration",
           "Potence",
           "Presence",
           "Protean",
-          "Quietus",
-          "Serpentis",
-          "Thaumaturgy",
           "Thin-Blood Alchemy",
-          "Vicissitude",
         ];
       } else if (clan.value === "Thin-Blood") {
         discChoices.value = [2];
@@ -298,7 +317,7 @@ export default defineComponent({
         discChoices.value = [0, 0, 0];
         clanDisciplines.value = ["Celerity", "Potence", "Presence"];
         compulsion.value =
-          "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)";
+          "Rebellion: The vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)";
       }
     } else {
       if (clan.value === "Caitiff") {
@@ -315,14 +334,6 @@ export default defineComponent({
           discArr[9].discipline,
           discArr[10].discipline,
           discArr[11].discipline,
-          discArr[12].discipline,
-          discArr[13].discipline,
-          discArr[14].discipline,
-          discArr[15].discipline,
-          discArr[16].discipline,
-          discArr[17].discipline,
-          discArr[18].discipline,
-          discArr[19].discipline,
         ];
         discChoices.value = [
           discArr[0].choice,
@@ -337,14 +348,6 @@ export default defineComponent({
           discArr[9].choice,
           discArr[10].choice,
           discArr[11].choice,
-          discArr[12].choice,
-          discArr[13].choice,
-          discArr[14].choice,
-          discArr[15].choice,
-          discArr[16].choice,
-          discArr[17].choice,
-          discArr[18].choice,
-          discArr[19].choice,
         ];
       } else if (clan.value === "Thin-Blood") {
         clanDisciplines.value = [discArr[0].discipline];
@@ -373,20 +376,26 @@ export default defineComponent({
 
     return {
       age,
+      advantages,
       clan,
       clanBane,
       clanDesc,
       clanDisciplines,
       compulsion,
       disableRating,
+      disciplineSkills,
       discChoices,
+      disciplineChoice,
+      discSkillsArr,
+      discSpecificArr,
+      discPointsRemaining,
       discExplained,
+      flaws,
       generation,
       humanity,
-      sect,
       sire,
+      skillsSelected,
       xp,
-      archtype,
       step: ref(1),
       dialogRef,
       onDialogHide,
@@ -429,15 +438,6 @@ export default defineComponent({
         { label: "11th", potency: 2, maxPotency: 4 },
         { label: "10th", potency: 2, maxPotency: 4 },
       ],
-      sectOptions: [
-        "Anarchs",
-        "Camarilla",
-        "Independent",
-        "Sabbat",
-        "Clanless",
-      ],
-
-      archtypeOptions: ["Murderhobo", "Hobo"],
 
       onOKClick() {
         onDialogOK({
@@ -446,11 +446,13 @@ export default defineComponent({
           compulsion: compulsion,
           desc: clanDesc,
           disciplines: clanDisciplines,
+          discSkillsSelected: skillsSelected,
           disciplineChoices: discChoices,
+          flaws: flaws,
+          advantages: advantages,
           bane: clanBane,
           tooltips: discExplained,
           sire: sire,
-          archtype: archtype,
           generation: generation,
           humanity: humanity,
           xp: xp,
@@ -461,14 +463,9 @@ export default defineComponent({
       onCancelClick: onDialogCancel,
     };
   },
-  data() {
-    return {
-      layout: false,
-    };
-  },
   methods: {
     clanSelected() {
-      console.log(this.clan);
+      this.skillsSelected = [];
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -517,44 +514,28 @@ export default defineComponent({
             "Auspex",
             "Blood Sorcery",
             "Celerity",
-            "Chimerstry",
-            "Dementation",
             "Dominate",
             "Fortitude",
-            "Necromancy",
             "Obfuscate",
             "Oblivion",
-            "Obtenebration",
             "Potence",
             "Presence",
             "Protean",
-            "Quietus",
-            "Serpentis",
-            "Thaumaturgy",
             "Thin-Blood Alchemy",
-            "Vicissitude",
           ];
           this.discExplained = [
             "Supernatural affinity with and control of animals",
             "Extrasensory perception, awareness, and premonitions",
             "The use of the Blood to perform magic",
             "Supernatural quickness and reflexes",
-            "Illusions made real or at least tangible",
-            "See AUSPEX and DOMINATE. Gift your foes with madness",
             "Mind control practiced through one's piercing gaze",
             "Unearthly toughness, even to the point of resisting fire and sunlight",
-            "See OBLIVION. Control of the dead, both spirit and corpse",
             "The ability to remain obscure and unseen, even in crowds",
             "Control over shadows and spirits",
-            "See OBLIVION. Manipulation of abyssal darkness",
             "The Discipline of physical vigor and strength",
             "The ability to attract, sway, and control emotions",
             "Shape-changing, from growing claws to melding with the earth",
-            "See BLOOD SORCERY and OBFUSCATE. Art of the silent death",
-            "See PRESENCE and PROTEAN. Acquire the physicality of serpents",
-            "See BLOOD SORCERY. The use of the Blood to perform magic",
             "Mixing blood, emotion, and other ingredients to create powerful effects",
-            "The sculpting of flesh into unnatural forms",
           ];
           break;
         case "Gangrel":
@@ -817,14 +798,11 @@ export default defineComponent({
         case "Ancillae":
           this.xp = 35;
           this.humanity = 6;
-          break;
+          this.flaws = 2;
+          this.advantages = 2;
         default:
           this.xp += 0;
       }
-    },
-
-    generationSelected() {
-      console.log(this.age);
     },
 
     stepOne() {
@@ -866,6 +844,57 @@ export default defineComponent({
       }
 
       return `(V5 ${bookName}, p.${pageNum})`;
+    },
+
+    disciplineOptions(data, points) {
+      console.log(data);
+      console.log(points);
+      let mergedOptions = [];
+      for (let i = 0; i < points; i++) {
+        this.disciplineSkills.Disciplines[data].skills[i].forEach((x) => {
+          mergedOptions.push(x);
+        });
+      }
+      return mergedOptions;
+    },
+
+    skillPicked(skill, discipline) {
+      if (this.skillsSelected.length === 3) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message:
+            "You have selected all possible skills, please remove one to pick again.",
+        });
+        return;
+      }
+      let newSkill = { discipline: discipline, skill: skill };
+      this.skillsSelected.push(newSkill);
+    },
+    removeDiscSkill(event) {
+      this.skillsSelected.splice(event, 1);
+    },
+    setDiscPoints(key, discPoints) {
+      this.discPointsRemaining[key] = discPoints;
+    },
+  },
+  computed: {
+    discChoicesWithLevel() {
+      //holy cow do I hate this
+      let filteredChoices = this.discChoices.filter((x) => {
+        return x > 0;
+      });
+      const mergeArrToJSON = (a, b) =>
+        a
+          .map((item, i) => ({ [item]: b[i] }))
+          .reduce((json, val) => Object.assign({}, json, val));
+      let newArr = mergeArrToJSON(this.clanDisciplines, filteredChoices);
+      for (var property in newArr) {
+        if (typeof newArr[property] == "undefined") {
+          delete newArr[property];
+        }
+      }
+      return newArr;
     },
   },
 });

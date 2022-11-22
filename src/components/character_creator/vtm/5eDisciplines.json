@@ -4,22 +4,133 @@
       "type": "Mental",
       "threat": 2,
       "resonance": "Animal Blood",
-      "skills": {
-        "level1": [
-          {
-            "name": "Bond Famulas",
-            "desc": "Create a blood-bond with an animal, will cause it to fight in self-defense and in defense of it's master.",
-            "dice": "Charisma + Animal Ken",
-            "cost": "The animal must be fed the user’s Blood on three separate nights, each of which requires a Rouse Check by the user. The amount of Blood needed to sustain the ghoul state of the animal after this is negligible. Players starting with this power have completed this process and can chose a famulus for free."
-          },
-          {
-            "name": "Sense the Beast",
-            "desc": "The vampire can sense the beast within other vampires, mortals and supernatural creatures.​​",
-            "dice": "Resolve + Animalism vs Composure + Subterfuge",
-            "cost": "Free"
-          }
-        ]
-      }
+      "skills": [
+        ["Bond Famulas", "Sense the Beast"],
+        ["Feral Whispers"],
+        ["Animal Succulence", "Quell the Beast", "Unliving Hive"],
+        ["Subsume Spirit"]
+      ]
+    },
+    "Auspex": {
+      "type": "Mental",
+      "threat": 1,
+      "resonance": "Phlegmatic",
+      "skills": [
+        ["Heightened Senses", "Sense the Unseen"],
+        ["Premonition"],
+        ["Scry the Soul", "Share the Senses"],
+        ["Spirit's Touch"]
+      ]
+    },
+    "Celerity": {
+      "type": "Physical",
+      "threat": 3,
+      "resonance": "Choleric",
+      "skills": [
+        ["Cat's Grace", "Rapid Reflexes"],
+        ["Fleetness"],
+        ["Blink", "Traversal"],
+        ["Draught of Elegance", "Unerring Aim"]
+      ]
+    },
+    "Dominate": {
+      "type": "Mental",
+      "threat": 1,
+      "resonance": "Phlegmatic",
+      "skills": [
+        ["Cloud Memory", "Compel"],
+        ["Mesmerize", "Dementation"],
+        ["The Forgetful Mind", "Submerged Directive"],
+        ["Rationalize", "Unerring Aim"]
+      ]
+    },
+    "Fortitude": {
+      "type": "Physical",
+      "threat": 2,
+      "resonance": "Melancholic",
+      "skills": [
+        ["Resilience", "Unswayable Mind"],
+        ["Toughness", "Enduring Beasts"],
+        ["Defy Bane", "Fortify the Inner Facade"],
+        ["Draught of Endurance"]
+      ]
+    },
+    "Obfuscate": {
+      "type": "Mental",
+      "threat": 3,
+      "resonance": "Empty",
+      "skills": [
+        ["Cloak of Shadows", "Silence of Death"],
+        ["Unseen Passage"],
+        ["Ghost in the Machine", "Mask of a Thousand Faces"],
+        ["Conceal", "Vanish"]
+      ]
+    },
+    "Oblivion": {
+      "type": "Mental",
+      "threat": 1,
+      "resonance": "Melancholic",
+      "skills": [
+        ["Shadow Cloak", "Oblivion's Sight"],
+        ["Arms of Ahriman"],
+        ["Shadow Perspective", "Touch of Oblivion"],
+        ["Stygian Shroud"]
+      ]
+    },
+    "Potence": {
+      "type": "Physical",
+      "threat": 3,
+      "resonance": "Choleric",
+      "skills": [
+        ["Lethal Body", "Soaring Leap"],
+        ["Prowess"],
+        ["Brutal Feed", "Spark of Rage", "Uncanny Grip"],
+        ["Draught of Might"]
+      ]
+    },
+    "Presence": {
+      "type": "Mental",
+      "threat": 2,
+      "resonance": "Sanguine",
+      "skills": [
+        ["Awe", "Daunt"],
+        ["Lingering Kiss"],
+        ["Dread Gaze", "Entrancement"],
+        ["Irresistable Voice", "Summon"]
+      ]
+    },
+    "Protean": {
+      "type": "Physical",
+      "threat": 4,
+      "resonance": "Animal Blood",
+      "skills": [
+        ["Eyes of the Beast", "Weight of the Feather"],
+        ["Feral Weapons"],
+        ["Earth Meld", "Shapechange"],
+        ["Metamorphosis"]
+      ]
+    },
+    "Blood Sorcery": {
+      "type": "Sorcery",
+      "threat": 3,
+      "resonance": "Sanguine",
+      "skills": [
+        ["Corrosive Vitae", "A Taste For Blood"],
+        ["Extinguish Vitae"],
+        ["Blood of Potency", "Scorpion's Touch"],
+        ["Theft of Vitae"]
+      ]
+    },
+    "Thin-blood Alchemy": {
+      "type": "Alchemical",
+      "threat": 2,
+      "resonance": "Varies",
+      "skills": [
+        ["Far Reach", "Haze"],
+        ["Envelop"],
+        ["Defractionate", "Profane Heiros Gamos"],
+        ["Airborne Momentum"]
+      ]
     }
   }
 }

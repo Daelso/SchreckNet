@@ -1,7 +1,29 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md" style="max-width: 400px">
-      <header>We'll do our best to get back to you ASAP!</header>
+      <header>
+        We'll do our best to get back to you ASAP! Try reaching out on discord
+        if you need a faster response!
+      </header>
+      <div>
+        <q-item
+          clickable
+          style="color: red"
+          href="https://discord.gg/CvUuaM84Ng"
+          target="_blank"
+        >
+          <q-item-section avatar>
+            <q-icon color="secondary" name="discord" style="scale: 120%" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>SchreckNet Discord</q-item-label>
+            <q-item-label caption style="color: white"
+              >Meet your fellow kindred</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+      </div>
       <br />
       <q-form @submit="onSubmit" class="q-gutter-md">
         <q-input

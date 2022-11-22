@@ -6,6 +6,8 @@
         <br />
         Clan: {{ clan }}
         <br />
+        Sect: {{ sect }}
+        <br />
         Age:
         {{ age.label }}
         <br />
@@ -16,60 +18,86 @@
         <br />
         Humanity: {{ humanity }}
         <br />
+        Health: {{ stamina + 3 }}
+        <br />
+        Willpower: {{ composure + resolve }}
+        <br />
+        Advantage Points: {{ advantages }}
+        <br />
+        Flaw Points: {{ flaws }}
+        <br />
         Remaining XP: {{ xp }}
         <br />
-        Convictions: {{ convictions }}
+        Concept: {{ !concept ? "None" : concept }}
         <br />
-        Touchstones: {{ touchstones }}
+        Ambition: {{ !ambition ? "None" : ambition }}
+        <br />
+        Desire: {{ !desire ? "None" : desire }}
+        <br />
+        Convictions: {{ convictions.length < 1 ? "None" : convictions }}
+        <br />
+        Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
+        <br />
+        Archetype: {{ !archtypeModel ? "None" : archtypeModel }}
         <br />
         Disciplines:
 
         <div v-for="(discipline, key) in disciplines" :key="key">
           {{ key }}: {{ discipline }}
         </div>
+        <br />
+        Disciplines Skills:
+
+        <div v-for="(discipline, key) in disciplineSkills" :key="key">
+          {{ discipline.discipline }}: {{ discipline.skill }}
+        </div>
+        <br />
+        Attributes:
+        <div v-for="(attribute, key) in attributeInfo.Attributes" :key="key">
+          {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
+        </div>
         <template v-slot:action>
           <q-btn flat label="Save Character" type="submit" color="white" />
         </template>
       </q-banner>
     </div>
-    <div class="q-pa-md col justify-left text-center">
-      <q-card class="bg-primary text-white">
+    <div class="q-pa-md col justify-center text-center">
+      <q-card class="bg-primary text-white container">
         <q-list>
+          <q-item clickable @click="attributes">
+            <q-item-section avatar>
+              <q-icon color="secondary" name="attribution" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Attributes</q-item-label>
+              <q-item-label caption class="text-white"
+                >Fill out your primary talents</q-item-label
+              >
+            </q-item-section>
+          </q-item>
           <q-item clickable @click="clanSelected">
             <q-item-section avatar>
               <q-icon color="primary" name="app:ankh" style="scale: 170%" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Affiliations:</q-item-label>
+              <q-item-label>Clan/Coterie</q-item-label>
               <q-item-label caption class="text-white"
-                >Manage things like clan, disciplines, sire, sect.</q-item-label
+                >Manage things like clan, disciplines and coterie</q-item-label
               >
             </q-item-section>
           </q-item>
-
           <q-item clickable>
             <q-item-section avatar>
-              <q-icon color="red" name="local_gas_station" />
+              <q-icon color="secondary" name="upgrade" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Gas Station</q-item-label>
+              <q-item-label>Spend XP</q-item-label>
               <q-item-label caption class="text-white"
-                >Fill your gas tank.</q-item-label
-              >
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section avatar>
-              <q-icon color="amber" name="local_movies" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Cinema XYZ</q-item-label>
-              <q-item-label caption class="text-white"
-                >Watch a movie.</q-item-label
+                >Upgrade your abilities by spending your remaining
+                xp</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -82,6 +110,8 @@
         @desire="handleDesire($event)"
         @convictions="handleConvictions($event)"
         @touchstones="handleTouchstones($event)"
+        @archetype="handleArchetype($event)"
+        @sect="handleSect($event)"
       />
     </div>
   </q-form>
@@ -111,6 +141,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
+import attributes from "../vtm/5eAttributes.vue";
+import attributeInfo from "../vtm/5eAttributes.json";
 
 export default {
   components: {
@@ -136,12 +168,37 @@ export default {
     const router = useRouter();
 
     return {
+      attributeInfo,
       age: { label: "Childer", bonusXp: 0 },
-      ambition: "",
-      charName: "",
       archtypeModel: ref(null),
+      ambition: "",
+      attributePoints: 22,
+      charName: "",
+      baseCharisma: 0,
+      baseComposure: 0,
+      baseDexterity: 0,
+      baseIntelligence: 0,
+      baseManipulation: 0,
+      baseResolve: 0,
+      baseStamina: 0,
+      baseStrength: 0,
+      baseWits: 0,
+      charisma: 0,
+      composure: 0,
+      dexterity: 0,
+      intelligence: 0,
+      manipulation: 0,
+      resolve: 0,
+      stamina: 0,
+      strength: 0,
+      wits: 0,
+      baseFlaws: 2,
+      baseAdvantages: 7,
+      flaws: 2,
+      advantages: 7,
       chronicle: "",
       convictions: [],
+      disciplineSkills: [],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -192,6 +249,12 @@ export default {
     handleTouchstones(data) {
       this.touchstones = data;
     },
+    handleArchetype(data) {
+      this.archtypeModel = data;
+    },
+    handleSect(data) {
+      this.sect = data;
+    },
     clanSelected() {
       this.$q
         .dialog({
@@ -200,15 +263,14 @@ export default {
           componentProps: {
             info: {
               age: this.age,
-              archtype: this.archtypeModel,
               bane: this.clanBane,
               clan: this.clan,
               compulsion: this.compulsion,
               desc: this.clanDesc,
               disciplines: this.disciplines,
+              discSkills: this.disciplineSkills,
               generation: this.generation,
               humanity: this.humanity,
-              sect: this.sect,
               sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
@@ -226,15 +288,64 @@ export default {
           this.clanDesc = data.desc;
           this.compulsion = data.compulsion;
           this.sire = data.sire;
-          this.archtypeModel = data.archtype;
           this.generation = data.generation;
           this.humanity = data.humanity;
           this.xp = data.xp;
+          this.advantages = this.baseAdvantages + data.advantages.value;
+          this.flaws = this.baseFlaws + data.flaws.value;
+          this.disciplineSkills = data.discSkillsSelected;
 
           selectedDisc.forEach(
             (key, i) => (this.disciplines[key] = discChoices[i])
           );
         });
+    },
+    attributes() {
+      this.$q
+        .dialog({
+          component: attributes,
+          persistent: true,
+          componentProps: {
+            info: {
+              attributePoints: this.attributePoints,
+              charisma: this.baseCharisma,
+              composure: this.baseComposure,
+              dexterity: this.baseDexterity,
+              intelligence: this.baseIntelligence,
+              manipulation: this.baseManipulation,
+              resolve: this.baseResolve,
+              stamina: this.baseStamina,
+              strength: this.baseStrength,
+              wits: this.baseWits,
+              xp: this.xp,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.attributePoints = data.attributePoints;
+          this.baseCharisma = data.charisma;
+          this.baseComposure = data.composure;
+          this.baseDexterity = data.dexterity;
+          this.baseIntelligence = data.intelligence;
+          this.baseManipulation = data.manipulation;
+          this.baseResolve = data.resolve;
+          this.baseStamina = data.stamina;
+          this.baseStrength = data.strength;
+          this.baseWits = data.wits;
+          this.xp = data.xp;
+          this.addModifiers();
+        });
+    },
+    addModifiers() {
+      this.charisma = this.baseCharisma + 1;
+      this.composure = this.baseComposure + 1;
+      this.dexterity = this.baseDexterity + 1;
+      this.intelligence = this.baseIntelligence + 1;
+      this.manipulation = this.baseManipulation + 1;
+      this.resolve = this.baseResolve + 1;
+      this.stamina = this.baseStamina + 1;
+      this.strength = this.baseStrength + 1;
+      this.wits = this.baseWits + 1;
     },
   },
 };

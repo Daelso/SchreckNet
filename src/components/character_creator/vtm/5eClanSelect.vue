@@ -301,22 +301,14 @@ export default defineComponent({
           "Auspex",
           "Blood Sorcery",
           "Celerity",
-          "Chimerstry",
-          "Dementation",
           "Dominate",
           "Fortitude",
-          "Necromancy",
           "Obfuscate",
           "Oblivion",
-          "Obtenebration",
           "Potence",
           "Presence",
           "Protean",
-          "Quietus",
-          "Serpentis",
-          "Thaumaturgy",
           "Thin-Blood Alchemy",
-          "Vicissitude",
         ];
       } else if (clan.value === "Thin-Blood") {
         discChoices.value = [2];
@@ -342,14 +334,6 @@ export default defineComponent({
           discArr[9].discipline,
           discArr[10].discipline,
           discArr[11].discipline,
-          discArr[12].discipline,
-          discArr[13].discipline,
-          discArr[14].discipline,
-          discArr[15].discipline,
-          discArr[16].discipline,
-          discArr[17].discipline,
-          discArr[18].discipline,
-          discArr[19].discipline,
         ];
         discChoices.value = [
           discArr[0].choice,
@@ -364,14 +348,6 @@ export default defineComponent({
           discArr[9].choice,
           discArr[10].choice,
           discArr[11].choice,
-          discArr[12].choice,
-          discArr[13].choice,
-          discArr[14].choice,
-          discArr[15].choice,
-          discArr[16].choice,
-          discArr[17].choice,
-          discArr[18].choice,
-          discArr[19].choice,
         ];
       } else if (clan.value === "Thin-Blood") {
         clanDisciplines.value = [discArr[0].discipline];
@@ -489,6 +465,7 @@ export default defineComponent({
   },
   methods: {
     clanSelected() {
+      this.skillsSelected = [];
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -537,44 +514,28 @@ export default defineComponent({
             "Auspex",
             "Blood Sorcery",
             "Celerity",
-            "Chimerstry",
-            "Dementation",
             "Dominate",
             "Fortitude",
-            "Necromancy",
             "Obfuscate",
             "Oblivion",
-            "Obtenebration",
             "Potence",
             "Presence",
             "Protean",
-            "Quietus",
-            "Serpentis",
-            "Thaumaturgy",
             "Thin-Blood Alchemy",
-            "Vicissitude",
           ];
           this.discExplained = [
             "Supernatural affinity with and control of animals",
             "Extrasensory perception, awareness, and premonitions",
             "The use of the Blood to perform magic",
             "Supernatural quickness and reflexes",
-            "Illusions made real or at least tangible",
-            "See AUSPEX and DOMINATE. Gift your foes with madness",
             "Mind control practiced through one's piercing gaze",
             "Unearthly toughness, even to the point of resisting fire and sunlight",
-            "See OBLIVION. Control of the dead, both spirit and corpse",
             "The ability to remain obscure and unseen, even in crowds",
             "Control over shadows and spirits",
-            "See OBLIVION. Manipulation of abyssal darkness",
             "The Discipline of physical vigor and strength",
             "The ability to attract, sway, and control emotions",
             "Shape-changing, from growing claws to melding with the earth",
-            "See BLOOD SORCERY and OBFUSCATE. Art of the silent death",
-            "See PRESENCE and PROTEAN. Acquire the physicality of serpents",
-            "See BLOOD SORCERY. The use of the Blood to perform magic",
             "Mixing blood, emotion, and other ingredients to create powerful effects",
-            "The sculpting of flesh into unnatural forms",
           ];
           break;
         case "Gangrel":
@@ -886,6 +847,8 @@ export default defineComponent({
     },
 
     disciplineOptions(data, points) {
+      console.log(data);
+      console.log(points);
       let mergedOptions = [];
       for (let i = 0; i < points; i++) {
         this.disciplineSkills.Disciplines[data].skills[i].forEach((x) => {

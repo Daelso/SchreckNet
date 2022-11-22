@@ -151,7 +151,35 @@
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="3" title="Select Discipline Skills" icon="sort">
+            <q-step :name="3" title="Predator Type" icon="directions_run">
+              <q-select
+                v-model="predatorType"
+                label="Predator Type"
+                :options="modifyPredatorTypes()"
+                bg-color="grey-3"
+                filled
+                style="margin-bottom: 20px; width: 100%"
+                class="select"
+                label-color="primary"
+                option-label="label"
+                @update:model-value="predatorPicked()"
+              />
+              <div v-if="modifyPredatorTypes().length === 1">
+                Thin-Bloods and Fledglings do not have a predator type.
+              </div>
+              <q-separator />
+              <q-stepper-navigation>
+                <q-btn @click="step = 4" color="primary" label="Continue" />
+                <q-btn
+                  flat
+                  @click="step = 2"
+                  color="secondary"
+                  label="Back"
+                  class="q-ml-sm"
+                />
+              </q-stepper-navigation>
+            </q-step>
+            <q-step :name="4" title="Select Discipline Skills" icon="sort">
               Select disciplines available to you:
               <div v-for="(discPoints, key) in discChoicesWithLevel" :key="key">
                 Choose: {{ this.discPointsRemaining[key] }}
@@ -191,21 +219,7 @@
               </q-list>
 
               <q-stepper-navigation>
-                <q-btn @click="step = 4" color="primary" label="Continue" />
-                <q-btn
-                  flat
-                  @click="step = 2"
-                  color="secondary"
-                  label="Back"
-                  class="q-ml-sm"
-                />
-              </q-stepper-navigation>
-            </q-step>
-
-            <q-step :name="4" title="Predator Type" icon="directions_run">
-              efwefwefew
-              <q-stepper-navigation>
-                <q-btn color="primary" label="Finish" />
+                <q-btn color="primary" label="Finish" @click="onOKClick" />
                 <q-btn
                   flat
                   @click="step = 3"
@@ -247,6 +261,7 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import disciplineSkills from "../vtm/5eDisciplines.json";
+import allPredatorTypes from "../vtm/predatorTypes.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -266,6 +281,8 @@ export default defineComponent({
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
     const skillsSelected = ref(props.info.discSkills);
+    const predatorType = ref(props.info.predatorType);
+    const disciplineObj = ref(props.info.disciplines);
 
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
@@ -377,6 +394,7 @@ export default defineComponent({
     return {
       age,
       advantages,
+      allPredatorTypes,
       clan,
       clanBane,
       clanDesc,
@@ -384,6 +402,7 @@ export default defineComponent({
       compulsion,
       disableRating,
       disciplineSkills,
+      disciplineObj,
       discChoices,
       disciplineChoice,
       discSkillsArr,
@@ -393,6 +412,7 @@ export default defineComponent({
       flaws,
       generation,
       humanity,
+      predatorType,
       sire,
       skillsSelected,
       xp,
@@ -401,6 +421,7 @@ export default defineComponent({
       onDialogHide,
 
       ageOptions: [
+        { label: "Fledgling", bonusXp: 0 },
         { label: "Childer", bonusXp: 0 },
         { label: "Neonate", bonusXp: 15 },
         {
@@ -445,9 +466,8 @@ export default defineComponent({
           clan: clan,
           compulsion: compulsion,
           desc: clanDesc,
-          disciplines: clanDisciplines,
+          disciplines: disciplineObj,
           discSkillsSelected: skillsSelected,
-          disciplineChoices: discChoices,
           flaws: flaws,
           advantages: advantages,
           bane: clanBane,
@@ -456,6 +476,7 @@ export default defineComponent({
           generation: generation,
           humanity: humanity,
           xp: xp,
+          predatorType: predatorType,
         });
       },
 
@@ -467,6 +488,7 @@ export default defineComponent({
     clanSelected() {
       this.skillsSelected = [];
       this.discChoices = [0, 0, 0];
+      this.predatorType = "";
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -756,7 +778,11 @@ export default defineComponent({
     },
     discSelected() {
       this.skillsSelected = []; //reset it
+      this.disciplineObj = {};
       let sum = 0;
+      this.clanDisciplines.forEach(
+        (key, i) => (this.disciplineObj[key] = this.discChoices[i])
+      );
 
       this.discChoices.forEach((choice) => (sum += choice));
 
@@ -864,6 +890,16 @@ export default defineComponent({
         });
         return;
       }
+
+      if (this.skillsSelected.filter((e) => e.skill === skill).length > 0) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You have already selected this skill!",
+        });
+        return;
+      }
+
       let newSkill = { discipline: discipline, skill: skill };
       this.skillsSelected.push(newSkill);
     },
@@ -873,26 +909,32 @@ export default defineComponent({
     setDiscPoints(key, discPoints) {
       this.discPointsRemaining[key] = discPoints;
     },
+    modifyPredatorTypes() {
+      let modifiedArr = this.allPredatorTypes.predator;
+      if (this.clan === "Thin-Blood" || this.age.label === "Fledgling") {
+        this.predatorType = "None";
+        return (modifiedArr = ["None"]);
+      }
+      if (this.clan === "Ventrue") {
+        modifiedArr = modifiedArr.filter((x) => x !== "Bagger");
+      }
+      return modifiedArr;
+    },
+    predatorPicked() {
+      console.log(this.disciplineObj);
+    },
   },
   computed: {
     discChoicesWithLevel() {
       //holy cow do I hate this
-      // let filteredChoices = this.discChoices.filter((x) => {
-      //   return x > 0;
-      // });
+      let newObj = this.disciplineObj;
 
-      const mergeArrToJSON = (a, b) =>
-        a
-          .map((item, i) => ({ [item]: b[i] }))
-          .reduce((json, val) => Object.assign({}, json, val));
-      let newArr = mergeArrToJSON(this.clanDisciplines, this.discChoices);
-
-      for (var property in newArr) {
-        if (newArr[property] == 0) {
-          delete newArr[property];
+      for (var property in newObj) {
+        if (newObj[property] == 0) {
+          delete newObj[property];
         }
       }
-      return newArr;
+      return newObj;
     },
   },
 });

@@ -6,7 +6,7 @@
       "resonance": "Animal Blood",
       "skills": [
         ["Bond Famulas", "Sense the Beast"],
-        ["Feral Whispers"],
+        ["Feral Whispers", "Atavism"],
         ["Animal Succulence", "Quell the Beast", "Unliving Hive"],
         ["Subsume Spirit"]
       ]
@@ -17,7 +17,7 @@
       "resonance": "Phlegmatic",
       "skills": [
         ["Heightened Senses", "Sense the Unseen"],
-        ["Premonition"],
+        ["Premonition", "Obeah"],
         ["Scry the Soul", "Share the Senses"],
         ["Spirit's Touch"]
       ]
@@ -39,9 +39,9 @@
       "resonance": "Phlegmatic",
       "skills": [
         ["Cloud Memory", "Compel"],
-        ["Mesmerize", "Dementation"],
+        ["Mesmerize", "Dementation", "Slavish Devotion", "Domitor's Favor"],
         ["The Forgetful Mind", "Submerged Directive"],
-        ["Rationalize", "Unerring Aim"]
+        ["Rationalize", "Unerring Aim", "Ancestral Dominion"]
       ]
     },
     "Fortitude": {
@@ -50,9 +50,9 @@
       "resonance": "Melancholic",
       "skills": [
         ["Resilience", "Unswayable Mind"],
-        ["Toughness", "Enduring Beasts"],
+        ["Toughness", "Enduring Beasts", "Obdurate", "Valeren"],
         ["Defy Bane", "Fortify the Inner Facade"],
-        ["Draught of Endurance"]
+        ["Draught of Endurance", "Shatter"]
       ]
     },
     "Obfuscate": {
@@ -61,8 +61,8 @@
       "resonance": "Empty",
       "skills": [
         ["Cloak of Shadows", "Silence of Death"],
-        ["Unseen Passage"],
-        ["Ghost in the Machine", "Mask of a Thousand Faces"],
+        ["Unseen Passage", "Chimestry", "Mental Maze"],
+        ["Ghost in the Machine", "Mask of a Thousand Faces", "Fata Morgana"],
         ["Conceal", "Vanish"]
       ]
     },
@@ -71,9 +71,24 @@
       "threat": 1,
       "resonance": "Melancholic",
       "skills": [
-        ["Shadow Cloak", "Oblivion's Sight"],
-        ["Arms of Ahriman"],
-        ["Shadow Perspective", "Touch of Oblivion"],
+        [
+          "Shadow Cloak",
+          "Oblivion's Sight",
+          "Ashes to Ashes",
+          "The Binding Feather"
+        ],
+        [
+          "Arms of Ahriman",
+          "Fatal Precognition",
+          "Shadow Cast",
+          "Where the Shroud Thins"
+        ],
+        [
+          "Shadow Perspective",
+          "Touch of Oblivion",
+          "Aura of Decay",
+          "Passion Feast"
+        ],
         ["Stygian Shroud"]
       ]
     },
@@ -93,9 +108,9 @@
       "threat": 2,
       "resonance": "Sanguine",
       "skills": [
-        ["Awe", "Daunt"],
+        ["Awe", "Daunt", "Eyes of the Serpent"],
         ["Lingering Kiss"],
-        ["Dread Gaze", "Entrancement"],
+        ["Dread Gaze", "Entrancement", "True Love's Face"],
         ["Irresistable Voice", "Summon"]
       ]
     },
@@ -105,9 +120,9 @@
       "resonance": "Animal Blood",
       "skills": [
         ["Eyes of the Beast", "Weight of the Feather"],
-        ["Feral Weapons"],
-        ["Earth Meld", "Shapechange"],
-        ["Metamorphosis"]
+        ["Feral Weapons", "Vicissitude"],
+        ["Earth Meld", "Shapechange", "Flesh Crafting"],
+        ["Metamorphosis", "Horrid Form"]
       ]
     },
     "Blood Sorcery": {
@@ -115,7 +130,11 @@
       "threat": 3,
       "resonance": "Sanguine",
       "skills": [
-        ["Corrosive Vitae", "A Taste For Blood"],
+        [
+          "Corrosive Vitae",
+          "A Taste For Blood",
+          "Shape the Sanguine Sacrament"
+        ],
         ["Extinguish Vitae"],
         ["Blood of Potency", "Scorpion's Touch"],
         ["Theft of Vitae"]
@@ -128,8 +147,13 @@
       "skills": [
         ["Far Reach", "Haze"],
         ["Envelop"],
-        ["Defractionate", "Profane Heiros Gamos"],
-        ["Airborne Momentum"]
+        [
+          "Defractionate",
+          "Profane Heiros Gamos",
+          "Chemically-Induced Flashback",
+          "Concoct Ashe"
+        ],
+        ["Airborne Momentum", "Discipline Channeling"]
       ]
     }
   }

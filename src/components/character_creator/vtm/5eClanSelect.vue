@@ -87,7 +87,7 @@
 
             <q-step
               :name="2"
-              title="Sire, Generation, Coterie Age, Predator Type"
+              title="Sire, Generation, Coterie Age"
               icon="remove_red_eye"
               :done="step > 2"
             >
@@ -158,22 +158,22 @@
                 <q-btn @click="step = 4" color="primary" label="Continue" />
                 <q-btn
                   flat
-                  @click="step = 1"
-                  color="primary"
+                  @click="step = 2"
+                  color="secondary"
                   label="Back"
                   class="q-ml-sm"
                 />
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="4" title="Sect and Archtype" icon="help">
+            <q-step :name="4" title="Predator Type" icon="directions_run">
               efwefwefew
               <q-stepper-navigation>
                 <q-btn color="primary" label="Finish" />
                 <q-btn
                   flat
-                  @click="step = 2"
-                  color="primary"
+                  @click="step = 3"
+                  color="secondary"
                   label="Back"
                   class="q-ml-sm"
                 />
@@ -232,6 +232,8 @@ export default defineComponent({
     const generation = ref(props.info.generation);
     const sire = ref(props.info.sire);
     const xp = ref(props.info.xp);
+    const flaws = ref(0);
+    const advantages = ref(0);
     const humanity = ref(props.info.humanity);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
@@ -355,6 +357,7 @@ export default defineComponent({
 
     return {
       age,
+      advantages,
       clan,
       clanBane,
       clanDesc,
@@ -363,6 +366,7 @@ export default defineComponent({
       disableRating,
       discChoices,
       discExplained,
+      flaws,
       generation,
       humanity,
       sire,
@@ -418,6 +422,8 @@ export default defineComponent({
           desc: clanDesc,
           disciplines: clanDisciplines,
           disciplineChoices: discChoices,
+          flaws: flaws,
+          advantages: advantages,
           bane: clanBane,
           tooltips: discExplained,
           sire: sire,
@@ -782,7 +788,8 @@ export default defineComponent({
         case "Ancillae":
           this.xp = 35;
           this.humanity = 6;
-          break;
+          this.flaws = 2;
+          this.advantages = 2;
         default:
           this.xp += 0;
       }

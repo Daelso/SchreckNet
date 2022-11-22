@@ -182,7 +182,12 @@
               v-ripple
               @click="removeConviction($event.target.id)"
             >
-              <q-item-section :id="key">{{ conviction }}</q-item-section>
+              <q-item-section :id="key"
+                >{{ conviction }}
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                >
+              </q-item-section>
             </q-item>
           </q-list>
 
@@ -196,7 +201,12 @@
               v-ripple
               @click="removeTouchstone($event.target.id)"
             >
-              <q-item-section :id="key">{{ touchstone }}</q-item-section>
+              <q-item-section :id="key"
+                >{{ touchstone }}
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                ></q-item-section
+              >
             </q-item>
           </q-list>
         </q-tab-panel>

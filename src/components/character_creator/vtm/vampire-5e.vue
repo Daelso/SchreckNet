@@ -78,7 +78,23 @@
                     v-for="(attribute, key) in attributeInfo.Attributes"
                     :key="key"
                   >
-                    {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
+                    {{ attribute }}: {{ this[attribute.toLowerCase()] }}/5
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="trending_up"
+              label="Skills"
+              caption="View finalized skills"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  <div v-for="(skill, key) in skillInfo.skills" :key="key">
+                    {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
                   </div>
                 </q-card-section>
               </q-card>
@@ -135,7 +151,7 @@
               >
             </q-item-section>
           </q-item>
-          <q-item clickable @click="attributes">
+          <q-item clickable @click="skills">
             <q-item-section avatar>
               <q-icon color="secondary" name="trending_up" />
             </q-item-section>
@@ -239,7 +255,9 @@ import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import attributes from "../vtm/5eAttributes.vue";
+import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
+import skillInfo from "../vtm/5eSkills.json";
 
 export default {
   components: {
@@ -266,10 +284,12 @@ export default {
 
     return {
       attributeInfo,
+      skillInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
       ambition: "",
       attributePoints: 22,
+      skillPoints: 29,
       charName: "",
       baseCharisma: 0,
       baseComposure: 0,
@@ -296,6 +316,64 @@ export default {
       chronicle: "",
       convictions: [],
       disciplineSkills: [],
+      baseSkills: {
+        athletics: 0,
+        brawl: 0,
+        craft: 0,
+        drive: 0,
+        firearms: 0,
+        melee: 0,
+        larceny: 0,
+        stealth: 0,
+        survival: 0,
+        animalken: 0,
+        etiquette: 0,
+        insight: 0,
+        intimidation: 0,
+        leadership: 0,
+        performance: 0,
+        persuasion: 0,
+        streetwise: 0,
+        subterfuge: 0,
+        academics: 0,
+        awareness: 0,
+        finance: 0,
+        investigation: 0,
+        medicine: 0,
+        occult: 0,
+        politics: 0,
+        science: 0,
+        technology: 0,
+      },
+      trueSkills: {
+        athletics: 0,
+        brawl: 0,
+        craft: 0,
+        drive: 0,
+        firearms: 0,
+        melee: 0,
+        larceny: 0,
+        stealth: 0,
+        survival: 0,
+        animalken: 0,
+        etiquette: 0,
+        insight: 0,
+        intimidation: 0,
+        leadership: 0,
+        performance: 0,
+        persuasion: 0,
+        streetwise: 0,
+        subterfuge: 0,
+        academics: 0,
+        awareness: 0,
+        finance: 0,
+        investigation: 0,
+        medicine: 0,
+        occult: 0,
+        politics: 0,
+        science: 0,
+        technology: 0,
+      },
       predatorType: "",
       clan: ref("Brujah"),
       clanBane: ref(
@@ -431,6 +509,24 @@ export default {
           this.baseWits = data.wits;
           this.xp = data.xp;
           this.addModifiers();
+        });
+    },
+    skills() {
+      this.$q
+        .dialog({
+          component: skills,
+          persistent: true,
+          componentProps: {
+            info: {
+              baseSkills: this.baseSkills,
+              skillPoints: this.skillPoints,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.baseSkills = data.baseSkills;
+          this.skillPoints = data.skillPoints;
+          this.trueSkills = { ...this.trueSkills, ...this.baseSkills };
         });
     },
     addModifiers() {

@@ -1,61 +1,136 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
-      <q-banner class="bg-primary text-white" inline-actions rounded dark>
-        Name: {{ charName }}
-        <br />
-        Clan: {{ clan }}
-        <br />
-        Sect: {{ sect }}
-        <br />
-        Age:
-        {{ age.label }}
-        <br />
-        Generation:
-        {{ generation.label }}
-        <br />
-        Potency: {{ generation.potency }}/{{ generation.maxPotency }}
-        <br />
-        Humanity: {{ humanity }}
-        <br />
-        Health: {{ stamina + 3 }}
-        <br />
-        Willpower: {{ composure + resolve }}
-        <br />
-        Advantage Points: {{ advantages }}
-        <br />
-        Flaw Points: {{ flaws }}
-        <br />
-        Remaining XP: {{ xp }}
-        <br />
-        Concept: {{ !concept ? "None" : concept }}
-        <br />
-        Ambition: {{ !ambition ? "None" : ambition }}
-        <br />
-        Desire: {{ !desire ? "None" : desire }}
-        <br />
-        Convictions: {{ convictions.length < 1 ? "None" : convictions }}
-        <br />
-        Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
-        <br />
-        Archetype: {{ !archtypeModel ? "None" : archtypeModel }}
-        <br />
-        Disciplines:
+      <q-banner class="bg-primary text-white" rounded dark>
+        <div class="container">
+          Vampire: The Masquerade
+          <div class="info q-my-sm">
+            <div>Name: {{ charName }}</div>
+            <div>Clan: {{ clan }}</div>
+            <div>Sect: {{ sect }}</div>
+            <div>Age: {{ age.label }}</div>
+            <div>Generation: {{ generation.label }}</div>
+            <div>Predator Type: {{ predatorType }}</div>
+            <div>Humanity: {{ humanity }}</div>
+            <div>Chronicle: {{ chronicle }}</div>
 
-        <div v-for="(discipline, key) in disciplines" :key="key">
-          {{ key }}: {{ discipline }}
-        </div>
-        <br />
-        Disciplines Skills:
+            <div>Concept: {{ !concept ? "None" : concept }}</div>
+          </div>
+          <q-separator class="q-my-md" />
+          <div class="stats">
+            <div>Health: {{ stamina + 3 }}</div>
+            <div>Willpower: {{ composure + resolve }}</div>
+            <div>
+              Potency: {{ generation.potency }}/{{ generation.maxPotency }}
+            </div>
+            <div>Advantage Points: {{ advantages }}</div>
+            <div>Remaining XP: {{ xp }}</div>
+            <div>Flaw Points: {{ flaws }}</div>
+          </div>
+          <q-separator class="q-my-md" />
 
-        <div v-for="(discipline, key) in disciplineSkills" :key="key">
-          {{ discipline.discipline }}: {{ discipline.skill }}
+          <div class="concept">
+            <div>Archetype: {{ !archtypeModel ? "None" : archtypeModel }}</div>
+            <div>Ambition: {{ !ambition ? "None" : ambition }}</div>
+            <div>Desire: {{ !desire ? "None" : desire }}</div>
+          </div>
+          <q-separator class="q-my-md" />
+
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="settings_accessibility"
+              label="Touchstones and Convictions"
+              caption="Review who your kindred really is"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Convictions
+                  <div v-if="convictions.length < 1">None</div>
+                  <div v-for="(conviction, key) in convictions" :key="key">
+                    {{ conviction }}
+                  </div>
+                </q-card-section>
+              </q-card>
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Touchstones
+                  <div v-if="touchstones.length < 1">None</div>
+                  <div v-for="(touchstone, key) in touchstones" :key="key">
+                    {{ touchstone }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="attribution"
+              label="Attributes"
+              caption="View finalized attributes"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  <div
+                    v-for="(attribute, key) in attributeInfo.Attributes"
+                    :key="key"
+                  >
+                    {{ attribute }}: {{ this[attribute.toLowerCase()] }}/5
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="trending_up"
+              label="Skills"
+              caption="View finalized skills"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  <div v-for="(skill, key) in skillInfo.skills" :key="key">
+                    {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="app:ankh"
+              label="Disciplines"
+              caption="View disciplines and powers"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Disciplines:
+                  <div v-if="Object.keys(disciplines).length === 0">
+                    Not yet selected
+                  </div>
+                  <div v-for="(discipline, key) in disciplines" :key="key">
+                    <div v-if="discipline > 0">{{ key }}: {{ discipline }}</div>
+                  </div>
+                  <br />
+                  Powers:
+                  <div v-if="Object.keys(disciplineSkills).length === 0">
+                    Not yet selected
+                  </div>
+
+                  <div v-for="(discipline, key) in disciplineSkills" :key="key">
+                    {{ discipline.discipline }}: {{ discipline.skill }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
         </div>
-        <br />
-        Attributes:
-        <div v-for="(attribute, key) in attributeInfo.Attributes" :key="key">
-          {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
-        </div>
+
         <template v-slot:action>
           <q-btn flat label="Save Character" type="submit" color="white" />
         </template>
@@ -72,7 +147,19 @@
             <q-item-section>
               <q-item-label>Attributes</q-item-label>
               <q-item-label caption class="text-white"
-                >Fill out your primary talents</q-item-label
+                >Set your base, unmodified, attributes</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+          <q-item clickable @click="skills">
+            <q-item-section avatar>
+              <q-icon color="secondary" name="trending_up" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Skills</q-item-label>
+              <q-item-label caption class="text-white"
+                >Set your base, unmodified, skills</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -112,6 +199,7 @@
         @touchstones="handleTouchstones($event)"
         @archetype="handleArchetype($event)"
         @sect="handleSect($event)"
+        @chronicle="handleChronicle($event)"
       />
     </div>
   </q-form>
@@ -128,11 +216,36 @@
   color: white;
   margin-bottom: 3px;
 }
+.backgroundDefault {
+  background-color: #171a1e;
+}
 @media only screen and (max-width: 600px) {
   .select {
     width: 300px;
   }
 }
+.info {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stats {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.concept {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* div > div {
+  padding: 10px;
+  background-color: #ccc;
+} */
 </style>
 
 <script>
@@ -142,7 +255,9 @@ import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import attributes from "../vtm/5eAttributes.vue";
+import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
+import skillInfo from "../vtm/5eSkills.json";
 
 export default {
   components: {
@@ -169,10 +284,12 @@ export default {
 
     return {
       attributeInfo,
+      skillInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
       ambition: "",
       attributePoints: 22,
+      skillPoints: 29,
       charName: "",
       baseCharisma: 0,
       baseComposure: 0,
@@ -199,6 +316,65 @@ export default {
       chronicle: "",
       convictions: [],
       disciplineSkills: [],
+      baseSkills: {
+        athletics: 0,
+        brawl: 0,
+        craft: 0,
+        drive: 0,
+        firearms: 0,
+        melee: 0,
+        larceny: 0,
+        stealth: 0,
+        survival: 0,
+        animalken: 0,
+        etiquette: 0,
+        insight: 0,
+        intimidation: 0,
+        leadership: 0,
+        performance: 0,
+        persuasion: 0,
+        streetwise: 0,
+        subterfuge: 0,
+        academics: 0,
+        awareness: 0,
+        finance: 0,
+        investigation: 0,
+        medicine: 0,
+        occult: 0,
+        politics: 0,
+        science: 0,
+        technology: 0,
+      },
+      trueSkills: {
+        athletics: 0,
+        brawl: 0,
+        craft: 0,
+        drive: 0,
+        firearms: 0,
+        melee: 0,
+        larceny: 0,
+        stealth: 0,
+        survival: 0,
+        animalken: 0,
+        etiquette: 0,
+        insight: 0,
+        intimidation: 0,
+        leadership: 0,
+        performance: 0,
+        persuasion: 0,
+        streetwise: 0,
+        subterfuge: 0,
+        academics: 0,
+        awareness: 0,
+        finance: 0,
+        investigation: 0,
+        medicine: 0,
+        occult: 0,
+        politics: 0,
+        science: 0,
+        technology: 0,
+      },
+      predatorType: "",
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -255,6 +431,9 @@ export default {
     handleSect(data) {
       this.sect = data;
     },
+    handleChronicle(data) {
+      this.chronicle = data;
+    },
     clanSelected() {
       this.$q
         .dialog({
@@ -271,6 +450,7 @@ export default {
               discSkills: this.disciplineSkills,
               generation: this.generation,
               humanity: this.humanity,
+              predatorType: this.predatorType,
               sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
@@ -281,9 +461,7 @@ export default {
           this.age = data.age;
           this.clan = data.clan;
           this.clanBane = data.bane;
-          let selectedDisc = data.disciplines._rawValue;
-          let discChoices = data.disciplineChoices._rawValue;
-          this.disciplines = {};
+          this.disciplines = data.disciplines;
           this.tooltips = data.tooltips;
           this.clanDesc = data.desc;
           this.compulsion = data.compulsion;
@@ -294,10 +472,7 @@ export default {
           this.advantages = this.baseAdvantages + data.advantages.value;
           this.flaws = this.baseFlaws + data.flaws.value;
           this.disciplineSkills = data.discSkillsSelected;
-
-          selectedDisc.forEach(
-            (key, i) => (this.disciplines[key] = discChoices[i])
-          );
+          this.predatorType = data.predatorType;
         });
     },
     attributes() {
@@ -334,6 +509,24 @@ export default {
           this.baseWits = data.wits;
           this.xp = data.xp;
           this.addModifiers();
+        });
+    },
+    skills() {
+      this.$q
+        .dialog({
+          component: skills,
+          persistent: true,
+          componentProps: {
+            info: {
+              baseSkills: this.baseSkills,
+              skillPoints: this.skillPoints,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.baseSkills = data.baseSkills;
+          this.skillPoints = data.skillPoints;
+          this.trueSkills = { ...this.trueSkills, ...this.baseSkills };
         });
     },
     addModifiers() {

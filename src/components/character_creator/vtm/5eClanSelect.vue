@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
     <q-layout view="Lhh lpR fff" container>
@@ -151,26 +152,55 @@
               </q-stepper-navigation>
             </q-step>
 
-            <q-step :name="3" title="Select Discipline Skills" icon="sort">
-              Select disciplines available to you:
-              <div v-for="(discPoints, key) in discChoicesWithLevel" :key="key">
-                Choose: {{ this.discPointsRemaining[key] }}
-                <q-select
-                  v-model="disciplineChoice[key]"
-                  :label="key"
-                  :options="disciplineOptions(key, discPoints)"
-                  bg-color="grey-3"
-                  filled
-                  style="margin-bottom: 20px; width: 100%"
-                  class="select"
-                  label-color="primary"
-                  option-label="label"
-                  @update:model-value="
-                    skillPicked(this.disciplineChoice[key], key)
-                  "
-                  v-bind:on-loadstart="setDiscPoints(key, discPoints)"
+            <q-step :name="3" title="Predator Type" icon="directions_run">
+              <q-select
+                v-model="predatorType"
+                label="Predator Type"
+                :options="modifyPredatorTypes()"
+                bg-color="grey-3"
+                filled
+                style="margin-bottom: 20px; width: 100%"
+                class="select"
+                label-color="primary"
+                option-label="label"
+                @update:model-value="predatorPicked()"
+              />
+              <div v-if="modifyPredatorTypes().length === 1">
+                Thin-Bloods and Fledglings do not have a predator type.
+              </div>
+              <q-separator />
+              <q-stepper-navigation>
+                <q-btn @click="step = 4" color="primary" label="Continue" />
+                <q-btn
+                  flat
+                  @click="step = 2"
+                  color="secondary"
+                  label="Back"
+                  class="q-ml-sm"
                 />
-                <q-separator />
+              </q-stepper-navigation>
+            </q-step>
+            <q-step :name="4" title="Select Discipline Skills" icon="sort">
+              Select disciplines available to you:
+              <div v-for="(discPoints, key) in disciplineObj" :key="key">
+                <div v-if="discPoints > 0">
+                  Choose: {{ discPoints }}
+                  <q-select
+                    v-model="disciplineChoice[key]"
+                    :label="key"
+                    :options="disciplineOptions(key, discPoints)"
+                    bg-color="grey-3"
+                    filled
+                    style="margin-bottom: 20px; width: 100%"
+                    class="select"
+                    label-color="primary"
+                    option-label="label"
+                    @update:model-value="
+                      skillPicked(this.disciplineChoice[key], key)
+                    "
+                  />
+                  <q-separator />
+                </div>
               </div>
               <q-list bordered separator>
                 <q-item
@@ -191,21 +221,22 @@
               </q-list>
 
               <q-stepper-navigation>
-                <q-btn @click="step = 4" color="primary" label="Continue" />
                 <q-btn
-                  flat
-                  @click="step = 2"
-                  color="secondary"
-                  label="Back"
-                  class="q-ml-sm"
-                />
-              </q-stepper-navigation>
-            </q-step>
-
-            <q-step :name="4" title="Predator Type" icon="directions_run">
-              efwefwefew
-              <q-stepper-navigation>
-                <q-btn color="primary" label="Finish" />
+                  color="primary"
+                  label="Finish"
+                  :disable="donePickingSkills()"
+                  @click="onOKClick"
+                >
+                  <q-tooltip
+                    anchor="top right"
+                    self="center left"
+                    :offset="[10, 10]"
+                    class="bg-dark text-body2"
+                    v-if="donePickingSkills()"
+                  >
+                    Please select all of your skills first.
+                  </q-tooltip>
+                </q-btn>
                 <q-btn
                   flat
                   @click="step = 3"
@@ -247,6 +278,7 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import disciplineSkills from "../vtm/5eDisciplines.json";
+import allPredatorTypes from "../vtm/predatorTypes.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -266,12 +298,13 @@ export default defineComponent({
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
     const skillsSelected = ref(props.info.discSkills);
+    const predatorType = ref(props.info.predatorType);
+    const disciplineObj = ref(props.info.disciplines);
 
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
     const sire = ref(props.info.sire);
     const xp = ref(props.info.xp);
-    const discPointsRemaining = ref({});
     const flaws = ref(0);
     const advantages = ref(0);
     const humanity = ref(props.info.humanity);
@@ -320,52 +353,10 @@ export default defineComponent({
           "Rebellion: The vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)";
       }
     } else {
-      if (clan.value === "Caitiff") {
-        clanDisciplines.value = [
-          discArr[0].discipline,
-          discArr[1].discipline,
-          discArr[2].discipline,
-          discArr[3].discipline,
-          discArr[4].discipline,
-          discArr[5].discipline,
-          discArr[6].discipline,
-          discArr[7].discipline,
-          discArr[8].discipline,
-          discArr[9].discipline,
-          discArr[10].discipline,
-          discArr[11].discipline,
-        ];
-        discChoices.value = [
-          discArr[0].choice,
-          discArr[1].choice,
-          discArr[2].choice,
-          discArr[3].choice,
-          discArr[4].choice,
-          discArr[5].choice,
-          discArr[6].choice,
-          discArr[7].choice,
-          discArr[8].choice,
-          discArr[9].choice,
-          discArr[10].choice,
-          discArr[11].choice,
-        ];
-      } else if (clan.value === "Thin-Blood") {
-        clanDisciplines.value = [discArr[0].discipline];
-
-        discChoices.value = [discArr[0].choice];
-      } else {
-        clanDisciplines.value = [
-          discArr[0].discipline,
-          discArr[1].discipline,
-          discArr[2].discipline,
-        ];
-
-        discChoices.value = [
-          discArr[0].choice,
-          discArr[1].choice,
-          discArr[2].choice,
-        ];
-      }
+      discArr.forEach((x) => {
+        clanDisciplines.value.push(x.discipline);
+        discChoices.value.push(x.choice);
+      });
 
       clanBane.value = newBane;
       discExplained.value = newTips.value;
@@ -377,6 +368,7 @@ export default defineComponent({
     return {
       age,
       advantages,
+      allPredatorTypes,
       clan,
       clanBane,
       clanDesc,
@@ -384,15 +376,16 @@ export default defineComponent({
       compulsion,
       disableRating,
       disciplineSkills,
+      disciplineObj,
       discChoices,
       disciplineChoice,
       discSkillsArr,
       discSpecificArr,
-      discPointsRemaining,
       discExplained,
       flaws,
       generation,
       humanity,
+      predatorType,
       sire,
       skillsSelected,
       xp,
@@ -401,6 +394,7 @@ export default defineComponent({
       onDialogHide,
 
       ageOptions: [
+        { label: "Fledgling", bonusXp: 0 },
         { label: "Childer", bonusXp: 0 },
         { label: "Neonate", bonusXp: 15 },
         {
@@ -445,9 +439,8 @@ export default defineComponent({
           clan: clan,
           compulsion: compulsion,
           desc: clanDesc,
-          disciplines: clanDisciplines,
+          disciplines: disciplineObj,
           discSkillsSelected: skillsSelected,
-          disciplineChoices: discChoices,
           flaws: flaws,
           advantages: advantages,
           bane: clanBane,
@@ -456,6 +449,7 @@ export default defineComponent({
           generation: generation,
           humanity: humanity,
           xp: xp,
+          predatorType: predatorType,
         });
       },
 
@@ -467,6 +461,7 @@ export default defineComponent({
     clanSelected() {
       this.skillsSelected = [];
       this.discChoices = [0, 0, 0];
+      this.predatorType = "";
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -756,7 +751,11 @@ export default defineComponent({
     },
     discSelected() {
       this.skillsSelected = []; //reset it
+      this.disciplineObj = {};
       let sum = 0;
+      this.clanDisciplines.forEach(
+        (key, i) => (this.disciplineObj[key] = this.discChoices[i])
+      );
 
       this.discChoices.forEach((choice) => (sum += choice));
 
@@ -855,7 +854,15 @@ export default defineComponent({
     },
 
     skillPicked(skill, discipline) {
-      if (this.skillsSelected.length === 3) {
+      let allowedLen = 0;
+      for (const property in this.disciplineObj) {
+        if (isNaN(this.disciplineObj[property])) {
+          continue;
+        }
+        allowedLen += this.disciplineObj[property];
+      }
+
+      if (this.skillsSelected.length === allowedLen) {
         this.$q.notify({
           type: "negative",
           textColor: "white",
@@ -864,35 +871,49 @@ export default defineComponent({
         });
         return;
       }
+
+      if (this.skillsSelected.filter((e) => e.skill === skill).length > 0) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You have already selected this skill!",
+        });
+        return;
+      }
+
       let newSkill = { discipline: discipline, skill: skill };
       this.skillsSelected.push(newSkill);
+      // this.disciplineObj["skills"] = this.skillsSelected; may need to revisit this but otherwise not needed atm
     },
     removeDiscSkill(event) {
       this.skillsSelected.splice(event, 1);
+      // this.disciplineObj["skills"] = this.skillsSelected;
     },
-    setDiscPoints(key, discPoints) {
-      this.discPointsRemaining[key] = discPoints;
-    },
-  },
-  computed: {
-    discChoicesWithLevel() {
-      //holy cow do I hate this
-      // let filteredChoices = this.discChoices.filter((x) => {
-      //   return x > 0;
-      // });
 
-      const mergeArrToJSON = (a, b) =>
-        a
-          .map((item, i) => ({ [item]: b[i] }))
-          .reduce((json, val) => Object.assign({}, json, val));
-      let newArr = mergeArrToJSON(this.clanDisciplines, this.discChoices);
-
-      for (var property in newArr) {
-        if (newArr[property] == 0) {
-          delete newArr[property];
-        }
+    modifyPredatorTypes() {
+      let modifiedArr = this.allPredatorTypes.predator;
+      if (this.clan === "Thin-Blood" || this.age.label === "Fledgling") {
+        this.predatorType = "None";
+        return (modifiedArr = ["None"]);
       }
-      return newArr;
+      if (this.clan === "Ventrue") {
+        modifiedArr = modifiedArr.filter((x) => x !== "Bagger");
+      }
+      return modifiedArr;
+    },
+    predatorPicked() {
+      console.log(this.disciplineObj);
+    },
+
+    donePickingSkills() {
+      let allowedLen = 0;
+      for (const property in this.disciplineObj) {
+        if (isNaN(this.disciplineObj[property])) {
+          continue;
+        }
+        allowedLen += this.disciplineObj[property];
+      }
+      return allowedLen > this.skillsSelected.length ? true : false;
     },
   },
 });

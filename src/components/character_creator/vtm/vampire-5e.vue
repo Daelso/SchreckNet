@@ -1,52 +1,89 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          <div class="info">
-            Name: {{ charName }}
-            <br />
-            Clan: {{ clan }}
-            <br />
-            Sect: {{ sect }}
-            <br />
-            Age:
-            {{ age.label }}
-            <br />
-            Generation:
-            {{ generation.label }}
-            <br />
-            Predator Type:
-            {{ predatorType }}
-            <br />
-          </div>
+          Vampire: The Masquerade
+          <div class="info q-my-sm">
+            <div>Name: {{ charName }}</div>
+            <div>Clan: {{ clan }}</div>
+            <div>Sect: {{ sect }}</div>
+            <div>Age: {{ age.label }}</div>
+            <div>Generation: {{ generation.label }}</div>
+            <div>Predator Type: {{ predatorType }}</div>
+            <div>Humanity: {{ humanity }}</div>
+            <div>Chronicle: {{ chronicle }}</div>
 
-          Potency: {{ generation.potency }}/{{ generation.maxPotency }}
-          <br />
-          Humanity: {{ humanity }}
-          <br />
-          Health: {{ stamina + 3 }}
-          <br />
-          Willpower: {{ composure + resolve }}
-          <br />
-          Advantage Points: {{ advantages }}
-          <br />
-          Flaw Points: {{ flaws }}
-          <br />
-          Remaining XP: {{ xp }}
-          <br />
-          Concept: {{ !concept ? "None" : concept }}
-          <br />
-          Ambition: {{ !ambition ? "None" : ambition }}
-          <br />
-          Desire: {{ !desire ? "None" : desire }}
-          <br />
-          Convictions: {{ convictions.length < 1 ? "None" : convictions }}
-          <br />
-          Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
-          <br />
-          Archetype: {{ !archtypeModel ? "None" : archtypeModel }}
-          <br />
+            <div>Concept: {{ !concept ? "None" : concept }}</div>
+          </div>
+          <q-separator class="q-my-md" />
+          <div class="stats">
+            <div>Health: {{ stamina + 3 }}</div>
+            <div>Willpower: {{ composure + resolve }}</div>
+            <div>
+              Potency: {{ generation.potency }}/{{ generation.maxPotency }}
+            </div>
+            <div>Advantage Points: {{ advantages }}</div>
+            <div>Remaining XP: {{ xp }}</div>
+            <div>Flaw Points: {{ flaws }}</div>
+          </div>
+          <q-separator class="q-my-md" />
+
+          <div class="concept">
+            <div>Archetype: {{ !archtypeModel ? "None" : archtypeModel }}</div>
+            <div>Ambition: {{ !ambition ? "None" : ambition }}</div>
+            <div>Desire: {{ !desire ? "None" : desire }}</div>
+          </div>
+          <q-separator class="q-my-md" />
+
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="settings_accessibility"
+              label="Touchstones and Convictions"
+              caption="Review who your kindred really is"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Convictions
+                  <div v-if="convictions.length < 1">None</div>
+                  <div v-for="(conviction, key) in convictions" :key="key">
+                    {{ conviction }}
+                  </div>
+                </q-card-section>
+              </q-card>
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Touchstones
+                  <div v-if="touchstones.length < 1">None</div>
+                  <div v-for="(touchstone, key) in touchstones" :key="key">
+                    {{ touchstone }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="attribution"
+              label="Attributes"
+              caption="View finalized attributes"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  <div
+                    v-for="(attribute, key) in attributeInfo.Attributes"
+                    :key="key"
+                  >
+                    {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
               icon="app:ankh"
@@ -71,27 +108,6 @@
 
                   <div v-for="(discipline, key) in disciplineSkills" :key="key">
                     {{ discipline.discipline }}: {{ discipline.skill }}
-                  </div>
-                </q-card-section>
-              </q-card>
-            </q-expansion-item>
-          </q-list>
-
-          <br />
-          <q-list bordered class="rounded-borders">
-            <q-expansion-item
-              icon="attribution"
-              label="Attributes"
-              caption="View finalized attributes"
-              dark
-            >
-              <q-card>
-                <q-card-section class="backgroundDefault">
-                  <div
-                    v-for="(attribute, key) in attributeInfo.Attributes"
-                    :key="key"
-                  >
-                    {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
                   </div>
                 </q-card-section>
               </q-card>
@@ -167,6 +183,7 @@
         @touchstones="handleTouchstones($event)"
         @archetype="handleArchetype($event)"
         @sect="handleSect($event)"
+        @chronicle="handleChronicle($event)"
       />
     </div>
   </q-form>
@@ -191,6 +208,28 @@
     width: 300px;
   }
 }
+.info {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stats {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.concept {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* div > div {
+  padding: 10px;
+  background-color: #ccc;
+} */
 </style>
 
 <script>
@@ -313,6 +352,9 @@ export default {
     },
     handleSect(data) {
       this.sect = data;
+    },
+    handleChronicle(data) {
+      this.chronicle = data;
     },
     clanSelected() {
       this.$q

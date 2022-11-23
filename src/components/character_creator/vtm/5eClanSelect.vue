@@ -221,7 +221,22 @@
               </q-list>
 
               <q-stepper-navigation>
-                <q-btn color="primary" label="Finish" @click="onOKClick" />
+                <q-btn
+                  color="primary"
+                  label="Finish"
+                  :disable="donePickingSkills()"
+                  @click="onOKClick"
+                >
+                  <q-tooltip
+                    anchor="top right"
+                    self="center left"
+                    :offset="[10, 10]"
+                    class="bg-dark text-body2"
+                    v-if="donePickingSkills()"
+                  >
+                    Please select all of your skills first.
+                  </q-tooltip>
+                </q-btn>
                 <q-btn
                   flat
                   @click="step = 3"
@@ -839,7 +854,15 @@ export default defineComponent({
     },
 
     skillPicked(skill, discipline) {
-      if (this.skillsSelected.length === 3) {
+      let allowedLen = 0;
+      for (const property in this.disciplineObj) {
+        if (isNaN(this.disciplineObj[property])) {
+          continue;
+        }
+        allowedLen += this.disciplineObj[property];
+      }
+
+      if (this.skillsSelected.length === allowedLen) {
         this.$q.notify({
           type: "negative",
           textColor: "white",
@@ -858,13 +881,13 @@ export default defineComponent({
         return;
       }
 
-      console.log(this.disciplineObj);
-
       let newSkill = { discipline: discipline, skill: skill };
       this.skillsSelected.push(newSkill);
+      // this.disciplineObj["skills"] = this.skillsSelected; may need to revisit this but otherwise not needed atm
     },
     removeDiscSkill(event) {
       this.skillsSelected.splice(event, 1);
+      // this.disciplineObj["skills"] = this.skillsSelected;
     },
 
     modifyPredatorTypes() {
@@ -880,6 +903,17 @@ export default defineComponent({
     },
     predatorPicked() {
       console.log(this.disciplineObj);
+    },
+
+    donePickingSkills() {
+      let allowedLen = 0;
+      for (const property in this.disciplineObj) {
+        if (isNaN(this.disciplineObj[property])) {
+          continue;
+        }
+        allowedLen += this.disciplineObj[property];
+      }
+      return allowedLen > this.skillsSelected.length ? true : false;
     },
   },
 });

@@ -117,6 +117,21 @@
             filled
             @update:model-value="this.$emit('sect', this.sect)"
           />
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="chronicle"
+            label="Chronicle *"
+            class="select q-mt-md"
+            label-color="primary"
+            lazy-rules
+            @update:model-value="this.$emit('chronicle', this.chronicle)"
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 100) ||
+                'Please keep this field under 100 characters',
+            ]"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">

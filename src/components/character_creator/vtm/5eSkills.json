@@ -1,5 +1,5 @@
 {
-  "Skills": [
+  "skills": [
     "Athletics",
     "Brawl",
     "Craft",
@@ -9,7 +9,7 @@
     "Larceny",
     "Stealth",
     "Survival",
-    "Animal Ken",
+    "AnimalKen",
     "Etiquette",
     "Insight",
     "Intimidation",

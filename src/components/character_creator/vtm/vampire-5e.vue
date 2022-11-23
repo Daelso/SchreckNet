@@ -1,64 +1,104 @@
 <template>
   <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
-      <q-banner class="bg-primary text-white" inline-actions rounded dark>
-        Name: {{ charName }}
-        <br />
-        Clan: {{ clan }}
-        <br />
-        Sect: {{ sect }}
-        <br />
-        Age:
-        {{ age.label }}
-        <br />
-        Generation:
-        {{ generation.label }}
-        <br />
-        Predator Type:
-        {{ predatorType }}
-        <br />
-        Potency: {{ generation.potency }}/{{ generation.maxPotency }}
-        <br />
-        Humanity: {{ humanity }}
-        <br />
-        Health: {{ stamina + 3 }}
-        <br />
-        Willpower: {{ composure + resolve }}
-        <br />
-        Advantage Points: {{ advantages }}
-        <br />
-        Flaw Points: {{ flaws }}
-        <br />
-        Remaining XP: {{ xp }}
-        <br />
-        Concept: {{ !concept ? "None" : concept }}
-        <br />
-        Ambition: {{ !ambition ? "None" : ambition }}
-        <br />
-        Desire: {{ !desire ? "None" : desire }}
-        <br />
-        Convictions: {{ convictions.length < 1 ? "None" : convictions }}
-        <br />
-        Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
-        <br />
-        Archetype: {{ !archtypeModel ? "None" : archtypeModel }}
-        <br />
-        Disciplines:
+      <q-banner class="bg-primary text-white" rounded dark>
+        <div class="container">
+          <div class="info">
+            Name: {{ charName }}
+            <br />
+            Clan: {{ clan }}
+            <br />
+            Sect: {{ sect }}
+            <br />
+            Age:
+            {{ age.label }}
+            <br />
+            Generation:
+            {{ generation.label }}
+            <br />
+            Predator Type:
+            {{ predatorType }}
+            <br />
+          </div>
 
-        <div v-for="(discipline, key) in disciplines" :key="key">
-          {{ key }}: {{ discipline }}
-        </div>
-        <br />
-        Disciplines Skills:
+          Potency: {{ generation.potency }}/{{ generation.maxPotency }}
+          <br />
+          Humanity: {{ humanity }}
+          <br />
+          Health: {{ stamina + 3 }}
+          <br />
+          Willpower: {{ composure + resolve }}
+          <br />
+          Advantage Points: {{ advantages }}
+          <br />
+          Flaw Points: {{ flaws }}
+          <br />
+          Remaining XP: {{ xp }}
+          <br />
+          Concept: {{ !concept ? "None" : concept }}
+          <br />
+          Ambition: {{ !ambition ? "None" : ambition }}
+          <br />
+          Desire: {{ !desire ? "None" : desire }}
+          <br />
+          Convictions: {{ convictions.length < 1 ? "None" : convictions }}
+          <br />
+          Touchstones: {{ touchstones.length < 1 ? "None" : touchstones }}
+          <br />
+          Archetype: {{ !archtypeModel ? "None" : archtypeModel }}
+          <br />
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="app:ankh"
+              label="Disciplines"
+              caption="View disciplines and powers"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Disciplines:
+                  <div v-if="Object.keys(disciplines).length === 0">
+                    Not yet selected
+                  </div>
+                  <div v-for="(discipline, key) in disciplines" :key="key">
+                    <div v-if="discipline > 0">{{ key }}: {{ discipline }}</div>
+                  </div>
+                  <br />
+                  Powers:
+                  <div v-if="Object.keys(disciplineSkills).length === 0">
+                    Not yet selected
+                  </div>
 
-        <div v-for="(discipline, key) in disciplineSkills" :key="key">
-          {{ discipline.discipline }}: {{ discipline.skill }}
+                  <div v-for="(discipline, key) in disciplineSkills" :key="key">
+                    {{ discipline.discipline }}: {{ discipline.skill }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+
+          <br />
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="attribution"
+              label="Attributes"
+              caption="View finalized attributes"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  <div
+                    v-for="(attribute, key) in attributeInfo.Attributes"
+                    :key="key"
+                  >
+                    {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
         </div>
-        <br />
-        Attributes:
-        <div v-for="(attribute, key) in attributeInfo.Attributes" :key="key">
-          {{ attribute }} : {{ this[attribute.toLowerCase()] }}/5
-        </div>
+
         <template v-slot:action>
           <q-btn flat label="Save Character" type="submit" color="white" />
         </template>
@@ -76,6 +116,18 @@
               <q-item-label>Attributes</q-item-label>
               <q-item-label caption class="text-white"
                 >Set your base, unmodified, attributes</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+          <q-item clickable @click="attributes">
+            <q-item-section avatar>
+              <q-icon color="secondary" name="trending_up" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Skills</q-item-label>
+              <q-item-label caption class="text-white"
+                >Set your base, unmodified, skills</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -130,6 +182,9 @@
 .q-field__bottom {
   color: white;
   margin-bottom: 3px;
+}
+.backgroundDefault {
+  background-color: #171a1e;
 }
 @media only screen and (max-width: 600px) {
   .select {

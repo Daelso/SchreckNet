@@ -349,8 +349,6 @@ export default defineComponent({
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
-      skills: props.fullSkills,
-      points: this.specialtiePoints,
     };
   },
   methods: {
@@ -366,8 +364,8 @@ export default defineComponent({
     },
     sortSkills() {
       let optionsArr = [];
-      for (const skill in this.skills) {
-        if (this.skills[skill] > 0) {
+      for (const skill in this.fullSkills) {
+        if (this.fullSkills[skill] > 0) {
           optionsArr.push(skill[0].toUpperCase() + skill.slice(1));
         }
       }

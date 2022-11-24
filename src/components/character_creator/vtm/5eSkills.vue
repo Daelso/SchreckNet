@@ -4,28 +4,7 @@
       <q-header class="bg-primary">
         <q-toolbar>
           <q-toolbar-title>Base Skill Selection</q-toolbar-title>
-          <q-btn
-            class="q-mx-md"
-            color="primary"
-            label="Cancel"
-            @click="onCancelClick"
-          >
-            <q-tooltip class="bg-dark text-body2"
-              >This will undo any changes</q-tooltip
-            >
-          </q-btn>
-          <q-btn
-            color="primary"
-            :disable="checkIfGood()"
-            label="Save"
-            @click="onOKClick"
-          >
-            <q-tooltip v-if="checkIfGood()" class="bg-dark text-body2"
-              >You can only save once you select a valid distribution of
-              skills.</q-tooltip
-            >
-          </q-btn>
-
+          <q-btn color="primary" label="Save" @click="onOKClick"> </q-btn>
           <br />
         </q-toolbar>
       </q-header>
@@ -43,13 +22,18 @@
             option-label="label"
             @update:model-value="distributionSelected"
           />
-          <div>poooo</div>
+          <div class="blurb">
+            {{ distBlurb }}
+          </div>
+
           <div class="q-pa-md doc-container">
             <q-badge class="q-mb-sm"
               >Skill Points Remaining: {{ this.skillPoints }}</q-badge
             >
+            <q-badge class="q-mb-sm"
+              >Specialties Gained: {{ this.specialtiesFromSkills }}</q-badge
+            >
             <br />
-
             <q-btn
               class="q-mb-sm"
               color="primary"
@@ -116,6 +100,14 @@
   font-weight: bold;
   margin-bottom: 12px;
 }
+
+.blurb {
+  background-color: #222831;
+  border-radius: 4px;
+  color: white;
+  position: sticky;
+  top: 15px;
+}
 </style>
 
 <script>
@@ -129,22 +121,36 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
-    console.log(props.info.baseSkills);
     const baseSkills = ref(props.info.baseSkills);
 
     const skillPoints = ref(props.info.skillPoints);
+
+    const distribution = ref(props.info.skillDistribution.distribution);
+
+    const distBlurb = ref(props.info.skillDistribution.distributionDesc);
+    const skillDistribution = ref(props.info.skillDistribution);
+
+    const specialtiesFromSkills = ref(props.info.specialtiesFromSkills);
 
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
     return {
       baseSkills,
+      distBlurb,
+      distribution,
       skillPoints,
       dialogRef,
+      skillDistribution,
+      specialtiesFromSkills,
       onDialogHide,
       onOKClick() {
         onDialogOK({
           baseSkills: baseSkills,
           skillPoints: skillPoints,
+          distBlurb: distBlurb,
+          distribution: distribution,
+          skillDistribution: skillDistribution,
+          specialtiesFromSkills: specialtiesFromSkills,
         });
       },
 
@@ -155,18 +161,15 @@ export default defineComponent({
   data() {
     return {
       skillList: skillInfo.skills,
-      skillDistribution: {
-        label: "Jack-of-all-trades",
-        pointsTotal: 29,
-        distribution: [3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
-      },
+      maxPoint: Math.max(...this.skillDistribution.distribution),
+
       distributionOptions: [
         {
           label: "Jack-of-all-trades",
           pointsTotal: 29,
           distribution: [
-            3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+            0, 0, 0, 0,
           ],
           distributionDesc:
             "One Skill at 3; eight Skills at 2; ten Skills at 1",
@@ -174,14 +177,20 @@ export default defineComponent({
         {
           label: "Balanced",
           pointsTotal: 26,
-          distribution: [3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1],
+          distribution: [
+            3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0,
+          ],
           distributionDesc:
             "Three Skills at 3; five Skills at 2; seven Skills at 1",
         },
         {
           label: "Specialist",
           pointsTotal: 22,
-          distribution: [4, 3, 3, 3, 2, 2, 2, 1, 1, 1],
+          distribution: [
+            4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0,
+          ],
           distributionDesc:
             "One Skill at 4; three Skills at 3; three Skills at 2; three Skills at 1",
         },
@@ -190,7 +199,6 @@ export default defineComponent({
   },
   methods: {
     addSkill(data) {
-      console.log(data);
       if (this.baseSkills[data.toLowerCase()] === 5) {
         this.$q.notify({
           type: "negative",
@@ -208,11 +216,127 @@ export default defineComponent({
         return;
       }
       this.baseSkills[data.toLowerCase()]++;
-      console.log(this.baseSkills);
       this.skillPoints--;
+      switch (data) {
+        case "craft":
+          if (
+            this.baseSkills[data.toLowerCase()] > 0 &&
+            this.baseSkills[data.toLowerCase()] < 2
+          ) {
+            this.specialtiesFromSkills++;
+            this.$q.notify({
+              type: "positive",
+              textColor: "white",
+              position: "top",
+              message: `Free specialty acquired from ${data}`,
+            });
+          }
+          break;
+        case "academics":
+          if (
+            this.baseSkills[data.toLowerCase()] > 0 &&
+            this.baseSkills[data.toLowerCase()] < 2
+          ) {
+            this.specialtiesFromSkills++;
+            this.$q.notify({
+              type: "positive",
+              textColor: "white",
+              position: "top",
+              message: `Free specialty acquired from ${data}`,
+            });
+          }
+          break;
+        case "science":
+          if (
+            this.baseSkills[data.toLowerCase()] > 0 &&
+            this.baseSkills[data.toLowerCase()] < 2
+          ) {
+            this.specialtiesFromSkills++;
+            this.$q.notify({
+              type: "positive",
+              textColor: "white",
+              position: "top",
+              message: `Free specialty acquired from ${data}`,
+            });
+          }
+          break;
+        case "performance":
+          if (
+            this.baseSkills[data.toLowerCase()] > 0 &&
+            this.baseSkills[data.toLowerCase()] < 2
+          ) {
+            this.specialtiesFromSkills++;
+            this.$q.notify({
+              type: "positive",
+              textColor: "white",
+              position: "top",
+              message: `Free specialty acquired from ${data}`,
+            });
+          }
+          break;
+      }
+
+      this.checkIfGood();
     },
     subtractSkill(data) {
-      console.log(data);
+      if (this.baseSkills[data.toLowerCase()] === 0) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: `You have reached the minimum level for ${data}`,
+        });
+        return;
+      }
+
+      this.baseSkills[data.toLowerCase()]--;
+      this.skillPoints++;
+
+      switch (data.toLowerCase()) {
+        case "craft":
+          if (this.baseSkills[data.toLowerCase()] === 0) {
+            this.specialtiesFromSkills--;
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              position: "top",
+              message: `Free specialty from ${data.toLowerCase()} lost!`,
+            });
+          }
+          break;
+        case "academics":
+          if (this.baseSkills[data.toLowerCase()] === 0) {
+            this.specialtiesFromSkills--;
+            this.$q.notify({
+              type: "negative",
+              position: "top",
+              textColor: "white",
+              message: `Free specialty from ${data.toLowerCase()} lost!`,
+            });
+          }
+          break;
+        case "science":
+          if (this.baseSkills[data.toLowerCase()] === 0) {
+            this.specialtiesFromSkills--;
+            this.$q.notify({
+              type: "negative",
+              position: "top",
+              textColor: "white",
+              message: `Free specialty from ${data.toLowerCase()} lost!`,
+            });
+          }
+          break;
+        case "performance":
+          if (this.baseSkills[data.toLowerCase()] === 0) {
+            this.specialtiesFromSkills--;
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              position: "top",
+              message: `Free specialty from ${data.toLowerCase()} lost!`,
+            });
+          }
+          break;
+      }
     },
     citation(book, pageNum) {
       let bookName;
@@ -245,11 +369,75 @@ export default defineComponent({
       return `(V5 ${bookName}, p.${pageNum})`;
     },
 
-    resetAllSkills() {},
-    checkIfGood() {},
-    colorCheck() {},
+    resetAllSkills() {
+      this.skillPoints = this.skillDistribution.pointsTotal;
+      for (const property in this.baseSkills) {
+        this.baseSkills[property] = 0;
+      }
+    },
+
+    checkIfGood() {
+      let skills = [];
+
+      for (const property in this.baseSkills) {
+        skills.push(this.baseSkills[property]);
+      }
+
+      let sortedArr = skills.sort(function (a, b) {
+        return b - a;
+      });
+
+      console.log(sortedArr);
+      console.log(this.skillDistribution.distribution);
+      if (
+        JSON.stringify(sortedArr) !==
+        JSON.stringify(this.skillDistribution.distribution)
+      ) {
+        console.log("We are not good!");
+        return;
+      }
+      this.$q.notify({
+        type: "positive",
+        textColor: "white",
+        message: `You have a proper ${this.skillDistribution.label} distribution.`,
+      });
+    },
+    colorCheck() {
+      let fourCount = 0;
+      let threeCount = 0;
+      let twoCount = 0;
+      let oneCount = 0;
+      this.sortedArr.filter((x) => {
+        switch (x) {
+          case 4:
+            fourCount++;
+            break;
+          case 3:
+            threeCount++;
+            break;
+          case 2:
+            twoCount++;
+            break;
+          case 1:
+            oneCount++;
+            break;
+          default:
+            break;
+        }
+      });
+
+      let arr = [fourCount, threeCount, twoCount, oneCount];
+      return arr;
+    },
     distributionSelected() {
-      console.log(this.skillDistribution);
+      this.skillPoints = this.skillDistribution.pointsTotal;
+      this.distribution = this.skillDistribution.distribution;
+      this.distBlurb = this.skillDistribution.distributionDesc;
+      this.maxPoint = Math.max(...this.skillDistribution.distribution);
+
+      for (const property in this.baseSkills) {
+        this.baseSkills[property] = 0;
+      }
     },
   },
 });

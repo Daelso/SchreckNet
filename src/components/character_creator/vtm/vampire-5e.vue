@@ -14,8 +14,8 @@
             <div>Predator Type: {{ predatorType }}</div>
             <div>Humanity: {{ humanity }}</div>
             <div>Chronicle: {{ chronicle }}</div>
-
             <div>Concept: {{ !concept ? "None" : concept }}</div>
+            <div>Specialties: {{ totalSpecialties() }}</div>
           </div>
           <q-separator class="q-my-md" />
           <div class="stats">
@@ -300,6 +300,9 @@ export default {
       baseStamina: 0,
       baseStrength: 0,
       baseWits: 0,
+      baseSpecialties: 1,
+      specialtiesFromSkills: 0,
+      specialtiesRemaining: 0,
       charisma: 0,
       composure: 0,
       dexterity: 0,
@@ -373,6 +376,15 @@ export default {
         politics: 0,
         science: 0,
         technology: 0,
+      },
+      skillDistribution: {
+        label: "Jack-of-all-trades",
+        pointsTotal: 29,
+        distribution: [
+          3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+          0, 0, 0, 0,
+        ],
+        distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
       predatorType: "",
       clan: ref("Brujah"),
@@ -520,13 +532,16 @@ export default {
             info: {
               baseSkills: this.baseSkills,
               skillPoints: this.skillPoints,
+              skillDistribution: this.skillDistribution,
+              specialtiesFromSkills: this.specialtiesFromSkills,
             },
           },
         })
         .onOk((data) => {
-          this.baseSkills = data.baseSkills;
           this.skillPoints = data.skillPoints;
           this.trueSkills = { ...this.trueSkills, ...this.baseSkills };
+          this.skillDistribution = data.skillDistribution;
+          this.specialtiesFromSkills = data.specialtiesFromSkills;
         });
     },
     addModifiers() {
@@ -539,6 +554,13 @@ export default {
       this.stamina = this.baseStamina + 1;
       this.strength = this.baseStrength + 1;
       this.wits = this.baseWits + 1;
+      this.specialtiesRemaining =
+        this.baseSpecialties + this.specialtiesFromSkills;
+    },
+    totalSpecialties() {
+      this.specialtiesRemaining =
+        this.baseSpecialties + this.specialtiesFromSkills;
+      return this.specialtiesRemaining;
     },
   },
 };

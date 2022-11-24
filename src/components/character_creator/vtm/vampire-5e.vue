@@ -15,7 +15,7 @@
             <div>Humanity: {{ humanity }}</div>
             <div>Chronicle: {{ chronicle }}</div>
             <div>Concept: {{ !concept ? "None" : concept }}</div>
-            <div>Specialties: {{ totalSpecialties() }}</div>
+            <div>Specialties: {{ this.totalSpecialty }}</div>
             <div>Skills Done: {{ skillsDone }}</div>
             <div>Attributes Done: {{ attributesDone }}</div>
           </div>
@@ -75,7 +75,12 @@
                   Specialties:
                   <div v-if="specialties.length < 1">None yet</div>
                   <div v-for="(specialty, key) in specialties" :key="key">
-                    {{ specialty }}
+                    Skill:
+                    {{
+                      specialty.skill[0].toUpperCase() +
+                      specialty.skill.slice(1)
+                    }}
+                    - {{ specialty.specialty }}
                   </div>
                 </q-card-section>
               </q-card>
@@ -219,8 +224,10 @@
         @sect="handleSect($event)"
         @chronicle="handleChronicle($event)"
         @specialties="handleSpecialties($event)"
-        :specialtiePoints="this.specialtiesRemaining"
+        v-model:specialtiePoints="totalSpecialty"
+        :specialtiesUsed="this.specialtiesUsed"
         :specials="this.specialties"
+        :fullSkills="this.trueSkills"
       />
     </div>
   </q-form>
@@ -262,15 +269,9 @@
   gap: 3px;
   grid-template-columns: repeat(3, 1fr);
 }
-
-/* div > div {
-  padding: 10px;
-  background-color: #ccc;
-} */
 </style>
 
 <script>
-import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
@@ -285,8 +286,6 @@ export default {
     tabs,
   },
   setup() {
-    const $q = useQuasar();
-    const axios = require("axios");
     const router = useRouter();
 
     let baseUrl = "";
@@ -322,9 +321,11 @@ export default {
       baseStamina: 0,
       baseStrength: 0,
       baseWits: 0,
+      gainedPoints: 0,
       baseSpecialties: 1,
-      specialtiesFromSkills: 0,
-      specialtiesRemaining: 0,
+      gainedSpecialties: 0,
+      specialtiesUsed: 0,
+      totalSpecialty: 1,
       charisma: 0,
       composure: 0,
       dexterity: 0,
@@ -372,7 +373,7 @@ export default {
       },
       trueSkills: {
         athletics: 0,
-        brawl: 0,
+        brawl: 2,
         craft: 0,
         drive: 0,
         firearms: 0,
@@ -409,7 +410,7 @@ export default {
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
       predatorType: "",
-      specialties: ["gaming"],
+      specialties: [],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -473,6 +474,7 @@ export default {
     handleSpecialties(data) {
       this.specialties = data;
     },
+
     clanSelected() {
       this.$q
         .dialog({
@@ -561,10 +563,10 @@ export default {
           persistent: true,
           componentProps: {
             info: {
+              gainedPoints: this.gainedPoints,
               baseSkills: this.baseSkills,
               skillPoints: this.skillPoints,
               skillDistribution: this.skillDistribution,
-              specialtiesFromSkills: this.specialtiesFromSkills,
               skillsDone: this.skillsDone,
             },
           },
@@ -573,8 +575,9 @@ export default {
           this.skillPoints = data.skillPoints;
           this.trueSkills = { ...this.trueSkills, ...this.baseSkills };
           this.skillDistribution = data.skillDistribution;
-          this.specialtiesFromSkills = data.specialtiesFromSkills;
+          this.gainedSpecialties = data.gainedPoints;
           this.skillsDone = data.skillsDone;
+          this.gainedPoints = data.gainedPoints;
         });
     },
     addModifiers() {
@@ -587,13 +590,6 @@ export default {
       this.stamina = this.baseStamina + 1;
       this.strength = this.baseStrength + 1;
       this.wits = this.baseWits + 1;
-      this.specialtiesRemaining =
-        this.baseSpecialties + this.specialtiesFromSkills;
-    },
-    totalSpecialties() {
-      this.specialtiesRemaining =
-        this.baseSpecialties + this.specialtiesFromSkills;
-      return this.specialtiesRemaining;
     },
   },
 };

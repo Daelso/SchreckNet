@@ -11,6 +11,15 @@
       >
         <q-tab name="coreConcept" label="Core Concept" />
         <q-tab name="touchstones" label="Touchstones/Convictions" />
+        <q-tab
+          :disable="sortSkills().length < 1"
+          name="specialties"
+          label="Specialties"
+        >
+          <q-tooltip v-if="sortSkills().length < 1" class="bg-dark text-body2"
+            >Must have any skill over 1 to set specialties.</q-tooltip
+          >
+        </q-tab>
       </q-tabs>
 
       <q-separator />
@@ -225,6 +234,72 @@
             </q-item>
           </q-list>
         </q-tab-panel>
+
+        <q-tab-panel name="specialties">
+          <div class="q-mb-sm">
+            Specialties remaining: {{ specialtiePoints }}
+          </div>
+          <q-select
+            v-model="skillSelect"
+            :options="sortSkills()"
+            label="Which skill *"
+            class="select q-mb-md"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+          />
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="specialtyInput"
+            label="Specialty *"
+            hint="Write your specialty (Press enter to confirm)"
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            v-on:keydown.enter.prevent="
+              () => {
+                if (this.specialtyInput) {
+                  this.addSpecialty();
+                  this.$emit('specialties', this.specialties);
+                }
+              }
+            "
+            :rules="[
+              (val) =>
+                (val && val.length > 1 && val.length <= 100) ||
+                'Please stay between 1-100 characters',
+              (val) =>
+                (val && this.skillSelect.length > 0) ||
+                'Please select which skill this specialty is for first!',
+            ]"
+          />
+          <q-separator />
+          <div class="text-h6" style="font-family: monospace">Specialties</div>
+
+          <q-list bordered separator>
+            <q-item
+              v-for="(specialty, key) in specialties"
+              :key="key"
+              clickable
+              v-ripple
+              @click="removeSpecialty($event.target.id)"
+            >
+              <q-item-section :id="key"
+                >Skill:
+                {{
+                  specialty.skill[0].toUpperCase() + specialty.skill.slice(1)
+                }}
+                - {{ specialty.specialty }}
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                >
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
@@ -257,12 +332,14 @@ import { ref } from "vue";
 
 export default defineComponent({
   name: "v5-tabs",
+  props: ["specialtiePoints", "specials", "fullSkills", "specialtiesUsed"],
+  emits: ["update:specialtiePoints", "specialties"],
   setup() {
     return {
       tab: ref("coreConcept"),
     };
   },
-  data() {
+  data(props) {
     return {
       ambition: "",
       archetype: "",
@@ -276,6 +353,9 @@ export default defineComponent({
       concept: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
+      specialtyInput: "",
+      skillSelect: "",
+      specialties: props.specials,
     };
   },
   methods: {
@@ -284,6 +364,47 @@ export default defineComponent({
     },
     removeTouchstone(event) {
       this.touchstones.splice(event, 1);
+    },
+    removeSpecialty(event) {
+      this.specialties.splice(event, 1);
+      this.handlePoints(false);
+    },
+    sortSkills() {
+      let optionsArr = [];
+      for (const skill in this.fullSkills) {
+        if (this.fullSkills[skill] > 0) {
+          optionsArr.push(skill[0].toUpperCase() + skill.slice(1));
+        }
+      }
+      return optionsArr;
+    },
+    addSpecialty() {
+      if (this.handlePoints(true) === false) {
+        return;
+      }
+      this.specialties.push({
+        skill: this.skillSelect.toLowerCase(),
+        specialty: this.specialtyInput,
+      });
+      this.specialtyInput = "";
+      this.skillSelect = "";
+    },
+    handlePoints(data) {
+      let points = this.specialtiePoints;
+      if (points === 0 && data === true) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "Out of specialties",
+        });
+        return false;
+      }
+      if (data === true) {
+        points--;
+      } else {
+        points++;
+      }
+      this.$emit("update:specialtiePoints", points);
     },
   },
 });

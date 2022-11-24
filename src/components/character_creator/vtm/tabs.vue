@@ -326,7 +326,7 @@ export default defineComponent({
   name: "v5-tabs",
   props: ["specialtiePoints", "specials", "fullSkills", "specialtiesUsed"],
   emits: ["update:specialtiePoints", "specialties"],
-  setup(props, { emit }) {
+  setup() {
     return {
       tab: ref("coreConcept"),
     };
@@ -345,7 +345,6 @@ export default defineComponent({
       concept: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      specialtyUsed: props.specialtiesUsed,
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,

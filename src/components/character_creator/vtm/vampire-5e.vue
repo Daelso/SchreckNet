@@ -373,7 +373,7 @@ export default {
       },
       trueSkills: {
         athletics: 0,
-        brawl: 2,
+        brawl: 0,
         craft: 0,
         drive: 0,
         firearms: 0,

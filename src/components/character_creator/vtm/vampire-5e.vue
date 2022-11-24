@@ -16,6 +16,8 @@
             <div>Chronicle: {{ chronicle }}</div>
             <div>Concept: {{ !concept ? "None" : concept }}</div>
             <div>Specialties: {{ totalSpecialties() }}</div>
+            <div>Skills Done: {{ skillsDone }}</div>
+            <div>Attributes Done: {{ attributesDone }}</div>
           </div>
           <q-separator class="q-my-md" />
           <div class="stats">
@@ -36,34 +38,6 @@
             <div>Desire: {{ !desire ? "None" : desire }}</div>
           </div>
           <q-separator class="q-my-md" />
-
-          <q-list bordered class="rounded-borders">
-            <q-expansion-item
-              icon="settings_accessibility"
-              label="Touchstones and Convictions"
-              caption="Review who your kindred really is"
-              dark
-            >
-              <q-card>
-                <q-card-section class="backgroundDefault">
-                  Convictions
-                  <div v-if="convictions.length < 1">None</div>
-                  <div v-for="(conviction, key) in convictions" :key="key">
-                    {{ conviction }}
-                  </div>
-                </q-card-section>
-              </q-card>
-              <q-card>
-                <q-card-section class="backgroundDefault">
-                  Touchstones
-                  <div v-if="touchstones.length < 1">None</div>
-                  <div v-for="(touchstone, key) in touchstones" :key="key">
-                    {{ touchstone }}
-                  </div>
-                </q-card-section>
-              </q-card>
-            </q-expansion-item>
-          </q-list>
 
           <q-list bordered class="rounded-borders">
             <q-expansion-item
@@ -96,6 +70,13 @@
                   <div v-for="(skill, key) in skillInfo.skills" :key="key">
                     {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
                   </div>
+                  <q-separator />
+                  <br />
+                  Specialties:
+                  <div v-if="specialties.length < 1">None yet</div>
+                  <div v-for="(specialty, key) in specialties" :key="key">
+                    {{ specialty }}
+                  </div>
                 </q-card-section>
               </q-card>
             </q-expansion-item>
@@ -124,6 +105,33 @@
 
                   <div v-for="(discipline, key) in disciplineSkills" :key="key">
                     {{ discipline.discipline }}: {{ discipline.skill }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="settings_accessibility"
+              label="Touchstones and Convictions"
+              caption="Review who your kindred really is"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Convictions
+                  <div v-if="convictions.length < 1">None</div>
+                  <div v-for="(conviction, key) in convictions" :key="key">
+                    {{ conviction }}
+                  </div>
+                </q-card-section>
+              </q-card>
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Touchstones
+                  <div v-if="touchstones.length < 1">None</div>
+                  <div v-for="(touchstone, key) in touchstones" :key="key">
+                    {{ touchstone }}
                   </div>
                 </q-card-section>
               </q-card>
@@ -164,6 +172,11 @@
             </q-item-section>
           </q-item>
           <q-item clickable @click="clanSelected">
+            <q-tooltip
+              v-if="!this.skillsDone || !this.attributesDone"
+              class="bg-dark text-body2"
+              >Please set valid base attributes and skills</q-tooltip
+            >
             <q-item-section avatar>
               <q-icon color="primary" name="app:ankh" style="scale: 170%" />
             </q-item-section>
@@ -175,7 +188,12 @@
               >
             </q-item-section>
           </q-item>
-          <q-item clickable>
+          <q-item :disable="!this.skillsDone || !this.attributesDone" clickable>
+            <q-tooltip
+              v-if="!this.skillsDone || !this.attributesDone"
+              class="bg-dark text-body2"
+              >Please set valid base attributes and skills</q-tooltip
+            >
             <q-item-section avatar>
               <q-icon color="secondary" name="upgrade" />
             </q-item-section>
@@ -200,6 +218,9 @@
         @archetype="handleArchetype($event)"
         @sect="handleSect($event)"
         @chronicle="handleChronicle($event)"
+        @specialties="handleSpecialties($event)"
+        :specialtiePoints="this.specialtiesRemaining"
+        :specials="this.specialties"
       />
     </div>
   </q-form>
@@ -283,6 +304,7 @@ export default {
     const router = useRouter();
 
     return {
+      attributesDone: false,
       attributeInfo,
       skillInfo,
       age: { label: "Childer", bonusXp: 0 },
@@ -387,6 +409,7 @@ export default {
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
       predatorType: "",
+      specialties: ["gaming"],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -406,6 +429,7 @@ export default {
       generation: { label: "12th", potency: 1, maxPotency: 3 },
       touchstones: [],
       xp: 0,
+      skillsDone: false,
       tooltips: ref([
         "Supernatural quickness and reflexes",
         "The Discipline of physical vigor and strength",
@@ -446,6 +470,9 @@ export default {
     handleChronicle(data) {
       this.chronicle = data;
     },
+    handleSpecialties(data) {
+      this.specialties = data;
+    },
     clanSelected() {
       this.$q
         .dialog({
@@ -463,6 +490,7 @@ export default {
               generation: this.generation,
               humanity: this.humanity,
               predatorType: this.predatorType,
+              specialties: this.specialties,
               sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
@@ -485,6 +513,7 @@ export default {
           this.flaws = this.baseFlaws + data.flaws.value;
           this.disciplineSkills = data.discSkillsSelected;
           this.predatorType = data.predatorType;
+          this.specialties = data.specialties;
         });
     },
     attributes() {
@@ -494,6 +523,7 @@ export default {
           persistent: true,
           componentProps: {
             info: {
+              attributesDone: this.attributesDone,
               attributePoints: this.attributePoints,
               charisma: this.baseCharisma,
               composure: this.baseComposure,
@@ -509,6 +539,7 @@ export default {
           },
         })
         .onOk((data) => {
+          this.attributesDone = data.attributesDone;
           this.attributePoints = data.attributePoints;
           this.baseCharisma = data.charisma;
           this.baseComposure = data.composure;
@@ -534,6 +565,7 @@ export default {
               skillPoints: this.skillPoints,
               skillDistribution: this.skillDistribution,
               specialtiesFromSkills: this.specialtiesFromSkills,
+              skillsDone: this.skillsDone,
             },
           },
         })
@@ -542,6 +574,7 @@ export default {
           this.trueSkills = { ...this.trueSkills, ...this.baseSkills };
           this.skillDistribution = data.skillDistribution;
           this.specialtiesFromSkills = data.specialtiesFromSkills;
+          this.skillsDone = data.skillsDone;
         });
     },
     addModifiers() {

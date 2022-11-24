@@ -155,6 +155,7 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
+    const attributesDone = ref(props.info.attributesDone);
     const checkArray = [4, 3, 3, 3, 2, 2, 2, 2, 1]; // This is what the final (before purchase), array should look like
     const colorArray = ref([]);
     const sortedArray = ref([]);
@@ -173,6 +174,7 @@ export default defineComponent({
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
     return {
+      attributesDone,
       checkArray,
       colorArray,
       sortedArray,
@@ -191,6 +193,7 @@ export default defineComponent({
       xp,
       onOKClick() {
         onDialogOK({
+          attributesDone: attributesDone,
           attributePoints: attributePoints,
           charisma: charisma,
           composure: composure,
@@ -308,8 +311,10 @@ export default defineComponent({
         return b - a;
       });
       if (JSON.stringify(this.sortedArr) === JSON.stringify(this.checkArray)) {
+        this.attributesDone = true;
         return false;
       }
+      this.attributesDone = false;
       return true;
     },
     colorCheck() {

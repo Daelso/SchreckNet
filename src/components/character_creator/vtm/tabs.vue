@@ -11,7 +11,15 @@
       >
         <q-tab name="coreConcept" label="Core Concept" />
         <q-tab name="touchstones" label="Touchstones/Convictions" />
-        <q-tab name="specialties" label="Specialties" />
+        <q-tab
+          :disable="sortSkills().length < 1"
+          name="specialties"
+          label="Specialties"
+        >
+          <q-tooltip v-if="sortSkills().length < 1" class="bg-dark text-body2"
+            >Must have any skill over 1 to set specialties.</q-tooltip
+          >
+        </q-tab>
       </q-tabs>
 
       <q-separator />

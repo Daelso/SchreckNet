@@ -229,8 +229,17 @@
 
         <q-tab-panel name="specialties">
           <div class="q-mb-sm">
-            Specialties remaining: {{ specialtiesRemaining }}
+            Specialties remaining: {{ specialtiePoints }}
           </div>
+          <q-select
+            v-model="skillSelect"
+            :options="sortSkills()"
+            label="Which skill *"
+            class="select q-mb-md"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+          />
           <q-input
             filled
             bg-color="grey-3"
@@ -244,14 +253,20 @@
             lazy-rules
             v-on:keydown.enter.prevent="
               () => {
-                this.specialtyInput = '';
-                this.$emit('specialties', this.specialties);
+                if (this.specialtyInput) {
+                  this.addSpecialty();
+                  this.$emit('specialties', this.specialties);
+                  this.updatePoints();
+                }
               }
             "
             :rules="[
               (val) =>
-                (typeof val === 'string' && val.length <= 2000) ||
-                'Please keep this field under 2000 characters',
+                (val && val.length > 1 && val.length <= 100) ||
+                'Please stay between 1-100 characters',
+              (val) =>
+                (val && this.skillSelect.length > 0) ||
+                'Please select which skill this specialty is for first!',
             ]"
           />
           <q-separator />
@@ -266,7 +281,11 @@
               @click="removeSpecialty($event.target.id)"
             >
               <q-item-section :id="key"
-                >{{ specialty }}
+                >Skill:
+                {{
+                  specialty.skill[0].toUpperCase() + specialty.skill.slice(1)
+                }}
+                - {{ specialty.specialty }}
                 <q-tooltip class="bg-dark text-body2"
                   >Click to delete</q-tooltip
                 >
@@ -306,10 +325,18 @@ import { ref } from "vue";
 
 export default defineComponent({
   name: "v5-tabs",
-  props: ["specialtiePoints", "specials"],
-  setup() {
+  props: ["specialtiePoints", "specials", "fullSkills", "specialtiesUsed"],
+  emits: ["update:specialtiePoints", "specialties"],
+  setup(props, { emit }) {
+    const points = ref(props.specialtiePoints);
+
+    const updatePoints = () => {
+      emit("update:specialtiePoints", points);
+    };
     return {
       tab: ref("coreConcept"),
+      updatePoints,
+      points,
     };
   },
   data(props) {
@@ -326,9 +353,11 @@ export default defineComponent({
       concept: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      specialtiesRemaining: props.specialtiePoints,
+      specialtyUsed: props.specialtiesUsed,
       specialtyInput: "",
+      skillSelect: "",
       specialties: props.specials,
+      skills: props.fullSkills,
     };
   },
   methods: {
@@ -340,6 +369,33 @@ export default defineComponent({
     },
     removeSpecialty(event) {
       this.specialties.splice(event, 1);
+      this.points++;
+    },
+    sortSkills() {
+      let optionsArr = [];
+      for (const skill in this.skills) {
+        if (this.skills[skill] > 0) {
+          optionsArr.push(skill[0].toUpperCase() + skill.slice(1));
+        }
+      }
+      return optionsArr;
+    },
+    addSpecialty() {
+      if (this.points === 0) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "Out of specialties",
+        });
+        return;
+      }
+      this.specialties.push({
+        skill: this.skillSelect.toLowerCase(),
+        specialty: this.specialtyInput,
+      });
+      this.specialtyInput = "";
+      this.skillSelect = "";
+      this.points--;
     },
   },
 });

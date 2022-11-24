@@ -11,6 +11,7 @@
       >
         <q-tab name="coreConcept" label="Core Concept" />
         <q-tab name="touchstones" label="Touchstones/Convictions" />
+        <q-tab name="specialties" label="Specialties" />
       </q-tabs>
 
       <q-separator />
@@ -225,6 +226,54 @@
             </q-item>
           </q-list>
         </q-tab-panel>
+
+        <q-tab-panel name="specialties">
+          <div class="q-mb-sm">
+            Specialties remaining: {{ specialtiesRemaining }}
+          </div>
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="specialtyInput"
+            label="Specialty *"
+            hint="Write your specialty (Press enter to confirm)"
+            hide-hint
+            autogrow
+            class="select"
+            label-color="primary"
+            lazy-rules
+            v-on:keydown.enter.prevent="
+              () => {
+                this.specialtyInput = '';
+                this.$emit('specialties', this.specialties);
+              }
+            "
+            :rules="[
+              (val) =>
+                (typeof val === 'string' && val.length <= 2000) ||
+                'Please keep this field under 2000 characters',
+            ]"
+          />
+          <q-separator />
+          <div class="text-h6" style="font-family: monospace">Specialties</div>
+
+          <q-list bordered separator>
+            <q-item
+              v-for="(specialty, key) in specialties"
+              :key="key"
+              clickable
+              v-ripple
+              @click="removeSpecialty($event.target.id)"
+            >
+              <q-item-section :id="key"
+                >{{ specialty }}
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                >
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
@@ -257,12 +306,13 @@ import { ref } from "vue";
 
 export default defineComponent({
   name: "v5-tabs",
+  props: ["specialtiePoints", "specials"],
   setup() {
     return {
       tab: ref("coreConcept"),
     };
   },
-  data() {
+  data(props) {
     return {
       ambition: "",
       archetype: "",
@@ -276,6 +326,9 @@ export default defineComponent({
       concept: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
+      specialtiesRemaining: props.specialtiePoints,
+      specialtyInput: "",
+      specialties: props.specials,
     };
   },
   methods: {
@@ -284,6 +337,9 @@ export default defineComponent({
     },
     removeTouchstone(event) {
       this.touchstones.splice(event, 1);
+    },
+    removeSpecialty(event) {
+      this.specialties.splice(event, 1);
     },
   },
 });

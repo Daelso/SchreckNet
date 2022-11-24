@@ -121,6 +121,7 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
+    const skillsDone = ref(props.info.skillsDone);
     const baseSkills = ref(props.info.baseSkills);
 
     const skillPoints = ref(props.info.skillPoints);
@@ -141,6 +142,7 @@ export default defineComponent({
       skillPoints,
       dialogRef,
       skillDistribution,
+      skillsDone,
       specialtiesFromSkills,
       onDialogHide,
       onOKClick() {
@@ -151,6 +153,7 @@ export default defineComponent({
           distribution: distribution,
           skillDistribution: skillDistribution,
           specialtiesFromSkills: specialtiesFromSkills,
+          skillsDone: skillsDone,
         });
       },
 
@@ -337,6 +340,7 @@ export default defineComponent({
           }
           break;
       }
+      this.checkIfGood();
     },
     citation(book, pageNum) {
       let bookName;
@@ -393,9 +397,10 @@ export default defineComponent({
         JSON.stringify(sortedArr) !==
         JSON.stringify(this.skillDistribution.distribution)
       ) {
-        console.log("We are not good!");
+        this.skillsDone = false;
         return;
       }
+      this.skillsDone = true;
       this.$q.notify({
         type: "positive",
         textColor: "white",

@@ -292,6 +292,7 @@ export default defineComponent({
 
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
+    const specialties = ref(props.info.specialties);
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
     let newBane = ref(props.info.bane);
@@ -387,6 +388,7 @@ export default defineComponent({
       humanity,
       predatorType,
       sire,
+      specialties,
       skillsSelected,
       xp,
       step: ref(1),
@@ -450,6 +452,7 @@ export default defineComponent({
           humanity: humanity,
           xp: xp,
           predatorType: predatorType,
+          specialties: specialties,
         });
       },
 

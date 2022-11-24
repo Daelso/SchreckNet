@@ -256,7 +256,6 @@
                 if (this.specialtyInput) {
                   this.addSpecialty();
                   this.$emit('specialties', this.specialties);
-                  this.updatePoints();
                 }
               }
             "
@@ -328,15 +327,8 @@ export default defineComponent({
   props: ["specialtiePoints", "specials", "fullSkills", "specialtiesUsed"],
   emits: ["update:specialtiePoints", "specialties"],
   setup(props, { emit }) {
-    const points = ref(props.specialtiePoints);
-
-    const updatePoints = () => {
-      emit("update:specialtiePoints", points);
-    };
     return {
       tab: ref("coreConcept"),
-      updatePoints,
-      points,
     };
   },
   data(props) {
@@ -358,6 +350,7 @@ export default defineComponent({
       skillSelect: "",
       specialties: props.specials,
       skills: props.fullSkills,
+      points: this.specialtiePoints,
     };
   },
   methods: {
@@ -369,7 +362,7 @@ export default defineComponent({
     },
     removeSpecialty(event) {
       this.specialties.splice(event, 1);
-      this.points++;
+      this.handlePoints(false);
     },
     sortSkills() {
       let optionsArr = [];
@@ -395,7 +388,16 @@ export default defineComponent({
       });
       this.specialtyInput = "";
       this.skillSelect = "";
-      this.points--;
+      this.handlePoints(true);
+    },
+    handlePoints(data) {
+      let points = this.specialtiePoints;
+      if (data === true) {
+        points--;
+      } else {
+        points++;
+      }
+      this.$emit("update:specialtiePoints", points);
     },
   },
 });

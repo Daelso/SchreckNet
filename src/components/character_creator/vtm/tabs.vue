@@ -374,12 +374,7 @@ export default defineComponent({
       return optionsArr;
     },
     addSpecialty() {
-      if (this.points === 0) {
-        this.$q.notify({
-          type: "negative",
-          textColor: "white",
-          message: "Out of specialties",
-        });
+      if (this.handlePoints(true) === false) {
         return;
       }
       this.specialties.push({
@@ -388,10 +383,17 @@ export default defineComponent({
       });
       this.specialtyInput = "";
       this.skillSelect = "";
-      this.handlePoints(true);
     },
     handlePoints(data) {
       let points = this.specialtiePoints;
+      if (points === 0 && data === true) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "Out of specialties",
+        });
+        return false;
+      }
       if (data === true) {
         points--;
       } else {

@@ -563,7 +563,7 @@ export default {
           persistent: true,
           componentProps: {
             info: {
-              gainedPoints: this.gainedPoints,
+              specialtyPoints: this.totalSpecialty,
               baseSkills: this.baseSkills,
               skillPoints: this.skillPoints,
               skillDistribution: this.skillDistribution,
@@ -575,9 +575,8 @@ export default {
           this.skillPoints = data.skillPoints;
           this.trueSkills = { ...this.trueSkills, ...this.baseSkills };
           this.skillDistribution = data.skillDistribution;
-          this.gainedSpecialties = data.gainedPoints;
           this.skillsDone = data.skillsDone;
-          this.gainedPoints = data.gainedPoints;
+          this.totalSpecialty = data.specialtyPoints;
         });
     },
     addModifiers() {

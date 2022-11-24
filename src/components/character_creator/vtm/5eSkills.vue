@@ -30,8 +30,9 @@
             <q-badge class="q-mb-sm"
               >Skill Points Remaining: {{ this.skillPoints }}</q-badge
             >
-            <q-badge class="q-mb-sm"
-              >Specialties Gained: {{ this.gainedPoints }}</q-badge
+            <q-badge class="q-mb-sm">
+              Current # of available specialties:
+              {{ this.currentPoints }}</q-badge
             >
             <br />
             <q-btn
@@ -121,10 +122,10 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
-    console.log(props.info.gainedPoints);
+    console.log(props.info.specialtyPoints);
     const skillsDone = ref(props.info.skillsDone);
     const baseSkills = ref(props.info.baseSkills);
-    const gainedPoints = ref(props.info.gainedPoints);
+    const currentPoints = ref(props.info.specialtyPoints);
 
     const skillPoints = ref(props.info.skillPoints);
 
@@ -141,13 +142,13 @@ export default defineComponent({
       distribution,
       skillPoints,
       dialogRef,
-      gainedPoints,
+      currentPoints,
       skillDistribution,
       skillsDone,
       onDialogHide,
       onOKClick() {
         onDialogOK({
-          gainedPoints: gainedPoints,
+          specialtyPoints: currentPoints,
           baseSkills: baseSkills,
           skillPoints: skillPoints,
           distBlurb: distBlurb,
@@ -226,7 +227,7 @@ export default defineComponent({
             this.baseSkills[data.toLowerCase()] > 0 &&
             this.baseSkills[data.toLowerCase()] < 2
           ) {
-            this.gainedPoints++;
+            this.currentPoints++;
             this.$q.notify({
               type: "positive",
               textColor: "white",
@@ -240,7 +241,7 @@ export default defineComponent({
             this.baseSkills[data.toLowerCase()] > 0 &&
             this.baseSkills[data.toLowerCase()] < 2
           ) {
-            this.gainedPoints++;
+            this.currentPoints++;
             this.$q.notify({
               type: "positive",
               textColor: "white",
@@ -254,7 +255,7 @@ export default defineComponent({
             this.baseSkills[data.toLowerCase()] > 0 &&
             this.baseSkills[data.toLowerCase()] < 2
           ) {
-            this.gainedPoints++;
+            this.currentPoints++;
             this.$q.notify({
               type: "positive",
               textColor: "white",
@@ -268,7 +269,7 @@ export default defineComponent({
             this.baseSkills[data.toLowerCase()] > 0 &&
             this.baseSkills[data.toLowerCase()] < 2
           ) {
-            this.gainedPoints++;
+            this.currentPoints++;
             this.$q.notify({
               type: "positive",
               textColor: "white",
@@ -297,7 +298,7 @@ export default defineComponent({
       switch (data.toLowerCase()) {
         case "craft":
           if (this.baseSkills[data.toLowerCase()] === 0) {
-            this.gainedPoints--;
+            this.currentPoints--;
             this.$q.notify({
               type: "negative",
               textColor: "white",
@@ -308,7 +309,7 @@ export default defineComponent({
           break;
         case "academics":
           if (this.baseSkills[data.toLowerCase()] === 0) {
-            this.gainedPoints--;
+            this.currentPoints--;
             this.$q.notify({
               type: "negative",
               position: "top",
@@ -319,7 +320,7 @@ export default defineComponent({
           break;
         case "science":
           if (this.baseSkills[data.toLowerCase()] === 0) {
-            this.gainedPoints--;
+            this.currentPoints--;
             this.$q.notify({
               type: "negative",
               position: "top",
@@ -330,7 +331,7 @@ export default defineComponent({
           break;
         case "performance":
           if (this.baseSkills[data.toLowerCase()] === 0) {
-            this.gainedPoints--;
+            this.currentPoints--;
             this.$q.notify({
               type: "negative",
               textColor: "white",

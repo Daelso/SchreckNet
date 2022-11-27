@@ -147,6 +147,13 @@
           <div class="q-mb-sm">
             Must have 1-3 convictions and as many touchstones as convictions.
           </div>
+          <div class="q-mb-sm" style="color: white">
+            Convictions and touchstones are
+            <span v-if="this.convictions.length != this.touchstones.length"
+              >NOT</span
+            >
+            equal.
+          </div>
           <q-input
             filled
             bg-color="grey-3"
@@ -160,6 +167,13 @@
             lazy-rules
             v-on:keydown.enter.prevent="
               () => {
+                if (!this.convictionInput) {
+                  return;
+                }
+                if (this.convictions.length === 3) {
+                  this.convicWarning();
+                  return;
+                }
                 this.convictions.push(this.convictionInput);
                 this.convictionInput = '';
                 this.$emit('convictions', this.convictions);
@@ -184,6 +198,9 @@
             lazy-rules
             v-on:keydown.enter.prevent="
               () => {
+                if (!this.touchStoneInput) {
+                  return;
+                }
                 this.touchstones.push(this.touchStoneInput);
                 this.touchStoneInput = '';
                 this.$emit('touchstones', this.touchstones);
@@ -333,7 +350,12 @@ import { ref } from "vue";
 export default defineComponent({
   name: "v5-tabs",
   props: ["specialtiePoints", "specials", "fullSkills", "specialtiesUsed"],
-  emits: ["update:specialtiePoints", "specialties"],
+  emits: [
+    "update:specialtiePoints",
+    "specialties",
+    "convictions",
+    "touchstones",
+  ],
   setup() {
     return {
       tab: ref("coreConcept"),
@@ -388,6 +410,13 @@ export default defineComponent({
       });
       this.specialtyInput = "";
       this.skillSelect = "";
+    },
+    convicWarning() {
+      this.$q.notify({
+        type: "negative",
+        textColor: "white",
+        message: "Maximum convictions reached!",
+      });
     },
     handlePoints(data) {
       let points = this.specialtiePoints;

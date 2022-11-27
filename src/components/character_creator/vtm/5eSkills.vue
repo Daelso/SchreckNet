@@ -5,6 +5,7 @@
         <q-toolbar>
           <q-toolbar-title>Base Skill Selection</q-toolbar-title>
           <q-btn color="primary" label="Save" @click="onOKClick"> </q-btn>
+
           <br />
         </q-toolbar>
       </q-header>

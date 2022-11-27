@@ -73,8 +73,11 @@
                   <q-separator />
                   <br />
                   Specialties:
-                  <div v-if="specialties.length < 1">None yet</div>
-                  <div v-for="(specialty, key) in specialties" :key="key">
+                  <div v-if="finalSpecialties().length < 1">None yet</div>
+                  <div
+                    v-for="(specialty, key) in finalSpecialties()"
+                    :key="key"
+                  >
                     Skill:
                     {{
                       specialty.skill[0].toUpperCase() +
@@ -225,9 +228,9 @@
         @chronicle="handleChronicle($event)"
         @specialties="handleSpecialties($event)"
         v-model:specialtiePoints="totalSpecialty"
-        :specialtiesUsed="this.specialtiesUsed"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
+        :specialtiesFromPred="this.specialtiesFromPred"
       />
     </div>
   </q-form>
@@ -324,7 +327,6 @@ export default {
       gainedPoints: 0,
       baseSpecialties: 1,
       gainedSpecialties: 0,
-      specialtiesUsed: 0,
       totalSpecialty: 1,
       charisma: 0,
       composure: 0,
@@ -411,6 +413,7 @@ export default {
       },
       predatorType: "Alleycat",
       specialties: [],
+      specialtiesFromPred: [],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -492,7 +495,6 @@ export default {
               generation: this.generation,
               humanity: this.humanity,
               predatorType: this.predatorType,
-              specialties: this.specialties,
               sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
@@ -515,7 +517,7 @@ export default {
           this.flaws = this.baseFlaws + data.flaws.value;
           this.disciplineSkills = data.discSkillsSelected;
           this.predatorType = data.predatorType;
-          console.log(this.disciplines);
+          this.specialtiesFromPred = data.specialtiesFromPred;
         });
     },
     attributes() {
@@ -589,6 +591,11 @@ export default {
       this.stamina = this.baseStamina + 1;
       this.strength = this.baseStrength + 1;
       this.wits = this.baseWits + 1;
+    },
+
+    finalSpecialties() {
+      let specialties = this.specialties.concat(this.specialtiesFromPred);
+      return specialties;
     },
   },
 };

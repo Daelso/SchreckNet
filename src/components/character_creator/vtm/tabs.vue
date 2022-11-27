@@ -316,6 +316,22 @@
               </q-item-section>
             </q-item>
           </q-list>
+          <q-separator />
+          <div class="text-h6" style="font-family: monospace">
+            Specialties from Predator Type
+          </div>
+
+          <q-list bordered separator>
+            <q-item v-for="(specialty, key) in specialtiesFromPred" :key="key">
+              <q-item-section :id="key"
+                >Skill:
+                {{
+                  specialty.skill[0].toUpperCase() + specialty.skill.slice(1)
+                }}
+                - {{ specialty.specialty }}
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -349,7 +365,7 @@ import { ref } from "vue";
 
 export default defineComponent({
   name: "v5-tabs",
-  props: ["specialtiePoints", "specials", "fullSkills", "specialtiesUsed"],
+  props: ["specialtiePoints", "specials", "fullSkills", "specialtiesFromPred"],
   emits: [
     "update:specialtiePoints",
     "specialties",

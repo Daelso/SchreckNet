@@ -26,9 +26,9 @@
             <div>
               Potency: {{ generation.potency }}/{{ generation.maxPotency }}
             </div>
-            <div>Advantage Points: {{ advantages }}</div>
+            <div>Advantage Dots Remaining: {{ advantages }}</div>
             <div>Remaining XP: {{ xp }}</div>
-            <div>Flaw Points: {{ flaws }}</div>
+            <div>Flaw Dots Remaining: {{ flaws }}</div>
           </div>
           <q-separator class="q-my-md" />
 
@@ -409,7 +409,7 @@ export default {
         ],
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
-      predatorType: "",
+      predatorType: "Alleycat",
       specialties: [],
       clan: ref("Brujah"),
       clanBane: ref(
@@ -515,7 +515,7 @@ export default {
           this.flaws = this.baseFlaws + data.flaws.value;
           this.disciplineSkills = data.discSkillsSelected;
           this.predatorType = data.predatorType;
-          this.specialties = data.specialties;
+          console.log(this.disciplines);
         });
     },
     attributes() {

@@ -168,9 +168,45 @@
               <div v-if="modifyPredatorTypes().length === 1">
                 Thin-Bloods and Fledglings do not have a predator type.
               </div>
+              <div v-if="modifyPredatorTypes().length > 1">
+                <div class="predBlurb">{{ predBlurb.desc }}</div>
+                <div class="predChoices q-my-md">
+                  <q-list dark bordered separator style="max-width: 318px">
+                    <q-item v-for="choice in predBlurb.choices" :key="choice">
+                      <q-item-section>{{ choice }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
+                <q-separator />
+                <div>
+                  <q-select
+                    v-model="bonusDisc"
+                    label="Bonus Discipline Selection"
+                    :options="sortPredDiscOptions()"
+                    bg-color="grey-3"
+                    filled
+                    style="margin-bottom: 20px; width: 100%"
+                    class="select"
+                    label-color="primary"
+                    option-label="label"
+                  />
+                  <q-separator />
+                </div>
+              </div>
+
               <q-separator />
               <q-stepper-navigation>
-                <q-btn @click="step = 4" color="primary" label="Continue" />
+                <q-btn
+                  @click="
+                    () => {
+                      step = 4;
+
+                      confirmPredator();
+                    }
+                  "
+                  color="primary"
+                  label="Continue"
+                />
                 <q-btn
                   flat
                   @click="step = 2"
@@ -182,7 +218,7 @@
             </q-step>
             <q-step :name="4" title="Select Discipline Skills" icon="sort">
               Select disciplines available to you:
-              <div v-for="(discPoints, key) in disciplineObj" :key="key">
+              <div v-for="(discPoints, key) in finalDisciplineObj" :key="key">
                 <div v-if="discPoints > 0">
                   Choose: {{ discPoints }}
                   <q-select
@@ -301,6 +337,16 @@ export default defineComponent({
     const skillsSelected = ref(props.info.discSkills);
     const predatorType = ref(props.info.predatorType);
     const disciplineObj = ref(props.info.disciplines);
+    const finalDisciplineObj = ref(props.info.disciplines);
+    const predBlurb = ref({
+      desc: "A dangerous, combative attack feeder. You feed by stalking, attacking and overpowering any prey you choose. This is one of the most violent and direct forms of feeding.",
+      choices: [
+        "Alleycats gain a choice of the Intimidation (stickups) or Brawl (Grappling) specialty.",
+        "Choose between one dot of celerity or potence.",
+        "Lose one dot of humanity.",
+        "Gain three dots of criminal Contacts.",
+      ],
+    });
 
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
@@ -342,7 +388,7 @@ export default defineComponent({
           "Potence",
           "Presence",
           "Protean",
-          "Thin-Blood Alchemy",
+          "Thin-blood Alchemy",
         ];
       } else if (clan.value === "Thin-Blood") {
         discChoices.value = [2];
@@ -378,6 +424,7 @@ export default defineComponent({
       disableRating,
       disciplineSkills,
       disciplineObj,
+      finalDisciplineObj,
       discChoices,
       disciplineChoice,
       discSkillsArr,
@@ -386,6 +433,7 @@ export default defineComponent({
       flaws,
       generation,
       humanity,
+      predBlurb,
       predatorType,
       sire,
       specialties,
@@ -441,7 +489,10 @@ export default defineComponent({
           clan: clan,
           compulsion: compulsion,
           desc: clanDesc,
-          disciplines: disciplineObj,
+          disciplines:
+            Object.keys(finalDisciplineObj.value).length === 0
+              ? disciplineObj
+              : finalDisciplineObj,
           discSkillsSelected: skillsSelected,
           flaws: flaws,
           advantages: advantages,
@@ -460,11 +511,16 @@ export default defineComponent({
       onCancelClick: onDialogCancel,
     };
   },
+  data() {
+    return {
+      bonusDisc: "",
+    };
+  },
   methods: {
     clanSelected() {
       this.skillsSelected = [];
       this.discChoices = [0, 0, 0];
-      this.predatorType = "";
+      this.specialties = this.info.specialties;
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -518,7 +574,7 @@ export default defineComponent({
             "Potence",
             "Presence",
             "Protean",
-            "Thin-Blood Alchemy",
+            "Thin-blood Alchemy",
           ];
           this.discExplained = [
             "Supernatural affinity with and control of animals",
@@ -809,6 +865,18 @@ export default defineComponent({
       let sum = 0;
       this.discChoices.forEach((choice) => (sum += choice));
 
+      if (this.skillsSelected.length !== 0) {
+        this.skillsSelected = [];
+        this.clanSelected();
+        this.$q.notify({
+          type: "info",
+          textColor: "white",
+          message:
+            "To prevent duplicates/bad character data, clan info has been reset.",
+        });
+        return;
+      }
+
       if (sum < 3 && this.clan != "Thin-Blood") {
         return true;
       }
@@ -858,11 +926,11 @@ export default defineComponent({
 
     skillPicked(skill, discipline) {
       let allowedLen = 0;
-      for (const property in this.disciplineObj) {
-        if (isNaN(this.disciplineObj[property])) {
+      for (const property in this.finalDisciplineObj) {
+        if (isNaN(this.finalDisciplineObj[property])) {
           continue;
         }
-        allowedLen += this.disciplineObj[property];
+        allowedLen += this.finalDisciplineObj[property];
       }
 
       if (this.skillsSelected.length === allowedLen) {
@@ -886,11 +954,9 @@ export default defineComponent({
 
       let newSkill = { discipline: discipline, skill: skill };
       this.skillsSelected.push(newSkill);
-      // this.disciplineObj["skills"] = this.skillsSelected; may need to revisit this but otherwise not needed atm
     },
     removeDiscSkill(event) {
       this.skillsSelected.splice(event, 1);
-      // this.disciplineObj["skills"] = this.skillsSelected;
     },
 
     modifyPredatorTypes() {
@@ -900,12 +966,183 @@ export default defineComponent({
         return (modifiedArr = ["None"]);
       }
       if (this.clan === "Ventrue") {
-        modifiedArr = modifiedArr.filter((x) => x !== "Bagger");
+        modifiedArr = modifiedArr.filter(
+          (x) => x !== "Bagger" && x !== "Farmer"
+        );
+      }
+      if (this.generation.potency >= 3) {
+        modifiedArr = modifiedArr.filter((x) => x !== "Farmer");
       }
       return modifiedArr;
     },
     predatorPicked() {
-      console.log(this.disciplineObj);
+      this.bonusDisc = "";
+      switch (this.predatorType) {
+        case "AlleyCat":
+          this.predBlurb = {
+            desc: "A dangerous, combative attack feeder. You feed by stalking, attacking and overpowering any prey you choose. This is one of the most violent and direct forms of feeding.",
+            choices: [
+              "Alleycats gain a choice of the Intimidation (stickups) or Brawl (grappling) specialty.",
+              "Choose between one dot of celerity or potence.",
+              "Lose one dot of humanity.",
+              "Gain three dots of criminal Contacts.",
+            ],
+          };
+          break;
+        case "Bagger":
+          this.predBlurb = {
+            desc: "Instead of hunting you secure your blood from the black market, robbery or a night shift at the blood bank. Ventrue cannot select this option.",
+            choices: [
+              "Alleycats gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
+              "Choose between one dot of blood sorcery (if Tremere) or obfuscate.",
+              "Gain the Feeding Merit: Iron Gullet (•••)",
+              "Gain the enemy flaw: (••) Someone believes you owe them or something else keeps you off the streets.",
+            ],
+          };
+          break;
+        case "Blood Leech":
+          this.predBlurb = {
+            desc: "You drink from other kindred in any way you can. This practice is often forbidden amongst Kindred society.",
+            choices: [
+              "Gain a choice of the Stealth (against Kindred) or Brawl (Kindred) specialty.",
+              "Choose between one dot of celerity or protean.",
+              "Gain the Dark Secret Flaw: (••) Diablerist, or the Shunned Flaw: (••)",
+              "Lose one dot of humanity.",
+              "Gain three dots of criminal Contacts.",
+              "Gain the feeding flaw, pray exclusion (mortals)",
+            ],
+          };
+          break;
+        case "Cleaver":
+          this.predBlurb = {
+            desc: "Cleaver's feed discretely from close mortal friends or family. Some adopt children, take a wife or maintain a family as a source of blood. This practice is forbidden by the Camarilla.",
+            choices: [
+              "Gain a choice of the Persuasion (Gaslighting) or Subterfuge (Coverups) specialty.",
+              "Choose between one dot of Dominate or Celerity.",
+              "Gain the Dark Secret Flaw: (•) Cleaver",
+              "Gain the Herd Advantage (••)",
+            ],
+          };
+          break;
+        case "Consensualist":
+          this.predBlurb = {
+            desc: "Consensualists would never feed by force or against ones will. They will always gain permission be it honestly or through manipulation before accessing someone's blood.",
+            choices: [
+              "Gain a choice of the Medicine (Phlebotomy) or Persuasion (Victims) specialty.",
+              "Choose between one dot of Auspex or Fortitude.",
+              "Gain one dot of humanity.",
+              "Gain the Dark Secret Flaw: (•) Masquerade Breacher",
+              "Gain the feeding flaw: (•) pray exclusion (non-consenting)",
+            ],
+          };
+          break;
+        case "Farmer":
+          this.predBlurb = {
+            desc: "Farmers do everything in their power to not harm humans, drinking exclusively animal blood, even if it means unliving with constant hunger. Ventrue and kindred with a blood potency of 3 or more cannot choose this predator type.",
+            choices: [
+              "Gain a choice of the Animal Ken (Specific Animal) or Survival (Hunting) specialty.",
+              "Choose between one dot of Animalism or Protean.",
+              "Gain one dot of humanity.",
+              "Gain the feeding flaw: (••) Farmer",
+            ],
+          };
+          break;
+        case "Osiris":
+          this.predBlurb = {
+            desc: "You are a cult-leader, celebrity or popular twitch streamer with a ready and willing group of fans or worshippers from which to harvest blood. While access to blood is easy, attention isn't always good.",
+            choices: [
+              "Gain a choice of the Occult (specific tradition) or Performance (Specific entertainment field) specialty.",
+              "Choose between one dot of Blood Sorcery (Tremere only) or Presence.",
+              "Spend three dots between Fame and Herd.",
+              "Spend two points between Enemies and Mythic flaws.",
+            ],
+          };
+          break;
+        case "Sandman":
+          this.predBlurb = {
+            desc: "You always feed from sleeping victims. Ideally, no one would ever know you were there.",
+            choices: [
+              "Gain a choice of the Medicine (anesthetics) or Stealth (Break-in) specialty.",
+              "Choose between one dot of Auspex or Obfuscate.",
+              "Gain one dot of resources.",
+            ],
+          };
+          break;
+        case "Scene Queen":
+          this.predBlurb = {
+            desc: "You hunt exclusively within a sub-culture of your choosing. It could be punks or magic the gathering players. The choice is yours and you have mastered blending in amongst your kind.",
+            choices: [
+              "Gain a choice of the Etiquette (specific scene), Leadership (specific scene) or Streetwise (specific scene) specialty.",
+              "Choose between one dot of Dominate or Potence.",
+              "Gain the Fame (•) advantage",
+              "Gain the Contact (•) advantage",
+              "Gain either the influence flaw: Disliked (•) (Outside of your subculture) or the feeding flaw: prey exclusion (A different subculture)",
+            ],
+          };
+          break;
+        case "Siren":
+          this.predBlurb = {
+            desc: "You hunt almost entirely during or while pretending to have sex. Moving from one-night stand to one-night stand, feeding from random club goers or prostitutes.",
+            choices: [
+              "Gain a choice of the Persuasion(Seduction) or Subterfuge(Seduction) specialty.",
+              "Choose between one dot of Fortitude or Presence.",
+              "Gain the Looks (••) merit: Beautiful",
+              "Gain the Enemy Flaw: (•) A spurned lover or jealous partner.",
+            ],
+          };
+          break;
+        default:
+          this.predBlurb = {
+            desc: "A dangerous, combative attack feeder. You feed by stalking, attacking and overpowering any prey you choose. This is one of the most violent and direct forms of feeding.",
+            choices: [
+              "Alleycats gain a choice of the Intimidation (stickups) or Brawl (Grappling) specialty.",
+              "Choose between one dot of celerity or potence.",
+              "Lose one dot of humanity.",
+              "Gain three dots of criminal Contacts.",
+            ],
+          };
+      }
+    },
+
+    confirmPredator() {
+      let trueDiscs = {};
+      trueDiscs = { ...trueDiscs, ...this.disciplineObj };
+      //I hate that JS cannot reassign objects reee
+      console.log(trueDiscs);
+      console.log(this.predatorType);
+      console.log(this.bonusDisc);
+      if (this.bonusDisc in trueDiscs) {
+        trueDiscs[this.bonusDisc]++;
+      } else {
+        trueDiscs[this.bonusDisc] = 1;
+      }
+      console.log(trueDiscs);
+      this.finalDisciplineObj = { ...this.finalDisciplineObj, ...trueDiscs };
+      console.log(this.finalDisciplineObj);
+
+      switch (this.predatorType) {
+        case "AlleyCat":
+          break;
+        case "Bagger":
+          break;
+        case "Blood Leech":
+          break;
+        case "Cleaver":
+          break;
+        case "Consensualist":
+          break;
+        case "Farmer":
+          break;
+        case "Osiris":
+          break;
+        case "Sandman":
+          break;
+        case "Scene Queen":
+          break;
+        case "Siren":
+          break;
+        default:
+      }
     },
 
     donePickingSkills() {
@@ -917,6 +1154,50 @@ export default defineComponent({
         allowedLen += this.disciplineObj[property];
       }
       return allowedLen > this.skillsSelected.length ? true : false;
+    },
+    sortPredDiscOptions() {
+      let arr = [];
+      switch (this.predatorType) {
+        case "AlleyCat":
+          arr = ["Celerity", "Potence"];
+          break;
+        case "Bagger":
+          arr = ["Obfuscate"];
+          if (this.clan === "Tremere") {
+            arr.push("Blood Sorcery");
+          }
+          break;
+        case "Blood Leech":
+          arr = ["Celerity", "Protean"];
+          break;
+        case "Cleaver":
+          arr = ["Dominate", "Animalism"];
+          break;
+        case "Consensualist":
+          arr = ["Auspex", "Fortitude"];
+          break;
+        case "Farmer":
+          arr = ["Animalism", "Protean"];
+          break;
+        case "Osiris":
+          arr = ["Presence"];
+          if (this.clan === "Tremere") {
+            arr.push("Blood Sorcery");
+          }
+          break;
+        case "Sandman":
+          arr = ["Auspex", "Obfuscate"];
+          break;
+        case "Scene Queen":
+          arr = ["Dominate", "Potence"];
+          break;
+        case "Siren":
+          arr = ["Fortitude", "Presence"];
+          break;
+        default:
+          arr = ["Celerity", "Potence"];
+      }
+      return arr;
     },
   },
 });

@@ -192,6 +192,39 @@
                   />
                   <q-separator />
                 </div>
+                <div>
+                  <q-select
+                    v-model="bonusSpecs"
+                    label="Bonus Specialties Selection"
+                    :options="sortPredSpecOptions()"
+                    bg-color="grey-3"
+                    filled
+                    style="margin-bottom: 20px; width: 100%"
+                    class="select"
+                    label-color="primary"
+                    option-label="skill"
+                  />
+                  <q-separator />
+                </div>
+                <div
+                  v-if="
+                    (this.predatorType === 'Scene Queen' ||
+                      this.predatorType === 'Farmer' ||
+                      this.predatorType === 'Osiris') &&
+                    this.bonusSpecs
+                  "
+                >
+                  <q-input
+                    v-model="bonusSpecs.specialty"
+                    label="Specify your specialty"
+                    bg-color="grey-3"
+                    filled
+                    style="margin-bottom: 20px; width: 100%"
+                    class="select"
+                    label-color="primary"
+                  />
+                  <q-separator />
+                </div>
               </div>
 
               <q-separator />
@@ -328,7 +361,6 @@ export default defineComponent({
 
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
-    const specialties = ref(props.info.specialties);
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
     let newBane = ref(props.info.bane);
@@ -359,6 +391,7 @@ export default defineComponent({
       "The 'Rabble' rebel against power and rage against tyranny."
     );
     const disciplineChoice = ref({});
+    const specialtiesFromPred = ref([]);
     const discSpecificArr = ref([]);
     const discSkillsArr = ref([]);
     const clanDisciplines = ref([]);
@@ -436,8 +469,8 @@ export default defineComponent({
       predBlurb,
       predatorType,
       sire,
-      specialties,
       skillsSelected,
+      specialtiesFromPred,
       xp,
       step: ref(1),
       dialogRef,
@@ -503,7 +536,7 @@ export default defineComponent({
           humanity: humanity,
           xp: xp,
           predatorType: predatorType,
-          specialties: specialties,
+          specialtiesFromPred: specialtiesFromPred,
         });
       },
 
@@ -514,13 +547,18 @@ export default defineComponent({
   data() {
     return {
       bonusDisc: "",
+      bonusSpecs: "",
     };
   },
   methods: {
     clanSelected() {
       this.skillsSelected = [];
       this.discChoices = [0, 0, 0];
-      this.specialties = this.info.specialties;
+      this.disciplineObj = {};
+      this.finalDisciplineObj = {};
+      this.humanity = 7;
+      this.generation = { label: "12th", potency: 1, maxPotency: 3 };
+      this.specialtiesFromPred = [];
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -977,8 +1015,9 @@ export default defineComponent({
     },
     predatorPicked() {
       this.bonusDisc = "";
+      this.bonusSpecs = "";
       switch (this.predatorType) {
-        case "AlleyCat":
+        case "Alleycat":
           this.predBlurb = {
             desc: "A dangerous, combative attack feeder. You feed by stalking, attacking and overpowering any prey you choose. This is one of the most violent and direct forms of feeding.",
             choices: [
@@ -1107,42 +1146,45 @@ export default defineComponent({
     confirmPredator() {
       let trueDiscs = {};
       trueDiscs = { ...trueDiscs, ...this.disciplineObj };
-      //I hate that JS cannot reassign objects reee
-      console.log(trueDiscs);
       console.log(this.predatorType);
-      console.log(this.bonusDisc);
-      if (this.bonusDisc in trueDiscs) {
-        trueDiscs[this.bonusDisc]++;
-      } else {
-        trueDiscs[this.bonusDisc] = 1;
-      }
-      console.log(trueDiscs);
-      this.finalDisciplineObj = { ...this.finalDisciplineObj, ...trueDiscs };
-      console.log(this.finalDisciplineObj);
+      if (this.clan !== "Thin-Blood" && this.age.label !== "Fledgling") {
+        if (this.bonusDisc in trueDiscs) {
+          trueDiscs[this.bonusDisc]++;
+        } else {
+          trueDiscs[this.bonusDisc] = 1;
+        }
+        this.specialtiesFromPred.push(this.bonusSpecs);
 
-      switch (this.predatorType) {
-        case "AlleyCat":
-          break;
-        case "Bagger":
-          break;
-        case "Blood Leech":
-          break;
-        case "Cleaver":
-          break;
-        case "Consensualist":
-          break;
-        case "Farmer":
-          break;
-        case "Osiris":
-          break;
-        case "Sandman":
-          break;
-        case "Scene Queen":
-          break;
-        case "Siren":
-          break;
-        default:
+        switch (this.predatorType) {
+          case "Alleycat":
+            this.humanity--;
+            break;
+          case "Bagger":
+            break;
+          case "Blood Leech":
+            this.humanity--;
+            this.generation.potency++;
+            break;
+          case "Cleaver":
+            break;
+          case "Consensualist":
+            this.humanity++;
+            break;
+          case "Farmer":
+            this.humanity++;
+            break;
+          case "Osiris":
+            break;
+          case "Sandman":
+            break;
+          case "Scene Queen":
+            break;
+          case "Siren":
+            break;
+          default:
+        }
       }
+      this.finalDisciplineObj = { ...this.finalDisciplineObj, ...trueDiscs };
     },
 
     donePickingSkills() {
@@ -1196,6 +1238,78 @@ export default defineComponent({
           break;
         default:
           arr = ["Celerity", "Potence"];
+      }
+      return arr;
+    },
+    sortPredSpecOptions() {
+      let arr = [];
+      switch (this.predatorType) {
+        case "AlleyCat":
+          arr = [
+            { skill: "Intimidation", specialty: "Stickups" },
+            { skill: "Brawl", specialty: "Grappling" },
+          ];
+          break;
+        case "Bagger":
+          arr = [
+            { skill: "Larceny", specialty: "Lock Picking" },
+            { skill: "Streetwise", specialty: "Black Market" },
+          ];
+          break;
+        case "Blood Leech":
+          arr = [
+            { skill: "Brawl", specialty: "Kindred" },
+            { skill: "Stealth", specialty: "Against Kindred" },
+          ];
+          break;
+        case "Cleaver":
+          arr = [
+            { skill: "Persuasion", specialty: "Gaslighting" },
+            { skill: "Subterfuge", specialty: "Coverups" },
+          ];
+          break;
+        case "Consensualist":
+          arr = [
+            { skill: "Medicine", specialty: "Phlebotomy" },
+            { skill: "Persuasion", specialty: "Victims" },
+          ];
+          break;
+        case "Farmer":
+          arr = [
+            { skill: "AnimalKen", specialty: "Specific Animal" },
+            { skill: "Survival", specialty: "Hunting" },
+          ];
+          break;
+        case "Osiris":
+          arr = [
+            { skill: "Occult", specialty: "Specific Tradition" },
+            { skill: "Performance", specialty: "Specific entertainment" },
+          ];
+          break;
+        case "Sandman":
+          arr = [
+            { skill: "Medicine", specialty: "Anesthetics" },
+            { skill: "Stealth", specialty: "Break-in" },
+          ];
+          break;
+        case "Scene Queen":
+          arr = [
+            { skill: "Etiquette", specialty: "Specific scene" },
+            { skill: "Leadership", specialty: "Specific scene" },
+            { skill: "Streetwise", specialty: "Specific scene" },
+          ];
+          break;
+        case "Siren":
+          arr = [
+            { skill: "Persuasion", specialty: "Seduction" },
+            { skill: "Subterfuge", specialty: "Seduction" },
+          ];
+          break;
+        default:
+          arr = [
+            { skill: "Intimidation", specialty: "Stickups" },
+            { skill: "Brawl", specialty: "Grappling" },
+          ];
       }
       return arr;
     },

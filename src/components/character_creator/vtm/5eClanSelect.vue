@@ -558,6 +558,7 @@ export default defineComponent({
       this.finalDisciplineObj = {};
       this.humanity = 7;
       this.generation = { label: "12th", potency: 1, maxPotency: 3 };
+      this.age = { label: "Childer", bonusXp: 0 };
       this.specialtiesFromPred = [];
       switch (this.clan) {
         case "Banu Haqim":
@@ -1189,11 +1190,11 @@ export default defineComponent({
 
     donePickingSkills() {
       let allowedLen = 0;
-      for (const property in this.disciplineObj) {
-        if (isNaN(this.disciplineObj[property])) {
+      for (const property in this.finalDisciplineObj) {
+        if (isNaN(this.finalDisciplineObj[property])) {
           continue;
         }
-        allowedLen += this.disciplineObj[property];
+        allowedLen += this.finalDisciplineObj[property];
       }
       return allowedLen > this.skillsSelected.length ? true : false;
     },

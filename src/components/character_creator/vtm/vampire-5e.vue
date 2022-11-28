@@ -609,6 +609,7 @@ export default {
               skillPoints: this.skillPoints,
               skillDistribution: this.skillDistribution,
               skillsDone: this.skillsDone,
+              specialties: this.specialties,
             },
           },
         })
@@ -618,6 +619,7 @@ export default {
           this.skillDistribution = data.skillDistribution;
           this.skillsDone = data.skillsDone;
           this.totalSpecialty = data.specialtyPoints;
+          this.specialties = data.specialties;
         });
     },
     addModifiers() {

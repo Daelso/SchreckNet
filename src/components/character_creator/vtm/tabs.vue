@@ -361,6 +361,16 @@
           </div>
           <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
           <q-separator />
+          <div v-if="this.clan === 'Thin-Blood'">
+            <div>
+              Thin-Blood merits and flaws do not cost normal dots, they must be
+              taken in a balanced amount.
+            </div>
+            <div class="q-my-sm">
+              Thin-Blood Advantages: {{ thinAdvantages }}
+            </div>
+            <div class="q-my-sm">Thin-Blood Flaws: {{ thinFlaws }}</div>
+          </div>
           <q-select
             v-model="advantageCategory"
             :options="advantageCategories"
@@ -385,7 +395,7 @@
           <div v-if="this.meritCategory">
             <q-select
               v-model="advOrFlaw"
-              :options="['Advantages', 'Flaws']"
+              :options="advorFlawOptions()"
               label="Select advantages or flaws"
               label-color="primary"
               class="q-mb-sm"
@@ -426,7 +436,13 @@
               :key="key"
               clickable
               v-ripple
-              @click="removeAdvantage($event.target.id, advantage.cost)"
+              @click="
+                removeAdvantage(
+                  $event.target.id,
+                  advantage.cost,
+                  advantage.name
+                )
+              "
             >
               <q-item-section :id="key"
                 >Advantage:
@@ -447,7 +463,7 @@
               :key="key"
               clickable
               v-ripple
-              @click="removeFlaw($event.target.id, flaw.cost)"
+              @click="removeFlaw($event.target.id, flaw.cost, flaw.name)"
             >
               <q-item-section :id="key"
                 >Flaw:
@@ -503,6 +519,7 @@ export default defineComponent({
     "sire",
     "age",
     "advantagesObj",
+    "clan",
   ],
   emits: [
     "update:specialtiePoints",
@@ -539,11 +556,13 @@ export default defineComponent({
       meritCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: ["Merits", "Backgrounds", "Loresheets"],
+      advantageCategories: ["Merits", "Backgrounds"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
       sireInput: props.sire,
+      thinFlaws: 0,
+      thinAdvantages: 0,
     };
   },
   methods: {
@@ -557,13 +576,25 @@ export default defineComponent({
       this.specialties.splice(event, 1);
       this.handlePoints(false);
     },
-    removeAdvantage(event, cost) {
+    removeAdvantage(event, cost, name) {
+      if (name.includes("Thin-Blood")) {
+        let modifiedObj = { ...{}, ...this.advantagesObj };
+        modifiedObj.merits.advantages.splice(event, 1);
+        this.thinAdvantages--;
+        return;
+      }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj.merits.advantages.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
       this.$emit("update:advantagePoints", this.advantagePoints + cost);
     },
-    removeFlaw(event, cost) {
+    removeFlaw(event, cost, name) {
+      if (name.includes("Thin-Blood")) {
+        let modifiedObj = { ...{}, ...this.advantagesObj };
+        modifiedObj.merits.flaws.splice(event, 1);
+        this.thinFlaws--;
+        return;
+      }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj.merits.flaws.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
@@ -613,10 +644,26 @@ export default defineComponent({
       }
       this.$emit("update:specialtiePoints", points);
     },
+    advorFlawOptions() {
+      let arr = ["Advantages", "Flaws"];
+
+      if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+        if (this.thinAdvantages > this.thinFlaws) {
+          arr = ["Flaws"];
+        } else if (this.thinFlaws > this.thinAdvantages) {
+          arr = ["Advantages"];
+        }
+      }
+
+      return arr;
+    },
     meritCatOptions() {
       let arr = Object.keys(allMerits.Merits);
       if (this.age.label !== "Ancillae") {
         arr = arr.filter((x) => x !== "Archaic");
+      }
+      if (this.clan !== "Thin-Blood") {
+        arr = arr.filter((x) => x !== "Thin-Blood");
       }
 
       return arr;
@@ -635,6 +682,16 @@ export default defineComponent({
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
       if (this.advOrFlaw.toLowerCase() === "advantages") {
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+          modifiedObj.merits.advantages.push(this.advFlawChoice);
+          this.thinAdvantages++;
+          this.advFlawChoice = "";
+          this.advOrFlaw = "";
+          this.meritCategory = "";
+          this.advantageCategory = "";
+          return;
+        }
+
         if (this.advantagePoints < this.advFlawChoice.cost) {
           this.$q.notify({
             type: "negative",
@@ -652,6 +709,15 @@ export default defineComponent({
       }
 
       if (this.advOrFlaw.toLowerCase() === "flaws") {
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+          modifiedObj.merits.flaws.push(this.advFlawChoice);
+          this.thinFlaws++;
+          this.advFlawChoice = "";
+          this.advOrFlaw = "";
+          this.meritCategory = "";
+          this.advantageCategory = "";
+          return;
+        }
         if (this.flawPoints < this.advFlawChoice.cost) {
           this.$q.notify({
             type: "negative",

@@ -271,6 +271,7 @@
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
         :age="this.age"
+        :clan="this.clan"
       />
     </div>
   </q-form>

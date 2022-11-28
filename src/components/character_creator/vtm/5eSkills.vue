@@ -123,7 +123,6 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
-    console.log(props.info.specialtyPoints);
     const skillsDone = ref(props.info.skillsDone);
     const baseSkills = ref(props.info.baseSkills);
     const currentPoints = ref(props.info.specialtyPoints);
@@ -134,6 +133,8 @@ export default defineComponent({
 
     const distBlurb = ref(props.info.skillDistribution.distributionDesc);
     const skillDistribution = ref(props.info.skillDistribution);
+
+    const specialties = ref(props.info.specialties);
 
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
@@ -146,6 +147,7 @@ export default defineComponent({
       currentPoints,
       skillDistribution,
       skillsDone,
+      specialties,
       onDialogHide,
       onOKClick() {
         onDialogOK({
@@ -156,6 +158,7 @@ export default defineComponent({
           distribution: distribution,
           skillDistribution: skillDistribution,
           skillsDone: skillsDone,
+          specialties: specialties,
         });
       },
 
@@ -300,6 +303,12 @@ export default defineComponent({
         case "craft":
           if (this.baseSkills[data.toLowerCase()] === 0) {
             this.currentPoints--;
+            for (var i = 0; i < this.specialties.length; i++) {
+              if (this.specialties[i].skill == "craft") {
+                this.specialties.splice(i, 1);
+                this.currentPoints++;
+              }
+            }
             this.$q.notify({
               type: "negative",
               textColor: "white",
@@ -311,6 +320,12 @@ export default defineComponent({
         case "academics":
           if (this.baseSkills[data.toLowerCase()] === 0) {
             this.currentPoints--;
+            for (var i = 0; i < this.specialties.length; i++) {
+              if (this.specialties[i].skill == "academics") {
+                this.specialties.splice(i, 1);
+                this.currentPoints++;
+              }
+            }
             this.$q.notify({
               type: "negative",
               position: "top",
@@ -322,6 +337,12 @@ export default defineComponent({
         case "science":
           if (this.baseSkills[data.toLowerCase()] === 0) {
             this.currentPoints--;
+            for (var i = 0; i < this.specialties.length; i++) {
+              if (this.specialties[i].skill == "science") {
+                this.specialties.splice(i, 1);
+                this.currentPoints++;
+              }
+            }
             this.$q.notify({
               type: "negative",
               position: "top",
@@ -333,6 +354,12 @@ export default defineComponent({
         case "performance":
           if (this.baseSkills[data.toLowerCase()] === 0) {
             this.currentPoints--;
+            for (var i = 0; i < this.specialties.length; i++) {
+              if (this.specialties[i].skill == "performance") {
+                this.specialties.splice(i, 1);
+                this.currentPoints++;
+              }
+            }
             this.$q.notify({
               type: "negative",
               textColor: "white",
@@ -393,8 +420,6 @@ export default defineComponent({
         return b - a;
       });
 
-      console.log(sortedArr);
-      console.log(this.skillDistribution.distribution);
       if (
         JSON.stringify(sortedArr) !==
         JSON.stringify(this.skillDistribution.distribution)

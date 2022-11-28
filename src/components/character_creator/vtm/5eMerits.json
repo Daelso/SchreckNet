@@ -1,0 +1,221 @@
+{
+  "Merits": {
+    "Archaic": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Archaic",
+          "cost": 2,
+          "desc": "You are stuck in the past and cannot use modern technology"
+        },
+        {
+          "name": "Living in the Past",
+          "cost": 1,
+          "desc": "You have one or more outdated convictions."
+        }
+      ]
+    },
+    "Bonding": {
+      "advantages": [
+        {
+          "name": "Bond Resistance",
+          "cost": 1,
+          "desc": "Its easier for you to resist against the effects of a Blood Bond."
+        },
+        {
+          "name": "Short Bond",
+          "cost": 2,
+          "desc": "The Bond decays quicker for you."
+        },
+        {
+          "name": "Unbondable",
+          "cost": 5,
+          "desc": "You cannot be Blood Bound."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Bondslave",
+          "cost": 2,
+          "desc": "You bond at the first drink of Vitae."
+        },
+        {
+          "name": "Bond Junkie",
+          "cost": 1,
+          "desc": "The Bond feels sweeter to you, and its harder for you to resist its effects."
+        },
+        {
+          "name": "Long Bond",
+          "cost": 1,
+          "desc": "The Bond takes more time to decay."
+        }
+      ]
+    },
+    "Feeding": {
+      "advantages": [
+        {
+          "name": "Blood Hound",
+          "cost": 1,
+          "desc": "You can smell the resonance on your prey without tasting it."
+        },
+        {
+          "name": "Iron Gullet",
+          "cost": 3,
+          "desc": "You can feed from rancid, bagged and processed blood."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Farmer",
+          "cost": 2,
+          "desc": "You feed exclusively from animals."
+        },
+        {
+          "name": "Organovore",
+          "cost": 2,
+          "desc": "You slake hunger only from eating human flesh."
+        },
+        {
+          "name": "Methuselah's Thirst",
+          "cost": 1,
+          "desc": "Your hunger can only be fully slaked by the blood of supernatural creatures."
+        }
+      ]
+    },
+    "Ghoul": {
+      "advantages": [
+        {
+          "name": "Blood Empathy",
+          "cost": 2,
+          "desc": "You share a closer bond to your domitor than most ghouls, able to sense their emotional and psychological state."
+        },
+        {
+          "name": "Unseemly Aura",
+          "cost": 2,
+          "desc": "You have the aura of a Kindred."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Crone's Curse",
+          "cost": 3,
+          "desc": "When you partook of your domitor's vitae, you aged rapidly."
+        },
+        {
+          "name": "Distressing Fangs",
+          "cost": 2,
+          "desc": "The Blood gave you sharpened teeth, which distresses mortals."
+        }
+      ]
+    },
+    "Linguistics": {
+      "advantages": [
+        {
+          "name": "Language fluency",
+          "cost": 1,
+          "desc": "You speak, read and write another language fluently."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Illiterate",
+          "cost": 2,
+          "desc": "You cannot read or write."
+        }
+      ]
+    },
+    "Looks": {
+      "advantages": [
+        {
+          "name": "Beautiful",
+          "cost": 2,
+          "desc": "You are considered beautiful."
+        },
+        {
+          "name": "Stunning",
+          "cost": 4,
+          "desc": "You are considered exceptionally good-looking, you turn heads everywhere you go."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Repulsive",
+          "cost": 2,
+          "desc": "Your appearance is exceptionally horrifying."
+        },
+        {
+          "name": "Ugly",
+          "cost": 1,
+          "desc": "You aren't very good-looking."
+        }
+      ]
+    },
+    "Mythic": {
+      "advantages": [
+        {
+          "name": "Eat food",
+          "cost": 2,
+          "desc": "You can eat food, though it provides no nourishment and must be expelled before daysleep."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Stake Bait",
+          "cost": 2,
+          "desc": "Being staked brings final death to the vampire"
+        },
+        {
+          "name": "Folkloric Bane",
+          "cost": 1,
+          "desc": "You take aggravated damage from one folkloric bane, like ultraviolet light, silver or holy water."
+        },
+        {
+          "name": "Folkloric Block",
+          "cost": 1,
+          "desc": "You must recoil or spend a willpower when faced with one Folkloric Block, like white animals, running water, garlic, etc."
+        },
+        {
+          "name": "Stigmata",
+          "cost": 1,
+          "desc": "You bleed from your hands, feet and forehead when your hunger becomes intense."
+        }
+      ]
+    },
+    "Psychological": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Living on the Edge",
+          "cost": 2,
+          "desc": "You suffer a compulsion to always partake of new experiences."
+        },
+        {
+          "name": "Weak-Willed",
+          "cost": 3,
+          "desc": "Your will is weak and you struggle assert your own personality when confronted with the will of another."
+        }
+      ]
+    },
+    "Substance Use": {
+      "advantages": [
+        {
+          "name": "High-Functioning Addict",
+          "cost": 1,
+          "desc": "You gain a die to one category of pool whenever you drink from a mortal who is on your drug of choice."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Hopeless Addiction",
+          "cost": 2,
+          "desc": "Lose 2 die from all pools if you feed from someone not on your drug of choice."
+        },
+        {
+          "name": "Addiction",
+          "cost": 1,
+          "desc": "Lose 1 die from all pools if you feed from someone not on your drug of choice."
+        }
+      ]
+    }
+  }
+}

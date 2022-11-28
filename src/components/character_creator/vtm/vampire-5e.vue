@@ -29,6 +29,7 @@
             <div>Advantage Dots Remaining: {{ advantages }}</div>
             <div>Remaining XP: {{ xp }}</div>
             <div>Flaw Dots Remaining: {{ flaws }}</div>
+            <div>Sire: {{ sire }}</div>
           </div>
           <q-separator class="q-my-md" />
 
@@ -113,6 +114,40 @@
 
                   <div v-for="(discipline, key) in disciplineSkills" :key="key">
                     {{ discipline.discipline }}: {{ discipline.skill }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="military_tech"
+              label="Advantages/Flaws"
+              caption="View current advantages & flaws"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  <div style="font-size: larger">Merits:</div>
+                  Advantages:
+                  <div v-if="advantagesObj.merits.advantages.length === 0">
+                    Not yet selected
+                  </div>
+                  <div
+                    v-for="advantage in advantagesObj.merits.advantages"
+                    :key="advantage.name"
+                  >
+                    <div>{{ advantage.name }}</div>
+                  </div>
+                  Flaws:
+                  <div v-if="advantagesObj.merits.flaws.length === 0">
+                    Not yet selected
+                  </div>
+                  <div
+                    v-for="flaw in advantagesObj.merits.flaws"
+                    :key="flaw.name"
+                  >
+                    <div>{{ flaw.name }}</div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -228,9 +263,14 @@
         @chronicle="handleChronicle($event)"
         @specialties="handleSpecialties($event)"
         v-model:specialtiePoints="totalSpecialty"
+        v-model:advantagePoints="advantages"
+        v-model:flawPoints="flaws"
+        v-model:sire="sire"
+        v-model:advantagesObj="advantagesObj"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
+        :age="this.age"
       />
     </div>
   </q-form>
@@ -306,6 +346,7 @@ export default {
     const router = useRouter();
 
     return {
+      advantagesObj: { merits: { advantages: [], flaws: [] } },
       attributesDone: false,
       attributeInfo,
       skillInfo,
@@ -495,7 +536,6 @@ export default {
               generation: this.generation,
               humanity: this.humanity,
               predatorType: this.predatorType,
-              sire: this.sire,
               tooltips: this.tooltips,
               xp: this.xp,
             },
@@ -509,7 +549,6 @@ export default {
           this.tooltips = data.tooltips;
           this.clanDesc = data.desc;
           this.compulsion = data.compulsion;
-          this.sire = data.sire;
           this.generation = data.generation;
           this.humanity = data.humanity;
           this.xp = data.xp;
@@ -570,6 +609,7 @@ export default {
               skillPoints: this.skillPoints,
               skillDistribution: this.skillDistribution,
               skillsDone: this.skillsDone,
+              specialties: this.specialties,
             },
           },
         })
@@ -579,6 +619,7 @@ export default {
           this.skillDistribution = data.skillDistribution;
           this.skillsDone = data.skillsDone;
           this.totalSpecialty = data.specialtyPoints;
+          this.specialties = data.specialties;
         });
     },
     addModifiers() {

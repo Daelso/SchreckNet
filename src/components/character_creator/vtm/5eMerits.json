@@ -51,6 +51,42 @@
         }
       ]
     },
+    "Cults": {
+      "advantages": [
+        {
+          "name": "Bond Resistance",
+          "cost": 1,
+          "desc": "Its easier for you to resist against the effects of a Blood Bond."
+        },
+        {
+          "name": "Short Bond",
+          "cost": 2,
+          "desc": "The Bond decays quicker for you."
+        },
+        {
+          "name": "Unbondable",
+          "cost": 5,
+          "desc": "You cannot be Blood Bound."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Bondslave",
+          "cost": 2,
+          "desc": "You bond at the first drink of Vitae."
+        },
+        {
+          "name": "Bond Junkie",
+          "cost": 1,
+          "desc": "The Bond feels sweeter to you, and its harder for you to resist its effects."
+        },
+        {
+          "name": "Long Bond",
+          "cost": 1,
+          "desc": "The Bond takes more time to decay."
+        }
+      ]
+    },
     "Feeding": {
       "advantages": [
         {
@@ -214,6 +250,87 @@
           "name": "Addiction",
           "cost": 1,
           "desc": "Lose 1 die from all pools if you feed from someone not on your drug of choice."
+        }
+      ]
+    },
+    "Thin-Blood": {
+      "advantages": [
+        {
+          "name": "Thin-Blood: Anarch Comrades",
+          "cost": 1,
+          "desc": "You managed to make friends with the local anarch sect. Add a one-dot anarch mawla to your relationship map."
+        },
+        {
+          "name": "Thin-Blood: Camarilla Contact",
+          "cost": 1,
+          "desc": "You've made a contact within the camarilla who promises you full membership and a chance at becoming full-blooded so long as you follow orders. Add a one-dot camarilla mawla to your relationship map."
+        },
+        {
+          "name": "Thin-Blood: Catenating Blood",
+          "cost": 1,
+          "desc": "You can create blood bonds and perform the embrace. Any kindred you create are thin-blooded."
+        },
+        {
+          "name": "Thin-Blood: Day Drinker",
+          "cost": 1,
+          "desc": "Sunlight halves your health pool. In the sun you lose access to all vampiric abilities. You still suffer Hunger normally and must sleep occasionally."
+        },
+        {
+          "name": "Thin-Blood: Discipline Affinity",
+          "cost": 1,
+          "desc": "You gain a dot in your discipline of choice and can continue to level it with experience as an out-of-clan discipline."
+        },
+        {
+          "name": "Thin-Blood: Lifelike",
+          "cost": 1,
+          "desc": "You have a heartbeat, can eat food and enjoy sex like a mortal. Only detailed examinations would reveal anything out of the ordinary."
+        },
+        {
+          "name": "Thin-Blood: Thin-blood Alchemist",
+          "cost": 1,
+          "desc": "Gain a dot in Thin-blood alchemy and an additional recipe as discussed with your ST."
+        },
+        {
+          "name": "Thin-Blood: Vampiric Resilience",
+          "cost": 1,
+          "desc": "You are as tough as ordinary Kindred, treating puncture and slashing wounds as superficial damage."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Thin-Blood: Baby Teeth",
+          "cost": 1,
+          "desc": "Your fangs never came in, you can only drink via other methods of blood extraction."
+        },
+        {
+          "name": "Thin-Blood: Bestial Temper",
+          "cost": 1,
+          "desc": "You have the same level of beast as a full-blooded kindred. Normal frenzy rules apply to you."
+        },
+        {
+          "name": "Thin-Blood: Branded by the Camarilla",
+          "cost": 1,
+          "desc": "Branded by the local camarilla, you are known and watched for even the slightest error."
+        },
+        {
+          "name": "Thin-Blood: Clan Curse",
+          "cost": 1,
+          "desc": "You suffer the clan of your choices bane at severity level 1. Brujah/Gangrel only available with Bestial Temper Flaw, Tremere only with Catenating Blood Merit."
+        },
+        {
+          "name": "Thin-Blood: Dead Flesh",
+          "cost": 1,
+          "desc": "You are noticebly decaying and putrifying. Any real examination will reveal that you are undead. You may not take Lifelike merit."
+        },
+        {
+          "name": "Thin-Blood: Shunned by the Anarchs",
+          "cost": 1,
+          "desc": "You broke some unwritten rule and pissed off the local anarch sect. You cannot take anarch comrades with this flaw."
+        },
+        {
+          "name": "Thin-Blood: Vitae Dependency",
+          "cost": 1,
+          "desc": "You must slake at least 1 Hunger on kindred blood each week or lose all access to discipline until you do so."
         }
       ]
     }

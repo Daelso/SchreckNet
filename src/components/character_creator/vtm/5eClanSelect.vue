@@ -88,27 +88,10 @@
 
             <q-step
               :name="2"
-              title="Sire, Generation, Coterie Age"
+              title="Generation, Coterie Age"
               icon="remove_red_eye"
               :done="step > 2"
             >
-              <q-input
-                filled
-                bg-color="grey-3"
-                v-model="sire"
-                label="Your sire's name, if you know"
-                autogrow
-                lazy-rules
-                style="margin-top: 15px; width: 100%"
-                label-color="primary"
-                :rules="[
-                  (val) =>
-                    val === null ||
-                    val.length <= 2000 ||
-                    'Please keep this field under 2000 characters',
-                ]"
-              />
-              <q-separator />
               <q-select
                 v-model="generation"
                 label="Generation"
@@ -382,7 +365,6 @@ export default defineComponent({
 
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
-    const sire = ref(props.info.sire);
     const xp = ref(props.info.xp);
     const flaws = ref(0);
     const advantages = ref(0);
@@ -468,7 +450,6 @@ export default defineComponent({
       humanity,
       predBlurb,
       predatorType,
-      sire,
       skillsSelected,
       specialtiesFromPred,
       xp,
@@ -531,7 +512,6 @@ export default defineComponent({
           advantages: advantages,
           bane: clanBane,
           tooltips: discExplained,
-          sire: sire,
           generation: generation,
           humanity: humanity,
           xp: xp,

@@ -20,6 +20,7 @@
             >Must have any skill over 1 to set specialties.</q-tooltip
           >
         </q-tab>
+        <q-tab name="advantages" label="Advantages & Flaws"> </q-tab>
       </q-tabs>
 
       <q-separator />
@@ -139,6 +140,22 @@
               (val) =>
                 (typeof val === 'string' && val.length <= 100) ||
                 'Please keep this field under 100 characters',
+            ]"
+          />
+          <q-input
+            filled
+            bg-color="grey-3"
+            v-model="sireInput"
+            label="Your sire's name, if you know"
+            autogrow
+            lazy-rules
+            label-color="primary"
+            @update:model-value="this.$emit('update:sire', this.sireInput)"
+            :rules="[
+              (val) =>
+                val === null ||
+                val.length <= 2000 ||
+                'Please keep this field under 2000 characters',
             ]"
           />
         </q-tab-panel>
@@ -333,6 +350,74 @@
             </q-item>
           </q-list>
         </q-tab-panel>
+
+        <q-tab-panel name="advantages" class="q-m-b-xl">
+          <div>
+            These are not mandatory to be filled out now and can be withheld for
+            later use.
+          </div>
+          <div class="q-my-sm">
+            Remaining dots of advantages: {{ advantagePoints }}
+          </div>
+          <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
+          <q-separator />
+          <q-select
+            v-model="advantageCategory"
+            :options="advantageCategories"
+            label="Select merits, backgrounds and loresheets"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+          />
+          <q-separator />
+          <div v-if="this.advantageCategory === 'Merits'">
+            <q-select
+              v-model="meritCategory"
+              :options="meritCatOptions()"
+              class="q-my-sm"
+              label="Merit Category"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+            />
+          </div>
+          <q-separator />
+          <div v-if="this.meritCategory">
+            <q-select
+              v-model="advOrFlaw"
+              :options="['Advantages', 'Flaws']"
+              label="Select advantages or flaws"
+              label-color="primary"
+              class="q-mb-sm"
+              bg-color="grey-3"
+              filled
+            />
+          </div>
+          <q-separator />
+          <div v-if="this.advOrFlaw">
+            <q-select
+              v-model="advFlawChoice"
+              :options="meritOptions()"
+              label="Choose your merit"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              option-label="name"
+            />
+          </div>
+          <div class="q-mt-sm" v-if="this.advFlawChoice">
+            Description: {{ this.advFlawChoice.desc }}
+            <br />
+            Dot Cost: {{ this.advFlawChoice.cost }}
+            <br />
+            <q-btn
+              flat
+              label="Select Merit"
+              @click="meritPicked()"
+              color="white"
+            />
+          </div>
+        </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
@@ -362,12 +447,27 @@
 <script>
 import { defineComponent } from "vue";
 import { ref } from "vue";
+import allMerits from "../vtm/5eMerits.json";
 
 export default defineComponent({
   name: "v5-tabs",
-  props: ["specialtiePoints", "specials", "fullSkills", "specialtiesFromPred"],
+  props: [
+    "specialtiePoints",
+    "specials",
+    "fullSkills",
+    "specialtiesFromPred",
+    "advantagePoints",
+    "flawPoints",
+    "sire",
+    "age",
+    "advantagesObj",
+  ],
   emits: [
     "update:specialtiePoints",
+    "update:advantagePoints",
+    "update:flawPoints",
+    "update:sire",
+    "update:advantagesObj",
     "specialties",
     "convictions",
     "touchstones",
@@ -379,6 +479,11 @@ export default defineComponent({
   },
   data(props) {
     return {
+      advantagesArr: [],
+      allMerits: allMerits.Merits,
+      advOrFlaw: "",
+      advFlawChoice: "",
+      advantageCategory: "",
       ambition: "",
       archetype: "",
       charName: "",
@@ -389,11 +494,14 @@ export default defineComponent({
       chronicle: "",
       desire: "",
       concept: "",
+      meritCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
+      advantageCategories: ["Merits", "Backgrounds", "Loresheets"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
+      sireInput: props.sire,
     };
   },
   methods: {
@@ -450,6 +558,61 @@ export default defineComponent({
         points++;
       }
       this.$emit("update:specialtiePoints", points);
+    },
+    meritCatOptions() {
+      let arr = Object.keys(allMerits.Merits);
+      if (this.age.label !== "Ancillae") {
+        arr = arr.filter((x) => x !== "Archaic");
+      }
+
+      return arr;
+    },
+    meritOptions() {
+      let arr = [];
+      if (this.advOrFlaw.toLowerCase() === "advantages") {
+        arr = allMerits.Merits[this.meritCategory].advantages;
+      }
+      if (this.advOrFlaw.toLowerCase() === "flaws") {
+        arr = allMerits.Merits[this.meritCategory].flaws;
+      }
+
+      return arr;
+    },
+    meritPicked() {
+      let modifiedObj = { ...{}, ...this.advantagesObj };
+      if (this.advOrFlaw.toLowerCase() === "advantages") {
+        if (this.advantagePoints < this.advFlawChoice.cost) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "Not enough advantage dots remaining!",
+          });
+          return;
+        }
+        modifiedObj.merits.advantages.push(this.advFlawChoice);
+        this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+        this.$emit(
+          "update:advantagePoints",
+          this.advantagePoints - this.advFlawChoice.cost
+        );
+      }
+
+      if (this.advOrFlaw.toLowerCase() === "flaws") {
+        if (this.flawPoints < this.advFlawChoice.cost) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "Not enough flaw dots remaining!",
+          });
+          return;
+        }
+        modifiedObj.merits.flaws.push(this.advFlawChoice);
+        this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+        this.$emit(
+          "update:flawPoints",
+          this.flawPoints - this.advFlawChoice.cost
+        );
+      }
     },
   },
 });

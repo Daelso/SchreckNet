@@ -417,6 +417,48 @@
               color="white"
             />
           </div>
+
+          <div class="text-h6" style="font-family: monospace">Advantages</div>
+
+          <q-list bordered separator>
+            <q-item
+              v-for="(advantage, key) in advantagesObj.merits.advantages"
+              :key="key"
+              clickable
+              v-ripple
+              @click="removeAdvantage($event.target.id, advantage.cost)"
+            >
+              <q-item-section :id="key"
+                >Advantage:
+                {{ advantage.name }}
+                - {{ advantage.cost }} dots
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                >
+              </q-item-section>
+            </q-item>
+          </q-list>
+
+          <div class="text-h6" style="font-family: monospace">Flaws</div>
+
+          <q-list bordered separator>
+            <q-item
+              v-for="(flaw, key) in advantagesObj.merits.flaws"
+              :key="key"
+              clickable
+              v-ripple
+              @click="removeFlaw($event.target.id, flaw.cost)"
+            >
+              <q-item-section :id="key"
+                >Flaw:
+                {{ flaw.name }}
+                - {{ flaw.cost }} dots
+                <q-tooltip class="bg-dark text-body2"
+                  >Click to delete</q-tooltip
+                >
+              </q-item-section>
+            </q-item>
+          </q-list>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -514,6 +556,18 @@ export default defineComponent({
     removeSpecialty(event) {
       this.specialties.splice(event, 1);
       this.handlePoints(false);
+    },
+    removeAdvantage(event, cost) {
+      let modifiedObj = { ...{}, ...this.advantagesObj };
+      modifiedObj.merits.advantages.splice(event, 1);
+      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+      this.$emit("update:advantagePoints", this.advantagePoints + cost);
+    },
+    removeFlaw(event, cost) {
+      let modifiedObj = { ...{}, ...this.advantagesObj };
+      modifiedObj.merits.flaws.splice(event, 1);
+      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+      this.$emit("update:flawPoints", this.flawPoints + cost);
     },
     sortSkills() {
       let optionsArr = [];
@@ -613,6 +667,10 @@ export default defineComponent({
           this.flawPoints - this.advFlawChoice.cost
         );
       }
+      this.advFlawChoice = "";
+      this.advOrFlaw = "";
+      this.meritCategory = "";
+      this.advantageCategory = "";
     },
   },
 });

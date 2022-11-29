@@ -1,6 +1,11 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
+  <q-dialog
+    ref="dialogRef"
+    @hide="onDialogHide"
+    persistent
+    style="color: white"
+  >
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>

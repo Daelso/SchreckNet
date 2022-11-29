@@ -115,6 +115,11 @@
           "name": "Methuselah's Thirst",
           "cost": 1,
           "desc": "Your hunger can only be fully slaked by the blood of supernatural creatures."
+        },
+        {
+          "name": "Prey Exclusion",
+          "cost": 1,
+          "desc": "You refuse to hunt a certain type of prey, be it women, addicts, homeless."
         }
       ]
     },

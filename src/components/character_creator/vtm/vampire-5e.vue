@@ -16,8 +16,8 @@
             <div>Chronicle: {{ chronicle }}</div>
             <div>Concept: {{ !concept ? "None" : concept }}</div>
             <div>Specialties: {{ this.totalSpecialty }}</div>
-            <div>Skills Done: {{ skillsDone }}</div>
-            <div>Attributes Done: {{ attributesDone }}</div>
+            <div>Sire: {{ sire }}</div>
+            <div>Cult: {{ cult }}</div>
           </div>
           <q-separator class="q-my-md" />
           <div class="stats">
@@ -29,7 +29,8 @@
             <div>Advantage Dots Remaining: {{ advantages }}</div>
             <div>Remaining XP: {{ xp }}</div>
             <div>Flaw Dots Remaining: {{ flaws }}</div>
-            <div>Sire: {{ sire }}</div>
+            <div>Skills Done: {{ skillsDone }}</div>
+            <div>Attributes Done: {{ attributesDone }}</div>
           </div>
           <q-separator class="q-my-md" />
 
@@ -267,6 +268,7 @@
         v-model:flawPoints="flaws"
         v-model:sire="sire"
         v-model:advantagesObj="advantagesObj"
+        v-model:cult="cult"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
@@ -357,6 +359,7 @@ export default {
       attributePoints: 22,
       skillPoints: 29,
       charName: "",
+      cult: "None",
       baseCharisma: 0,
       baseComposure: 0,
       baseDexterity: 0,

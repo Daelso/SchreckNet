@@ -124,7 +124,7 @@
             <q-expansion-item
               icon="military_tech"
               label="Advantages/Flaws"
-              caption="View current advantages & flaws"
+              caption="View current advantages, flaws, backgrounds, havens and loresheets"
               dark
             >
               <q-card>

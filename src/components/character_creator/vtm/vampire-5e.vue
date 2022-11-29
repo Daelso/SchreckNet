@@ -138,7 +138,7 @@
                     v-for="advantage in advantagesObj.merits.advantages"
                     :key="advantage.name"
                   >
-                    <div>{{ advantage.name }}</div>
+                    <div>{{ advantage.name }} - {{ advantage.cost }}</div>
                   </div>
                   Flaws:
                   <div v-if="advantagesObj.merits.flaws.length === 0">

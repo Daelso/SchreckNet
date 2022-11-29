@@ -57,6 +57,7 @@
         {
           "name": "Cult: Gardener",
           "cost": 0,
+          "maxCost": 5,
           "desc": "As a faithful Ba'ham, you lead a Garden of your own. You guide new initiates, lead rituals, and direct those who walk in your Garden to carry out the Dark Mother's will. Each dot grows your followers and the size of your garden. Amalgam of herd and influence essentially."
         },
         {
@@ -177,6 +178,7 @@
         {
           "name": "Cult: Shrine",
           "cost": 0,
+          "maxCost": 3,
           "desc": "You have a shrine in your haven, each dot creates a larger and more impressive shrine capable of handling more and more potent rituals."
         }
       ],

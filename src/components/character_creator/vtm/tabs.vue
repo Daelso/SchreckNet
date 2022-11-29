@@ -447,6 +447,19 @@
               bg-color="grey-3"
               filled
               option-label="name"
+              @update:model-value="clearDotField()"
+            />
+          </div>
+          <div v-if="this.advFlawChoice.maxCost">
+            <q-select
+              v-model="howManyDots"
+              :options="dotOptions()"
+              label="Choose how many dots"
+              label-color="primary"
+              bg-color="grey-3"
+              class="q-mt-sm"
+              filled
+              @update:model-value="costAdjustment()"
             />
           </div>
           <div class="q-mt-sm" v-if="this.advFlawChoice">
@@ -569,7 +582,11 @@ export default defineComponent({
     "touchstones",
   ],
   setup() {
+    function range(size, startAt = 0) {
+      return [...Array(size).keys()].map((i) => i + startAt);
+    }
     return {
+      range,
       tab: ref("coreConcept"),
     };
   },
@@ -580,6 +597,7 @@ export default defineComponent({
       allCultMerits: allCultMerits.Cults,
       advOrFlaw: "",
       advFlawChoice: "",
+      howManyDots: "",
       advantageCategory: "",
       ambition: "",
       archetype: "",
@@ -712,7 +730,7 @@ export default defineComponent({
         case "Cult":
           arr = Object.keys(allCultMerits.Cults);
           if (this.cult === "None") {
-            arr = arr.filter((x) => x === "General");
+            arr = arr.filter((x) => x === "General" || x === "Haven");
           } else {
             arr = arr.filter((x) => x === "General" || x === this.cult);
           }
@@ -746,8 +764,24 @@ export default defineComponent({
 
       return arr;
     },
+    dotOptions() {
+      let arr = [];
+
+      arr = this.range(this.advFlawChoice.maxCost, 1);
+
+      return arr;
+    },
+    costAdjustment() {
+      if (this.howManyDots) {
+        this.advFlawChoice.cost = this.howManyDots;
+      }
+    },
+    clearDotField() {
+      this.howManyDots = "";
+    },
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
+
       if (this.advOrFlaw.toLowerCase() === "advantages") {
         if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
           modifiedObj.merits.advantages.push(this.advFlawChoice);
@@ -756,10 +790,15 @@ export default defineComponent({
           this.advOrFlaw = "";
           this.meritCategory = "";
           this.advantageCategory = "";
+          this.howManyDots = "";
+
           return;
         }
 
-        if (this.advantagePoints < this.advFlawChoice.cost) {
+        if (
+          this.advantagePoints < this.advFlawChoice.cost ||
+          this.howManyDots > this.advantagePoints
+        ) {
           this.$q.notify({
             type: "negative",
             textColor: "white",
@@ -769,6 +808,7 @@ export default defineComponent({
         }
         modifiedObj.merits.advantages.push(this.advFlawChoice);
         this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+
         this.$emit(
           "update:advantagePoints",
           this.advantagePoints - this.advFlawChoice.cost
@@ -783,9 +823,14 @@ export default defineComponent({
           this.advOrFlaw = "";
           this.meritCategory = "";
           this.advantageCategory = "";
+          this.howManyDots = "";
+
           return;
         }
-        if (this.flawPoints < this.advFlawChoice.cost) {
+        if (
+          this.flawPoints < this.advFlawChoice.cost ||
+          this.howManyDots > this.flawPoints
+        ) {
           this.$q.notify({
             type: "negative",
             textColor: "white",
@@ -793,8 +838,10 @@ export default defineComponent({
           });
           return;
         }
+
         modifiedObj.merits.flaws.push(this.advFlawChoice);
         this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+
         this.$emit(
           "update:flawPoints",
           this.flawPoints - this.advFlawChoice.cost
@@ -804,6 +851,7 @@ export default defineComponent({
       this.advOrFlaw = "";
       this.meritCategory = "";
       this.advantageCategory = "";
+      this.howManyDots = "";
     },
   },
 });

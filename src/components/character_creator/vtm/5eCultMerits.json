@@ -1,0 +1,188 @@
+{
+  "Cults": {
+    "General": {
+      "advantages": [
+        {
+          "name": "Cult: Apocryphal Texts",
+          "cost": 1,
+          "desc": "You own the writings of a cult leader or prominent figure. These writings make you much sought after."
+        },
+        {
+          "name": "Cult: Inspired Artist",
+          "cost": 2,
+          "desc": "You channel your divine fervor into art. You're a painter, a singer, a poet, a sculptor, and your creations inspire all who experience it. Art featuring cult symbology has the same effect as Awe on those who view it."
+        },
+        {
+          "name": "Cult: Travelling Preacher",
+          "cost": 2,
+          "desc": "You spread your cult's message wherever you go, despite the risks Kindred take when they travel. You've mapped out safe routes, established good places to go to ground along the way, and learned where surveillance systems falter."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Excommunicated",
+          "cost": 0,
+          "desc": "You have been cast out of your cult and shunned by your peers. You have lost all access to cult support and resources."
+        },
+        {
+          "name": "Cult: Faithless",
+          "cost": 2,
+          "desc": "You don't actually believe in the cult. You're just here for the benefits, you aren't willing to do what it takes to rise and gain power within your cult."
+        }
+      ]
+    },
+    "Ashfinders": {
+      "advantages": [
+        {
+          "name": "Cult: Influencer",
+          "cost": 2,
+          "desc": "You're a social media sensation, with a follower count in the hundreds of thousands — minimum — hanging on your every post. You can mobilize this fan-base at will."
+        },
+        {
+          "name": "Cult: Memories of the Fallen",
+          "cost": 2,
+          "desc": "Partaking of Ashe grants the user memories of the Kindred who died to make the drug."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Ashe Addiction",
+          "cost": 2,
+          "desc": "The need to relive other Kindred's memories and wield their power is a constant clamour in your mind."
+        }
+      ]
+    },
+    "Bahari": {
+      "advantages": [
+        {
+          "name": "Cult: Gardener",
+          "cost": 0,
+          "maxCost": 5,
+          "desc": "As a faithful Ba'ham, you lead a Garden of your own. You guide new initiates, lead rituals, and direct those who walk in your Garden to carry out the Dark Mother's will. Each dot grows your followers and the size of your garden. Amalgam of herd and influence essentially."
+        },
+        {
+          "name": "Cult: Dark Mother's Song",
+          "cost": 2,
+          "desc": "Your words make the listener's pain and grief resonate like a struck harp, giving you an edge when converting others to the Bahari Faith."
+        }
+      ],
+      "flaws": []
+    },
+    "Church of Caine": {
+      "advantages": [
+        {
+          "name": "Cult: Fire Resistant",
+          "cost": 1,
+          "desc": "You've participated in the Sacrament of Firewalking several times. As a result, your body is able to withstand exposure to flames outside of the ritual setting."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Schism (Lasombra)",
+          "cost": 1,
+          "desc": "One of your great-grandsires was among the members of the Night Clan participating in purging the Church of Caine several centuries ago."
+        }
+      ]
+    },
+    "Church of Set": {
+      "advantages": [
+        {
+          "name": "Cult: Go to Ground",
+          "cost": 1,
+          "desc": "The Church of Set teaches its members to be mobile, ready to slip away into the shadows if persecutors come calling."
+        },
+        {
+          "name": "Cult: Fixer",
+          "cost": 2,
+          "desc": "With little more than a brief conversation, you know what people want. Even when — especially when — it's something they ought not have. You procure questionable goods for your clients."
+        },
+        {
+          "name": "Cult: Vigilant",
+          "cost": 2,
+          "desc": "You always know when you are being watched, barring supernatural concealment."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: False Alarms",
+          "cost": 1,
+          "desc": "Your danger sense is not only always on, it's in constant overdrive ... and it's not always right"
+        }
+      ]
+    },
+    "Cult of Shalim": {
+      "advantages": [
+        {
+          "name": "Cult: Gematria",
+          "cost": 1,
+          "desc": "You understand the coded system the Cult uses and can encrypt or decrypt messages using it."
+        },
+        {
+          "name": "Cult: Insidious Whispers",
+          "cost": 2,
+          "desc": "You have a talent to make other Kindred question their sense of self and their convictions."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Empty",
+          "cost": 3,
+          "desc": "People try to extricate themselves from your presence quickly, making it hard to have more than superficial conversations with them. Lose two die on social rolls."
+        }
+      ]
+    },
+    "Mithraic Mysteries": {
+      "advantages": [
+        {
+          "name": "Cult: Bargainer",
+          "cost": 1,
+          "desc": "You are better at making deals. Reduce the difficulty of bargain rolls by 1."
+        },
+        {
+          "name": "Cult: Bull-Slayer",
+          "cost": 3,
+          "desc": "Like Mithras, when you set your sights on a target, you pursue it until it falls. Re-roll up to two failures during an extended test."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Failed Initiate",
+          "cost": 2,
+          "desc": "You faltered while taking one (or several) of the Seven Steps, and your Pater has assigned a guide to ensure your future success. This mawla watches and scrutinizes you closely."
+        }
+      ]
+    },
+    "Nephilim": {
+      "advantages": [
+        {
+          "name": "Cult: Archangel's Grace",
+          "cost": 2,
+          "desc": "Your training makes your movements lithe and assured, every gesture an art form in itself."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Yearning",
+          "cost": 3,
+          "desc": "Your master is gone from your life and you struggle to break from the path she set for you. Spend 2 willpower points to take actions counter to your masters plan."
+        }
+      ]
+    },
+    "Haven": {
+      "advantages": [
+        {
+          "name": "Cult: Holy Ground",
+          "cost": 1,
+          "desc": "Your haven exists as a place of significance to your cult. Other cultists view you as the custodian of a holy site."
+        },
+        {
+          "name": "Cult: Shrine",
+          "cost": 0,
+          "maxCost": 3,
+          "desc": "You have a shrine in your haven, each dot creates a larger and more impressive shrine capable of handling more and more potent rituals."
+        }
+      ],
+      "flaws": []
+    }
+  }
+}

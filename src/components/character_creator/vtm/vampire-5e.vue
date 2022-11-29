@@ -16,8 +16,8 @@
             <div>Chronicle: {{ chronicle }}</div>
             <div>Concept: {{ !concept ? "None" : concept }}</div>
             <div>Specialties: {{ this.totalSpecialty }}</div>
-            <div>Skills Done: {{ skillsDone }}</div>
-            <div>Attributes Done: {{ attributesDone }}</div>
+            <div>Sire: {{ sire }}</div>
+            <div>Cult: {{ cult }}</div>
           </div>
           <q-separator class="q-my-md" />
           <div class="stats">
@@ -29,7 +29,8 @@
             <div>Advantage Dots Remaining: {{ advantages }}</div>
             <div>Remaining XP: {{ xp }}</div>
             <div>Flaw Dots Remaining: {{ flaws }}</div>
-            <div>Sire: {{ sire }}</div>
+            <div>Skills Done: {{ skillsDone }}</div>
+            <div>Attributes Done: {{ attributesDone }}</div>
           </div>
           <q-separator class="q-my-md" />
 
@@ -123,7 +124,7 @@
             <q-expansion-item
               icon="military_tech"
               label="Advantages/Flaws"
-              caption="View current advantages & flaws"
+              caption="View current advantages, flaws, backgrounds, havens and loresheets"
               dark
             >
               <q-card>
@@ -137,7 +138,7 @@
                     v-for="advantage in advantagesObj.merits.advantages"
                     :key="advantage.name"
                   >
-                    <div>{{ advantage.name }}</div>
+                    <div>{{ advantage.name }} - {{ advantage.cost }}</div>
                   </div>
                   Flaws:
                   <div v-if="advantagesObj.merits.flaws.length === 0">
@@ -267,10 +268,12 @@
         v-model:flawPoints="flaws"
         v-model:sire="sire"
         v-model:advantagesObj="advantagesObj"
+        v-model:cult="cult"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
         :age="this.age"
+        :clan="this.clan"
       />
     </div>
   </q-form>
@@ -356,6 +359,7 @@ export default {
       attributePoints: 22,
       skillPoints: 29,
       charName: "",
+      cult: "None",
       baseCharisma: 0,
       baseComposure: 0,
       baseDexterity: 0,

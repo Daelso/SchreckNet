@@ -1,0 +1,290 @@
+{
+  "Backgrounds": {
+    "Allies": {
+      "advantages": [
+        {
+          "name": "Ally",
+          "desc": "A mortal, group or organization who assists you each point taken increases their loyalty and capability.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Enemy",
+          "desc": "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+          "cost": 0
+        }
+      ]
+    },
+    "Contacts": {
+      "advantages": [
+        {
+          "name": "Contact",
+          "desc": "Someone who can help you with a specific task, be it a camarilla insider, police dispatcher or shady merchant. Each dot increases their level of usefulness.",
+          "cost": 0
+        }
+      ],
+      "flaws": []
+    },
+    "Fame": {
+      "advantages": [
+        {
+          "name": "Fame",
+          "desc": "You are a known and liked name in your community. Each dot increases the scale of your fame and reach.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Infamy",
+          "desc": "You are infamous for some wicked deed. Add each dot of this flaw to the difficulty of your reaction role. A severe flaw may lead to pursuit from authorities.",
+          "cost": 0
+        },
+        {
+          "name": "Dark Secret: ",
+          "desc": "A milder version of infamy, you have a terrible secret that would harm your reputation if it got out.",
+          "cost": 0
+        },
+        {
+          "name": "Dark Secret: Cleaver",
+          "desc": "You are known to routinely violate the masquerade, you likely have been run out of other domains and are not long to last here either.",
+          "cost": 2
+        },
+        {
+          "name": "Debt",
+          "desc": "You owe a debt to the wrong people. Alternatively, your spouse, lover or other close relations has 2 dots of infamy.",
+          "cost": 1
+        }
+      ]
+    },
+    "Influence": {
+      "advantages": [
+        {
+          "name": "Influence",
+          "desc": "You have pull with the mortals of your domain. How much respect and reach you have grow with every dot of influence.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Despised",
+          "desc": "A group of mortals in your city lives solely to hinder you in any way possible. Subtract 2 die from any rolls to convince neutral parties to support you.",
+          "cost": 2
+        },
+        {
+          "name": "Disliked ",
+          "desc": "A group of mortals in your city lives solely to hinder you in any way possible. Subtract 1 die from any rolls to convince neutral parties to support you. (Does not effect contacts or allies)",
+          "cost": 1
+        }
+      ]
+    },
+    "Base Haven": {
+      "advantages": [
+        {
+          "name": "Haven",
+          "desc": "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "No Haven",
+          "desc": "Every morning you have to search for a new, safe place to await sunset.",
+          "cost": 1
+        }
+      ]
+    },
+    "Haven Perks": {
+      "advantages": [
+        {
+          "name": "Haven: Hidden Armory",
+          "desc": "Each dot you take adds another weapon stand to your home. A typical stand would be a long-rifle, a pistol and some ammunition.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Cell",
+          "desc": "You have a jail within your haven to securely store prisoners. Each dot allows you to store twice as many prisoners.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Watchmen",
+          "desc": "For every dot your haven is guarded by an additional squad of 5, 4 average goons and a gifted boss.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Laboratory",
+          "desc": "Your haven is equipped with a modest lab. Each dot adds a die to science, technology or alchemical rolls performed within it.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Library",
+          "desc": "You have a library within your haven stocked with books on Cainite legends, history, vampire lore and the occult. Each dot Adds a die for academics, investigation or occult roles.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Location",
+          "desc": "Your haven is in an excellent location, what that means is up to you. Work with your ST to add two die to rolls related to your location.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Luxury",
+          "desc": "Your haven is beautifully decorated and outfitted. Gain two dice bonus to social tests within your haven. If you do not have 3 dots of resources, your decorations were gained illegally.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Postern",
+          "desc": "You have a secret escape route from your haven. Each dot adds an additional die to evasion or escapes near your haven.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Security System",
+          "desc": "Your haven has unusually good security systems in place. Each dot adds one die to resist or alert roles of unauthorized entry to your haven.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Surgery",
+          "desc": "Your haven contains a outfitted surgery bay. Each dot adds two relevant die to the dice pools.",
+          "cost": 0
+        },
+        {
+          "name": "Haven: Warding",
+          "desc": "Your haven is magically warded barring access to supernatural forces. Each dot adds a die to resist supernatural scrying. Work out other advantages with your ST.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Haven: Compromised",
+          "desc": "Your haven has been raided once before, it is likely known to your enemies. Add two dice to the pool of anyone trying to surveil or access your haven.",
+          "cost": 2
+        },
+        {
+          "name": "Haven: Creepy",
+          "desc": "You own the haunted mansion on the block. Your haven discomforts most who visit it. Any dice pools to seduce or put others at ease suffer a two-die penalty.",
+          "cost": 1
+        },
+        {
+          "name": "Haven: Haunted",
+          "desc": "You aren't the only supernatural being 'living' in your haven. Work out with your ST what exactly is haunting your home.",
+          "cost": 1
+        }
+      ]
+    },
+    "Herd": {
+      "advantages": [
+        {
+          "name": "Herd",
+          "desc": "You have assembled a group of mortals from which you regularly and easily feed. They are also capable of performing menial tasks for you, though not loyally. Your first dot awards 1-3 mortals. Each dot essentially doubles the size of your herd",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Obvious Predator",
+          "desc": "You exude danger. All humans instinctively mistrust you. Lose two dice from any dice pool from any non-physical skills used for hunting",
+          "cost": 2
+        }
+      ]
+    },
+    "Mask": {
+      "advantages": [
+        {
+          "name": "Mask",
+          "desc": "Each dot of mask strengthens the level of your fake identity. Choose a max of 2 dots. At 2 dots, you may purchase additional related 1 dot merits.",
+          "cost": 0
+        },
+        {
+          "name": "Zeroed",
+          "desc": "REQUIRES 2 dots of Mask: Someone highup has removed all trace of your government records, you do not legally exist.",
+          "cost": 1
+        },
+        {
+          "name": "Cobbler",
+          "desc": "REQUIRES 2 dots of Mask: You are capable of creating or sourcing masks for others. Each mask takes 3 days per dot to create, 1 to source with an additional cost chosen by your ST.",
+          "cost": 1
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Known Blankbody",
+          "desc": "Your biography is known to several government agencies. It would not be difficult for any inquisitor to realize what you are.",
+          "cost": 2
+        },
+        {
+          "name": "Known Corpse",
+          "desc": "People and government agencies know you have died recently. Appearing otherwise is bound to frighten them.",
+          "cost": 1
+        }
+      ]
+    },
+    "Mawla": {
+      "advantages": [
+        {
+          "name": "Mawla",
+          "desc": "Each dot of a mawla represents the strength of one or more kindred who are looking out for you. One dot would be a neonate, five would be your local prince.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Adversary",
+          "desc": "Each dot represents a fellow kindred who wishes you ill, max 3 dots. One dot represents an elder, three would be a local Prince or Baron.",
+          "cost": 0
+        }
+      ]
+    },
+    "Resources": {
+      "advantages": [
+        {
+          "name": "Resources",
+          "desc": "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Destitute",
+          "desc": "No money and no home.",
+          "cost": 1
+        }
+      ]
+    },
+    "Retainers": {
+      "advantages": [
+        {
+          "name": "Retainer",
+          "desc": "Range: 1-3 dots. With each dot your retainer grows more capable. 1 dot = weak mortal, 2 dot = average ghoul, 3 dot = gifted ghoul",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Stalker",
+          "desc": "A former retainer is obsessed with you, should you deal with one another emerges.",
+          "cost": 1
+        }
+      ]
+    },
+    "Status": {
+      "advantages": [
+        {
+          "name": "Status",
+          "desc": "Range: 1-5 dots. With every dot your level of respect and privilege amongst your sect grows.",
+          "cost": 0
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Shunned",
+          "desc": "You are hated by your local sect. You wronged them and they will do what they can to work against you.",
+          "cost": 2
+        },
+        {
+          "name": "Suspect",
+          "desc": "You're disliked by your local sect. Suffer a two-die penalty to social tests with your faction.",
+          "cost": 1
+        }
+      ]
+    }
+  }
+}

@@ -4,23 +4,33 @@
       <q-tabs
         v-model="tab"
         class="bg-primary tabs"
-        active-color="secondary"
+        active-color="white"
         indicator-color="secondary"
         align="justify"
         narrow-indicator
       >
-        <q-tab name="coreConcept" label="Core Concept" />
-        <q-tab name="touchstones" label="Touchstones/Convictions" />
+        <q-tab style="color: white" name="coreConcept" label="Core Concept" />
+        <q-tab
+          style="color: white"
+          name="touchstones"
+          label="Touchstones/Convictions"
+        />
         <q-tab
           :disable="sortSkills().length < 1"
           name="specialties"
           label="Specialties"
+          style="color: white"
         >
           <q-tooltip v-if="sortSkills().length < 1" class="bg-dark text-body2"
             >Must have any skill over 1 to set specialties.</q-tooltip
           >
         </q-tab>
-        <q-tab name="advantages" label="Advantages & Flaws"> </q-tab>
+        <q-tab
+          style="color: white"
+          name="advantages"
+          label="Advantages & Flaws"
+        >
+        </q-tab>
       </q-tabs>
 
       <q-separator />
@@ -126,6 +136,25 @@
             bg-color="grey-3"
             filled
             @update:model-value="this.$emit('sect', this.sect)"
+          />
+          <q-select
+            v-model="cultInput"
+            :options="[
+              'None',
+              'Ashfinders',
+              'Bahari',
+              'Church of Caine',
+              'Church of Set',
+              'Cult of Shalim',
+              'Mithraic Mysteries',
+              'Nephilim',
+            ]"
+            label="Cult"
+            class="q-mt-md"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+            @update:model-value="this.$emit('update:cult', this.cultInput)"
           />
           <q-input
             filled
@@ -351,7 +380,7 @@
           </q-list>
         </q-tab-panel>
 
-        <q-tab-panel name="advantages" class="q-m-b-xl">
+        <q-tab-panel name="advantages" class="q-m-b-xl" style="color: white">
           <div>
             These are not mandatory to be filled out now and can be withheld for
             later use.
@@ -361,6 +390,16 @@
           </div>
           <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
           <q-separator />
+          <div v-if="this.clan === 'Thin-Blood'">
+            <div>
+              Thin-Blood merits and flaws do not cost normal dots, they must be
+              taken in a balanced amount.
+            </div>
+            <div class="q-my-sm">
+              Thin-Blood Advantages: {{ thinAdvantages }}
+            </div>
+            <div class="q-my-sm">Thin-Blood Flaws: {{ thinFlaws }}</div>
+          </div>
           <q-select
             v-model="advantageCategory"
             :options="advantageCategories"
@@ -370,12 +409,17 @@
             filled
           />
           <q-separator />
-          <div v-if="this.advantageCategory === 'Merits'">
+          <div
+            v-if="
+              this.advantageCategory === 'Merits' ||
+              this.advantageCategory == 'Cult'
+            "
+          >
             <q-select
               v-model="meritCategory"
               :options="meritCatOptions()"
               class="q-my-sm"
-              label="Merit Category"
+              :label="this.advantageCategory + ' Category'"
               label-color="primary"
               bg-color="grey-3"
               filled
@@ -385,7 +429,7 @@
           <div v-if="this.meritCategory">
             <q-select
               v-model="advOrFlaw"
-              :options="['Advantages', 'Flaws']"
+              :options="advorFlawOptions()"
               label="Select advantages or flaws"
               label-color="primary"
               class="q-mb-sm"
@@ -403,6 +447,19 @@
               bg-color="grey-3"
               filled
               option-label="name"
+              @update:model-value="clearDotField()"
+            />
+          </div>
+          <div v-if="this.advFlawChoice.maxCost">
+            <q-select
+              v-model="howManyDots"
+              :options="dotOptions()"
+              label="Choose how many dots"
+              label-color="primary"
+              bg-color="grey-3"
+              class="q-mt-sm"
+              filled
+              @update:model-value="costAdjustment()"
             />
           </div>
           <div class="q-mt-sm" v-if="this.advFlawChoice">
@@ -426,7 +483,13 @@
               :key="key"
               clickable
               v-ripple
-              @click="removeAdvantage($event.target.id, advantage.cost)"
+              @click="
+                removeAdvantage(
+                  $event.target.id,
+                  advantage.cost,
+                  advantage.name
+                )
+              "
             >
               <q-item-section :id="key"
                 >Advantage:
@@ -447,7 +510,7 @@
               :key="key"
               clickable
               v-ripple
-              @click="removeFlaw($event.target.id, flaw.cost)"
+              @click="removeFlaw($event.target.id, flaw.cost, flaw.name)"
             >
               <q-item-section :id="key"
                 >Flaw:
@@ -490,6 +553,7 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import allMerits from "../vtm/5eMerits.json";
+import allCultMerits from "../vtm/5eCultMerits.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -503,6 +567,8 @@ export default defineComponent({
     "sire",
     "age",
     "advantagesObj",
+    "clan",
+    "cult",
   ],
   emits: [
     "update:specialtiePoints",
@@ -510,12 +576,17 @@ export default defineComponent({
     "update:flawPoints",
     "update:sire",
     "update:advantagesObj",
+    "update:cult",
     "specialties",
     "convictions",
     "touchstones",
   ],
   setup() {
+    function range(size, startAt = 0) {
+      return [...Array(size).keys()].map((i) => i + startAt);
+    }
     return {
+      range,
       tab: ref("coreConcept"),
     };
   },
@@ -523,12 +594,15 @@ export default defineComponent({
     return {
       advantagesArr: [],
       allMerits: allMerits.Merits,
+      allCultMerits: allCultMerits.Cults,
       advOrFlaw: "",
       advFlawChoice: "",
+      howManyDots: "",
       advantageCategory: "",
       ambition: "",
       archetype: "",
       charName: "",
+      cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
       convictions: [],
@@ -537,13 +611,16 @@ export default defineComponent({
       desire: "",
       concept: "",
       meritCategory: "",
+      cultCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: ["Merits", "Backgrounds", "Loresheets"],
+      advantageCategories: ["Merits", "Backgrounds", "Cult"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
       sireInput: props.sire,
+      thinFlaws: 0,
+      thinAdvantages: 0,
     };
   },
   methods: {
@@ -557,13 +634,25 @@ export default defineComponent({
       this.specialties.splice(event, 1);
       this.handlePoints(false);
     },
-    removeAdvantage(event, cost) {
+    removeAdvantage(event, cost, name) {
+      if (name.includes("Thin-Blood")) {
+        let modifiedObj = { ...{}, ...this.advantagesObj };
+        modifiedObj.merits.advantages.splice(event, 1);
+        this.thinAdvantages--;
+        return;
+      }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj.merits.advantages.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
       this.$emit("update:advantagePoints", this.advantagePoints + cost);
     },
-    removeFlaw(event, cost) {
+    removeFlaw(event, cost, name) {
+      if (name.includes("Thin-Blood")) {
+        let modifiedObj = { ...{}, ...this.advantagesObj };
+        modifiedObj.merits.flaws.splice(event, 1);
+        this.thinFlaws--;
+        return;
+      }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj.merits.flaws.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
@@ -613,10 +702,39 @@ export default defineComponent({
       }
       this.$emit("update:specialtiePoints", points);
     },
+    advorFlawOptions() {
+      let arr = ["Advantages", "Flaws"];
+
+      if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+        if (this.thinAdvantages > this.thinFlaws) {
+          arr = ["Flaws"];
+        } else if (this.thinFlaws > this.thinAdvantages) {
+          arr = ["Advantages"];
+        }
+      }
+
+      return arr;
+    },
     meritCatOptions() {
-      let arr = Object.keys(allMerits.Merits);
-      if (this.age.label !== "Ancillae") {
-        arr = arr.filter((x) => x !== "Archaic");
+      let arr = [];
+      switch (this.advantageCategory) {
+        case "Merits":
+          arr = Object.keys(allMerits.Merits);
+          if (this.age.label !== "Ancillae") {
+            arr = arr.filter((x) => x !== "Archaic");
+          }
+          if (this.clan !== "Thin-Blood") {
+            arr = arr.filter((x) => x !== "Thin-Blood");
+          }
+          break;
+        case "Cult":
+          arr = Object.keys(allCultMerits.Cults);
+          if (this.cult === "None") {
+            arr = arr.filter((x) => x === "General" || x === "Haven");
+          } else {
+            arr = arr.filter((x) => x === "General" || x === this.cult);
+          }
+          break;
       }
 
       return arr;
@@ -624,18 +742,63 @@ export default defineComponent({
     meritOptions() {
       let arr = [];
       if (this.advOrFlaw.toLowerCase() === "advantages") {
-        arr = allMerits.Merits[this.meritCategory].advantages;
+        switch (this.advantageCategory) {
+          case "Merits":
+            arr = allMerits.Merits[this.meritCategory].advantages;
+            break;
+          case "Cult":
+            arr = allCultMerits.Cults[this.meritCategory].advantages;
+            break;
+        }
       }
       if (this.advOrFlaw.toLowerCase() === "flaws") {
-        arr = allMerits.Merits[this.meritCategory].flaws;
+        switch (this.advantageCategory) {
+          case "Merits":
+            arr = allMerits.Merits[this.meritCategory].flaws;
+            break;
+          case "Cult":
+            arr = allCultMerits.Cults[this.meritCategory].flaws;
+            break;
+        }
       }
 
       return arr;
     },
+    dotOptions() {
+      let arr = [];
+
+      arr = this.range(this.advFlawChoice.maxCost, 1);
+
+      return arr;
+    },
+    costAdjustment() {
+      if (this.howManyDots) {
+        this.advFlawChoice.cost = this.howManyDots;
+      }
+    },
+    clearDotField() {
+      this.howManyDots = "";
+    },
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
+
       if (this.advOrFlaw.toLowerCase() === "advantages") {
-        if (this.advantagePoints < this.advFlawChoice.cost) {
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+          modifiedObj.merits.advantages.push(this.advFlawChoice);
+          this.thinAdvantages++;
+          this.advFlawChoice = "";
+          this.advOrFlaw = "";
+          this.meritCategory = "";
+          this.advantageCategory = "";
+          this.howManyDots = "";
+
+          return;
+        }
+
+        if (
+          this.advantagePoints < this.advFlawChoice.cost ||
+          this.howManyDots > this.advantagePoints
+        ) {
           this.$q.notify({
             type: "negative",
             textColor: "white",
@@ -645,6 +808,7 @@ export default defineComponent({
         }
         modifiedObj.merits.advantages.push(this.advFlawChoice);
         this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+
         this.$emit(
           "update:advantagePoints",
           this.advantagePoints - this.advFlawChoice.cost
@@ -652,7 +816,21 @@ export default defineComponent({
       }
 
       if (this.advOrFlaw.toLowerCase() === "flaws") {
-        if (this.flawPoints < this.advFlawChoice.cost) {
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+          modifiedObj.merits.flaws.push(this.advFlawChoice);
+          this.thinFlaws++;
+          this.advFlawChoice = "";
+          this.advOrFlaw = "";
+          this.meritCategory = "";
+          this.advantageCategory = "";
+          this.howManyDots = "";
+
+          return;
+        }
+        if (
+          this.flawPoints < this.advFlawChoice.cost ||
+          this.howManyDots > this.flawPoints
+        ) {
           this.$q.notify({
             type: "negative",
             textColor: "white",
@@ -660,8 +838,10 @@ export default defineComponent({
           });
           return;
         }
+
         modifiedObj.merits.flaws.push(this.advFlawChoice);
         this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+
         this.$emit(
           "update:flawPoints",
           this.flawPoints - this.advFlawChoice.cost
@@ -671,6 +851,7 @@ export default defineComponent({
       this.advOrFlaw = "";
       this.meritCategory = "";
       this.advantageCategory = "";
+      this.howManyDots = "";
     },
   },
 });

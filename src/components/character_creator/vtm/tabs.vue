@@ -409,12 +409,17 @@
             filled
           />
           <q-separator />
-          <div v-if="this.advantageCategory === 'Merits'">
+          <div
+            v-if="
+              this.advantageCategory === 'Merits' ||
+              this.advantageCategory == 'Cult'
+            "
+          >
             <q-select
               v-model="meritCategory"
               :options="meritCatOptions()"
               class="q-my-sm"
-              label="Merit Category"
+              :label="this.advantageCategory + ' Category'"
               label-color="primary"
               bg-color="grey-3"
               filled
@@ -535,6 +540,7 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import allMerits from "../vtm/5eMerits.json";
+import allCultMerits from "../vtm/5eCultMerits.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -571,6 +577,7 @@ export default defineComponent({
     return {
       advantagesArr: [],
       allMerits: allMerits.Merits,
+      allCultMerits: allCultMerits.Cults,
       advOrFlaw: "",
       advFlawChoice: "",
       advantageCategory: "",
@@ -586,6 +593,7 @@ export default defineComponent({
       desire: "",
       concept: "",
       meritCategory: "",
+      cultCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
       advantageCategories: ["Merits", "Backgrounds", "Cult"],
@@ -690,12 +698,25 @@ export default defineComponent({
       return arr;
     },
     meritCatOptions() {
-      let arr = Object.keys(allMerits.Merits);
-      if (this.age.label !== "Ancillae") {
-        arr = arr.filter((x) => x !== "Archaic");
-      }
-      if (this.clan !== "Thin-Blood") {
-        arr = arr.filter((x) => x !== "Thin-Blood");
+      let arr = [];
+      switch (this.advantageCategory) {
+        case "Merits":
+          arr = Object.keys(allMerits.Merits);
+          if (this.age.label !== "Ancillae") {
+            arr = arr.filter((x) => x !== "Archaic");
+          }
+          if (this.clan !== "Thin-Blood") {
+            arr = arr.filter((x) => x !== "Thin-Blood");
+          }
+          break;
+        case "Cult":
+          arr = Object.keys(allCultMerits.Cults);
+          if (this.cult === "None") {
+            arr = arr.filter((x) => x === "General");
+          } else {
+            arr = arr.filter((x) => x === "General" || x === this.cult);
+          }
+          break;
       }
 
       return arr;
@@ -703,10 +724,24 @@ export default defineComponent({
     meritOptions() {
       let arr = [];
       if (this.advOrFlaw.toLowerCase() === "advantages") {
-        arr = allMerits.Merits[this.meritCategory].advantages;
+        switch (this.advantageCategory) {
+          case "Merits":
+            arr = allMerits.Merits[this.meritCategory].advantages;
+            break;
+          case "Cult":
+            arr = allCultMerits.Cults[this.meritCategory].advantages;
+            break;
+        }
       }
       if (this.advOrFlaw.toLowerCase() === "flaws") {
-        arr = allMerits.Merits[this.meritCategory].flaws;
+        switch (this.advantageCategory) {
+          case "Merits":
+            arr = allMerits.Merits[this.meritCategory].flaws;
+            break;
+          case "Cult":
+            arr = allCultMerits.Cults[this.meritCategory].flaws;
+            break;
+        }
       }
 
       return arr;

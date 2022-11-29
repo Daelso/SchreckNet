@@ -51,42 +51,6 @@
         }
       ]
     },
-    "Cults": {
-      "advantages": [
-        {
-          "name": "Bond Resistance",
-          "cost": 1,
-          "desc": "Its easier for you to resist against the effects of a Blood Bond."
-        },
-        {
-          "name": "Short Bond",
-          "cost": 2,
-          "desc": "The Bond decays quicker for you."
-        },
-        {
-          "name": "Unbondable",
-          "cost": 5,
-          "desc": "You cannot be Blood Bound."
-        }
-      ],
-      "flaws": [
-        {
-          "name": "Bondslave",
-          "cost": 2,
-          "desc": "You bond at the first drink of Vitae."
-        },
-        {
-          "name": "Bond Junkie",
-          "cost": 1,
-          "desc": "The Bond feels sweeter to you, and its harder for you to resist its effects."
-        },
-        {
-          "name": "Long Bond",
-          "cost": 1,
-          "desc": "The Bond takes more time to decay."
-        }
-      ]
-    },
     "Feeding": {
       "advantages": [
         {

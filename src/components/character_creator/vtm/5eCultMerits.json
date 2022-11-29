@@ -1,0 +1,35 @@
+{
+  "Cults": {
+    "General": {
+      "advantages": [
+        {
+          "name": "Cult: Apocryphal Texts",
+          "cost": 1,
+          "desc": "You own the writings of a cult leader or prominent figure. These writings make you much sought after."
+        },
+        {
+          "name": "Cult: Inspired Artist",
+          "cost": 2,
+          "desc": "You channel your divine fervor into art. You're a painter, a singer, a poet, a sculptor, and your creations inspire all who experience it. Art featuring cult symbology has the same effect as Awe on those who view it."
+        },
+        {
+          "name": "Cult: Travelling Preacher",
+          "cost": 2,
+          "desc": "You spread your cult’s message wherever you go, despite the risks Kindred take when they travel. You’ve mapped out safe routes, established good places to go to ground along the way, and learned where surveillance systems falter."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Cult: Excommunicated",
+          "cost": 0,
+          "desc": "You have been cast out of your cult and shunned by your peers. You have lost all access to cult support and resources."
+        },
+        {
+          "name": "Cult: Faithless",
+          "cost": 2,
+          "desc": "You don't actually believe in the cult. You're just here for the benefits, you aren't willing to do what it takes to rise and gain power within your cult."
+        }
+      ]
+    }
+  }
+}

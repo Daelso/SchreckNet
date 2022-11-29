@@ -4,23 +4,33 @@
       <q-tabs
         v-model="tab"
         class="bg-primary tabs"
-        active-color="secondary"
+        active-color="white"
         indicator-color="secondary"
         align="justify"
         narrow-indicator
       >
-        <q-tab name="coreConcept" label="Core Concept" />
-        <q-tab name="touchstones" label="Touchstones/Convictions" />
+        <q-tab style="color: white" name="coreConcept" label="Core Concept" />
+        <q-tab
+          style="color: white"
+          name="touchstones"
+          label="Touchstones/Convictions"
+        />
         <q-tab
           :disable="sortSkills().length < 1"
           name="specialties"
           label="Specialties"
+          style="color: white"
         >
           <q-tooltip v-if="sortSkills().length < 1" class="bg-dark text-body2"
             >Must have any skill over 1 to set specialties.</q-tooltip
           >
         </q-tab>
-        <q-tab name="advantages" label="Advantages & Flaws"> </q-tab>
+        <q-tab
+          style="color: white"
+          name="advantages"
+          label="Advantages & Flaws"
+        >
+        </q-tab>
       </q-tabs>
 
       <q-separator />
@@ -126,6 +136,25 @@
             bg-color="grey-3"
             filled
             @update:model-value="this.$emit('sect', this.sect)"
+          />
+          <q-select
+            v-model="cultInput"
+            :options="[
+              'None',
+              'Ashfinders',
+              'Bahari',
+              'Church of Caine',
+              'Church of Set',
+              'Cult of Shalim',
+              'Mithraic Mysteries',
+              'Nephilim',
+            ]"
+            label="Cult"
+            class="q-mt-md"
+            label-color="primary"
+            bg-color="grey-3"
+            filled
+            @update:model-value="this.$emit('update:cult', this.cultInput)"
           />
           <q-input
             filled
@@ -351,7 +380,7 @@
           </q-list>
         </q-tab-panel>
 
-        <q-tab-panel name="advantages" class="q-m-b-xl">
+        <q-tab-panel name="advantages" class="q-m-b-xl" style="color: white">
           <div>
             These are not mandatory to be filled out now and can be withheld for
             later use.
@@ -520,6 +549,7 @@ export default defineComponent({
     "age",
     "advantagesObj",
     "clan",
+    "cult",
   ],
   emits: [
     "update:specialtiePoints",
@@ -527,6 +557,7 @@ export default defineComponent({
     "update:flawPoints",
     "update:sire",
     "update:advantagesObj",
+    "update:cult",
     "specialties",
     "convictions",
     "touchstones",
@@ -546,6 +577,7 @@ export default defineComponent({
       ambition: "",
       archetype: "",
       charName: "",
+      cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
       convictions: [],
@@ -556,7 +588,7 @@ export default defineComponent({
       meritCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: ["Merits", "Backgrounds"],
+      advantageCategories: ["Merits", "Backgrounds", "Cult"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,

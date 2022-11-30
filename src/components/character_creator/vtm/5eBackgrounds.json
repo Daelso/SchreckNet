@@ -3,28 +3,31 @@
     "Allies": {
       "advantages": [
         {
-          "name": "Ally",
+          "name": "Ally: ",
           "desc": "A mortal, group or organization who assists you each point taken increases their loyalty and capability.",
           "cost": 0,
-          "maxCost": 4
+          "maxCost": 4,
+          "specNeeded": true
         }
       ],
       "flaws": [
         {
-          "name": "Enemy",
+          "name": "Enemy: ",
           "desc": "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
           "cost": 0,
-          "maxCost": 3
+          "maxCost": 3,
+          "specNeeded": true
         }
       ]
     },
     "Contacts": {
       "advantages": [
         {
-          "name": "Contact",
+          "name": "Contact: ",
           "desc": "Someone who can help you with a specific task, be it a camarilla insider, police dispatcher or shady merchant. Each dot increases their level of usefulness.",
           "cost": 0,
-          "maxCost": 3
+          "maxCost": 3,
+          "specNeeded": true
         }
       ],
       "flaws": []
@@ -40,16 +43,18 @@
       ],
       "flaws": [
         {
-          "name": "Infamy",
+          "name": "Infamy: ",
           "desc": "You are infamous for some wicked deed. Add each dot of this flaw to the difficulty of your reaction role. A severe flaw may lead to pursuit from authorities.",
           "cost": 0,
-          "maxCost": 5
+          "maxCost": 5,
+          "specNeeded": true
         },
         {
           "name": "Dark Secret: ",
           "desc": "A milder version of infamy, you have a terrible secret that would harm your reputation if it got out.",
           "cost": 0,
-          "maxCost": 2
+          "maxCost": 2,
+          "specNeeded": true
         },
         {
           "name": "Dark Secret: Cleaver",
@@ -240,18 +245,20 @@
     "Mawla": {
       "advantages": [
         {
-          "name": "Mawla",
+          "name": "Mawla: ",
           "desc": "Each dot of a mawla represents the strength of one or more kindred who are looking out for you. One dot would be a neonate, five would be your local prince.",
           "cost": 0,
-          "maxCost": 5
+          "maxCost": 5,
+          "specNeeded": true
         }
       ],
       "flaws": [
         {
-          "name": "Adversary",
+          "name": "Adversary: ",
           "desc": "Each dot represents a fellow kindred who wishes you ill, max 3 dots. One dot represents an elder, three would be a local Prince or Baron.",
           "cost": 0,
-          "maxCost": 3
+          "maxCost": 3,
+          "specNeeded": true
         }
       ]
     },
@@ -275,17 +282,19 @@
     "Retainers": {
       "advantages": [
         {
-          "name": "Retainer",
+          "name": "Retainer: ",
           "desc": "Range: 1-3 dots. With each dot your retainer grows more capable. 1 dot = weak mortal, 2 dot = average ghoul, 3 dot = gifted ghoul",
           "cost": 0,
-          "maxCost": 3
+          "maxCost": 3,
+          "specNeeded": true
         }
       ],
       "flaws": [
         {
-          "name": "Stalker",
+          "name": "Stalker: ",
           "desc": "A former retainer is obsessed with you, should you deal with one another emerges.",
-          "cost": 1
+          "cost": 1,
+          "specNeeded": true
         }
       ]
     },

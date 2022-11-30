@@ -128,27 +128,128 @@
               dark
             >
               <q-card>
-                <q-card-section class="backgroundDefault">
-                  <div style="font-size: larger">Merits:</div>
-                  Advantages:
-                  <div v-if="advantagesObj.merits.advantages.length === 0">
-                    Not yet selected
+                <q-card-section class="backgroundDefault advantages">
+                  <div>
+                    <div style="font-size: larger">Merits:</div>
+                    <br />
+                    Advantages:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.merits.advantages.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="advantage in advantagesObj.merits.advantages"
+                      :key="advantage.name"
+                    >
+                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                    </div>
+                    Flaws:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.merits.flaws.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="flaw in advantagesObj.merits.flaws"
+                      :key="flaw.name"
+                    >
+                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
+                    </div>
+
+                    <br />
+                    <div>
+                      <div style="font-size: larger">Backgrounds:</div>
+                      <br />
+                      Advantages:
+                      <div
+                        class="q-my-sm"
+                        v-if="advantagesObj.backgrounds.advantages.length === 0"
+                      >
+                        Not yet selected
+                      </div>
+                      <div
+                        v-for="advantage in advantagesObj.backgrounds
+                          .advantages"
+                        :key="advantage.name"
+                      >
+                        <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                      </div>
+                      Flaws:
+                      <div
+                        class="q-my-sm"
+                        v-if="advantagesObj.backgrounds.flaws.length === 0"
+                      >
+                        Not yet selected
+                      </div>
+                      <div
+                        v-for="flaw in advantagesObj.backgrounds.flaws"
+                        :key="flaw.name"
+                      >
+                        <div>{{ flaw.name }} - {{ flaw.cost }}</div>
+                      </div>
+                    </div>
                   </div>
-                  <div
-                    v-for="advantage in advantagesObj.merits.advantages"
-                    :key="advantage.name"
-                  >
-                    <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                  </div>
-                  Flaws:
-                  <div v-if="advantagesObj.merits.flaws.length === 0">
-                    Not yet selected
-                  </div>
-                  <div
-                    v-for="flaw in advantagesObj.merits.flaws"
-                    :key="flaw.name"
-                  >
-                    <div>{{ flaw.name }}</div>
+                  <div>
+                    <div style="font-size: larger">Haven:</div>
+                    <br />
+                    Advantages:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.merits.advantages.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="advantage in advantagesObj.merits.advantages"
+                      :key="advantage.name"
+                    >
+                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                    </div>
+                    Flaws:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.merits.flaws.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="flaw in advantagesObj.merits.flaws"
+                      :key="flaw.name"
+                    >
+                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
+                    </div>
+                    <br />
+                    <div style="font-size: larger">Loresheets:</div>
+                    <br />
+                    Advantages:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.merits.advantages.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="advantage in advantagesObj.merits.advantages"
+                      :key="advantage.name"
+                    >
+                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                    </div>
+                    Flaws:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.merits.flaws.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="flaw in advantagesObj.merits.flaws"
+                      :key="flaw.name"
+                    >
+                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -310,6 +411,12 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+.advantages {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .concept {
   display: grid;
   gap: 3px;
@@ -349,7 +456,10 @@ export default {
     const router = useRouter();
 
     return {
-      advantagesObj: { merits: { advantages: [], flaws: [] } },
+      advantagesObj: {
+        merits: { advantages: [], flaws: [] },
+        backgrounds: { advantages: [], flaws: [] },
+      },
       attributesDone: false,
       attributeInfo,
       skillInfo,

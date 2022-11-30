@@ -5,14 +5,16 @@
         {
           "name": "Ally",
           "desc": "A mortal, group or organization who assists you each point taken increases their loyalty and capability.",
-          "cost": 0
+          "cost": 0,
+          "maxCost": 4
         }
       ],
       "flaws": [
         {
           "name": "Enemy",
           "desc": "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
-          "cost": 0
+          "cost": 0,
+          "maxCost": 3
         }
       ]
     },

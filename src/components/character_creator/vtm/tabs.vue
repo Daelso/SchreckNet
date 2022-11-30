@@ -407,6 +407,7 @@
             label-color="primary"
             bg-color="grey-3"
             filled
+            @update:model-value="changeAdvCat()"
           />
           <q-separator />
           <div
@@ -424,6 +425,7 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              @update:model-value="changeMeritCat()"
             />
           </div>
           <q-separator />
@@ -463,11 +465,47 @@
               @update:model-value="costAdjustment()"
             />
           </div>
-          <div class="q-mt-sm" v-if="this.advFlawChoice">
+          <div
+            v-if="
+              this.advFlawChoice.specNeeded === true && this.howManyDots >= 1
+            "
+          >
+            <q-input
+              autogrow
+              hint="Briefly elaborate on what this merit is"
+              hide-hint
+              v-model="specificationInput"
+              label="Specify this merit"
+              label-color="primary"
+              bg-color="grey-3"
+              v-on:keydown.enter.prevent
+              class="q-mt-sm"
+              filled
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (typeof val === 'string' &&
+                    val.length > 3 &&
+                    val.length <= 50) ||
+                  'Please enter a brief description between 3-50 characters.',
+              ]"
+            />
+          </div>
+          <div v-if="this.advFlawChoice">
             Description: {{ this.advFlawChoice.desc }}
             <br />
-            Dot Cost: {{ this.advFlawChoice.cost }}
-            <br />
+            Dot Cost: {{ this.advFlawChoice.cost }} <br />
+          </div>
+          <div
+            class="q-mt-sm"
+            v-if="
+              (this.advFlawChoice && !this.advFlawChoice.maxCost) ||
+              (this.howManyDots && !this.advFlawChoice.specNeeded) ||
+              (this.howManyDots &&
+                this.advFlawChoice.specNeeded === true &&
+                this.specificationInput.length >= 3)
+            "
+          >
             <q-btn
               flat
               label="Select Merit"
@@ -482,6 +520,7 @@
               this.advantagesObj.merits.flaws.length > 0
             "
           >
+            <!-- Merits -->
             <span class="text-h6">Merits</span>
             <q-separator />
             <div class="q-my-sm" style="font-family: monospace">Advantages</div>
@@ -501,8 +540,7 @@
                   )
                 "
               >
-                <q-item-section :id="key"
-                  >Advantage:
+                <q-item-section :id="key">
                   {{ advantage.name }}
                   - {{ advantage.cost }} dots
                   <q-tooltip class="bg-dark text-body2"
@@ -524,8 +562,7 @@
                   removeFlaw($event.target.id, flaw.cost, flaw.name, 'merits')
                 "
               >
-                <q-item-section :id="key"
-                  >Flaw:
+                <q-item-section :id="key">
                   {{ flaw.name }}
                   - {{ flaw.cost }} dots
                   <q-tooltip class="bg-dark text-body2"
@@ -590,8 +627,7 @@
                   )
                 "
               >
-                <q-item-section :id="key"
-                  >Flaw:
+                <q-item-section :id="key">
                   {{ flaw.name }}
                   - {{ flaw.cost }} dots
                   <q-tooltip class="bg-dark text-body2"
@@ -679,6 +715,7 @@ export default defineComponent({
       advOrFlaw: "",
       advFlawChoice: "",
       howManyDots: "",
+      specificationInput: "",
       advantageCategory: "",
       ambition: "",
       archetype: "",
@@ -789,7 +826,10 @@ export default defineComponent({
       if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
         if (this.thinAdvantages > this.thinFlaws) {
           arr = ["Flaws"];
-        } else if (this.thinFlaws > this.thinAdvantages) {
+        } else if (
+          this.thinFlaws > this.thinAdvantages ||
+          this.allMerits.Merits[this.meritCategory].flaws.length < 1
+        ) {
           arr = ["Advantages"];
         }
       }
@@ -870,12 +910,28 @@ export default defineComponent({
       this.howManyDots = "";
     },
 
+    changeAdvCat() {
+      this.advFlawChoice = "";
+      this.advOrFlaw = "";
+      this.meritCategory = "";
+      this.howManyDots = "";
+      this.specificationInput = "";
+    },
+
+    changeMeritCat() {
+      this.advFlawChoice = "";
+      this.advOrFlaw = "";
+      this.howManyDots = "";
+      this.specificationInput = "";
+    },
+
     clearFields() {
       this.advFlawChoice = "";
       this.advOrFlaw = "";
       this.meritCategory = "";
       this.advantageCategory = "";
       this.howManyDots = "";
+      this.specificationInput = "";
     },
 
     sortAdvantageChoice(choiceObj, advOrFlaw) {
@@ -897,6 +953,9 @@ export default defineComponent({
           }
           break;
         case "Backgrounds":
+          if (this.specificationInput) {
+            choiceObj.name = choiceObj.name + this.specificationInput;
+          }
           if (advOrFlaw === true) {
             modifiedObj.backgrounds.advantages.push(choiceObj);
           } else {
@@ -918,6 +977,7 @@ export default defineComponent({
     },
 
     canPurchase(advOrFlaw) {
+      //true = advantage, false = flaw
       if (advOrFlaw === true) {
         if (
           this.advantagePoints < this.advFlawChoice.cost ||
@@ -943,6 +1003,25 @@ export default defineComponent({
           return false;
         }
       }
+
+      if (
+        this.advFlawChoice.name === "Zeroed" ||
+        this.advFlawChoice.name === "Cobbler"
+      ) {
+        let mask = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Mask"
+        );
+        console.log(mask);
+        if (typeof mask == "undefined" || mask.cost < 2) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "You must have 2 dots in mask to take this background!",
+          });
+          return false;
+        }
+      }
+
       return true;
     },
 

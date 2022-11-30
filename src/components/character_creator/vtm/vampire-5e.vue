@@ -198,7 +198,7 @@
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.haven.length === 0"
+                      v-if="advantagesObj.haven.advantages.length === 0"
                     >
                       Not yet selected
                     </div>
@@ -227,7 +227,7 @@
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.loresheets.length === 0"
+                      v-if="advantagesObj.loresheets.advantages.length === 0"
                     >
                       Not yet selected
                     </div>

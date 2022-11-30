@@ -412,7 +412,8 @@
           <div
             v-if="
               this.advantageCategory === 'Merits' ||
-              this.advantageCategory == 'Cult'
+              this.advantageCategory == 'Cult' ||
+              this.advantageCategory == 'Backgrounds'
             "
           >
             <q-select
@@ -475,53 +476,131 @@
             />
           </div>
 
-          <div class="text-h6" style="font-family: monospace">Advantages</div>
+          <div
+            v-if="
+              this.advantagesObj.merits.advantages.length > 0 ||
+              this.advantagesObj.merits.flaws.length > 0
+            "
+          >
+            <span class="text-h6">Merits</span>
+            <q-separator />
+            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
 
-          <q-list bordered separator>
-            <q-item
-              v-for="(advantage, key) in advantagesObj.merits.advantages"
-              :key="key"
-              clickable
-              v-ripple
-              @click="
-                removeAdvantage(
-                  $event.target.id,
-                  advantage.cost,
-                  advantage.name
-                )
-              "
-            >
-              <q-item-section :id="key"
-                >Advantage:
-                {{ advantage.name }}
-                - {{ advantage.cost }} dots
-                <q-tooltip class="bg-dark text-body2"
-                  >Click to delete</q-tooltip
-                >
-              </q-item-section>
-            </q-item>
-          </q-list>
+            <q-list bordered separator>
+              <q-item
+                v-for="(advantage, key) in advantagesObj.merits.advantages"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeAdvantage(
+                    $event.target.id,
+                    advantage.cost,
+                    advantage.name,
+                    'merits'
+                  )
+                "
+              >
+                <q-item-section :id="key"
+                  >Advantage:
+                  {{ advantage.name }}
+                  - {{ advantage.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
 
-          <div class="text-h6" style="font-family: monospace">Flaws</div>
+            <div class="q-my-sm" style="font-family: monospace">Flaws</div>
 
-          <q-list bordered separator>
-            <q-item
-              v-for="(flaw, key) in advantagesObj.merits.flaws"
-              :key="key"
-              clickable
-              v-ripple
-              @click="removeFlaw($event.target.id, flaw.cost, flaw.name)"
-            >
-              <q-item-section :id="key"
-                >Flaw:
-                {{ flaw.name }}
-                - {{ flaw.cost }} dots
-                <q-tooltip class="bg-dark text-body2"
-                  >Click to delete</q-tooltip
-                >
-              </q-item-section>
-            </q-item>
-          </q-list>
+            <q-list bordered separator>
+              <q-item
+                v-for="(flaw, key) in advantagesObj.merits.flaws"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeFlaw($event.target.id, flaw.cost, flaw.name, 'merits')
+                "
+              >
+                <q-item-section :id="key"
+                  >Flaw:
+                  {{ flaw.name }}
+                  - {{ flaw.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+          <br />
+          <!-- Backgrounds -->
+          <div
+            v-if="
+              this.advantagesObj.backgrounds.advantages.length > 0 ||
+              this.advantagesObj.backgrounds.flaws.length > 0
+            "
+          >
+            <span class="text-h6">Backgrounds</span>
+            <q-separator />
+            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
+
+            <q-list bordered>
+              <q-item
+                v-for="(advantage, key) in advantagesObj.backgrounds.advantages"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeAdvantage(
+                    $event.target.id,
+                    advantage.cost,
+                    advantage.name,
+                    'backgrounds'
+                  )
+                "
+              >
+                <q-item-section :id="key"
+                  >Advantage:
+                  {{ advantage.name }}
+                  - {{ advantage.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+
+            <div class="q-my-sm" style="font-family: monospace">Flaws</div>
+
+            <q-list bordered>
+              <q-item
+                v-for="(flaw, key) in advantagesObj.backgrounds.flaws"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeFlaw(
+                    $event.target.id,
+                    flaw.cost,
+                    flaw.name,
+                    'backgrounds'
+                  )
+                "
+              >
+                <q-item-section :id="key"
+                  >Flaw:
+                  {{ flaw.name }}
+                  - {{ flaw.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -554,6 +633,7 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import allMerits from "../vtm/5eMerits.json";
 import allCultMerits from "../vtm/5eCultMerits.json";
+import allBackgrounds from "../vtm/5eBackgrounds.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -595,6 +675,7 @@ export default defineComponent({
       advantagesArr: [],
       allMerits: allMerits.Merits,
       allCultMerits: allCultMerits.Cults,
+      allBackgrounds: allBackgrounds.Backgrounds,
       advOrFlaw: "",
       advFlawChoice: "",
       howManyDots: "",
@@ -634,7 +715,7 @@ export default defineComponent({
       this.specialties.splice(event, 1);
       this.handlePoints(false);
     },
-    removeAdvantage(event, cost, name) {
+    removeAdvantage(event, cost, name, category) {
       if (name.includes("Thin-Blood")) {
         let modifiedObj = { ...{}, ...this.advantagesObj };
         modifiedObj.merits.advantages.splice(event, 1);
@@ -642,11 +723,11 @@ export default defineComponent({
         return;
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
-      modifiedObj.merits.advantages.splice(event, 1);
+      modifiedObj[category].advantages.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
       this.$emit("update:advantagePoints", this.advantagePoints + cost);
     },
-    removeFlaw(event, cost, name) {
+    removeFlaw(event, cost, name, category) {
       if (name.includes("Thin-Blood")) {
         let modifiedObj = { ...{}, ...this.advantagesObj };
         modifiedObj.merits.flaws.splice(event, 1);
@@ -654,7 +735,7 @@ export default defineComponent({
         return;
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
-      modifiedObj.merits.flaws.splice(event, 1);
+      modifiedObj[category].flaws.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
       this.$emit("update:flawPoints", this.flawPoints + cost);
     },
@@ -735,6 +816,9 @@ export default defineComponent({
             arr = arr.filter((x) => x === "General" || x === this.cult);
           }
           break;
+        case "Backgrounds":
+          arr = Object.keys(allBackgrounds.Backgrounds);
+          break;
       }
 
       return arr;
@@ -749,6 +833,9 @@ export default defineComponent({
           case "Cult":
             arr = allCultMerits.Cults[this.meritCategory].advantages;
             break;
+          case "Backgrounds":
+            arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
+            break;
         }
       }
       if (this.advOrFlaw.toLowerCase() === "flaws") {
@@ -758,6 +845,9 @@ export default defineComponent({
             break;
           case "Cult":
             arr = allCultMerits.Cults[this.meritCategory].flaws;
+            break;
+          case "Backgrounds":
+            arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
             break;
         }
       }
@@ -779,22 +869,56 @@ export default defineComponent({
     clearDotField() {
       this.howManyDots = "";
     },
-    meritPicked() {
+
+    clearFields() {
+      this.advFlawChoice = "";
+      this.advOrFlaw = "";
+      this.meritCategory = "";
+      this.advantageCategory = "";
+      this.howManyDots = "";
+    },
+
+    sortAdvantageChoice(choiceObj, advOrFlaw) {
       let modifiedObj = { ...{}, ...this.advantagesObj };
 
-      if (this.advOrFlaw.toLowerCase() === "advantages") {
-        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
-          modifiedObj.merits.advantages.push(this.advFlawChoice);
-          this.thinAdvantages++;
-          this.advFlawChoice = "";
-          this.advOrFlaw = "";
-          this.meritCategory = "";
-          this.advantageCategory = "";
-          this.howManyDots = "";
+      switch (this.advantageCategory) {
+        case "Merits":
+          if (advOrFlaw === true) {
+            modifiedObj.merits.advantages.push(choiceObj);
+          } else {
+            modifiedObj.merits.flaws.push(choiceObj);
+          }
+          break;
+        case "Cult":
+          if (advOrFlaw === true) {
+            modifiedObj.merits.advantages.push(choiceObj);
+          } else {
+            modifiedObj.merits.flaws.push(choiceObj);
+          }
+          break;
+        case "Backgrounds":
+          if (advOrFlaw === true) {
+            modifiedObj.backgrounds.advantages.push(choiceObj);
+          } else {
+            modifiedObj.backgrounds.flaws.push(choiceObj);
+          }
+          break;
+      }
 
-          return;
-        }
+      if (advOrFlaw === true) {
+        this.$emit(
+          "update:advantagePoints",
+          this.advantagePoints - choiceObj.cost
+        );
+      } else {
+        this.$emit("update:flawPoints", this.flawPoints - choiceObj.cost);
+      }
 
+      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+    },
+
+    canPurchase(advOrFlaw) {
+      if (advOrFlaw === true) {
         if (
           this.advantagePoints < this.advFlawChoice.cost ||
           this.howManyDots > this.advantagePoints
@@ -804,29 +928,9 @@ export default defineComponent({
             textColor: "white",
             message: "Not enough advantage dots remaining!",
           });
-          return;
+          return false;
         }
-        modifiedObj.merits.advantages.push(this.advFlawChoice);
-        this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
-
-        this.$emit(
-          "update:advantagePoints",
-          this.advantagePoints - this.advFlawChoice.cost
-        );
-      }
-
-      if (this.advOrFlaw.toLowerCase() === "flaws") {
-        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
-          modifiedObj.merits.flaws.push(this.advFlawChoice);
-          this.thinFlaws++;
-          this.advFlawChoice = "";
-          this.advOrFlaw = "";
-          this.meritCategory = "";
-          this.advantageCategory = "";
-          this.howManyDots = "";
-
-          return;
-        }
+      } else {
         if (
           this.flawPoints < this.advFlawChoice.cost ||
           this.howManyDots > this.flawPoints
@@ -836,22 +940,41 @@ export default defineComponent({
             textColor: "white",
             message: "Not enough flaw dots remaining!",
           });
+          return false;
+        }
+      }
+      return true;
+    },
+
+    meritPicked() {
+      let modifiedObj = { ...{}, ...this.advantagesObj };
+
+      if (this.advOrFlaw.toLowerCase() === "advantages") {
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+          modifiedObj.merits.advantages.push(this.advFlawChoice);
+          this.thinAdvantages++;
+          this.clearFields();
           return;
         }
-
-        modifiedObj.merits.flaws.push(this.advFlawChoice);
-        this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
-
-        this.$emit(
-          "update:flawPoints",
-          this.flawPoints - this.advFlawChoice.cost
-        );
+        //true represents an advantage, false a flaw
+        if (this.canPurchase(true) === true) {
+          this.sortAdvantageChoice(this.advFlawChoice, true);
+          this.clearFields();
+        }
       }
-      this.advFlawChoice = "";
-      this.advOrFlaw = "";
-      this.meritCategory = "";
-      this.advantageCategory = "";
-      this.howManyDots = "";
+
+      if (this.advOrFlaw.toLowerCase() === "flaws") {
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+          modifiedObj.merits.flaws.push(this.advFlawChoice);
+          this.thinFlaws++;
+          this.clearFields();
+          return;
+        }
+        if (this.canPurchase(false) === true) {
+          this.sortAdvantageChoice(this.advFlawChoice, false);
+          this.clearFields();
+        }
+      }
     },
   },
 });

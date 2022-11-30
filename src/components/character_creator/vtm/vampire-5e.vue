@@ -198,12 +198,12 @@
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.merits.advantages.length === 0"
+                      v-if="advantagesObj.haven.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.merits.advantages"
+                      v-for="advantage in advantagesObj.haven.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
@@ -211,12 +211,12 @@
                     Flaws:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.merits.flaws.length === 0"
+                      v-if="advantagesObj.haven.flaws.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="flaw in advantagesObj.merits.flaws"
+                      v-for="flaw in advantagesObj.haven.flaws"
                       :key="flaw.name"
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
@@ -227,12 +227,12 @@
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.merits.advantages.length === 0"
+                      v-if="advantagesObj.loresheets.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.merits.advantages"
+                      v-for="advantage in advantagesObj.loresheets.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
@@ -240,12 +240,12 @@
                     Flaws:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.merits.flaws.length === 0"
+                      v-if="advantagesObj.loresheets.flaws.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="flaw in advantagesObj.merits.flaws"
+                      v-for="flaw in advantagesObj.loresheets.flaws"
                       :key="flaw.name"
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
@@ -459,6 +459,8 @@ export default {
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
+        haven: { advantages: [], flaws: [] },
+        loresheets: { advantages: [], flaws: [] },
       },
       attributesDone: false,
       attributeInfo,

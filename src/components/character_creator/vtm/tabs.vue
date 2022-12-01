@@ -478,7 +478,11 @@
               label="Specify this merit"
               label-color="primary"
               bg-color="grey-3"
-              v-on:keydown.enter.prevent
+              v-on:keydown.enter.prevent="
+                () => {
+                  this.meritPicked();
+                }
+              "
               class="q-mt-sm"
               filled
               lazy-rules

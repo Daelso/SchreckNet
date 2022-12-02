@@ -1069,7 +1069,54 @@ export default defineComponent({
     },
 
     handleThinBloods(advOrFlaw, modifiedObj) {
+      console.log(this.advFlawChoice.name);
+
       if (advOrFlaw === true) {
+        let haveIt;
+        switch (this.advFlawChoice.name) {
+          case "Thin-Blood: Lifelike":
+            haveIt = modifiedObj.merits.flaws.find(
+              (o) => o.name === "Thin-Blood: Dead Flesh"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message: "Cannot take Dead Flesh with the Lifelike merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Vampiric Resilience":
+            haveIt = modifiedObj.merits.flaws.find(
+              (o) => o.name === "Thin-Blood: Mortal Frailty"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Vampiric Resilience with the Mortal Frailty merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Anarch Comrades":
+            haveIt = modifiedObj.merits.flaws.find(
+              (o) => o.name === "Thin-Blood: Shunned by the Anarchs"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Anarch Comrades with the Shunned by the Anarchs merit!",
+              });
+              return;
+            }
+            break;
+        }
+
         if (this.advFlawChoice.name === "Thin-Blood: Thin-blood Alchemist") {
           let newDisc = { ...{}, ...this.disciplines };
           newDisc["Thin-blood Alchemy"]++;
@@ -1084,11 +1131,59 @@ export default defineComponent({
         this.thinAdvantages++;
         this.clearFields();
       } else {
+        let haveIt;
+
+        switch (this.advFlawChoice.name) {
+          case "Thin-Blood: Dead Flesh":
+            haveIt = modifiedObj.merits.advantages.find(
+              (o) => o.name === "Thin-Blood: Lifelike"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message: "Cannot take Dead Flesh with the Lifelike merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Mortal Frailty":
+            haveIt = modifiedObj.merits.advantages.find(
+              (o) => o.name === "Thin-Blood: Vampiric Resilience"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Vampiric Resilience with the Mortal Frailty merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Shunned by the Anarchs":
+            haveIt = modifiedObj.merits.advantages.find(
+              (o) => o.name === "Thin-Blood: Anarch Comrades"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Anarch Comrades with the Shunned by the Anarchs merit!",
+              });
+              return;
+            }
+            break;
+        }
+
         modifiedObj.merits.flaws.push(this.advFlawChoice);
         this.thinFlaws++;
         this.clearFields();
       }
     },
+
+    thinCanPurchase(merit) {},
 
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };

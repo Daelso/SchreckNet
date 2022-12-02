@@ -287,6 +287,11 @@
           "desc": "You suffer the clan of your choices bane at severity level 1. Brujah/Gangrel only available with Bestial Temper Flaw, Tremere only with Catenating Blood Merit."
         },
         {
+          "name": "Thin-Blood: Mortal Frailty",
+          "cost": 1,
+          "desc": "You cannot rouse blood to heal like normal Kindred, you heal as a mortal. You cannot take vampiric resilience with this perk."
+        },
+        {
           "name": "Thin-Blood: Dead Flesh",
           "cost": 1,
           "desc": "You are noticebly decaying and putrifying. Any real examination will reveal that you are undead. You may not take Lifelike merit."

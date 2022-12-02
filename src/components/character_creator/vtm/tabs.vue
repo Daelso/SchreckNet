@@ -466,6 +466,30 @@
             />
           </div>
           <div
+            v-if="this.advFlawChoice.name === 'Thin-Blood: Discipline Affinity'"
+          >
+            <q-select
+              v-model="thinBonusDiscInput"
+              :options="thinBloodBonusDiscs()"
+              label="Choose your bonus discipline"
+              label-color="primary"
+              bg-color="grey-3"
+              class="q-mt-sm"
+              filled
+            />
+          </div>
+          <div v-if="this.advFlawChoice.name === 'Thin-Blood: Clan Curse'">
+            <q-select
+              v-model="thinClanBane"
+              :options="thinClanBanes()"
+              label="Choose your clan bane"
+              label-color="primary"
+              bg-color="grey-3"
+              class="q-mt-sm"
+              filled
+            />
+          </div>
+          <div
             v-if="
               this.advFlawChoice.specNeeded === true && this.howManyDots >= 1
             "
@@ -674,6 +698,7 @@ import { ref } from "vue";
 import allMerits from "../vtm/5eMerits.json";
 import allCultMerits from "../vtm/5eCultMerits.json";
 import allBackgrounds from "../vtm/5eBackgrounds.json";
+import disciplinesList from "../vtm/5eDisciplines.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -689,13 +714,17 @@ export default defineComponent({
     "advantagesObj",
     "clan",
     "cult",
+    "disciplines",
+    "clanBane",
   ],
   emits: [
     "update:specialtiePoints",
     "update:advantagePoints",
     "update:flawPoints",
     "update:sire",
+    "update:disciplines",
     "update:advantagesObj",
+    "update:clanBane",
     "update:cult",
     "specialties",
     "convictions",
@@ -724,11 +753,14 @@ export default defineComponent({
       ambition: "",
       archetype: "",
       charName: "",
+      thinClanBane: "",
       cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
       convictions: [],
       touchstones: [],
+      disciplinesList,
+      thinBonusDiscInput: "",
       chronicle: "",
       desire: "",
       concept: "",
@@ -759,6 +791,20 @@ export default defineComponent({
     removeAdvantage(event, cost, name, category) {
       if (name.includes("Thin-Blood")) {
         let modifiedObj = { ...{}, ...this.advantagesObj };
+        if (name === "Thin-Blood: Thin-blood Alchemist") {
+          let newDisc = { ...{}, ...this.disciplines };
+          newDisc["Thin-blood Alchemy"]--;
+          this.$emit("update:disciplines", newDisc);
+        }
+        if (name === "Thin-Blood: Discipline Affinity") {
+          let newDisc = { ...{}, ...this.disciplines };
+          newDisc = Object.fromEntries(
+            Object.entries(newDisc).filter(([key]) =>
+              key.includes("Thin-blood")
+            )
+          );
+          this.$emit("update:disciplines", newDisc);
+        }
         modifiedObj.merits.advantages.splice(event, 1);
         this.thinAdvantages--;
         return;
@@ -827,13 +873,10 @@ export default defineComponent({
     advorFlawOptions() {
       let arr = ["Advantages", "Flaws"];
 
-      if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
+      if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {
         if (this.thinAdvantages > this.thinFlaws) {
           arr = ["Flaws"];
-        } else if (
-          this.thinFlaws > this.thinAdvantages ||
-          this.allMerits.Merits[this.meritCategory].flaws.length < 1
-        ) {
+        } else if (this.thinFlaws > this.thinAdvantages) {
           arr = ["Advantages"];
         }
       }
@@ -849,7 +892,7 @@ export default defineComponent({
             arr = arr.filter((x) => x !== "Archaic");
           }
           if (this.clan !== "Thin-Blood") {
-            arr = arr.filter((x) => x !== "Thin-Blood");
+            arr = arr.filter((x) => x !== "Thin-blood");
           }
           break;
         case "Cult":
@@ -936,6 +979,8 @@ export default defineComponent({
       this.advantageCategory = "";
       this.howManyDots = "";
       this.specificationInput = "";
+      this.thinBonusDiscInput = "";
+      this.thinClanBane = "";
     },
 
     sortAdvantageChoice(choiceObj, advOrFlaw) {
@@ -1015,7 +1060,6 @@ export default defineComponent({
         let mask = this.advantagesObj.backgrounds.advantages.find(
           (x) => x.name === "Mask"
         );
-        console.log(mask);
         if (typeof mask == "undefined" || mask.cost < 2) {
           this.$q.notify({
             type: "negative",
@@ -1029,14 +1073,183 @@ export default defineComponent({
       return true;
     },
 
+    thinBloodBonusDiscs() {
+      let arr = [];
+      Object.keys(this.disciplinesList.Disciplines).forEach((element) => {
+        arr.push(element);
+      });
+
+      arr = arr.filter((x) => x !== "Thin-blood Alchemy");
+
+      return arr;
+    },
+
+    thinClanBanes() {
+      let haveIt;
+      let arr = [
+        "Banu Haqim",
+        "Brujah",
+        "Caitiff",
+        "Gangrel",
+        "Hecata",
+        "Lasombra",
+        "Malkavian",
+        "Nosferatu",
+        "Ravnos",
+        "Salubri",
+        "Toreador",
+        "Tremere",
+        "Tzimisce",
+        "Ventrue",
+        "The Ministry",
+      ];
+
+      haveIt = this.advantagesObj.merits.flaws.find(
+        (o) => o.name === "Thin-Blood: Bestial Temper"
+      );
+      if (typeof haveIt === "undefined") {
+        arr = arr.filter((x) => x !== "Brujah" && x !== "Gangrel");
+      }
+
+      haveIt = this.advantagesObj.merits.advantages.find(
+        (o) => o.name === "Thin-Blood: Catenating Blood"
+      );
+      if (typeof haveIt === "undefined") {
+        arr = arr.filter((x) => x !== "Tremere");
+      }
+
+      return arr;
+    },
+
+    handleThinBloods(advOrFlaw, modifiedObj) {
+      console.log(this.advFlawChoice.name);
+
+      if (advOrFlaw === true) {
+        let haveIt;
+        switch (this.advFlawChoice.name) {
+          case "Thin-Blood: Lifelike":
+            haveIt = modifiedObj.merits.flaws.find(
+              (o) => o.name === "Thin-Blood: Dead Flesh"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message: "Cannot take Dead Flesh with the Lifelike merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Vampiric Resilience":
+            haveIt = modifiedObj.merits.flaws.find(
+              (o) => o.name === "Thin-Blood: Mortal Frailty"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Vampiric Resilience with the Mortal Frailty merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Anarch Comrades":
+            haveIt = modifiedObj.merits.flaws.find(
+              (o) => o.name === "Thin-Blood: Shunned by the Anarchs"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Anarch Comrades with the Shunned by the Anarchs merit!",
+              });
+              return;
+            }
+            break;
+        }
+
+        if (this.advFlawChoice.name === "Thin-Blood: Thin-blood Alchemist") {
+          let newDisc = { ...{}, ...this.disciplines };
+          newDisc["Thin-blood Alchemy"]++;
+          this.$emit("update:disciplines", newDisc);
+        }
+        if (this.advFlawChoice.name === "Thin-Blood: Discipline Affinity") {
+          let newDisc = { ...{}, ...this.disciplines };
+          newDisc[this.thinBonusDiscInput] = 1;
+          this.$emit("update:disciplines", newDisc);
+        }
+
+        modifiedObj.merits.advantages.push(this.advFlawChoice);
+        this.thinAdvantages++;
+        this.clearFields();
+      } else {
+        let haveIt;
+
+        switch (this.advFlawChoice.name) {
+          case "Thin-Blood: Dead Flesh":
+            haveIt = modifiedObj.merits.advantages.find(
+              (o) => o.name === "Thin-Blood: Lifelike"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message: "Cannot take Dead Flesh with the Lifelike merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Mortal Frailty":
+            haveIt = modifiedObj.merits.advantages.find(
+              (o) => o.name === "Thin-Blood: Vampiric Resilience"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Vampiric Resilience with the Mortal Frailty merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Shunned by the Anarchs":
+            haveIt = modifiedObj.merits.advantages.find(
+              (o) => o.name === "Thin-Blood: Anarch Comrades"
+            );
+            if (typeof haveIt !== "undefined") {
+              this.$q.notify({
+                type: "negative",
+                textColor: "white",
+                message:
+                  "Cannot take Anarch Comrades with the Shunned by the Anarchs merit!",
+              });
+              return;
+            }
+            break;
+          case "Thin-Blood: Clan Curse":
+            this.advFlawChoice.name =
+              this.advFlawChoice.name + " " + this.thinClanBane;
+            this.$emit("update:clanBane", this.thinClanBane);
+            break;
+        }
+
+        modifiedObj.merits.flaws.push(this.advFlawChoice);
+        this.thinFlaws++;
+        this.clearFields();
+      }
+    },
+
+    thinCanPurchase(merit) {},
+
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
 
       if (this.advOrFlaw.toLowerCase() === "advantages") {
-        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
-          modifiedObj.merits.advantages.push(this.advFlawChoice);
-          this.thinAdvantages++;
-          this.clearFields();
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {
+          this.handleThinBloods(true, modifiedObj);
           return;
         }
         //true represents an advantage, false a flaw
@@ -1047,10 +1260,8 @@ export default defineComponent({
       }
 
       if (this.advOrFlaw.toLowerCase() === "flaws") {
-        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-Blood") {
-          modifiedObj.merits.flaws.push(this.advFlawChoice);
-          this.thinFlaws++;
-          this.clearFields();
+        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {
+          this.handleThinBloods(false, modifiedObj);
           return;
         }
         if (this.canPurchase(false) === true) {

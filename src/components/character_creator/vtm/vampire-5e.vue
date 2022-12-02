@@ -371,6 +371,7 @@
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
         v-model:disciplines="disciplines"
+        v-model:clanBane="clanBane"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"

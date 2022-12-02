@@ -478,6 +478,17 @@
               filled
             />
           </div>
+          <div v-if="this.advFlawChoice.name === 'Thin-Blood: Clan Curse'">
+            <q-select
+              v-model="thinClanBane"
+              :options="thinClanBanes()"
+              label="Choose your clan bane"
+              label-color="primary"
+              bg-color="grey-3"
+              class="q-mt-sm"
+              filled
+            />
+          </div>
           <div
             v-if="
               this.advFlawChoice.specNeeded === true && this.howManyDots >= 1
@@ -704,6 +715,7 @@ export default defineComponent({
     "clan",
     "cult",
     "disciplines",
+    "clanBane",
   ],
   emits: [
     "update:specialtiePoints",
@@ -712,6 +724,7 @@ export default defineComponent({
     "update:sire",
     "update:disciplines",
     "update:advantagesObj",
+    "update:clanBane",
     "update:cult",
     "specialties",
     "convictions",
@@ -740,6 +753,7 @@ export default defineComponent({
       ambition: "",
       archetype: "",
       charName: "",
+      thinClanBane: "",
       cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
@@ -965,6 +979,8 @@ export default defineComponent({
       this.advantageCategory = "";
       this.howManyDots = "";
       this.specificationInput = "";
+      this.thinBonusDiscInput = "";
+      this.thinClanBane = "";
     },
 
     sortAdvantageChoice(choiceObj, advOrFlaw) {
@@ -1068,6 +1084,43 @@ export default defineComponent({
       return arr;
     },
 
+    thinClanBanes() {
+      let haveIt;
+      let arr = [
+        "Banu Haqim",
+        "Brujah",
+        "Caitiff",
+        "Gangrel",
+        "Hecata",
+        "Lasombra",
+        "Malkavian",
+        "Nosferatu",
+        "Ravnos",
+        "Salubri",
+        "Toreador",
+        "Tremere",
+        "Tzimisce",
+        "Ventrue",
+        "The Ministry",
+      ];
+
+      haveIt = this.advantagesObj.merits.flaws.find(
+        (o) => o.name === "Thin-Blood: Bestial Temper"
+      );
+      if (typeof haveIt === "undefined") {
+        arr = arr.filter((x) => x !== "Brujah" && x !== "Gangrel");
+      }
+
+      haveIt = this.advantagesObj.merits.advantages.find(
+        (o) => o.name === "Thin-Blood: Catenating Blood"
+      );
+      if (typeof haveIt === "undefined") {
+        arr = arr.filter((x) => x !== "Tremere");
+      }
+
+      return arr;
+    },
+
     handleThinBloods(advOrFlaw, modifiedObj) {
       console.log(this.advFlawChoice.name);
 
@@ -1127,6 +1180,7 @@ export default defineComponent({
           newDisc[this.thinBonusDiscInput] = 1;
           this.$emit("update:disciplines", newDisc);
         }
+
         modifiedObj.merits.advantages.push(this.advFlawChoice);
         this.thinAdvantages++;
         this.clearFields();
@@ -1174,6 +1228,11 @@ export default defineComponent({
               });
               return;
             }
+            break;
+          case "Thin-Blood: Clan Curse":
+            this.advFlawChoice.name =
+              this.advFlawChoice.name + " " + this.thinClanBane;
+            this.$emit("update:clanBane", this.thinClanBane);
             break;
         }
 

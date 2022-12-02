@@ -370,6 +370,7 @@
         v-model:sire="sire"
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
+        v-model:disciplines="disciplines"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"

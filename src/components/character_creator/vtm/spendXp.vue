@@ -19,6 +19,7 @@
               filled
               @update:model-value="clearBelowCat()"
             />
+            <!-- Attributes -->
             <q-select
               v-if="this.categoryInput === 'Attributes'"
               v-model="attributeInput"
@@ -30,6 +31,7 @@
               class="q-my-sm"
               option-label="name"
             />
+            <!-- Clan Disciplines -->
             <q-select
               v-if="this.categoryInput === 'Clan Discipline'"
               v-model="clanDiscInput"
@@ -50,11 +52,33 @@
               label-color="primary"
               option-label="label"
             />
+            <!-- Specialty -->
+            <q-select
+              v-if="this.categoryInput === 'Specialty'"
+              v-model="specialtyInput"
+              :options="sortSkills"
+              label="Which skill is this specialty for?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+            />
+            <q-input
+              v-if="this.specialtyInput"
+              v-model="specialtyDefinition"
+              label="Define your specialty"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+            />
+            <!-- Purchase multiple dots -->
             <q-select
               v-if="
                 this.categoryInput &&
                 this.categoryInput !== 'Attributes' &&
-                this.categoryInput !== 'Clan Discipline'
+                this.categoryInput !== 'Clan Discipline' &&
+                this.categoryInput !== 'Specialty'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -116,6 +140,8 @@ export default defineComponent({
     let potency = ref(props.info.potency);
     let disciplines = ref(props.info.disciplines);
     let disciplineSkillsObj = ref(props.info.disciplineSkills);
+    let skills = ref(props.info.skills);
+    let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     return {
       dialogRef,
       onDialogHide,
@@ -127,6 +153,7 @@ export default defineComponent({
           disciplineSkillsObj: disciplineSkillsObj,
           potency: potency,
           xp: localXP,
+          specialtiesFromXp: specialtiesFromXp,
         });
       },
       range,
@@ -146,12 +173,16 @@ export default defineComponent({
       categoryInput: ref(""),
       clanDiscInput: ref(""),
       disciplinePower: ref(""),
+      specialtyInput: ref(""),
+      specialtyDefinition: ref(""),
       dotsInput: ref(1),
       localAttributes,
+      specialtiesFromXp,
       attributeOptions: ref(props.info.attributes),
       clan: ref(props.info.clan),
       potency,
       disciplines,
+      skills,
     };
   },
   methods: {
@@ -186,7 +217,7 @@ export default defineComponent({
           // code block
           break;
         case "Specialty":
-          // code block
+          this.cost = 3;
           break;
         case "Thin-Blood Alchemy":
           // code block
@@ -203,6 +234,8 @@ export default defineComponent({
       this.cost = 1;
       this.clanDiscInput = "";
       this.disciplinePower = "";
+      this.specialtyInput = "";
+      this.specialtyDefinition = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -211,6 +244,8 @@ export default defineComponent({
       this.dotsInput = 0;
       this.clanDiscInput = "";
       this.disciplinePower = "";
+      this.specialtyInput = "";
+      this.specialtyDefinition = "";
     },
 
     purchaseMade() {
@@ -278,7 +313,10 @@ export default defineComponent({
           // code block
           break;
         case "Specialty":
-          // code block
+          this.specialtiesFromXp.push({
+            skill: this.specialtyInput,
+            specialty: this.specialtyDefinition,
+          });
           break;
         case "Thin-Blood Alchemy":
           // code block
@@ -379,6 +417,15 @@ export default defineComponent({
         );
       }
       return mergedOptions;
+    },
+    sortSkills() {
+      let optionsArr = [];
+      for (const skill in this.skills) {
+        if (this.skills[skill] > 0) {
+          optionsArr.push(skill[0].toUpperCase() + skill.slice(1));
+        }
+      }
+      return optionsArr;
     },
   },
 });

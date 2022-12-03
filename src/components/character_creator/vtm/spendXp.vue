@@ -17,6 +17,7 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              @update:model-value="clearBelowCat()"
             />
             <q-select
               v-if="this.categoryInput === 'Attributes'"
@@ -30,7 +31,31 @@
               option-label="name"
             />
             <q-select
-              v-if="this.categoryInput && this.categoryInput !== 'Attributes'"
+              v-if="this.categoryInput === 'Clan Discipline'"
+              v-model="clanDiscInput"
+              :options="clanDiscOptions"
+              label="Which clan discipline would you like to upgrade?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+            />
+            <q-select
+              v-if="this.clanDiscInput"
+              v-model="disciplinePower"
+              :label="this.clanDiscInput + ' Skills Available'"
+              :options="disciplineOptions"
+              bg-color="grey-3"
+              filled
+              label-color="primary"
+              option-label="label"
+            />
+            <q-select
+              v-if="
+                this.categoryInput &&
+                this.categoryInput !== 'Attributes' &&
+                this.categoryInput !== 'Clan Discipline'
+              "
               v-model="dotsInput"
               :options="dotOptions"
               label="How many dots would you like to purchase??"
@@ -43,6 +68,11 @@
               <q-badge v-if="this.attributeInput"
                 >Current {{ this.attributeInput.name }} Level:
                 {{ this.attributeInput.points }}</q-badge
+              >
+
+              <q-badge v-if="this.clanDiscInput"
+                >Current {{ this.clanDiscInput }} Level:
+                {{ this.disciplines[this.clanDiscInput] }}</q-badge
               >
 
               <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
@@ -66,6 +96,8 @@
 <script>
 import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import clanDisciplines from "../vtm/5eClanDiscs.json";
+import disciplineSkills from "../vtm/5eDisciplines.json";
 
 export default defineComponent({
   name: "spendXP",
@@ -81,6 +113,9 @@ export default defineComponent({
     let localXP = ref(props.info.xp);
     let advantagePoints = ref(0);
     let localAttributes = ref(props.info.attributes);
+    let potency = ref(props.info.potency);
+    let disciplines = ref(props.info.disciplines);
+    let disciplineSkillsObj = ref(props.info.disciplineSkills);
     return {
       dialogRef,
       onDialogHide,
@@ -88,6 +123,9 @@ export default defineComponent({
         onDialogOK({
           advantages: advantagePoints,
           attributes: localAttributes,
+          disciplines: disciplines,
+          disciplineSkillsObj: disciplineSkillsObj,
+          potency: potency,
           xp: localXP,
         });
       },
@@ -101,11 +139,19 @@ export default defineComponent({
       cost: ref(0),
       localXP,
       canBuy: ref(true),
+      clanDisciplines,
+      disciplineSkills,
+      disciplineSkillsObj,
       attributeInput: ref(""),
       categoryInput: ref(""),
-      dotsInput: ref(0),
+      clanDiscInput: ref(""),
+      disciplinePower: ref(""),
+      dotsInput: ref(1),
       localAttributes,
       attributeOptions: ref(props.info.attributes),
+      clan: ref(props.info.clan),
+      potency,
+      disciplines,
     };
   },
   methods: {
@@ -122,7 +168,7 @@ export default defineComponent({
           }
           break;
         case "Blood Potency":
-          // code block
+          this.cost = (this.potency + 1) * 10;
           break;
         case "Blood Sorcery Ritual":
           // code block
@@ -131,7 +177,7 @@ export default defineComponent({
           // code block
           break;
         case "Clan Discipline":
-          // code block
+          this.cost = this.disciplines[this.clanDiscInput] * 5;
           break;
         case "Out of Clan Discipline":
           // code block
@@ -155,6 +201,16 @@ export default defineComponent({
       this.attributeInput = "";
       this.canBuy = true;
       this.cost = 1;
+      this.clanDiscInput = "";
+      this.disciplinePower = "";
+    },
+    clearBelowCat() {
+      this.attributeInput = "";
+      this.canBuy = true;
+      this.cost = 1;
+      this.dotsInput = 0;
+      this.clanDiscInput = "";
+      this.disciplinePower = "";
     },
 
     purchaseMade() {
@@ -177,7 +233,6 @@ export default defineComponent({
       switch (this.categoryInput) {
         case "Advantage":
           this.advantagePoints = this.advantagePoints + this.dotsInput;
-          console.log(this.advantagePoints);
           break;
         case "Attributes":
           let index = this.localAttributes.findIndex(
@@ -187,7 +242,7 @@ export default defineComponent({
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
         case "Blood Potency":
-          // code block
+          this.potency = this.potency + this.dotsInput;
           break;
         case "Blood Sorcery Ritual":
           // code block
@@ -196,7 +251,25 @@ export default defineComponent({
           // code block
           break;
         case "Clan Discipline":
-          // code block
+          if (
+            this.disciplineSkillsObj.filter(
+              (e) => e.skill === this.disciplinePower
+            ).length > 0
+          ) {
+            this.disciplinePower = "";
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              message: "You have already selected this skill!",
+            });
+            return;
+          }
+
+          this.disciplines[this.clanDiscInput]++;
+          this.disciplineSkillsObj.push({
+            discipline: this.clanDiscInput,
+            skill: this.disciplinePower,
+          });
           break;
         case "Out of Clan Discipline":
           // code block
@@ -222,11 +295,30 @@ export default defineComponent({
         "Advantage",
         "Attributes",
         "Blood Potency",
+        "Blood Sorcery Ritual",
+        "Caitiff Discipline",
         "Clan Discipline",
         "Out of Clan Discipline",
         "Skills",
         "Specialty",
+        "Thin-Blood Alchemy",
       ];
+      console.log(this.clan);
+      if (this.clan !== "Caitiff") {
+        arr = arr.filter((x) => x !== "Caitiff Discipline");
+      }
+
+      if (this.clan === "Caitiff") {
+        arr = arr.filter((x) => x !== "Clan Discipline");
+      }
+
+      if (!("Thin-blood Alchemy" in this.disciplines)) {
+        arr = arr.filter((x) => x !== "Thin-Blood Alchemy");
+      }
+
+      if (!("Blood Sorcery" in this.disciplines)) {
+        arr = arr.filter((x) => x !== "Blood Sorcery Ritual");
+      }
 
       return arr;
     },
@@ -240,7 +332,7 @@ export default defineComponent({
           costRange = Math.floor(this.localXP / this.cost);
           break;
         case "Blood Potency":
-          // code block
+          costRange = Math.floor(this.localXP / this.cost > 0);
           break;
         case "Blood Sorcery Ritual":
           // code block
@@ -270,6 +362,23 @@ export default defineComponent({
       }
 
       return arr;
+    },
+    clanDiscOptions() {
+      let arr = [];
+
+      arr = this.clanDisciplines.clans[this.clan].disciplines;
+      return arr;
+    },
+    disciplineOptions() {
+      let mergedOptions = [];
+      for (let i = 0; i < this.disciplines[this.clanDiscInput] + 1; i++) {
+        this.disciplineSkills.Disciplines[this.clanDiscInput].skills[i].forEach(
+          (x) => {
+            mergedOptions.push(x);
+          }
+        );
+      }
+      return mergedOptions;
     },
   },
 });

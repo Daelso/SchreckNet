@@ -760,6 +760,10 @@ export default {
                 { name: "Strength", points: this.strength },
                 { name: "Wits", points: this.wits },
               ],
+              clan: this.clan,
+              disciplines: this.disciplines,
+              disciplineSkills: this.disciplineSkills,
+              potency: this.generation.potency,
               xp: this.xp,
             },
           },
@@ -767,6 +771,9 @@ export default {
         .onOk((data) => {
           this.xp = data.xp;
           this.advantages = this.advantages + data.advantages.value;
+          this.generation.potency = data.potency;
+          this.disciplines = data.disciplines;
+          this.disciplineSkills = data.disciplineSkillsObj;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
             console.log(this[attribute.name.toLowerCase()]);

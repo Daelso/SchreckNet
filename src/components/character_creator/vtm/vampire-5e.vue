@@ -575,6 +575,7 @@ export default {
       predatorType: "Alleycat",
       specialties: [],
       specialtiesFromPred: [],
+      specialtiesFromXp: [],
       clan: ref("Brujah"),
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
@@ -763,6 +764,8 @@ export default {
               clan: this.clan,
               disciplines: this.disciplines,
               disciplineSkills: this.disciplineSkills,
+              skills: this.trueSkills,
+              specialtiesFromXp: this.specialtiesFromXp,
               potency: this.generation.potency,
               xp: this.xp,
             },
@@ -774,6 +777,8 @@ export default {
           this.generation.potency = data.potency;
           this.disciplines = data.disciplines;
           this.disciplineSkills = data.disciplineSkillsObj;
+          this.specialtiesFromXp = data.specialtiesFromXp;
+          console.log(this.specialtiesFromXp);
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
             console.log(this[attribute.name.toLowerCase()]);
@@ -793,7 +798,12 @@ export default {
     },
 
     finalSpecialties() {
-      let specialties = this.specialties.concat(this.specialtiesFromPred);
+      let specialties = [];
+      specialties = this.specialties.concat(
+        this.specialtiesFromPred,
+        this.specialtiesFromXp
+      );
+
       return specialties;
     },
   },

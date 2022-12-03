@@ -1122,8 +1122,6 @@ export default defineComponent({
     },
 
     handleThinBloods(advOrFlaw, modifiedObj) {
-      console.log(this.advFlawChoice.name);
-
       if (advOrFlaw === true) {
         let haveIt;
         switch (this.advFlawChoice.name) {
@@ -1241,8 +1239,6 @@ export default defineComponent({
         this.clearFields();
       }
     },
-
-    thinCanPurchase(merit) {},
 
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };

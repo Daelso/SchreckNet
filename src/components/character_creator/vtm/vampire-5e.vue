@@ -333,7 +333,7 @@
               >
             </q-item-section>
           </q-item>
-          <q-item :disable="!this.skillsDone || !this.attributesDone" clickable>
+          <q-item clickable @click="spendXp">
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"
@@ -431,6 +431,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
+import spendXp from "../vtm/spendXp.vue";
 import attributes from "../vtm/5eAttributes.vue";
 import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
@@ -452,6 +453,7 @@ export default {
 
     return {
       tab: ref("basicInfo"),
+      layout: ref(false),
     };
   },
   data() {
@@ -591,7 +593,7 @@ export default {
       concept: "",
       generation: { label: "12th", potency: 1, maxPotency: 3 },
       touchstones: [],
-      xp: 0,
+      xp: 35,
       skillsDone: false,
       tooltips: ref([
         "Supernatural quickness and reflexes",
@@ -740,16 +742,47 @@ export default {
           this.specialties = data.specialties;
         });
     },
+    spendXp() {
+      this.$q
+        .dialog({
+          component: spendXp,
+          persistent: true,
+          componentProps: {
+            info: {
+              attributes: [
+                { name: "Charisma", points: this.charisma },
+                { name: "Composure", points: this.composure },
+                { name: "Dexterity", points: this.dexterity },
+                { name: "Manipulation", points: this.manipulation },
+                { name: "Intelligence", points: this.intelligence },
+                { name: "Resolve", points: this.resolve },
+                { name: "Stamina", points: this.stamina },
+                { name: "Strength", points: this.strength },
+                { name: "Wits", points: this.wits },
+              ],
+              xp: this.xp,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.xp = data.xp;
+          this.advantages = this.advantages + data.advantages.value;
+          data.attributes.value.forEach((attribute) => {
+            this[attribute.name.toLowerCase()] = attribute.points;
+            console.log(this[attribute.name.toLowerCase()]);
+          });
+        });
+    },
     addModifiers() {
-      this.charisma = this.baseCharisma + 1;
-      this.composure = this.baseComposure + 1;
-      this.dexterity = this.baseDexterity + 1;
-      this.intelligence = this.baseIntelligence + 1;
-      this.manipulation = this.baseManipulation + 1;
-      this.resolve = this.baseResolve + 1;
-      this.stamina = this.baseStamina + 1;
-      this.strength = this.baseStrength + 1;
-      this.wits = this.baseWits + 1;
+      this.charisma = this.baseCharisma;
+      this.composure = this.baseComposure;
+      this.dexterity = this.baseDexterity;
+      this.intelligence = this.baseIntelligence;
+      this.manipulation = this.baseManipulation;
+      this.resolve = this.baseResolve;
+      this.stamina = this.baseStamina;
+      this.strength = this.baseStrength;
+      this.wits = this.baseWits;
     },
 
     finalSpecialties() {

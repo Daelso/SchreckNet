@@ -31,12 +31,19 @@
               class="q-my-sm"
               option-label="name"
             />
-            <!-- Clan Disciplines -->
+            <!-- Clan Disciplines and Caitiff Disciplines -->
             <q-select
-              v-if="this.categoryInput === 'Clan Discipline'"
+              v-if="
+                this.categoryInput === 'Clan Discipline' ||
+                this.categoryInput === 'Caitiff Discipline'
+              "
               v-model="clanDiscInput"
               :options="clanDiscOptions"
-              label="Which clan discipline would you like to upgrade?"
+              :label="
+                this.categoryInput === 'Clan Discipline'
+                  ? 'Which clan discipline would you like to upgrade?'
+                  : 'Which Caitiff Discipline would you like to upgrade?'
+              "
               label-color="primary"
               bg-color="grey-3"
               filled
@@ -78,7 +85,8 @@
                 this.categoryInput &&
                 this.categoryInput !== 'Attributes' &&
                 this.categoryInput !== 'Clan Discipline' &&
-                this.categoryInput !== 'Specialty'
+                this.categoryInput !== 'Specialty' &&
+                this.categoryInput !== 'Caitiff Discipline'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -205,7 +213,7 @@ export default defineComponent({
           // code block
           break;
         case "Caitiff Discipline":
-          // code block
+          this.cost = this.disciplines[this.clanDiscInput] * 6;
           break;
         case "Clan Discipline":
           this.cost = this.disciplines[this.clanDiscInput] * 5;
@@ -283,7 +291,25 @@ export default defineComponent({
           // code block
           break;
         case "Caitiff Discipline":
-          // code block
+          if (
+            this.disciplineSkillsObj.filter(
+              (e) => e.skill === this.disciplinePower
+            ).length > 0
+          ) {
+            this.disciplinePower = "";
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              message: "You have already selected this skill!",
+            });
+            return;
+          }
+
+          this.disciplines[this.clanDiscInput]++;
+          this.disciplineSkillsObj.push({
+            discipline: this.clanDiscInput,
+            skill: this.disciplinePower,
+          });
           break;
         case "Clan Discipline":
           if (
@@ -403,8 +429,17 @@ export default defineComponent({
     },
     clanDiscOptions() {
       let arr = [];
-
-      arr = this.clanDisciplines.clans[this.clan].disciplines;
+      if (this.clan !== "Caitiff") {
+        arr = this.clanDisciplines.clans[this.clan].disciplines;
+      } else {
+        let keyValueArr = Object.entries(this.disciplines);
+        console.log(keyValueArr.filter((x) => x[1] > 0));
+        keyValueArr = keyValueArr.filter((x) => x[1] > 0);
+        keyValueArr.forEach((x) => {
+          arr.push(x[0]);
+        });
+        console.log(arr);
+      }
       return arr;
     },
     disciplineOptions() {

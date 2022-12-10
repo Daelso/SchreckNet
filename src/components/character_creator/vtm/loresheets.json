@@ -1,0 +1,900 @@
+{
+  "Sheet1": [
+    {
+      "Name": "1444 Chamber",
+      "Type": "Other",
+      "Prerequisite": "Hecata",
+      "Description": "You're personally trusted by one of the clan leaders",
+      "Reference": "FR 88"
+    },
+    {
+      "Name": "Agata Starek",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Monstrous Anarch diablerist with strong principles",
+      "Reference": "Anarch 191"
+    },
+    {
+      "Name": "Agent of Justicar Parr",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "You are a confidant of the Malkavian Justicar",
+      "Reference": "FoL 231"
+    },
+    {
+      "Name": "Amanda Chastain",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "The ruler of a tiny domain, Jericho Heights",
+      "Reference": "Download"
+    },
+    {
+      "Name": "Amaranthans",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Zealous punishers of Diablerie, transcending sects",
+      "Reference": "Children 104"
+    },
+    {
+      "Name": "Ambrus Maropis",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A Nosferatu influencer on the cutting edge of technology",
+      "Reference": "V5 402"
+    },
+    {
+      "Name": "Anarch Revolt",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You have extensively studied the original Anarch Revolt",
+      "Reference": "Anarch 198"
+    },
+    {
+      "Name": "Annabelle",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Toreador Primogen of Chicago with connections everywhere",
+      "Reference": "CbN 262"
+    },
+    {
+      "Name": "Anubi",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Milwaukee-based werewolf hunters",
+      "Reference": "Streets 224"
+    },
+    {
+      "Name": "Archons",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You are connected to the Camarilla's enforcers",
+      "Reference": "Folios 158"
+    },
+    {
+      "Name": "Ashfinders",
+      "Type": "Cult",
+      "Prerequisite": "Thinblood",
+      "Description": "Seeking transcendence by turning vampire ashes into drugs",
+      "Reference": "Children 103"
+    },
+    {
+      "Name": "Bahari",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Worshippers of Lilith who see her as the first vampire",
+      "Reference": "V5 382"
+    },
+    {
+      "Name": "Ballard Industries",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "You are connected to Horatio Ballard's business empire",
+      "Reference": "CbN 263"
+    },
+    {
+      "Name": "Bankers of Dunsirn",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "Fantastically wealthy cannibals",
+      "Reference": "Cults 220"
+    },
+    {
+      "Name": "Blacksite 24",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You know about a blacksite used by the Second Inquisition",
+      "Reference": "CbN 264"
+    },
+    {
+      "Name": "Blood Asceticism",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "You're starving your Beast into submission",
+      "Reference": "FR 89"
+    },
+    {
+      "Name": "Blood Plagued",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You have some connection to a disease that afflicts vampires",
+      "Reference": "Anarch 197"
+    },
+    {
+      "Name": "Book of Nod",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You study ancient mythology about Caine and the Antediluvians",
+      "Reference": "CbN 267"
+    },
+    {
+      "Name": "Boston Camarilla",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The Kindred of Liberty, recently adopted by the Camarilla",
+      "Reference": "BbN 85"
+    },
+    {
+      "Name": "Cainite Heresy",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Gnostics who see Cain(e) as a Messiah",
+      "Reference": "V5 384"
+    },
+    {
+      "Name": "Calling the Family Reunion",
+      "Type": "Other",
+      "Prerequisite": "Hecata",
+      "Description": "The unification and rebranding of the Hecata",
+      "Reference": "Cults 228"
+    },
+    {
+      "Name": "Capone Gang",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "You're connected to Al Capone's racket",
+      "Reference": "CbN 268"
+    },
+    {
+      "Name": "Carmelita Niellson",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A Toreador archaeologist rediscovering lost history",
+      "Reference": "V5 403, Cam 184"
+    },
+    {
+      "Name": "Carna",
+      "Type": "NPC",
+      "Prerequisite": "(Tremere?)",
+      "Description": "Rebel Tremere who broke her bonds and formed a new House",
+      "Reference": "V5 385"
+    },
+    {
+      "Name": "Child of the Angel Michael",
+      "Type": "Cult",
+      "Prerequisite": "Not Nosferatu",
+      "Description": "The Nephilim, a cult of beauty-worshipping Toreador",
+      "Reference": "Cults 229"
+    },
+    {
+      "Name": "Children of Tenochtitlan",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Pisanob of Mesoamerica",
+      "Reference": "Cults 221"
+    },
+    {
+      "Name": "Church of Set",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Gnostics seeking to resurrect their dead god",
+      "Reference": "Anarch 193"
+    },
+    {
+      "Name": "Circulatory System",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Human trafficking network that provides blood for a price",
+      "Reference": "V5 386"
+    },
+    {
+      "Name": "Cleopatras",
+      "Type": "Cult",
+      "Prerequisite": "Nosferatu",
+      "Description": "Driven by shared dreams to defy their clan bane and stereotypes",
+      "Reference": "Children 105"
+    },
+    {
+      "Name": "Cobweb",
+      "Type": "Other",
+      "Prerequisite": "Malkavian",
+      "Description": "You're tuned in to the Madness Network",
+      "Reference": "CbN 270"
+    },
+    {
+      "Name": "Convention of Chicago",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The event that reshaped the Camarilla in light of the SI",
+      "Reference": "Folios 159"
+    },
+    {
+      "Name": "Convention of Thorns",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The event that formed the Camarilla",
+      "Reference": "V5 387"
+    },
+    {
+      "Name": "Court of Shadows",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "You associate with the mysterious King of Shadows",
+      "Reference": "FoL 232"
+    },
+    {
+      "Name": "Criminal Puttanesca",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Giovanni's organized crime division",
+      "Reference": "Cults 226"
+    },
+    {
+      "Name": "Cult of Mithras",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "You are devoted to the ancient god-vampire Mithras",
+      "Reference": "Cam 188"
+    },
+    {
+      "Name": "Cult of Shalim",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "You worship the Abyss and Oblivion itself",
+      "Reference": "CbN 272"
+    },
+    {
+      "Name": "Cultivar",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "You are part of Nerissa Blackwater's cult, serving the Ancestor",
+      "Reference": "CbN 271"
+    },
+    {
+      "Name": "Descendant of de Camden",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "You are descended from an ancient Cappadocian necromancer",
+      "Reference": "Trails 171"
+    },
+    {
+      "Name": "Descendant of Hardestadt",
+      "Type": "Bloodline",
+      "Prerequisite": "Ventrue",
+      "Description": "You descend from the founder of the Camarilla",
+      "Reference": "V5 390"
+    },
+    {
+      "Name": "Descendant of Helena",
+      "Type": "Bloodline",
+      "Prerequisite": "Toreador",
+      "Description": "You descend from the woman who launched a thousand ships",
+      "Reference": "V5 391"
+    },
+    {
+      "Name": "Descendant of Lodin",
+      "Type": "Bloodline",
+      "Prerequisite": "Ventrue",
+      "Description": "You descend from the former Prince of Chicago",
+      "Reference": "CbN 273"
+    },
+    {
+      "Name": "Descendant of Menele",
+      "Type": "Bloodline",
+      "Prerequisite": "Brujah",
+      "Description": "You descend from an ancient philosopher-king",
+      "Reference": "Folios 160"
+    },
+    {
+      "Name": "Descendant of Montano",
+      "Type": "Bloodline",
+      "Prerequisite": "Lasombra",
+      "Description": "You descend from the founder of the Lasombra Antitribu",
+      "Reference": "CbN 274"
+    },
+    {
+      "Name": "Descendant of Schreckt",
+      "Type": "Bloodline",
+      "Prerequisite": "Tremere",
+      "Description": "You descend from the ruler of the Pyramid",
+      "Reference": "V5 405"
+    },
+    {
+      "Name": "Descendant of Tyler",
+      "Type": "Bloodline",
+      "Prerequisite": "Brujah",
+      "Description": "You descend from the founder of the Anarch Movement",
+      "Reference": "V5 397, An 195"
+    },
+    {
+      "Name": "Descendant of Vasantasena",
+      "Type": "Bloodline",
+      "Prerequisite": "Malkavian",
+      "Description": "You descend from an ex-Sabbat anarchist and liberator",
+      "Reference": "V5 399"
+    },
+    {
+      "Name": "Descendant of Xaviar",
+      "Type": "Bloodline",
+      "Prerequisite": "Gangrel",
+      "Description": "You descend from the Gangrel who broke away from the Camarilla",
+      "Reference": "V5 406, An 194"
+    },
+    {
+      "Name": "Descendant of Zelios",
+      "Type": "Bloodline",
+      "Prerequisite": "Nosferatu",
+      "Description": "You descend from a masterful architect and occult geometer",
+      "Reference": "V5 398"
+    },
+    {
+      "Name": "Descendants of the Baron",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Samedi, who work with the dead to gain power",
+      "Reference": "Cults 222"
+    },
+    {
+      "Name": "Eletria",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Passionate Toreador associate of Helena",
+      "Reference": "Streets 225"
+    },
+    {
+      "Name": "Fatima al-Faqadi",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "An ancient assassin from the Web of Knives",
+      "Reference": "Cam 185"
+    },
+    {
+      "Name": "Fiorenza Savona",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A Macchiavellian Ventrue manipulator",
+      "Reference": "V5 404, Cam 186"
+    },
+    {
+      "Name": "Fires and Floods and Devil's Night",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You know the history of great disasters in Chicago",
+      "Reference": "CbN 275"
+    },
+    {
+      "Name": "First Inquisition",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The original Inquisition against vampires, and their methods",
+      "Reference": "V5 388"
+    },
+    {
+      "Name": "FIRSTLIGHT",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You have deep knowledge of the Second Inquisition",
+      "Reference": "CbN 276"
+    },
+    {
+      "Name": "Flesh-Eaters",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Nagaraja, strange outsiders only tentatively accepted",
+      "Reference": "Cults 223"
+    },
+    {
+      "Name": "Gehenna Cults",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You've studied Gehenna cults and know how they work",
+      "Reference": "FR 90"
+    },
+    {
+      "Name": "Goblin Roads",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Strange road networks in the Midwest that make travel perilous",
+      "Reference": "Folios 161"
+    },
+    {
+      "Name": "Golconda",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "You seek to transcend the vampiric state, or oppose those who do",
+      "Reference": "V5 389"
+    },
+    {
+      "Name": "Gorgons",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Lamiae, ancient defenders of the Cappadocians",
+      "Reference": "Cults 227"
+    },
+    {
+      "Name": "Grudge Masters",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Milliners, spiteful American financiers",
+      "Reference": "Children 102"
+    },
+    {
+      "Name": "Harbingers of Ashur",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "Remnants of the Cappadocians who survived the purge",
+      "Reference": "Cults 224"
+    },
+    {
+      "Name": "Hesha Ruhadze",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Scholarly prophet of the Church of Set",
+      "Reference": "Anarch 192"
+    },
+    {
+      "Name": "High Clan",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Your clan is considered especially prestigious",
+      "Reference": "V5 400"
+    },
+    {
+      "Name": "Hunt Club",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A secret society of Kindred who hunt their own kind for sport",
+      "Reference": "FoL 233"
+    },
+    {
+      "Name": "Jeanette/Therese Voerman",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "The two warring personalities of a powerful Malkavian",
+      "Reference": "V5 394"
+    },
+    {
+      "Name": "Juggler",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Powerful Anarch leader of the Midwest",
+      "Reference": "Streets 227"
+    },
+    {
+      "Name": "Justicar Lucinde",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "The first Alastor and creator of the Red List",
+      "Reference": "Folios 162"
+    },
+    {
+      "Name": "Kevin Jackson",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "The ambitious new Prince of Chicago",
+      "Reference": "CbN 277"
+    },
+    {
+      "Name": "Khalid al-Rashid",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "An ancient and implacable Primogen",
+      "Reference": "Folios 163"
+    },
+    {
+      "Name": "Kindred Dueling",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You are a master duelist",
+      "Reference": "Folios 164"
+    },
+    {
+      "Name": "Kindred Iconography",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You have a deep knowledge of vampiric symbolism",
+      "Reference": "CbN 278"
+    },
+    {
+      "Name": "Kindred Social Media Influencer",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You've maintained your social media influence into undeath",
+      "Reference": "Streets 226"
+    },
+    {
+      "Name": "La Famiglia Giovanni",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "An extended family of Italian necromancers",
+      "Reference": "Cults 225"
+    },
+    {
+      "Name": "Labyrinth",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You have access to the abandoned tunnels under Chicago",
+      "Reference": "CbN 279"
+    },
+    {
+      "Name": "Little Siblings",
+      "Type": "Bloodline",
+      "Prerequisite": "Hecata",
+      "Description": "The Rossellini, forceful necromantic legbreakers",
+      "Reference": "Children 101"
+    },
+    {
+      "Name": "London Under London",
+      "Type": "Other",
+      "Prerequisite": "Nosferatu",
+      "Description": "You have access to the extensive tunnels under London",
+      "Reference": "FoL 234"
+    },
+    {
+      "Name": "Lost Secrets of the Milwaukee Chantry",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You've raided Milwaukee's abandoned Chantry for its secrets",
+      "Reference": "Streets 228"
+    },
+    {
+      "Name": "Low Clan",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Your clan is considered lower-class",
+      "Reference": "V5 401"
+    },
+    {
+      "Name": "Lupine Expert",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You know how to fight werewolves",
+      "Reference": "CbN 280"
+    },
+    {
+      "Name": "Malkavian Family",
+      "Type": "Other",
+      "Prerequisite": "Malkavian",
+      "Description": "You are closely connected to others of your clan",
+      "Reference": "Folios 165"
+    },
+    {
+      "Name": "Mark Decker",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Werewolf hunter and leader of the Anubi",
+      "Reference": "Streets 229"
+    },
+    {
+      "Name": "Maxwell",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Former Prince of Chicago working to take back his throne",
+      "Reference": "Streets 230"
+    },
+    {
+      "Name": "Meneleans",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Former followers of Menele seaking to break down hierarchies",
+      "Reference": "Children 106"
+    },
+    {
+      "Name": "Milwaukee Null Zone",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A strange 'dead zone' in which no magic can function",
+      "Reference": "Streets 231"
+    },
+    {
+      "Name": "Minneapolis",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Major city in Minnesota, USA",
+      "Reference": "Teeth 2"
+    },
+    {
+      "Name": "Modius",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Pauper Prince of Gary, Indiana",
+      "Reference": "Streets 233"
+    },
+    {
+      "Name": "Nathaniel Bordruff",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A Nosferatu who wants to tear down the whole system",
+      "Reference": "CbN 281"
+    },
+    {
+      "Name": "Nictuku",
+      "Type": "Other",
+      "Prerequisite": "Nosferatu",
+      "Description": "Ancient monstrosities who hunt the Nosferatu",
+      "Reference": "Teeth 3"
+    },
+    {
+      "Name": "Occult Artifacts",
+      "Type": "Other",
+      "Prerequisite": "Tremere or BH",
+      "Description": "You have access to powerful magical items",
+      "Reference": "Folios 166"
+    },
+    {
+      "Name": "Operation Antigen",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The SI's attempt to purge London of vampires",
+      "Reference": "FoL 235"
+    },
+    {
+      "Name": "Oskar Anasov",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "The architect of London's analog communication networks",
+      "Reference": "FoL 236"
+    },
+    {
+      "Name": "Painted Lady",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "You're connected to Edith Beaubien's tattoo parlor",
+      "Reference": "CbN 282"
+    },
+    {
+      "Name": "Parthenon Troupe",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You served the Prince of Athens as a ghouled artist",
+      "Reference": "Download"
+    },
+    {
+      "Name": "Plagues of Gehenna",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You've studied diseases that can affect vampires",
+      "Reference": "FR 91"
+    },
+    {
+      "Name": "Pony Express",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A modern courier system approved by the Camarilla",
+      "Reference": "Folios 167"
+    },
+    {
+      "Name": "Praepositor",
+      "Type": "Cult",
+      "Prerequisite": "Tremere",
+      "Description": "The Praesidium, dedicated to restoring the Pyramid",
+      "Reference": "FR 92"
+    },
+    {
+      "Name": "Promise of 1528",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The peace treaty between the Camarilla and the Giovanni",
+      "Reference": "Cults 231"
+    },
+    {
+      "Name": "Pure Ventrue Lineage",
+      "Type": "Bloodline",
+      "Prerequisite": "Ventrue",
+      "Description": "You have a legendary and pure lineage recognized by the Ventrue",
+      "Reference": "Cam 187"
+    },
+    {
+      "Name": "Relics of the Veil",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You possess necromantic artifacts connected to the Shadowlands",
+      "Reference": "Trails 172"
+    },
+    {
+      "Name": "Revenant Family: Ducheski",
+      "Type": "Other",
+      "Prerequisite": "Tremere",
+      "Description": "You have access to specially-bred revenant ghouls",
+      "Reference": "CbN 283"
+    },
+    {
+      "Name": "Road Courier",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You run messages between domains for a living",
+      "Reference": "Download"
+    },
+    {
+      "Name": "Rudi",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A modern Anarch leader",
+      "Reference": "V5 396"
+    },
+    {
+      "Name": "Ruins of Carthage",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You are an expert on the vampire utopia of Carthage",
+      "Reference": "Anarch 196"
+    },
+    {
+      "Name": "Salvador Garcia",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Inspiring Anarch agitator and ideologue",
+      "Reference": "Anarch 190"
+    },
+    {
+      "Name": "Sect War Veteran",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You survived a conflict between the sects",
+      "Reference": "V5 392"
+    },
+    {
+      "Name": "Servitor of Irad",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Faithful worshippers of the Antediluvians",
+      "Reference": "Cults 230"
+    },
+    {
+      "Name": "Sheriff Damien",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Reluctant Sheriff of Chicago",
+      "Reference": "Folios 168"
+    },
+    {
+      "Name": "Sheriff Qui",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Ruthless executioner and enforcer in Ottawa",
+      "Reference": "Download"
+    },
+    {
+      "Name": "Society of St. Leopold",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You're connected to the church's vampire-hunting program",
+      "Reference": "CbN 284"
+    },
+    {
+      "Name": "Spear of Orthia",
+      "Type": "Bloodline",
+      "Prerequisite": "Ventrue",
+      "Description": "Militant Ventrue descended from Artemis Orthia",
+      "Reference": "FR 93"
+    },
+    {
+      "Name": "St. Paul",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "Major city in Minnesota, USA",
+      "Reference": "Teeth 2"
+    },
+    {
+      "Name": "Starfall Ranch",
+      "Type": "Cult",
+      "Prerequisite": "Malkavian",
+      "Description": "Malkavians who believe their clan is actually a single person",
+      "Reference": "Children 108"
+    },
+    {
+      "Name": "Stories of the Daughters",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You're associated with the Daughters of Cacophony bloodline",
+      "Reference": "Download"
+    },
+    {
+      "Name": "Talley",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A ruthless Lasombra who works for the highest bidder",
+      "Reference": "CbN 286"
+    },
+    {
+      "Name": "Temple of Boom Contract",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Victor Temple's media empire",
+      "Reference": "Download"
+    },
+    {
+      "Name": "The Blue Velvet",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You have connections to an influential nightclub in Chicago",
+      "Reference": "CbN 266"
+    },
+    {
+      "Name": "The Hartford Chantry",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A secret-society-slash-faction seeking isolation from politics",
+      "Reference": "BbN 80"
+    },
+    {
+      "Name": "The One True Way",
+      "Type": "Cult",
+      "Prerequisite": "",
+      "Description": "Seeking Golconda, a state of harmony with the Beast",
+      "Reference": "Children 107"
+    },
+    {
+      "Name": "The Pyramid",
+      "Type": "Cult",
+      "Prerequisite": "Tremere",
+      "Description": "You are faithful to the ancient Pyramid of House Tremere",
+      "Reference": "Cam 189"
+    },
+    {
+      "Name": "The Ruby Throat",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A high-stakes vampire casino in Atlantic City",
+      "Reference": "Trails 170"
+    },
+    {
+      "Name": "The Trinity",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "You believe in the Dream of Constantinople, a vampire utopia",
+      "Reference": "V5 393"
+    },
+    {
+      "Name": "The Wolf Pack",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A gang of roaming Archons",
+      "Reference": "Folios 169"
+    },
+    {
+      "Name": "Theo Bell",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Former Archon who defected to the Anarchs",
+      "Reference": "V5 383"
+    },
+    {
+      "Name": "Victoria Ash",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "Prestigious Toreador diplomat of the Camarilla",
+      "Reference": "Cam 190"
+    },
+    {
+      "Name": "Wauneka",
+      "Type": "NPC",
+      "Prerequisite": "",
+      "Description": "A Nosferatu who knows every secret in Chicago",
+      "Reference": "CbN 287"
+    },
+    {
+      "Name": "Week of Nightmares",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "The Ravnos Antediluvian woke up and destroyed their clan",
+      "Reference": "V5 395"
+    },
+    {
+      "Name": "Wolves in Sheep's Clothing",
+      "Type": "Other",
+      "Prerequisite": "",
+      "Description": "A group of free ghouls hunting Kindred to steal their abilities",
+      "Reference": "Teeth 3"
+    }
+  ]
+}

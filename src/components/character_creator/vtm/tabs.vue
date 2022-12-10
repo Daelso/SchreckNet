@@ -414,7 +414,8 @@
             v-if="
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Cult' ||
-              this.advantageCategory == 'Backgrounds'
+              this.advantageCategory == 'Backgrounds' ||
+              this.advantageCategory == 'Haven'
             "
           >
             <q-select
@@ -665,6 +666,66 @@
               </q-item>
             </q-list>
           </div>
+          <br />
+          <!-- Haven -->
+          <div
+            v-if="
+              this.advantagesObj.haven.advantages.length > 0 ||
+              this.advantagesObj.haven.flaws.length > 0
+            "
+          >
+            <span class="text-h6">Haven</span>
+            <q-separator />
+            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
+
+            <q-list bordered>
+              <q-item
+                v-for="(advantage, key) in advantagesObj.haven.advantages"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeAdvantage(
+                    $event.target.id,
+                    advantage.cost,
+                    advantage.name,
+                    'haven'
+                  )
+                "
+              >
+                <q-item-section :id="key"
+                  >Advantage:
+                  {{ advantage.name }}
+                  - {{ advantage.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+
+            <div class="q-my-sm" style="font-family: monospace">Flaws</div>
+
+            <q-list bordered>
+              <q-item
+                v-for="(flaw, key) in advantagesObj.haven.flaws"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeFlaw($event.target.id, flaw.cost, flaw.name, 'haven')
+                "
+              >
+                <q-item-section :id="key">
+                  {{ flaw.name }}
+                  - {{ flaw.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -699,6 +760,7 @@ import allMerits from "../vtm/5eMerits.json";
 import allCultMerits from "../vtm/5eCultMerits.json";
 import allBackgrounds from "../vtm/5eBackgrounds.json";
 import disciplinesList from "../vtm/5eDisciplines.json";
+import havenMerits from "../vtm/havens.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -762,13 +824,14 @@ export default defineComponent({
       disciplinesList,
       thinBonusDiscInput: "",
       chronicle: "",
+      havenMerits,
       desire: "",
       concept: "",
       meritCategory: "",
       cultCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: ["Merits", "Backgrounds", "Cult"],
+      advantageCategories: ["Merits", "Backgrounds", "Haven", "Cult"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
@@ -906,6 +969,9 @@ export default defineComponent({
         case "Backgrounds":
           arr = Object.keys(allBackgrounds.Backgrounds);
           break;
+        case "Haven":
+          arr = Object.keys(havenMerits.havens);
+          break;
       }
 
       return arr;
@@ -923,6 +989,9 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
             break;
+          case "Haven":
+            arr = havenMerits.havens[this.meritCategory].advantages;
+            break;
         }
       }
       if (this.advOrFlaw.toLowerCase() === "flaws") {
@@ -935,6 +1004,9 @@ export default defineComponent({
             break;
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
+            break;
+          case "Haven":
+            arr = havenMerits.havens[this.meritCategory].flaws;
             break;
         }
       }
@@ -1009,6 +1081,13 @@ export default defineComponent({
             modifiedObj.backgrounds.advantages.push(choiceObj);
           } else {
             modifiedObj.backgrounds.flaws.push(choiceObj);
+          }
+          break;
+        case "Haven":
+          if (advOrFlaw === true) {
+            modifiedObj.haven.advantages.push(choiceObj);
+          } else {
+            modifiedObj.haven.flaws.push(choiceObj);
           }
           break;
       }

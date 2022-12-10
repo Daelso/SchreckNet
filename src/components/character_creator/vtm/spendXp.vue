@@ -74,9 +74,20 @@
               class="q-my-sm"
             />
             <q-input
-              v-if="this.specialtyInput"
+              v-if="this.specialtyInput && this.categoryInput !== 'Skills'"
               v-model="specialtyDefinition"
               label="Define your specialty"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+            />
+            <!-- Skills -->
+            <q-select
+              v-if="this.categoryInput === 'Skills'"
+              v-model="skillCategory"
+              :options="purchaseSkillsOpts"
+              label="Which skill would you like to purchase?"
               label-color="primary"
               bg-color="grey-3"
               filled
@@ -90,7 +101,8 @@
                 this.categoryInput !== 'Clan Discipline' &&
                 this.categoryInput !== 'Specialty' &&
                 this.categoryInput !== 'Caitiff Discipline' &&
-                this.categoryInput !== 'Out of Clan Discipline'
+                this.categoryInput !== 'Out of Clan Discipline' &&
+                this.categoryInput !== 'Skills'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -109,6 +121,11 @@
               <q-badge v-if="this.clanDiscInput"
                 >Current {{ this.clanDiscInput }} Level:
                 {{ this.disciplines[this.clanDiscInput] }}</q-badge
+              >
+
+              <q-badge v-if="this.skillCategory"
+                >Current {{ this.skillCategory }} Level:
+                {{ this.skills[this.skillCategory.toLowerCase()] }}</q-badge
               >
 
               <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
@@ -166,6 +183,7 @@ export default defineComponent({
           potency: potency,
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
+          skills: skills,
         });
       },
       range,
@@ -195,6 +213,7 @@ export default defineComponent({
       potency,
       disciplines,
       skills,
+      skillCategory: ref(""),
     };
   },
   methods: {
@@ -237,8 +256,16 @@ export default defineComponent({
           }
           this.cost = this.disciplines[this.clanDiscInput] * 7;
           break;
-        case "Skill":
-          // code block
+        case "Skills":
+          if (this.skills[this.skillCategory.toLowerCase()] === 0) {
+            this.cost = 3;
+            break;
+          }
+          if (this.skills[this.skillCategory.toLowerCase()] + 1 > 5) {
+            this.cost = "Skill is maxxed!";
+            this.canBuy = false;
+          }
+          this.cost = this.skills[this.skillCategory.toLowerCase()] * 3;
           break;
         case "Specialty":
           this.cost = 3;
@@ -260,6 +287,7 @@ export default defineComponent({
       this.disciplinePower = "";
       this.specialtyInput = "";
       this.specialtyDefinition = "";
+      this.skillCategory = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -270,6 +298,7 @@ export default defineComponent({
       this.disciplinePower = "";
       this.specialtyInput = "";
       this.specialtyDefinition = "";
+      this.skillCategory = "";
     },
 
     purchaseMade() {
@@ -285,7 +314,7 @@ export default defineComponent({
         this.$q.notify({
           type: "negative",
           textColor: "white",
-          message: "Unable to coomplete this purchase.",
+          message: "Unable to complete this purchase.",
         });
         return;
       }
@@ -349,10 +378,28 @@ export default defineComponent({
           });
           break;
         case "Out of Clan Discipline":
-          // code block
+          if (
+            this.disciplineSkillsObj.filter(
+              (e) => e.skill === this.disciplinePower
+            ).length > 0
+          ) {
+            this.disciplinePower = "";
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              message: "You have already selected this skill!",
+            });
+            return;
+          }
+
+          this.disciplines[this.clanDiscInput]++;
+          this.disciplineSkillsObj.push({
+            discipline: this.clanDiscInput,
+            skill: this.disciplinePower,
+          });
           break;
-        case "Skill":
-          // code block
+        case "Skills":
+          this.skills[this.skillCategory.toLowerCase()]++;
           break;
         case "Specialty":
           this.specialtiesFromXp.push({
@@ -375,15 +422,12 @@ export default defineComponent({
         "Advantage",
         "Attributes",
         "Blood Potency",
-        "Blood Sorcery Ritual",
         "Caitiff Discipline",
         "Clan Discipline",
         "Out of Clan Discipline",
         "Skills",
         "Specialty",
-        "Thin-Blood Alchemy",
       ];
-      console.log(this.clan);
       if (this.clan !== "Caitiff") {
         arr = arr.filter((x) => x !== "Caitiff Discipline");
       }
@@ -448,8 +492,6 @@ export default defineComponent({
     clanDiscOptions() {
       let arr = [];
       if (this.categoryInput === "Out of Clan Discipline") {
-        console.log(this.clanDisciplines.clans[this.clan].disciplines);
-        console.log(Object.keys(this.disciplines));
         arr = Object.keys(this.disciplines).filter(
           (discipline) =>
             !this.clanDisciplines.clans[this.clan].disciplines.includes(
@@ -463,7 +505,6 @@ export default defineComponent({
         return arr;
       } else {
         let keyValueArr = Object.entries(this.disciplines);
-        console.log(keyValueArr.filter((x) => x[1] > 0));
         keyValueArr = keyValueArr.filter((x) => x[1] > 0);
         keyValueArr.forEach((x) => {
           arr.push(x[0]);
@@ -476,7 +517,6 @@ export default defineComponent({
       for (let i = 0; i < this.disciplines[this.clanDiscInput] + 1; i++) {
         this.disciplineSkills.Disciplines[this.clanDiscInput].skills[i].forEach(
           (x) => {
-            console.log(i);
             mergedOptions.push(x);
           }
         );
@@ -491,6 +531,15 @@ export default defineComponent({
         }
       }
       return optionsArr;
+    },
+    purchaseSkillsOpts() {
+      let optionsArr = [];
+      for (const skill in this.skills) {
+        if (this.skills[skill] < 5) {
+          optionsArr.push(skill[0].toUpperCase() + skill.slice(1));
+        }
+      }
+      return optionsArr.sort();
     },
   },
 });

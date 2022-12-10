@@ -69,7 +69,10 @@
             >
               <q-card>
                 <q-card-section class="backgroundDefault">
-                  <div v-for="(skill, key) in skillInfo.skills" :key="key">
+                  <div
+                    v-for="(skill, key) in skillInfo.skills.sort()"
+                    :key="key"
+                  >
                     {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
                   </div>
                   <q-separator />
@@ -778,10 +781,9 @@ export default {
           this.disciplines = data.disciplines;
           this.disciplineSkills = data.disciplineSkillsObj;
           this.specialtiesFromXp = data.specialtiesFromXp;
-          console.log(this.specialtiesFromXp);
+          this.trueSkills = data.skills;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
-            console.log(this[attribute.name.toLowerCase()]);
           });
         });
     },

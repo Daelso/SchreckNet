@@ -35,14 +35,17 @@
             <q-select
               v-if="
                 this.categoryInput === 'Clan Discipline' ||
-                this.categoryInput === 'Caitiff Discipline'
+                this.categoryInput === 'Caitiff Discipline' ||
+                this.categoryInput === 'Out of Clan Discipline'
               "
               v-model="clanDiscInput"
               :options="clanDiscOptions"
               :label="
                 this.categoryInput === 'Clan Discipline'
                   ? 'Which clan discipline would you like to upgrade?'
-                  : 'Which Caitiff Discipline would you like to upgrade?'
+                  : this.categoryInput === 'Caitiff Discipline'
+                  ? 'Which Caitiff Discipline would you like to upgrade?'
+                  : 'Which out of clan discipline would you like to upgrade?'
               "
               label-color="primary"
               bg-color="grey-3"
@@ -86,7 +89,8 @@
                 this.categoryInput !== 'Attributes' &&
                 this.categoryInput !== 'Clan Discipline' &&
                 this.categoryInput !== 'Specialty' &&
-                this.categoryInput !== 'Caitiff Discipline'
+                this.categoryInput !== 'Caitiff Discipline' &&
+                this.categoryInput !== 'Out of Clan Discipline'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -213,13 +217,25 @@ export default defineComponent({
           // code block
           break;
         case "Caitiff Discipline":
+          if (this.disciplines[this.clanDiscInput] === 0) {
+            this.cost = 6;
+            break;
+          }
           this.cost = this.disciplines[this.clanDiscInput] * 6;
           break;
         case "Clan Discipline":
+          if (this.disciplines[this.clanDiscInput] === 0) {
+            this.cost = 5;
+            break;
+          }
           this.cost = this.disciplines[this.clanDiscInput] * 5;
           break;
         case "Out of Clan Discipline":
-          // code block
+          if (this.disciplines[this.clanDiscInput] === 0) {
+            this.cost = 7;
+            break;
+          }
+          this.cost = this.disciplines[this.clanDiscInput] * 7;
           break;
         case "Skill":
           // code block
@@ -373,7 +389,9 @@ export default defineComponent({
       }
 
       if (this.clan === "Caitiff") {
-        arr = arr.filter((x) => x !== "Clan Discipline");
+        arr = arr.filter(
+          (x) => x !== "Clan Discipline" && x !== "Out of Clan Discipline"
+        );
       }
 
       if (!("Thin-blood Alchemy" in this.disciplines)) {
@@ -429,8 +447,20 @@ export default defineComponent({
     },
     clanDiscOptions() {
       let arr = [];
+      if (this.categoryInput === "Out of Clan Discipline") {
+        console.log(this.clanDisciplines.clans[this.clan].disciplines);
+        console.log(Object.keys(this.disciplines));
+        arr = Object.keys(this.disciplines).filter(
+          (discipline) =>
+            !this.clanDisciplines.clans[this.clan].disciplines.includes(
+              discipline
+            )
+        );
+        return arr;
+      }
       if (this.clan !== "Caitiff") {
         arr = this.clanDisciplines.clans[this.clan].disciplines;
+        return arr;
       } else {
         let keyValueArr = Object.entries(this.disciplines);
         console.log(keyValueArr.filter((x) => x[1] > 0));
@@ -438,7 +468,6 @@ export default defineComponent({
         keyValueArr.forEach((x) => {
           arr.push(x[0]);
         });
-        console.log(arr);
       }
       return arr;
     },
@@ -447,6 +476,7 @@ export default defineComponent({
       for (let i = 0; i < this.disciplines[this.clanDiscInput] + 1; i++) {
         this.disciplineSkills.Disciplines[this.clanDiscInput].skills[i].forEach(
           (x) => {
+            console.log(i);
             mergedOptions.push(x);
           }
         );

@@ -19,7 +19,7 @@
           <div>Predator Type: {{ predatorType }}</div>
           <div>Humanity: {{ humanity }}</div>
           <div>Chronicle: {{ chronicle }}</div>
-          <div>Specialties: {{ this.remaining_specialties }}</div>
+          <div>Specialties Remaining: {{ this.remaining_specialties }}</div>
           <div>Archetype: {{ !archetypeModel ? "None" : archetypeModel }}</div>
 
           <div>Sire: {{ sire }}</div>
@@ -284,7 +284,7 @@
       </div>
 
       <template v-slot:action>
-        <div class="q-mr-lg">Created by: {{ this.createdBy() }}</div>
+        <div class="q-mr-lg">Created by: {{ creator }}</div>
         <q-btn flat label="Export to PDF" type="submit" color="white" />
       </template>
     </q-banner>
@@ -349,6 +349,8 @@ export default defineComponent({
     const axios = require("axios");
     let pageFound = ref(false);
 
+    let creator = ref("Anonymous");
+
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
       baseUrl = "http://localhost:5000";
@@ -377,6 +379,7 @@ export default defineComponent({
       advantages: kindred.advantages_remaining,
       age: kindred.age,
       created_by: kindred.created_by,
+      creator,
       ambition: kindred.ambition,
       archetypeModel: kindred.archetype,
       attributes: kindred.attributes,
@@ -403,24 +406,29 @@ export default defineComponent({
       pageFound,
     };
   },
-  data() {
+  async created() {
+    let baseUrl = "";
+    if (window.location.href.includes("localhost")) {
+      baseUrl = "http://localhost:5000";
+    } else {
+      baseUrl = window.location.origin;
+    }
+    let creator = await this.$axios
+      .get(baseUrl + "/user/getUser/" + this.created_by, {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        this.creator = resp.data.username;
+        return resp.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     return {};
   },
-  methods: {
-    async createdBy() {
-      let creator = await this.$axios
-        .get(baseUrl + "/user/getUser/" + this.created_by, {
-          withCredentials: true,
-        })
-        .then((resp) => {
-          console.log(resp.data);
-          return resp.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      return "Jeff";
-    },
+  data() {
+    return {};
   },
 });
 </script>

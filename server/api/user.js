@@ -19,6 +19,15 @@ router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
   res.json(req.currentUser);
 });
 
+router.route("/getUser/:id").get(async (req, res) => {
+  try {
+    const user = await Users.findByPk(req.params.id);
+    res.send(user.dataValues);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/users").get(async (req, res) => {
   Users.findAll()
     .then((users) => {

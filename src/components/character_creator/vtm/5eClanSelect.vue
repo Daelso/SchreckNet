@@ -354,6 +354,7 @@ export default defineComponent({
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
+    let disciplinesDone = ref(props.info.disciplinesDone);
     const skillsSelected = ref(props.info.discSkills);
     const predatorType = ref(props.info.predatorType);
     const disciplineObj = ref(props.info.disciplines);
@@ -442,6 +443,7 @@ export default defineComponent({
       clanDisciplines,
       compulsion,
       disableRating,
+      disciplinesDone,
       disciplineSkills,
       disciplineObj,
       finalDisciplineObj,
@@ -522,6 +524,7 @@ export default defineComponent({
           xp: xp,
           predatorType: predatorType,
           specialtiesFromPred: specialtiesFromPred,
+          disciplinesDone: disciplinesDone,
         });
       },
 
@@ -1181,7 +1184,11 @@ export default defineComponent({
         }
         allowedLen += this.finalDisciplineObj[property];
       }
-      return allowedLen > this.skillsSelected.length ? true : false;
+      if (allowedLen > this.skillsSelected.length) {
+        this.disciplinesDone = true;
+        return true;
+      }
+      return false;
     },
     sortPredDiscOptions() {
       let arr = [];

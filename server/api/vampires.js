@@ -38,7 +38,7 @@ router.route("/new").post(async (req, res) => {
       cult: req.body.cult,
       health: req.body.health,
       willpower: req.body.willpower,
-      totalSpecialty: req.body.remainingSpecialties,
+      remaining_specialties: req.body.remainingSpecialties,
       potency: req.body.potency,
       max_potency: req.body.maxPotency,
       disciplines: req.body.disciplines,

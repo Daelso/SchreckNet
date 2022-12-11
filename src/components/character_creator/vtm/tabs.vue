@@ -88,8 +88,10 @@
             @update:model-value="$emit('ambition', this.ambition)"
             :rules="[
               (val) =>
-                (typeof val === 'string' && val.length <= 2000) ||
-                'Please keep this field under 2000 characters',
+                (typeof val === 'string' &&
+                  val.length <= 128 &&
+                  val.length >= 3) ||
+                'Please keep this field between 3 and 128 characters',
             ]"
           />
           <q-input
@@ -106,8 +108,10 @@
             @update:model-value="$emit('desire', this.desire)"
             :rules="[
               (val) =>
-                (typeof val === 'string' && val.length <= 2000) ||
-                'Please keep this field under 2000 characters',
+                (typeof val === 'string' &&
+                  val.length <= 128 &&
+                  val.length >= 3) ||
+                'Please keep this field between 3 and 128 characters',
             ]"
           />
           <q-input
@@ -124,8 +128,10 @@
             @update:model-value="this.$emit('archetype', this.archetype)"
             :rules="[
               (val) =>
-                (typeof val === 'string' && val.length <= 2000) ||
-                'Please keep this field under 2000 characters',
+                (typeof val === 'string' &&
+                  val.length <= 128 &&
+                  val.length >= 3) ||
+                'Please keep this field between 3 and 128 characters',
             ]"
           />
           <q-select
@@ -167,8 +173,10 @@
             @update:model-value="this.$emit('chronicle', this.chronicle)"
             :rules="[
               (val) =>
-                (typeof val === 'string' && val.length <= 100) ||
-                'Please keep this field under 100 characters',
+                (typeof val === 'string' &&
+                  val.length <= 128 &&
+                  val.length >= 3) ||
+                'Please keep this field between 3 and 128 characters',
             ]"
           />
           <q-input
@@ -182,9 +190,8 @@
             @update:model-value="this.$emit('update:sire', this.sireInput)"
             :rules="[
               (val) =>
-                val === null ||
-                val.length <= 2000 ||
-                'Please keep this field under 2000 characters',
+                val.length <= 128 ||
+                'Please keep this field below 128 characters',
             ]"
           />
         </q-tab-panel>
@@ -791,6 +798,13 @@ export default defineComponent({
     "specialties",
     "convictions",
     "touchstones",
+    "charName",
+    "concept",
+    "ambition",
+    "desire",
+    "archetype",
+    "sect",
+    "chronicle",
   ],
   setup() {
     function range(size, startAt = 0) {

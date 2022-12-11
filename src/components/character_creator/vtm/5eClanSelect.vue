@@ -1135,7 +1135,6 @@ export default defineComponent({
     confirmPredator() {
       let trueDiscs = {};
       trueDiscs = { ...trueDiscs, ...this.disciplineObj };
-      console.log(this.predatorType);
       if (this.clan !== "Thin-Blood" && this.age.label !== "Fledgling") {
         if (this.bonusDisc in trueDiscs) {
           trueDiscs[this.bonusDisc]++;

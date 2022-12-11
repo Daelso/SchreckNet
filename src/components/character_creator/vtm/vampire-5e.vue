@@ -654,6 +654,7 @@ export default {
         touchstones: this.touchstones,
         disciplines: this.disciplines,
         disciplineSkills: this.disciplineSkills,
+        remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,
         attributes: {
           charisma: this.charisma,

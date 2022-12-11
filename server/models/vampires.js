@@ -32,6 +32,14 @@ const Vampires = db.sequelize.define("vampires", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  humanity: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  remaining_specialties: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
   sect: {
     type: Sequelize.STRING,
     allowNull: false,

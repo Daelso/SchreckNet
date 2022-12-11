@@ -29,8 +29,6 @@
             <div>Advantage Dots Remaining: {{ advantages }}</div>
             <div>Remaining XP: {{ xp }}</div>
             <div>Flaw Dots Remaining: {{ flaws }}</div>
-            <div>Skills Done: {{ skillsDone }}</div>
-            <div>Attributes Done: {{ attributesDone }}</div>
           </div>
           <q-separator class="q-my-md" />
 
@@ -288,13 +286,7 @@
         </div>
 
         <template v-slot:action>
-          <q-btn
-            flat
-            label="Save Character"
-            type="submit"
-            color="white"
-            @click="saveKindred()"
-          />
+          <q-btn flat label="Save Character" type="submit" color="white" />
         </template>
       </q-banner>
     </div>
@@ -325,7 +317,11 @@
               >
             </q-item-section>
           </q-item>
-          <q-item clickable @click="clanSelected">
+          <q-item
+            clickable
+            @click="clanSelected"
+            :disable="!this.skillsDone || !this.attributesDone"
+          >
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"
@@ -342,11 +338,22 @@
               >
             </q-item-section>
           </q-item>
-          <q-item clickable @click="spendXp">
+          <q-item
+            clickable
+            @click="spendXp"
+            :disable="
+              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
+            "
+          >
             <q-tooltip
-              v-if="!this.skillsDone || !this.attributesDone"
+              v-if="
+                !this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone
+              "
               class="bg-dark text-body2"
-              >Please set valid base attributes and skills</q-tooltip
+              >Please set valid base attributes, skills and complete your
+              clan/discipline section.</q-tooltip
             >
             <q-item-section avatar>
               <q-icon color="secondary" name="upgrade" />
@@ -467,9 +474,6 @@ export default {
     };
   },
   data() {
-    const router = useRouter();
-    const axios = require("axios");
-
     return {
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
@@ -500,6 +504,7 @@ export default {
       baseSpecialties: 1,
       gainedSpecialties: 0,
       totalSpecialty: 1,
+      disciplinesDone: false,
       charisma: 0,
       composure: 0,
       dexterity: 0,
@@ -605,7 +610,7 @@ export default {
       concept: "",
       generation: { label: "12th", potency: 1, maxPotency: 3 },
       touchstones: [],
-      xp: 35,
+      xp: 0,
       skillsDone: false,
       tooltips: ref([
         "Supernatural quickness and reflexes",
@@ -616,9 +621,78 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log(this.charName);
-      console.log(this.archtypeModel);
-      console.log(this.clan);
+      const axios = require("axios");
+
+      let baseUrl = "";
+      if (window.location.href.includes("localhost")) {
+        baseUrl = "http://localhost:5000";
+      } else {
+        baseUrl = window.location.origin;
+      }
+
+      let character = {
+        name: this.charName,
+        clan: this.clan,
+        concept: this.concept,
+        ambition: this.ambition,
+        desire: this.desire,
+        archetype: this.archtypeModel,
+        sect: this.sect,
+        cult: this.cult,
+        chronicle: this.chronicle,
+        age: this.age.label,
+        generation: this.generation.label,
+        predatorType: this.predatorType,
+        health: this.stamina + 3,
+        humanity: this.humanity,
+        willpower: this.composure + this.resolve,
+        potency: this.generation.potency,
+        maxPotency: this.generation.maxPotency,
+        sireName: this.sire,
+        xp: this.xp,
+        convictions: this.convictions,
+        touchstones: this.touchstones,
+        disciplines: this.disciplines,
+        disciplineSkills: this.disciplineSkills,
+        remainingSpecialties: this.totalSpecialty,
+        skills: this.trueSkills,
+        attributes: {
+          charisma: this.charisma,
+          composure: this.composure,
+          dexterity: this.dexterity,
+          intelligence: this.intelligence,
+          manipulation: this.manipulation,
+          resolve: this.resolve,
+          stamina: this.stamina,
+          strength: this.strength,
+          wits: this.wits,
+        },
+        specialties: this.finalSpecialties(),
+        advantages: this.advantagesObj,
+        advantages_remaining: this.advantages,
+        flaws_remaining: this.flaws,
+      };
+
+      axios
+        .post(baseUrl + "/vampires/new", character, {
+          withCredentials: true,
+        })
+        .then(() =>
+          this.$q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Kindred created!",
+          })
+        )
+        .catch((err) =>
+          this.$q.notify({
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+            message: err.message,
+          })
+        );
     },
     handleCharName(data) {
       this.charName = data;
@@ -670,6 +744,7 @@ export default {
               predatorType: this.predatorType,
               tooltips: this.tooltips,
               xp: this.xp,
+              disciplinesDone: this.disciplinesDone,
             },
           },
         })
@@ -689,6 +764,7 @@ export default {
           this.disciplineSkills = data.discSkillsSelected;
           this.predatorType = data.predatorType;
           this.specialtiesFromPred = data.specialtiesFromPred;
+          this.disciplinesDone = data.disciplinesDone;
         });
     },
     attributes() {
@@ -815,77 +891,6 @@ export default {
       );
 
       return specialties;
-    },
-
-    // Save character to DB
-    saveKindred() {
-      const axios = require("axios");
-
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
-
-      let character = {
-        name: this.charName,
-        clan: this.clan,
-        concept: this.concept,
-        ambition: this.ambition,
-        desire: this.desire,
-        archetype: this.archtypeModel,
-        sect: this.sect,
-        cult: this.cult,
-        chronicle: this.chronicle,
-        age: this.age.label,
-        generation: this.generation.label,
-        predatorType: this.predatorType,
-        health: this.stamina + 3,
-        humanity: this.humanity,
-        willpower: this.composure + this.resolve,
-        potency: this.generation.potency,
-        maxPotency: this.generation.maxPotency,
-        sireName: this.sire,
-        xp: this.xp,
-        convictions: this.convictions,
-        touchstones: this.touchstones,
-        disciplines: this.disciplines,
-        disciplineSkills: this.disciplineSkills,
-        skills: this.trueSkills,
-        attributes: {
-          charisma: this.charisma,
-          composure: this.composure,
-          dexterity: this.dexterity,
-          intelligence: this.intelligence,
-          manipulation: this.manipulation,
-          resolve: this.resolve,
-          stamina: this.stamina,
-          strength: this.strength,
-          wits: this.wits,
-        },
-        specialties: this.finalSpecialties(),
-        advantages: this.advantagesObj,
-      };
-
-      axios
-        .post(baseUrl + "/vampires/new", character)
-        .then(() =>
-          this.$q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "cloud_done",
-            message: "Kindred created!",
-          })
-        )
-        .catch((err) =>
-          this.$q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: err.message,
-          })
-        );
     },
   },
 };

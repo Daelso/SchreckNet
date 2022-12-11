@@ -2,7 +2,11 @@
   <div v-if="!this.pageFound">
     <notfound />
   </div>
-  <div v-if="this.pageFound" class="q-pa-md row justify-center text-center">
+  <div
+    v-if="this.pageFound"
+    class="q-pa-md row justify-center text-center"
+    style="max-width: 900px"
+  >
     <q-banner class="bg-primary text-white" rounded dark>
       <div class="container">
         Vampire: The Masquerade
@@ -10,23 +14,22 @@
           <div>Name: {{ charName }}</div>
           <div>Clan: {{ clan }}</div>
           <div>Sect: {{ sect }}</div>
-          <div>Age: {{ age.label }}</div>
-          <div>Generation: {{ generation.label }}</div>
+          <div>Age: {{ age }}</div>
+          <div>Generation: {{ generation }}</div>
           <div>Predator Type: {{ predatorType }}</div>
           <div>Humanity: {{ humanity }}</div>
           <div>Chronicle: {{ chronicle }}</div>
-          <div>Concept: {{ !concept ? "None" : concept }}</div>
-          <div>Specialties: {{ this.totalSpecialty }}</div>
+          <div>Specialties: {{ this.remaining_specialties }}</div>
+          <div>Archetype: {{ !archetypeModel ? "None" : archetypeModel }}</div>
+
           <div>Sire: {{ sire }}</div>
           <div>Cult: {{ cult }}</div>
         </div>
         <q-separator class="q-my-md" />
         <div class="stats">
-          <div>Health: {{ stamina + 3 }}</div>
-          <div>Willpower: {{ composure + resolve }}</div>
-          <div>
-            Potency: {{ generation.potency }}/{{ generation.maxPotency }}
-          </div>
+          <div>Health: {{ attributes.stamina + 3 }}</div>
+          <div>Willpower: {{ attributes.composure + attributes.resolve }}</div>
+          <div>Potency: {{ potency }}/{{ maxPotency }}</div>
           <div>Advantage Dots Remaining: {{ advantages }}</div>
           <div>Remaining XP: {{ xp }}</div>
           <div>Flaw Dots Remaining: {{ flaws }}</div>
@@ -34,7 +37,8 @@
         <q-separator class="q-my-md" />
 
         <div class="concept">
-          <div>Archetype: {{ !archtypeModel ? "None" : archtypeModel }}</div>
+          <div>Concept: {{ !concept ? "None" : concept }}</div>
+
           <div>Ambition: {{ !ambition ? "None" : ambition }}</div>
           <div>Desire: {{ !desire ? "None" : desire }}</div>
         </div>
@@ -53,7 +57,8 @@
                   v-for="(attribute, key) in attributeInfo.Attributes"
                   :key="key"
                 >
-                  {{ attribute }}: {{ this[attribute.toLowerCase()] }}/5
+                  {{ attribute }}:
+                  {{ this.attributes[attribute.toLowerCase()] }}/5
                 </div>
               </q-card-section>
             </q-card>
@@ -74,8 +79,8 @@
                 <q-separator />
                 <br />
                 Specialties:
-                <div v-if="finalSpecialties().length < 1">None yet</div>
-                <div v-for="(specialty, key) in finalSpecialties()" :key="key">
+                <div v-if="specialties.length < 1">None yet</div>
+                <div v-for="(specialty, key) in specialties" :key="key">
                   Skill:
                   {{
                     specialty.skill[0].toUpperCase() + specialty.skill.slice(1)
@@ -279,17 +284,59 @@
       </div>
 
       <template v-slot:action>
+        <div class="q-mr-lg">Created by: {{ this.createdBy() }}</div>
         <q-btn flat label="Export to PDF" type="submit" color="white" />
       </template>
     </q-banner>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.q-field__counter {
+  color: white;
+}
+.q-field__bottom {
+  color: white;
+  margin-bottom: 3px;
+}
+.backgroundDefault {
+  background-color: #171a1e;
+}
+@media only screen and (max-width: 600px) {
+  .select {
+    width: 300px;
+  }
+}
+.info {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stats {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.advantages {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.concept {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+}
+</style>
 
 <script>
 import { defineComponent } from "vue";
-import { useRouter } from "vue-router";
+import attributeInfo from "../vtm/5eAttributes.json";
+import skillInfo from "../vtm/5eSkills.json";
+
 import notfound from "../../../pages/ErrorNotFound.vue";
 
 import { ref } from "vue";
@@ -300,7 +347,6 @@ export default defineComponent({
 
   async setup() {
     const axios = require("axios");
-    const router = useRouter();
     let pageFound = ref(false);
 
     let baseUrl = "";
@@ -322,15 +368,59 @@ export default defineComponent({
       .catch((err) => {
         console.log(err);
       });
-
-    console.log(kindred);
     return {
+      attributeInfo,
+      skillInfo,
+      charName: kindred.charName,
+      clan: kindred.clan,
+      advantagesObj: kindred.advantages,
+      advantages: kindred.advantages_remaining,
+      age: kindred.age,
+      created_by: kindred.created_by,
+      ambition: kindred.ambition,
+      archetypeModel: kindred.archetype,
+      attributes: kindred.attributes,
+      chronicle: kindred.chronicle,
+      concept: kindred.concept,
+      convictions: kindred.convictions,
+      cult: kindred.cult,
+      desire: kindred.desire,
+      disciplineSkills: kindred.discipline_skills,
+      disciplines: kindred.disciplines,
+      humanity: kindred.humanity,
+      flaws: kindred.flaws_remaining,
+      generation: kindred.generation,
+      trueSkills: kindred.skills,
+      specialties: kindred.specialties,
+      touchstones: kindred.touchstones,
+      sire: kindred.sireName,
+      sect: kindred.sect,
+      xp: kindred.xp,
+      potency: kindred.potency,
+      maxPotency: kindred.max_potency,
+      predatorType: kindred.predator_type,
+      remaining_specialties: kindred.remaining_specialties,
       pageFound,
     };
   },
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    async createdBy() {
+      let creator = await this.$axios
+        .get(baseUrl + "/user/getUser/" + this.created_by, {
+          withCredentials: true,
+        })
+        .then((resp) => {
+          console.log(resp.data);
+          return resp.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      return "Jeff";
+    },
+  },
 });
 </script>

@@ -286,7 +286,23 @@
         </div>
 
         <template v-slot:action>
-          <q-btn flat label="Save Character" type="submit" color="white" />
+          <q-btn
+            :disable="
+              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
+            "
+            flat
+            label="Save Character"
+            type="submit"
+            color="white"
+          />
+          <q-tooltip
+            v-if="
+              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
+            "
+            class="bg-dark text-body2"
+            >Please set valid base attributes, skills, disciplines and core
+            concept section.</q-tooltip
+          >
         </template>
       </q-banner>
     </div>
@@ -388,6 +404,7 @@
         v-model:cult="cult"
         v-model:disciplines="disciplines"
         v-model:clanBane="clanBane"
+        :discDone="this.disciplinesDone"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
@@ -677,14 +694,18 @@ export default {
         .post(baseUrl + "/vampires/new", character, {
           withCredentials: true,
         })
-        .then(() =>
+        .then((res) => {
           this.$q.notify({
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
             message: "Kindred created!",
-          })
-        )
+          });
+          this.$router.push({
+            name: "vampire5eView",
+            params: { id: res.data },
+          });
+        })
         .catch((err) =>
           this.$q.notify({
             color: "red-5",

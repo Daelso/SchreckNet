@@ -285,7 +285,13 @@
 
       <template v-slot:action>
         <div class="q-mr-lg">Created by: {{ creator }}</div>
-        <q-btn flat label="Export to PDF" type="submit" color="white" />
+        <q-btn
+          flat
+          label="Export to PDF"
+          @click="this.modifyPdf()"
+          type="submit"
+          color="white"
+        />
       </template>
     </q-banner>
   </div>
@@ -336,8 +342,9 @@
 import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
-
+import { degrees, PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
+import download from "downloadjs";
 
 import { ref } from "vue";
 
@@ -430,6 +437,31 @@ export default defineComponent({
   },
   data() {
     return {};
+  },
+  methods: {
+    async modifyPdf() {
+      const url = "https://pdf-lib.js.org/assets/with_update_sections.pdf";
+      const existingPdfBytes = await fetch(url).then((res) =>
+        res.arrayBuffer()
+      );
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+      const pages = pdfDoc.getPages();
+      const firstPage = pages[0];
+      const { width, height } = firstPage.getSize();
+      firstPage.drawText("This text was added with JavaScript!", {
+        x: 5,
+        y: height / 2 + 300,
+        size: 50,
+        font: helveticaFont,
+        color: rgb(0.95, 0.1, 0.1),
+        rotate: degrees(-45),
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      download(pdfBytes, "pdf-lib_modification_example.pdf", "application/pdf");
+    },
   },
 });
 </script>

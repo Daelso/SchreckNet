@@ -26,10 +26,14 @@
           >
         </q-tab>
         <q-tab
+          :disable="!this.discDone"
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"
         >
+          <q-tooltip v-if="!this.discDone" class="bg-dark text-body2"
+            >Please set your clan and disciplines first.</q-tooltip
+          >
         </q-tab>
       </q-tabs>
 
@@ -785,6 +789,7 @@ export default defineComponent({
     "cult",
     "disciplines",
     "clanBane",
+    "discDone",
   ],
   emits: [
     "update:specialtiePoints",

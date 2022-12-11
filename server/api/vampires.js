@@ -53,9 +53,8 @@ router.route("/new").post(async (req, res) => {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
-    console.log("Page ID:" + newKindred.id);
 
-    res.status(200).send(newKindred.name + " has been invited to elysium.");
+    res.status(200).json(newKindred.id);
   } catch (err) {
     res.status(403).send(err);
   }

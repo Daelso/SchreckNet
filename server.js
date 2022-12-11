@@ -39,6 +39,8 @@ if (process.env.ENV !== "prod") {
 
 const userRoutes = require("./server/api/user");
 app.use("/user", userRoutes);
+const vampireRoutes = require("./server/api/vampires");
+app.use("/vampires", vampireRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

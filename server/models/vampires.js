@@ -112,9 +112,17 @@ const Vampires = db.sequelize.define("vampires", {
     type: Sequelize.JSON,
     allowNull: false,
   },
-  created_by: {
+  advantages_remaining: {
     type: Sequelize.INTEGER,
     allowNull: false,
+  },
+  flaws_remaining: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  created_by: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
   },
   createdAt: {
     type: Sequelize.DATE,

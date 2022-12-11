@@ -412,7 +412,7 @@ export default defineComponent({
           break;
       }
       this.localXP = this.localXP - this.cost;
-      // this.clearFields();
+      this.clearFields();
     },
   },
 

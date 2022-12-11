@@ -1,36 +1,23 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
-const bcrypt = require("bcrypt");
 const app = express();
+
 let router = express.Router();
 router.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const Users = require("../models/Users");
 const Vampires = require("../models/vampires");
-const { sequelize } = require("../database");
 const lib = require("../lib");
-const mailer = require("../mailer");
 
 //Route is base/vampires/
-
-router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
-  res.json(req.currentUser);
-});
-
-router.route("/users").get(async (req, res) => {
-  Users.findAll()
-    .then((users) => {
-      res.status(200).send(users);
-    })
-    .catch((err) => console.log(err));
-});
-
-//Below are various controller links
 router.route("/new").post(async (req, res) => {
   try {
+    let currentUser = lib.getCurrentUser(req, res);
+
+    if (currentUser !== null) {
+      currentUser = currentUser.id;
+    }
     const newKindred = await Vampires.create({
       charName: req.body.name,
       clan: req.body.clan,
@@ -58,14 +45,26 @@ router.route("/new").post(async (req, res) => {
       xp: req.body.xp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
-      created_by: 1,
+      advantages_remaining: req.body.advantages_remaining,
+      flaws_remaining: req.body.flaws_remaining,
+      created_by: currentUser,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
+    console.log("Page ID:" + newKindred.id);
 
-    res.status(200).send("Kindred created successfully!");
+    res.status(200).send(newKindred.name + " has been invited to elysium.");
   } catch (err) {
     res.status(403).send(err);
+  }
+});
+
+router.route("/vampire/:id").get(async (req, res) => {
+  try {
+    const kindred = await Vampires.findByPk(req.params.id);
+    res.send(kindred.dataValues);
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 

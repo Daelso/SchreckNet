@@ -58,6 +58,11 @@ const routes = [
         path: "vampire/5e",
         component: () => import("pages/character_creator/vtm/vamp5e.vue"),
       },
+      {
+        name: "vampire5eView",
+        path: "vampire/5e/:id",
+        component: () => import("pages/character_creator/vtm/5eVampView.vue"),
+      },
     ],
   },
 
@@ -65,6 +70,7 @@ const routes = [
   // but you can also remove it
   {
     path: "/:catchAll(.*)*",
+    name: 'notFound',
     component: () => import("pages/ErrorNotFound.vue"),
   },
 ];

@@ -288,7 +288,13 @@
         </div>
 
         <template v-slot:action>
-          <q-btn flat label="Save Character" type="submit" color="white" />
+          <q-btn
+            flat
+            label="Save Character"
+            type="submit"
+            color="white"
+            @click="saveKindred()"
+          />
         </template>
       </q-banner>
     </div>
@@ -446,6 +452,7 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const axios = require("axios");
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
@@ -461,6 +468,7 @@ export default {
   },
   data() {
     const router = useRouter();
+    const axios = require("axios");
 
     return {
       advantagesObj: {
@@ -807,6 +815,77 @@ export default {
       );
 
       return specialties;
+    },
+
+    // Save character to DB
+    saveKindred() {
+      const axios = require("axios");
+
+      let baseUrl = "";
+      if (window.location.href.includes("localhost")) {
+        baseUrl = "http://localhost:5000";
+      } else {
+        baseUrl = window.location.origin;
+      }
+
+      let character = {
+        name: this.charName,
+        clan: this.clan,
+        concept: this.concept,
+        ambition: this.ambition,
+        desire: this.desire,
+        archetype: this.archtypeModel,
+        sect: this.sect,
+        cult: this.cult,
+        chronicle: this.chronicle,
+        age: this.age.label,
+        generation: this.generation.label,
+        predatorType: this.predatorType,
+        health: this.stamina + 3,
+        humanity: this.humanity,
+        willpower: this.composure + this.resolve,
+        potency: this.generation.potency,
+        maxPotency: this.generation.maxPotency,
+        sireName: this.sire,
+        xp: this.xp,
+        convictions: this.convictions,
+        touchstones: this.touchstones,
+        disciplines: this.disciplines,
+        disciplineSkills: this.disciplineSkills,
+        skills: this.trueSkills,
+        attributes: {
+          charisma: this.charisma,
+          composure: this.composure,
+          dexterity: this.dexterity,
+          intelligence: this.intelligence,
+          manipulation: this.manipulation,
+          resolve: this.resolve,
+          stamina: this.stamina,
+          strength: this.strength,
+          wits: this.wits,
+        },
+        specialties: this.finalSpecialties(),
+        advantages: this.advantagesObj,
+      };
+
+      axios
+        .post(baseUrl + "/vampires/new", character)
+        .then(() =>
+          this.$q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Kindred created!",
+          })
+        )
+        .catch((err) =>
+          this.$q.notify({
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+            message: err.message,
+          })
+        );
     },
   },
 };

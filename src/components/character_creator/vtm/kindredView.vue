@@ -369,6 +369,7 @@ export default defineComponent({
       })
       .catch((err) => {
         console.log(err);
+        return "blah";
       });
     return {
       attributeInfo,

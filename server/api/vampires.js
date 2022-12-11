@@ -1,0 +1,72 @@
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
+const bcrypt = require("bcrypt");
+const app = express();
+let router = express.Router();
+router.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const Users = require("../models/Users");
+const Vampires = require("../models/vampires");
+const { sequelize } = require("../database");
+const lib = require("../lib");
+const mailer = require("../mailer");
+
+//Route is base/vampires/
+
+router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
+  res.json(req.currentUser);
+});
+
+router.route("/users").get(async (req, res) => {
+  Users.findAll()
+    .then((users) => {
+      res.status(200).send(users);
+    })
+    .catch((err) => console.log(err));
+});
+
+//Below are various controller links
+router.route("/new").post(async (req, res) => {
+  try {
+    const newKindred = await Vampires.create({
+      charName: req.body.name,
+      clan: req.body.clan,
+      concept: req.body.concept,
+      ambition: req.body.ambition,
+      desire: req.body.desire,
+      archetype: req.body.archetype,
+      sect: req.body.sect,
+      chronicle: req.body.chronicle,
+      sireName: req.body.sireName,
+      convictions: req.body.convictions,
+      touchstones: req.body.touchstones,
+      attributes: req.body.attributes,
+      skills: req.body.skills,
+      age: req.body.age,
+      generation: req.body.generation,
+      predator_type: req.body.predatorType,
+      cult: req.body.cult,
+      health: req.body.health,
+      willpower: req.body.willpower,
+      potency: req.body.potency,
+      max_potency: req.body.maxPotency,
+      disciplines: req.body.disciplines,
+      discipline_skills: req.body.disciplineSkills,
+      xp: req.body.xp,
+      specialties: req.body.specialties,
+      advantages: req.body.advantages,
+      created_by: 1,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    res.status(200).send("Kindred created successfully!");
+  } catch (err) {
+    res.status(403).send(err);
+  }
+});
+
+module.exports = router; //Exports our routes

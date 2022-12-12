@@ -469,6 +469,8 @@ export default defineComponent({
       const totalXpField = form.getTextField("totalxp");
       const spentXpField = form.getTextField("spentxp");
       const baneField = form.getTextField("Clan Banes");
+      const mainField = form.getTextField("Main1");
+      const rowField = form.getTextField("Row1_2");
 
       nameField.setText(this.charName);
       conceptField.setText(this.concept);
@@ -482,8 +484,27 @@ export default defineComponent({
       convictionField.setText(this.convictions + "\n" + this.touchstones);
       totalXpField.setText(`${this.xp}`);
       spentXpField.setText(`${this.spentXp}`);
+      mainField.setText("Gamer");
+      rowField.setText("Gamer");
+
+      conceptField.setFontSize(10);
 
       // text fields above, dots and loops required go below
+      // health boxes
+      for (let i = 1; i < this.attributes.stamina + 3 + 1; i++) {
+        let healthBox = form.getTextField(`health${i}`);
+        healthBox.setText("X");
+      }
+
+      //wp boxes
+      for (
+        let i = 1;
+        i < this.attributes.composure + this.attributes.resolve + 1;
+        i++
+      ) {
+        let wpBox = form.getTextField(`will${i}`);
+        wpBox.setText("X");
+      }
 
       // attribute checkbox
       for (const attribute in this.attributes) {
@@ -504,6 +525,58 @@ export default defineComponent({
       for (let i = 1; i < this.humanity + 1; i++) {
         let humanityBox = form.getCheckBox(`humanity-${i}`);
         humanityBox.check();
+      }
+
+      // potency
+      for (let i = 1; i < this.potency + 1; i++) {
+        let potencyBox = form.getCheckBox(`potency${i}`);
+        potencyBox.check();
+      }
+
+      // disciplines
+      let mergedDisciplines = {};
+      for (const discipline in this.disciplines) {
+        mergedDisciplines[discipline] = {
+          dots: this.disciplines[discipline],
+          skills: [],
+        };
+      }
+      for (let i = 0; i < this.disciplineSkills.length; i++) {
+        mergedDisciplines[this.disciplineSkills[i].discipline].skills.push(
+          this.disciplineSkills[i]
+        );
+      }
+
+      let curIndex = 0;
+      console.log(mergedDisciplines);
+      for (const discipline in mergedDisciplines) {
+        curIndex++;
+        let mainBox = form.getTextField(`Main${curIndex}`);
+        mainBox.setText(discipline);
+
+        for (let j = 1; j < mergedDisciplines[discipline].dots + 1; j++) {
+          let mainCheckBox = form.getCheckBox(`main${curIndex}-${j}`);
+          mainCheckBox.check();
+        }
+      }
+
+      // Advantages/flaws
+
+      let meritArr = [];
+      for (const attribute in this.advantagesObj) {
+        for (const flaw in this.advantagesObj[attribute]) {
+          meritArr = meritArr.concat(this.advantagesObj[attribute][flaw]);
+        }
+      }
+
+      for (let i = 0; i < meritArr.length; i++) {
+        let advTextBox = form.getTextField(`adflaw${i + 1}`);
+        advTextBox.setText(`${meritArr[i].name}`);
+
+        for (let j = 1; j < meritArr[i].cost + 1; j++) {
+          let advCheckBox = form.getCheckBox(`adflaw${i + 1}-${j}`);
+          advCheckBox.check();
+        }
       }
       const pdfBytes = await pdfDoc.save();
       download(

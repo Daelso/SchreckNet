@@ -548,6 +548,7 @@ export default defineComponent({
       this.generation = { label: "12th", potency: 1, maxPotency: 3 };
       this.age = { label: "Childer", bonusXp: 0 };
       this.specialtiesFromPred = [];
+      this.disciplinesDone = false;
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =

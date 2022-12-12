@@ -469,8 +469,6 @@ export default defineComponent({
       const totalXpField = form.getTextField("totalxp");
       const spentXpField = form.getTextField("spentxp");
       const baneField = form.getTextField("Clan Banes");
-      const mainField = form.getTextField("Main1");
-      const rowField = form.getTextField("Row1_2");
 
       nameField.setText(this.charName);
       conceptField.setText(this.concept);
@@ -484,8 +482,6 @@ export default defineComponent({
       convictionField.setText(this.convictions + "\n" + this.touchstones);
       totalXpField.setText(`${this.xp}`);
       spentXpField.setText(`${this.spentXp}`);
-      mainField.setText("Gamer");
-      rowField.setText("Gamer");
 
       conceptField.setFontSize(10);
 
@@ -548,11 +544,48 @@ export default defineComponent({
       }
 
       let curIndex = 0;
-      console.log(mergedDisciplines);
       for (const discipline in mergedDisciplines) {
         curIndex++;
         let mainBox = form.getTextField(`Main${curIndex}`);
         mainBox.setText(discipline);
+        switch (curIndex) {
+          case 1:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 2:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_2`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 3:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_3`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 4:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_4`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 5:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_5`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 6:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_6`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+        }
 
         for (let j = 1; j < mergedDisciplines[discipline].dots + 1; j++) {
           let mainCheckBox = form.getCheckBox(`main${curIndex}-${j}`);

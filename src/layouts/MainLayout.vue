@@ -98,6 +98,7 @@ import ProfileLinks from "components/links/profileLinks.vue";
 import comingSoonLinks from "components/links/comingSoonLinks.vue";
 import socialLinks from "components/links/socialLinks.vue";
 import ankh from "../assets/images/ankh.png";
+import whiteAnkh from "../assets/images/ankhWhite.png";
 import claws from "../assets/images/claws.png";
 import mage from "../assets/images/mage.png";
 import hunter from "../assets/images/hunter.png";
@@ -119,6 +120,7 @@ export default defineComponent({
     const $q = useQuasar();
     const myIcons = {
       "app:ankh": `img:${ankh}`,
+      "app:whiteankh": `img:${whiteAnkh}`,
       "app:claws": `img:${claws}`,
       "app:mage": `img:${mage}`,
       "app:hunter": `img:${hunter}`,
@@ -146,6 +148,7 @@ export default defineComponent({
       hunter,
       changeling,
       wod,
+      whiteAnkh,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;

@@ -34,6 +34,7 @@
     "nodemailer": "^6.8.0",
     "pdf-lib": "^1.17.1",
     "quasar": "^2.6.0",
+    "raw-loader": "^4.0.2",
     "sequelize": "^6.25.2",
     "serve-static": "^1.15.0",
     "vue": "^3.0.0",

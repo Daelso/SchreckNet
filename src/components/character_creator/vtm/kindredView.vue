@@ -345,6 +345,7 @@ import skillInfo from "../vtm/5eSkills.json";
 import { degrees, PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
 import download from "downloadjs";
+import charSheet from "raw-loader!./sheetbase64.txt";
 
 import { ref } from "vue";
 
@@ -412,6 +413,8 @@ export default defineComponent({
       predatorType: kindred.predator_type,
       remaining_specialties: kindred.remaining_specialties,
       pageFound,
+      charSheet,
+      spentXp: 0,
     };
   },
   async created() {
@@ -440,27 +443,93 @@ export default defineComponent({
   },
   methods: {
     async modifyPdf() {
-      const url = "https://pdf-lib.js.org/assets/with_update_sections.pdf";
-      const existingPdfBytes = await fetch(url).then((res) =>
-        res.arrayBuffer()
-      );
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-      const pages = pdfDoc.getPages();
-      const firstPage = pages[0];
-      const { width, height } = firstPage.getSize();
-      firstPage.drawText("This text was added with JavaScript!", {
-        x: 5,
-        y: height / 2 + 300,
-        size: 50,
-        font: helveticaFont,
-        color: rgb(0.95, 0.1, 0.1),
-        rotate: degrees(-45),
+      this.$q.loading.show({
+        delay: 400, // ms
+      });
+      this.calculateSpentXp();
+      const pdfDoc = await PDFDocument.load(this.charSheet);
+      const form = pdfDoc.getForm();
+      const fields = form.getFields();
+      fields.forEach((field) => {
+        const type = field.constructor.name;
+        const name = field.getName();
+        console.log(`${type}: ${name}`);
       });
 
+      const nameField = form.getTextField("Name");
+      const conceptField = form.getTextField("Concept");
+      const predatorField = form.getTextField("Predator");
+      const chronicleField = form.getTextField("Chronicle");
+      const ambitionField = form.getTextField("Ambition");
+      const clanField = form.getTextField("Clan");
+      const sireField = form.getTextField("Sire");
+      const desireField = form.getTextField("Desire");
+      const generationField = form.getTextField("Generation");
+      const convictionField = form.getTextField("Touchstones Convictions");
+      const totalXpField = form.getTextField("totalxp");
+      const spentXpField = form.getTextField("spentxp");
+      const baneField = form.getTextField("Clan Banes");
+
+      nameField.setText(this.charName);
+      conceptField.setText(this.concept);
+      predatorField.setText(this.predatorType);
+      chronicleField.setText(this.chronicle);
+      ambitionField.setText(this.ambition);
+      clanField.setText(this.clan);
+      sireField.setText(this.sire);
+      desireField.setText(this.desire);
+      generationField.setText(this.generation);
+      convictionField.setText(this.convictions + "\n" + this.touchstones);
+      totalXpField.setText(`${this.xp}`);
+      spentXpField.setText(`${this.spentXp}`);
+
+      // text fields above, dots and loops required go below
+
+      // attribute checkbox
+      for (const attribute in this.attributes) {
+        for (let i = 1; i < this.attributes[attribute] + 1; i++) {
+          let attributeBox = form.getCheckBox(`${attribute}${i}`);
+          attributeBox.check();
+        }
+      }
+
+      // skill checkbox
+      for (const skill in this.trueSkills) {
+        for (let i = 1; i < this.trueSkills[skill] + 1; i++) {
+          let skillBox = form.getCheckBox(`${skill}${i}`);
+          skillBox.check();
+        }
+      }
+      // humanity checkbox
+      for (let i = 1; i < this.humanity + 1; i++) {
+        let humanityBox = form.getCheckBox(`humanity-${i}`);
+        humanityBox.check();
+      }
       const pdfBytes = await pdfDoc.save();
-      download(pdfBytes, "pdf-lib_modification_example.pdf", "application/pdf");
+      download(
+        pdfBytes,
+        `schrecknet_vtm5e_${this.charName}.pdf`,
+        "application/pdf"
+      );
+      this.$q.loading.hide();
+    },
+
+    calculateSpentXp() {
+      switch (this.age) {
+        case "Fledgling":
+          this.spentXp = 0;
+          break;
+        case "Childer":
+          this.spentXp = 0;
+
+          break;
+        case "Neonate":
+          this.spentXp = 15 - this.xp;
+          break;
+        case "Ancillae":
+          this.spentXp = 35 - this.xp;
+          break;
+      }
     },
   },
 });

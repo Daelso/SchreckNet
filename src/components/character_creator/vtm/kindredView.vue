@@ -346,6 +346,7 @@ import { degrees, PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
 import download from "downloadjs";
 import charSheet from "raw-loader!./sheetbase64.txt";
+import clanBanes from "../vtm/5eClanBanes.json";
 
 import { ref } from "vue";
 
@@ -381,6 +382,7 @@ export default defineComponent({
       });
     return {
       attributeInfo,
+      clanBanes,
       skillInfo,
       charName: kindred.charName,
       clan: kindred.clan,
@@ -415,6 +417,13 @@ export default defineComponent({
       pageFound,
       charSheet,
       spentXp: 0,
+      baneseverity: 0,
+      powerBonus: 0,
+      bloodSurge: 0,
+      mendAmt: 0,
+      rouseAmt: 0,
+      feedPenalty: "",
+      clanBane: "",
     };
   },
   async created() {
@@ -447,6 +456,8 @@ export default defineComponent({
         delay: 400, // ms
       });
       this.calculateSpentXp();
+      this.bloodPotencyModifiers();
+      this.setClanBane();
       const pdfDoc = await PDFDocument.load(this.charSheet);
       const form = pdfDoc.getForm();
       const fields = form.getFields();
@@ -469,6 +480,12 @@ export default defineComponent({
       const totalXpField = form.getTextField("totalxp");
       const spentXpField = form.getTextField("spentxp");
       const baneField = form.getTextField("Clan Banes");
+      const baneSeverityField = form.getTextField("Bane Severity");
+      const surgeField = form.getTextField("Blood Surge");
+      const mendField = form.getTextField("Mend Amount");
+      const powerField = form.getTextField("Power Bonus");
+      const rouseField = form.getTextField("Rouse ReRoll");
+      const feedPenField = form.getTextField("Feeding Penalty");
 
       nameField.setText(this.charName);
       conceptField.setText(this.concept);
@@ -482,6 +499,13 @@ export default defineComponent({
       convictionField.setText(this.convictions + "\n" + this.touchstones);
       totalXpField.setText(`${this.xp}`);
       spentXpField.setText(`${this.spentXp}`);
+      baneSeverityField.setText(`${this.baneseverity}`);
+      surgeField.setText(`${this.bloodSurge}`);
+      mendField.setText(`${this.mendAmt}`);
+      powerField.setText(`${this.powerBonus}`);
+      rouseField.setText(`${this.rouseAmt}`);
+      feedPenField.setText(`${this.feedPenalty}`);
+      baneField.setText(this.clanBane);
 
       conceptField.setFontSize(10);
 
@@ -636,6 +660,74 @@ export default defineComponent({
           this.spentXp = 35 - this.xp;
           break;
       }
+    },
+
+    bloodPotencyModifiers() {
+      switch (this.potency) {
+        case 0:
+          this.baneseverity = 0;
+          this.powerBonus = 0;
+          this.bloodSurge = 1;
+          this.mendAmt = 1;
+          this.rouseAmt = "None";
+          this.feedPenalty = "None";
+          break;
+        case 1:
+          this.baneseverity = 2;
+          this.powerBonus = 0;
+          this.bloodSurge = 2;
+          this.mendAmt = 1;
+          this.rouseAmt = "Level 1";
+          this.feedPenalty = "None";
+          break;
+        case 2:
+          this.baneseverity = 2;
+          this.powerBonus = 1;
+          this.bloodSurge = 2;
+          this.mendAmt = 2;
+          this.rouseAmt = "Level 1";
+          this.feedPenalty = "Animal and bagged blood slake half Hunger";
+          break;
+        case 3:
+          this.baneseverity = 3;
+          this.powerBonus = 1;
+          this.bloodSurge = 3;
+          this.mendAmt = 2;
+          this.rouseAmt = "Level 2 and below";
+          this.feedPenalty = "Animal and bagged blood slake no Hunger";
+          break;
+        case 4:
+          this.baneseverity = 3;
+          this.powerBonus = 2;
+          this.bloodSurge = 3;
+          this.mendAmt = 3;
+          this.rouseAmt = "Level 2 and below";
+          this.feedPenalty =
+            "Animal and bagged blood slake no Hunger, 1 less hunger from humans";
+          break;
+        case 5:
+          this.baneseverity = 4;
+          this.powerBonus = 2;
+          this.bloodSurge = 4;
+          this.mendAmt = 3;
+          this.rouseAmt = "Level 3 and below";
+          this.feedPenalty =
+            "Animal and bagged blood slake no Hunger, 1 less hunger from humans, must full drain to get below 2 hunger";
+          break;
+        case 6:
+          this.baneseverity = 4;
+          this.powerBonus = 3;
+          this.bloodSurge = 4;
+          this.mendAmt = 3;
+          this.rouseAmt = "Level 3 and below";
+          this.feedPenalty =
+            "Animal and bagged blood slake no Hunger, 2 less hunger from humans, must full drain to get below 2 hunger";
+          break;
+      }
+    },
+    setClanBane() {
+      this.clanBane = this.clanBanes.clans[this.clan];
+      console.log(this.clanBane);
     },
   },
 });

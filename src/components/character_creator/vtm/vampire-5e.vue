@@ -94,7 +94,7 @@
           </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
-              icon="app:ankh"
+              icon="app:whiteankh"
               label="Disciplines"
               caption="View disciplines and powers"
               dark
@@ -125,7 +125,7 @@
             <q-expansion-item
               icon="military_tech"
               label="Advantages/Flaws"
-              caption="View current advantages, flaws, backgrounds, havens and loresheets"
+              caption="View current advantages, flaws, backgrounds, havens, and loresheets"
               dark
             >
               <q-card>
@@ -287,22 +287,15 @@
 
         <template v-slot:action>
           <q-btn
-            :disable="
-              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
-            "
+            :disable="this.saveGuard()"
             flat
             label="Save Character"
             type="submit"
             color="white"
           />
-          <q-tooltip
-            v-if="
-              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
-            "
-            class="bg-dark text-body2"
-            >Please set valid base attributes, skills, disciplines and core
-            concept section.</q-tooltip
-          >
+          <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">{{
+            this.disableBlurb
+          }}</q-tooltip>
         </template>
       </q-banner>
     </div>
@@ -341,7 +334,7 @@
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"
-              >Please set valid base attributes and skills</q-tooltip
+              >Please set valid base attributes and skills.</q-tooltip
             >
             <q-item-section avatar>
               <q-icon color="primary" name="app:ankh" style="scale: 170%" />
@@ -508,6 +501,7 @@ export default {
       skillPoints: 29,
       charName: "",
       cult: "None",
+      disableBlurb: "",
       baseCharisma: 0,
       baseComposure: 0,
       baseDexterity: 0,
@@ -912,6 +906,41 @@ export default {
       );
 
       return specialties;
+    },
+
+    saveGuard() {
+      //primary sections
+      if (!this.skillsDone || !this.attributesDone || !this.disciplinesDone) {
+        this.disableBlurb =
+          "Please complete the base attributes, skills and disciplines sections.";
+        return true;
+      }
+      //Touchstones/convictions
+      if (
+        this.convictions.length < 1 ||
+        this.touchstones < 1 ||
+        this.touchstones.length !== this.convictions.length
+      ) {
+        this.disableBlurb =
+          "Must between 1-3 convictions/touchstones, they also must be equal.";
+        return true;
+      }
+      //Core Concept
+      if (
+        !this.charName ||
+        !this.concept ||
+        !this.ambition ||
+        !this.desire ||
+        !this.archtypeModel ||
+        !this.sect ||
+        !this.chronicle
+      ) {
+        this.disableBlurb =
+          "Please complete all * fields in the core concept tab.";
+        return true;
+      }
+
+      return false;
     },
   },
 };

@@ -93,7 +93,7 @@
         </q-list>
         <q-list bordered class="rounded-borders">
           <q-expansion-item
-            icon="app:ankh"
+            icon="app:whiteankh"
             label="Disciplines"
             caption="View disciplines and powers"
             dark

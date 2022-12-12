@@ -28,7 +28,7 @@
           </div>
 
           <div class="q-pa-md doc-container">
-            <q-badge class="q-mb-sm"
+            <q-badge class="q-mb-sm points"
               >Skill Points Remaining: {{ this.skillPoints }}</q-badge
             >
             <q-badge class="q-mb-sm">
@@ -109,6 +109,13 @@
   color: white;
   position: sticky;
   top: 15px;
+}
+.points {
+  background-color: #222831;
+  border-radius: 4px;
+  color: white;
+  position: sticky;
+  top: 60px;
 }
 </style>
 

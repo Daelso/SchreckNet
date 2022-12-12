@@ -285,7 +285,13 @@
 
       <template v-slot:action>
         <div class="q-mr-lg">Created by: {{ creator }}</div>
-        <q-btn flat label="Export to PDF" type="submit" color="white" />
+        <q-btn
+          flat
+          label="Export to PDF"
+          @click="this.modifyPdf()"
+          type="submit"
+          color="white"
+        />
       </template>
     </q-banner>
   </div>
@@ -336,8 +342,11 @@
 import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
-
+import { degrees, PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
+import download from "downloadjs";
+import charSheet from "raw-loader!./sheetbase64.txt";
+import clanBanes from "../vtm/5eClanBanes.json";
 
 import { ref } from "vue";
 
@@ -373,6 +382,7 @@ export default defineComponent({
       });
     return {
       attributeInfo,
+      clanBanes,
       skillInfo,
       charName: kindred.charName,
       clan: kindred.clan,
@@ -405,6 +415,15 @@ export default defineComponent({
       predatorType: kindred.predator_type,
       remaining_specialties: kindred.remaining_specialties,
       pageFound,
+      charSheet,
+      spentXp: 0,
+      baneseverity: 0,
+      powerBonus: 0,
+      bloodSurge: 0,
+      mendAmt: 0,
+      rouseAmt: 0,
+      feedPenalty: "",
+      clanBane: "",
     };
   },
   async created() {
@@ -430,6 +449,299 @@ export default defineComponent({
   },
   data() {
     return {};
+  },
+  methods: {
+    async modifyPdf() {
+      this.$q.loading.show({
+        delay: 400, // ms
+      });
+      this.calculateSpentXp();
+      this.bloodPotencyModifiers();
+      this.setClanBane();
+      const pdfDoc = await PDFDocument.load(this.charSheet);
+      const form = pdfDoc.getForm();
+      const fields = form.getFields();
+      fields.forEach((field) => {
+        const type = field.constructor.name;
+        const name = field.getName();
+        console.log(`${type}: ${name}`);
+      });
+
+      const nameField = form.getTextField("Name");
+      const conceptField = form.getTextField("Concept");
+      const predatorField = form.getTextField("Predator");
+      const chronicleField = form.getTextField("Chronicle");
+      const ambitionField = form.getTextField("Ambition");
+      const clanField = form.getTextField("Clan");
+      const sireField = form.getTextField("Sire");
+      const desireField = form.getTextField("Desire");
+      const generationField = form.getTextField("Generation");
+      const convictionField = form.getTextField("Touchstones Convictions");
+      const totalXpField = form.getTextField("totalxp");
+      const spentXpField = form.getTextField("spentxp");
+      const baneField = form.getTextField("Clan Banes");
+      const baneSeverityField = form.getTextField("Bane Severity");
+      const surgeField = form.getTextField("Blood Surge");
+      const mendField = form.getTextField("Mend Amount");
+      const powerField = form.getTextField("Power Bonus");
+      const rouseField = form.getTextField("Rouse ReRoll");
+      const feedPenField = form.getTextField("Feeding Penalty");
+
+      nameField.setText(this.charName);
+      conceptField.setText(this.concept);
+      predatorField.setText(this.predatorType);
+      chronicleField.setText(this.chronicle);
+      ambitionField.setText(this.ambition);
+      clanField.setText(this.clan);
+      sireField.setText(this.sire);
+      desireField.setText(this.desire);
+      generationField.setText(this.generation);
+      totalXpField.setText(`${this.xp}`);
+      spentXpField.setText(`${this.spentXp}`);
+      baneSeverityField.setText(`${this.baneseverity}`);
+      surgeField.setText(`${this.bloodSurge}`);
+      mendField.setText(`${this.mendAmt}`);
+      powerField.setText(`${this.powerBonus}`);
+      rouseField.setText(`${this.rouseAmt}`);
+      feedPenField.setText(`${this.feedPenalty}`);
+      baneField.setText(this.clanBane);
+
+      conceptField.setFontSize(10);
+
+      // text fields above, dots and loops required go below
+      // touchstones/convictions are a weird concat string situation so we'll do it up top near the text boxes
+      let convicStoneString = "";
+      for (let i = 0; i < this.convictions.length; i++) {
+        let convicString = "Conviction: ";
+        let mergedString = convicString + this.convictions[i] + "\n";
+        convicStoneString += mergedString;
+      }
+
+      for (let i = 0; i < this.touchstones.length; i++) {
+        let touchString = "Touchstone: ";
+        let mergedString = touchString + this.touchstones[i] + "\n";
+        convicStoneString += mergedString;
+      }
+      convictionField.setText(convicStoneString);
+
+      // health boxes
+      for (let i = 1; i < this.attributes.stamina + 3 + 1; i++) {
+        let healthBox = form.getTextField(`health${i}`);
+        healthBox.setText("X");
+      }
+
+      //wp boxes
+      for (
+        let i = 1;
+        i < this.attributes.composure + this.attributes.resolve + 1;
+        i++
+      ) {
+        let wpBox = form.getTextField(`will${i}`);
+        wpBox.setText("X");
+      }
+
+      // attribute checkbox
+      for (const attribute in this.attributes) {
+        for (let i = 1; i < this.attributes[attribute] + 1; i++) {
+          let attributeBox = form.getCheckBox(`${attribute}${i}`);
+          attributeBox.check();
+        }
+      }
+
+      // skill checkbox
+      for (const skill in this.trueSkills) {
+        for (let i = 1; i < this.trueSkills[skill] + 1; i++) {
+          let skillBox = form.getCheckBox(`${skill}${i}`);
+          skillBox.check();
+        }
+      }
+      // humanity checkbox
+      for (let i = 1; i < this.humanity + 1; i++) {
+        let humanityBox = form.getCheckBox(`humanity-${i}`);
+        humanityBox.check();
+      }
+
+      // potency
+      for (let i = 1; i < this.potency + 1; i++) {
+        let potencyBox = form.getCheckBox(`potency${i}`);
+        potencyBox.check();
+      }
+
+      // disciplines
+      let mergedDisciplines = {};
+      for (const discipline in this.disciplines) {
+        mergedDisciplines[discipline] = {
+          dots: this.disciplines[discipline],
+          skills: [],
+        };
+      }
+      for (let i = 0; i < this.disciplineSkills.length; i++) {
+        mergedDisciplines[this.disciplineSkills[i].discipline].skills.push(
+          this.disciplineSkills[i]
+        );
+      }
+
+      let curIndex = 0;
+      for (const discipline in mergedDisciplines) {
+        curIndex++;
+        let mainBox = form.getTextField(`Main${curIndex}`);
+        mainBox.setText(discipline);
+        switch (curIndex) {
+          case 1:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 2:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_2`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 3:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_3`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 4:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_4`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 5:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_5`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+          case 6:
+            mergedDisciplines[discipline].skills.forEach((x, index) => {
+              let rowField = form.getTextField(`Row${index + 1}_6`);
+              rowField.setText(`${x.skill}`);
+            });
+            break;
+        }
+
+        for (let j = 1; j < mergedDisciplines[discipline].dots + 1; j++) {
+          let mainCheckBox = form.getCheckBox(`main${curIndex}-${j}`);
+          mainCheckBox.check();
+        }
+      }
+
+      // Advantages/flaws
+
+      let meritArr = [];
+      for (const attribute in this.advantagesObj) {
+        for (const flaw in this.advantagesObj[attribute]) {
+          meritArr = meritArr.concat(this.advantagesObj[attribute][flaw]);
+        }
+      }
+
+      for (let i = 0; i < meritArr.length; i++) {
+        let advTextBox = form.getTextField(`adflaw${i + 1}`);
+        advTextBox.setText(`${meritArr[i].name}`);
+
+        for (let j = 1; j < meritArr[i].cost + 1; j++) {
+          let advCheckBox = form.getCheckBox(`adflaw${i + 1}-${j}`);
+          advCheckBox.check();
+        }
+      }
+      const pdfBytes = await pdfDoc.save();
+      download(
+        pdfBytes,
+        `schrecknet_vtm5e_${this.charName}.pdf`,
+        "application/pdf"
+      );
+      this.$q.loading.hide();
+    },
+
+    calculateSpentXp() {
+      switch (this.age) {
+        case "Fledgling":
+          this.spentXp = 0;
+          break;
+        case "Childer":
+          this.spentXp = 0;
+
+          break;
+        case "Neonate":
+          this.spentXp = 15 - this.xp;
+          break;
+        case "Ancillae":
+          this.spentXp = 35 - this.xp;
+          break;
+      }
+    },
+
+    bloodPotencyModifiers() {
+      switch (this.potency) {
+        case 0:
+          this.baneseverity = 0;
+          this.powerBonus = 0;
+          this.bloodSurge = 1;
+          this.mendAmt = 1;
+          this.rouseAmt = "None";
+          this.feedPenalty = "None";
+          break;
+        case 1:
+          this.baneseverity = 2;
+          this.powerBonus = 0;
+          this.bloodSurge = 2;
+          this.mendAmt = 1;
+          this.rouseAmt = "Level 1";
+          this.feedPenalty = "None";
+          break;
+        case 2:
+          this.baneseverity = 2;
+          this.powerBonus = 1;
+          this.bloodSurge = 2;
+          this.mendAmt = 2;
+          this.rouseAmt = "Level 1";
+          this.feedPenalty = "Animal and bagged blood slake half Hunger";
+          break;
+        case 3:
+          this.baneseverity = 3;
+          this.powerBonus = 1;
+          this.bloodSurge = 3;
+          this.mendAmt = 2;
+          this.rouseAmt = "Level 2 and below";
+          this.feedPenalty = "Animal and bagged blood slake no Hunger";
+          break;
+        case 4:
+          this.baneseverity = 3;
+          this.powerBonus = 2;
+          this.bloodSurge = 3;
+          this.mendAmt = 3;
+          this.rouseAmt = "Level 2 and below";
+          this.feedPenalty =
+            "Animal and bagged blood slake no Hunger, 1 less hunger from humans";
+          break;
+        case 5:
+          this.baneseverity = 4;
+          this.powerBonus = 2;
+          this.bloodSurge = 4;
+          this.mendAmt = 3;
+          this.rouseAmt = "Level 3 and below";
+          this.feedPenalty =
+            "Animal and bagged blood slake no Hunger, 1 less hunger from humans, must full drain to get below 2 hunger";
+          break;
+        case 6:
+          this.baneseverity = 4;
+          this.powerBonus = 3;
+          this.bloodSurge = 4;
+          this.mendAmt = 3;
+          this.rouseAmt = "Level 3 and below";
+          this.feedPenalty =
+            "Animal and bagged blood slake no Hunger, 2 less hunger from humans, must full drain to get below 2 hunger";
+          break;
+      }
+    },
+    setClanBane() {
+      this.clanBane = this.clanBanes.clans[this.clan];
+    },
   },
 });
 </script>

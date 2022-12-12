@@ -94,7 +94,7 @@
           </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
-              icon="app:ankh"
+              icon="app:whiteankh"
               label="Disciplines"
               caption="View disciplines and powers"
               dark
@@ -341,7 +341,7 @@
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"
-              >Please set valid base attributes and skills</q-tooltip
+              >Please set valid base attributes and skills.</q-tooltip
             >
             <q-item-section avatar>
               <q-icon color="primary" name="app:ankh" style="scale: 170%" />

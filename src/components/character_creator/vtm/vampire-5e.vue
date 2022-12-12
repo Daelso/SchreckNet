@@ -326,11 +326,7 @@
               >
             </q-item-section>
           </q-item>
-          <q-item
-            clickable
-            @click="clanSelected"
-            :disable="!this.skillsDone || !this.attributesDone"
-          >
+          <q-item clickable @click="clanSelected">
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"
@@ -760,6 +756,7 @@ export default {
               tooltips: this.tooltips,
               xp: this.xp,
               disciplinesDone: this.disciplinesDone,
+              merits: this.advantagesObj,
             },
           },
         })
@@ -780,6 +777,7 @@ export default {
           this.predatorType = data.predatorType;
           this.specialtiesFromPred = data.specialtiesFromPred;
           this.disciplinesDone = data.disciplinesDone;
+          this.advantagesObj = data.merits;
         });
     },
     attributes() {

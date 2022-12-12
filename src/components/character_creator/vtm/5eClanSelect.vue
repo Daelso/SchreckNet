@@ -355,6 +355,7 @@ export default defineComponent({
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
     let disciplinesDone = ref(props.info.disciplinesDone);
+    let merits = ref(props.info.merits);
     const skillsSelected = ref(props.info.discSkills);
     const predatorType = ref(props.info.predatorType);
     const disciplineObj = ref(props.info.disciplines);
@@ -452,6 +453,7 @@ export default defineComponent({
       discSkillsArr,
       discSpecificArr,
       discExplained,
+      merits,
       flaws,
       generation,
       humanity,
@@ -525,6 +527,7 @@ export default defineComponent({
           predatorType: predatorType,
           specialtiesFromPred: specialtiesFromPred,
           disciplinesDone: disciplinesDone,
+          merits: merits,
         });
       },
 
@@ -549,6 +552,12 @@ export default defineComponent({
       this.age = { label: "Childer", bonusXp: 0 };
       this.specialtiesFromPred = [];
       this.disciplinesDone = false;
+      this.merits = {
+        merits: { advantages: [], flaws: [] },
+        backgrounds: { advantages: [], flaws: [] },
+        haven: { advantages: [], flaws: [] },
+        loresheets: { advantages: [], flaws: [] },
+      };
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -1143,32 +1152,131 @@ export default defineComponent({
           trueDiscs[this.bonusDisc] = 1;
         }
         this.specialtiesFromPred.push(this.bonusSpecs);
+        if (this.clan === "Caitiff") {
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: "Mistrusted by Kindred society.",
+            name: "Suspect",
+          });
+        }
 
         switch (this.predatorType) {
           case "Alleycat":
             this.humanity--;
+            this.merits.backgrounds.advantages.push({
+              cost: 3,
+              desc: "Someone who can help you with a specific task, be it a camarilla insider, police dispatcher or shady merchant. Each dot increases their level of usefulness.",
+              name: "Contact: Criminals",
+              maxCost: 3,
+            });
             break;
           case "Bagger":
+            this.merits.merits.advantages.push({
+              cost: 3,
+              desc: "You can feed from rancid, bagged and processed blood.",
+              name: "Iron Gullet",
+            });
+            this.merits.backgrounds.flaws.push({
+              cost: 2,
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              name: "Enemy",
+            });
             break;
           case "Blood Leech":
             this.humanity--;
             this.generation.potency++;
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Mortals",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
+            this.merits.backgrounds.flaws.push({
+              name: "Dark Secret: Diablerist",
+              desc: "A milder version of infamy, you have a terrible secret that would harm your reputation if it got out.",
+              cost: 2,
+              maxCost: 2,
+              specNeeded: true,
+            });
             break;
           case "Cleaver":
+            this.merits.backgrounds.flaws.push({
+              name: "Dark Secret: Cleaver",
+              desc: "You are known to routinely violate the masquerade, you likely have been run out of other domains and are not long to last here either.",
+              cost: 2,
+            });
+            this.merits.backgrounds.advantages.push({
+              name: "Herd",
+              desc: "You have assembled a group of mortals from which you regularly and easily feed. They are also capable of performing menial tasks for you, though not loyally. Your first dot awards 1-3 mortals. Each dot essentially doubles the size of your herd",
+              cost: 2,
+            });
             break;
           case "Consensualist":
+            this.merits.backgrounds.flaws.push({
+              name: "Dark Secret: Masquerade Breacher",
+              desc: "You are known to routinely violate the masquerade.",
+              cost: 1,
+            });
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Non-consenting",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
             this.humanity++;
             break;
           case "Farmer":
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Non-Animals",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
             this.humanity++;
             break;
           case "Osiris":
+            this.merits.backgrounds.advantages.push({
+              name: "Herd",
+              desc: "You have assembled a group of mortals from which you regularly and easily feed. They are also capable of performing menial tasks for you, though not loyally. Your first dot awards 1-3 mortals. Each dot essentially doubles the size of your herd",
+              cost: 3,
+            });
             break;
           case "Sandman":
+            this.merits.backgrounds.advantages.push({
+              name: "Resources",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
             break;
           case "Scene Queen":
+            this.merits.backgrounds.advantages.push({
+              name: "Fame",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
+            this.merits.backgrounds.advantages.push({
+              name: "Contacts",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
+            this.merits.backgrounds.flaws.push({
+              name: "Influence: Disliked",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
             break;
           case "Siren":
+            this.merits.merits.advantages.push({
+              cost: 2,
+              desc: "You are considered beautiful.",
+              name: "Beautiful",
+            });
+            this.merits.backgrounds.flaws.push({
+              cost: 2,
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              name: "Enemy: Spurned Lover",
+            });
             break;
           default:
         }

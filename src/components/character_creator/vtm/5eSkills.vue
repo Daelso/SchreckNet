@@ -115,7 +115,7 @@
   border-radius: 4px;
   color: white;
   position: sticky;
-  top: 50px;
+  top: 60px;
 }
 </style>
 

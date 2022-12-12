@@ -496,7 +496,6 @@ export default defineComponent({
       sireField.setText(this.sire);
       desireField.setText(this.desire);
       generationField.setText(this.generation);
-      convictionField.setText(this.convictions + "\n" + this.touchstones);
       totalXpField.setText(`${this.xp}`);
       spentXpField.setText(`${this.spentXp}`);
       baneSeverityField.setText(`${this.baneseverity}`);
@@ -510,6 +509,21 @@ export default defineComponent({
       conceptField.setFontSize(10);
 
       // text fields above, dots and loops required go below
+      // touchstones/convictions are a weird concat string situation so we'll do it up top near the text boxes
+      let convicStoneString = "";
+      for (let i = 0; i < this.convictions.length; i++) {
+        let convicString = "Conviction: ";
+        let mergedString = convicString + this.convictions[i] + "\n";
+        convicStoneString += mergedString;
+      }
+
+      for (let i = 0; i < this.touchstones.length; i++) {
+        let touchString = "Touchstone: ";
+        let mergedString = touchString + this.touchstones[i] + "\n";
+        convicStoneString += mergedString;
+      }
+      convictionField.setText(convicStoneString);
+
       // health boxes
       for (let i = 1; i < this.attributes.stamina + 3 + 1; i++) {
         let healthBox = form.getTextField(`health${i}`);
@@ -727,7 +741,6 @@ export default defineComponent({
     },
     setClanBane() {
       this.clanBane = this.clanBanes.clans[this.clan];
-      console.log(this.clanBane);
     },
   },
 });

@@ -1,4 +1,20 @@
 <template>
+  <q-item
+    clickable
+    style="color: red"
+    :to="{ name: 'myVamps', params: { id: 1 } }"
+  >
+    <q-item-section avatar>
+      <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>My VtM Characters</q-item-label>
+      <q-item-label caption style="color: white">quasar.dev</q-item-label>
+    </q-item-section>
+  </q-item>
+  <q-separator />
+
   <q-item clickable style="color: red" @click="logout">
     <q-item-section avatar>
       <q-icon color="secondary" name="logout" />
@@ -18,7 +34,7 @@ import { useQuasar } from "quasar";
 
 export default defineComponent({
   name: "EssentialLink",
-  setup() {
+  async setup() {
     const $q = useQuasar();
 
     const axios = require("axios");
@@ -28,6 +44,14 @@ export default defineComponent({
     } else {
       baseUrl = window.location.origin;
     }
+
+    let currentUser = await axios
+      .get(baseUrl + "/user/currentUser", {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        console.log(resp.data);
+      });
 
     return {
       async logout() {

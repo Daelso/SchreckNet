@@ -55,8 +55,9 @@
     >
       <q-list>
         <q-item-label header> Profile Links </q-item-label>
-
-        <ProfileLinks />
+        <suspense>
+          <ProfileLinks />
+        </suspense>
       </q-list>
     </q-drawer>
 

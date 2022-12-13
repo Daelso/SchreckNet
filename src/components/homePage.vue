@@ -45,45 +45,24 @@ export default {
     const axios = require("axios");
     let currentUser = ref(false);
 
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-
     return {
       currentUser,
-
-      async onSubmit() {
-        let meme = await axios
-          .get(baseUrl + "/user/currentUser", {
-            withCredentials: true,
-          })
-          .then((resp) => {
-            return resp.data;
-          });
-        console.log(meme);
-      },
     };
   },
   async mounted() {
-    const axios = require("axios");
-    const $q = useQuasar();
-
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
       baseUrl = "http://localhost:5000";
     } else {
       baseUrl = window.location.origin;
     }
-    this.currentUser = await axios
+    this.currentUser = await this.$axios
       .get(baseUrl + "/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {
         if (resp.data.activated != 1) {
-          $q.notify({
+          this.$q.notify({
             message:
               "Account not yet activated! It may be closed in 60 days if not made active.",
             color: "primary",
@@ -103,7 +82,7 @@ export default {
                       }
                     )
                     .then(() =>
-                      $q.notify({
+                      this.$q.notify({
                         color: "green-4",
                         textColor: "white",
                         icon: "cloud_done",
@@ -112,7 +91,7 @@ export default {
                     )
                     .catch((err) => {
                       console.log(err);
-                      $q.notify({
+                      this.$q.notify({
                         color: "red-5",
                         textColor: "white",
                         icon: "warning",

@@ -1,22 +1,45 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
-    <q-btn
-      label="View Current User"
-      v-on:click="onSubmit()"
-      type="submit"
-      color="secondary"
-      text-color="primary"
-      style="font-weight: bold"
-    />
+  <div class="q-pa-md" style="max-width: 1200px">
+    <div class="banner">Elysium's Newest Kindred</div>
+    <Suspense>
+      <div class="vamps">
+        <vampCards />
+      </div>
+    </Suspense>
   </div>
 </template>
+
+<style>
+.banner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  font-size: 35px;
+}
+.vamps {
+  display: flex;
+  flex-direction: row;
+}
+@media (max-width: 800px) {
+  .vamps {
+    flex-direction: column;
+  }
+  .banner {
+    font-size: 20px;
+  }
+}
+</style>
 
 <script>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
 import nosImage from "../assets/images/Nosfer_logo.png";
+import vampCards from "./character_creator/vtm/vampireCards.vue";
 
 export default {
+  components: { vampCards },
   setup() {
     const $q = useQuasar();
     const axios = require("axios");
@@ -31,6 +54,7 @@ export default {
 
     return {
       currentUser,
+
       async onSubmit() {
         let meme = await axios
           .get(baseUrl + "/user/currentUser", {

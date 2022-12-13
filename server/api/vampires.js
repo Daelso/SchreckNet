@@ -69,6 +69,20 @@ router.route("/vampire/:id").get(async (req, res) => {
   }
 });
 
+router.route("/myVampire/:id").get(async (req, res) => {
+  try {
+    const kindred = await Vampires.findAll({
+      where: {
+        created_by: 1,
+      },
+    });
+    console.log("we hit");
+    res.status(200).send(kindred);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/card").get(async (req, res) => {
   try {
     const kindred = await Vampires.findAll({

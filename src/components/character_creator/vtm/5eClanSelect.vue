@@ -196,10 +196,10 @@
                 </div>
                 <div
                   v-if="
-                    (this.predatorType === 'Scene Queen' ||
-                      this.predatorType === 'Farmer' ||
-                      this.predatorType === 'Osiris') &&
-                    this.bonusSpecs
+                    this.predatorType === 'Scene Queen' ||
+                    this.predatorType === 'Farmer' ||
+                    this.predatorType === 'Osiris' ||
+                    (this.predatorType === 'Booth Buffet' && this.bonusSpecs)
                   "
                 >
                   <q-input
@@ -226,8 +226,15 @@
                     }
                   "
                   color="primary"
-                  label="Continue"
-                />
+                  label="Confirm Predator Selection"
+                  :disable="!bonusSpecs || !bonusDisc"
+                >
+                  <q-tooltip
+                    v-if="!bonusSpecs || !bonusDisc"
+                    class="bg-dark text-body2"
+                    >Please select your bonuses.</q-tooltip
+                  >
+                </q-btn>
                 <q-btn
                   flat
                   @click="step = 2"
@@ -336,6 +343,7 @@ import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import disciplineSkills from "../vtm/5eDisciplines.json";
 import allPredatorTypes from "../vtm/predatorTypes.json";
+import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -355,6 +363,7 @@ export default defineComponent({
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
     let disciplinesDone = ref(props.info.disciplinesDone);
+    let merits = ref(props.info.merits);
     const skillsSelected = ref(props.info.discSkills);
     const predatorType = ref(props.info.predatorType);
     const disciplineObj = ref(props.info.disciplines);
@@ -372,8 +381,8 @@ export default defineComponent({
     const compulsion = ref(props.info.compulsion);
     const generation = ref(props.info.generation);
     const xp = ref(props.info.xp);
-    const flaws = ref(0);
-    const advantages = ref(0);
+    let flaws = ref(2);
+    let advantages = ref(7);
     const humanity = ref(props.info.humanity);
     const clanDesc = ref(
       "The 'Rabble' rebel against power and rage against tyranny."
@@ -452,7 +461,9 @@ export default defineComponent({
       discSkillsArr,
       discSpecificArr,
       discExplained,
+      merits,
       flaws,
+      nosImage,
       generation,
       humanity,
       predBlurb,
@@ -525,6 +536,7 @@ export default defineComponent({
           predatorType: predatorType,
           specialtiesFromPred: specialtiesFromPred,
           disciplinesDone: disciplinesDone,
+          merits: merits,
         });
       },
 
@@ -545,10 +557,18 @@ export default defineComponent({
       this.disciplineObj = {};
       this.finalDisciplineObj = {};
       this.humanity = 7;
+      this.flaws = 2;
+      this.advantages = 7;
       this.generation = { label: "12th", potency: 1, maxPotency: 3 };
       this.age = { label: "Childer", bonusXp: 0 };
       this.specialtiesFromPred = [];
       this.disciplinesDone = false;
+      this.merits = {
+        merits: { advantages: [], flaws: [] },
+        backgrounds: { advantages: [], flaws: [] },
+        haven: { advantages: [], flaws: [] },
+        loresheets: { advantages: [], flaws: [] },
+      };
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -875,15 +895,19 @@ export default defineComponent({
       switch (this.age.label) {
         case "Childer":
           this.xp = 0;
+          this.flaws = 2;
+          this.advantages = 7;
           break;
         case "Neonate":
           this.xp = 15;
+          this.flaws = 2;
+          this.advantages = 7;
           break;
         case "Ancillae":
           this.xp = 35;
           this.humanity = 6;
-          this.flaws = 2;
-          this.advantages = 2;
+          this.flaws = 4;
+          this.advantages = 9;
         default:
           this.xp += 0;
       }
@@ -897,10 +921,12 @@ export default defineComponent({
         this.skillsSelected = [];
         this.clanSelected();
         this.$q.notify({
-          type: "info",
+          color: "primary",
           textColor: "white",
+          avatar: nosImage,
+          timeout: 14000,
           message:
-            "To prevent duplicates/bad character data, clan info has been reset.",
+            "To prevent duplicates/bad character data, clan info, disciplines, and merits have been reset.",
         });
         return;
       }
@@ -1023,7 +1049,7 @@ export default defineComponent({
             desc: "Instead of hunting you secure your blood from the black market, robbery or a night shift at the blood bank. Ventrue cannot select this option.",
             choices: [
               "Alleycats gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
-              "Choose between one dot of blood sorcery (if Tremere) or obfuscate.",
+              "Choose between one dot of blood sorcery (if Tremere or Banu Haqim) or obfuscate.",
               "Gain the Feeding Merit: Iron Gullet (•••)",
               "Gain the enemy flaw: (••) Someone believes you owe them or something else keeps you off the streets.",
             ],
@@ -1039,6 +1065,28 @@ export default defineComponent({
               "Lose one dot of humanity.",
               "Gain three dots of criminal Contacts.",
               "Gain the feeding flaw, pray exclusion (mortals)",
+            ],
+          };
+          break;
+        case "Booth Buffet":
+          this.predBlurb = {
+            desc: "You practice a profession which requires a great deal of personal contact in a private or semi-private setting. Maybe you are a hairdresser, a chiropractor, or a tattoo artist. you get your clients to relax when they are alone with you. Sometimes, they even experience an unexplained sense of euphoria as you work on them, which keeps them coming back. They have come to accept that after an appointment they look so awesome, but feel so... drained. ",
+            choices: [
+              "Gain a specialty in Craft (Specific Trade) or Medicine (Specific Trade)",
+              "Gain a dot in Auspex or Presence",
+              "Gain three dots (•••) to spread across the Resources, Herd, Contacts and Fame merits",
+              "Gain the Enemy Flaw: (••) (Rival in same Trade)",
+            ],
+          };
+          break;
+        case "Catfisher":
+          this.predBlurb = {
+            desc: "You take your time to develop a number of personas online, and use these false identities on social media and forums to develop friendships with kine. You develop these connections to the point a person-to-person meeting can happen, which can be taken advantage for feeding. The benefit of doing so is being able to control the many factors involved in feeding, such as the time and location.",
+            choices: [
+              "Gain a specialty in Insight (Loneliness) or Technology (Social Media)",
+              "Gain a dot in Dominate or Obfuscate",
+              "Gain the Merit: Mask (•)",
+              "Gain the Enemy Flaw: (•) Catfish Victim",
             ],
           };
           break;
@@ -1065,6 +1113,17 @@ export default defineComponent({
             ],
           };
           break;
+        case "Extortionist":
+          this.predBlurb = {
+            desc: "The extortionist likes to force their victims to bleed for them. Ostensibly, the extortionist acquires blood in exchange for services such as security or surveillance, but as many times as the need for protection is real, it is just as often a fiction engineered to make the deal feel acceptable.",
+            choices: [
+              "Add a specialty: Intimidation (Coercion) or Larceny (Security)",
+              "Gain one dot of Dominate or Potence.",
+              "Spend three dots between the Contacts and Resources Backgrounds.",
+              "Gain the Enemy Flaw: (••) The police or a victim who escaped your extortion and now wants revenge.",
+            ],
+          };
+          break;
         case "Farmer":
           this.predBlurb = {
             desc: "Farmers do everything in their power to not harm humans, drinking exclusively animal blood, even if it means unliving with constant hunger. Ventrue and kindred with a blood potency of 3 or more cannot choose this predator type.",
@@ -1073,6 +1132,29 @@ export default defineComponent({
               "Choose between one dot of Animalism or Protean.",
               "Gain one dot of humanity.",
               "Gain the feeding flaw: (••) Farmer",
+            ],
+          };
+          break;
+        case "Graverobber":
+          this.predBlurb = {
+            desc: "Graverobbers often feed from fresh corpses, but despite their name, they prefer feeding from mourners in cemeteries and sad, frightened visitors and patients in hospitals. Melancholic Resonance in a victim’s blood appeals more than any other humour. This predator type often requires the vampire to hold a haven in or connections to a church, hospital, or morgue.",
+            choices: [
+              "Add a specialty: Occult (Grave Rituals) or Medicine (Cadavers)",
+              "Gain one dot of Fortitude or Oblivion",
+              "Gain the Feeding Merit: (•••) Iron Gullet",
+              "Gain the Haven Advantage: (•)",
+              "Gain the Herd Flaw: (••) Obvious Predator (your cold nature makes you act in a deeply unsettling matter when hunting)",
+            ],
+          };
+          break;
+        case "House Cat":
+          this.predBlurb = {
+            desc: "We live in the age of delivery apps, online shopping, dating apps and all night services. Getting someone to come to you has never been so easy. Why go hunt in the streets when you can have the food come to your haven? For the modern Anarch you never have to worry about going hungry!",
+            choices: [
+              "Gain a specialty in Technology (Mobile Apps) or Subterfuge (Luring)",
+              "Gain a dot in Dominate or Presence",
+              "Spend 2 dots (••) between Resources and Haven",
+              "Gain either the Stalkers, Disliked or Enemy (•) Flaw",
             ],
           };
           break;
@@ -1094,6 +1176,17 @@ export default defineComponent({
               "Gain a choice of the Medicine (anesthetics) or Stealth (Break-in) specialty.",
               "Choose between one dot of Auspex or Obfuscate.",
               "Gain one dot of resources.",
+            ],
+          };
+          break;
+        case "Roadside Killer":
+          this.predBlurb = {
+            desc: "You belong with the vagabonds, tourists, and truckers of the world — always moving, never at home. You know how to pick out the ones whose deaths are discounted as the risk of a woman hitchhiking alone, or who simply won’t be missed at all. You still have to fight to keep other vampires away from them lest the herd thins too much, though. In life, you either were one of them, or you met these vagrants as they rested at your roadside stop.",
+            choices: [
+              "Add a specialty Survival (the road) or Investigation (vampire cant)",
+              "Add one dot of Fortitude or Protean",
+              "Gain two additional dots of migrating Herd",
+              "Gain the Flaw Prey Exclusion (locals)",
             ],
           };
           break;
@@ -1120,6 +1213,17 @@ export default defineComponent({
             ],
           };
           break;
+        case "Typhus":
+          this.predBlurb = {
+            desc: "The dead, dying and sick are easy prey and even easier if you work within hospital wards or retirement homes. You use your knowledge of medical issues, and your ability to present yourself as a health worker to gain access to these people you can then easily feed upon, or draw copious amounts of blood from. Old Blood never tasted so sweet.",
+            choices: [
+              "Gain a specialty in Medicine (Pharmacy) or Insight (Grief)",
+              "Gain a dot in Auspex or Fortitude",
+              "Gain the Feeding Merit: Iron Gullett (•••)",
+              "Gain the Feeding Flaw: (••) Prey Exclusion (Healthy)",
+            ],
+          };
+          break;
         default:
           this.predBlurb = {
             desc: "A dangerous, combative attack feeder. You feed by stalking, attacking and overpowering any prey you choose. This is one of the most violent and direct forms of feeding.",
@@ -1143,32 +1247,249 @@ export default defineComponent({
           trueDiscs[this.bonusDisc] = 1;
         }
         this.specialtiesFromPred.push(this.bonusSpecs);
+        if (this.clan === "Caitiff") {
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: "Mistrusted by Kindred society.",
+            name: "Suspect",
+          });
+        }
 
         switch (this.predatorType) {
           case "Alleycat":
             this.humanity--;
+            this.merits.backgrounds.advantages.push({
+              cost: 3,
+              desc: "Someone who can help you with a specific task, be it a camarilla insider, police dispatcher or shady merchant. Each dot increases their level of usefulness.",
+              name: "Contact: Criminals",
+              maxCost: 3,
+            });
             break;
           case "Bagger":
+            this.merits.merits.advantages.push({
+              cost: 3,
+              desc: "You can feed from rancid, bagged and processed blood.",
+              name: "Iron Gullet",
+            });
+            this.merits.backgrounds.flaws.push({
+              cost: 2,
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              name: "Enemy",
+            });
             break;
           case "Blood Leech":
             this.humanity--;
             this.generation.potency++;
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Mortals",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
+            this.merits.backgrounds.flaws.push({
+              name: "Dark Secret: Diablerist",
+              desc: "A milder version of infamy, you have a terrible secret that would harm your reputation if it got out.",
+              cost: 2,
+              maxCost: 2,
+              specNeeded: true,
+            });
+            break;
+          case "Booth Buffet":
+            this.merits.backgrounds.flaws.push({
+              name: "Enemy: Trade Rival",
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              cost: 2,
+            });
+            this.advantages = this.advantages + 3;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 3 dots have been provided to be divided amongst Resources, Herd and Fame.",
+            });
+            break;
+          case "Catfisher":
+            this.merits.backgrounds.flaws.push({
+              name: "Enemy: Catfish Victim",
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              cost: 1,
+            });
+            this.merits.backgrounds.advantages.push({
+              cost: 1,
+              desc: "Each dot of mask strengthens the level of your fake identity. Choose a max of 2 dots. At 2 dots, you may purchase additional related 1 dot merits.",
+              name: "Mask",
+              maxCost: 2,
+            });
             break;
           case "Cleaver":
+            this.merits.backgrounds.flaws.push({
+              name: "Dark Secret: Cleaver",
+              desc: "You are known to routinely violate the masquerade, you likely have been run out of other domains and are not long to last here either.",
+              cost: 1,
+            });
+            this.merits.backgrounds.advantages.push({
+              name: "Herd",
+              desc: "You have assembled a group of mortals from which you regularly and easily feed. They are also capable of performing menial tasks for you, though not loyally. Your first dot awards 1-3 mortals. Each dot essentially doubles the size of your herd",
+              cost: 2,
+            });
             break;
           case "Consensualist":
+            this.merits.backgrounds.flaws.push({
+              name: "Dark Secret: Masquerade Breacher",
+              desc: "You are known to routinely violate the masquerade.",
+              cost: 1,
+            });
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Non-consenting",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
             this.humanity++;
+            break;
+          case "Extortionist":
+            this.merits.backgrounds.flaws.push({
+              name: "Enemy: The Police",
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              cost: 2,
+            });
+            this.advantages = this.advantages + 3;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 3 dots have been provided to be divided amongst Resources and Contacts.",
+            });
             break;
           case "Farmer":
+            this.merits.merits.flaws.push({
+              name: "Feeding Flaw: Farmer",
+              cost: 2,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
             this.humanity++;
             break;
+          case "Graverobber":
+            this.merits.merits.advantages.push({
+              name: "Iron Gullet",
+              cost: 3,
+              desc: "You can feed from rancid, bagged and processed blood.",
+            });
+            this.merits.haven.advantages.push({
+              name: "Haven",
+              desc: "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
+              cost: 1,
+              maxCost: 3,
+            });
+            this.merits.backgrounds.flaws.push({
+              name: "Obvious Predator",
+              desc: "You exude danger. All humans instinctively mistrust you. Lose two dice from any dice pool from any non-physical skills used for hunting",
+              cost: 2,
+            });
+            break;
+          case "House Cat":
+            this.advantages = this.advantages + 2;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 2 dots have been provided to be divided amongst Resources and Haven.",
+            });
+            this.merits.backgrounds.flaws.push({
+              name: "Stalker",
+              desc: "A former retainer is obsessed with you, should you deal with one another emerges.",
+              cost: 1,
+            });
+            break;
           case "Osiris":
+            this.advantages = this.advantages + 3;
+            this.flaws = this.flaws + 2;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 3 advantage dots have been provided to be divided amongst Herd and Fame backgrounds.",
+            });
+            this.$q.notify({
+              color: "primary",
+              position: "top",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 2 flaw dots have been provided to be divided amongst Enemy and Mythic flaws.",
+            });
             break;
           case "Sandman":
+            this.merits.backgrounds.advantages.push({
+              name: "Resources",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
+            break;
+          case "Roadside Killer":
+            this.merits.backgrounds.advantages.push({
+              name: "Migrating Herd",
+              desc: "You have assembled a group of mortals from which you regularly and easily feed. They are also capable of performing menial tasks for you, though not loyally. Your first dot awards 1-3 mortals. Each dot essentially doubles the size of your herd",
+              cost: 2,
+              maxCost: 5,
+            });
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Locals",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
             break;
           case "Scene Queen":
+            this.merits.backgrounds.advantages.push({
+              name: "Fame",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
+            this.merits.backgrounds.advantages.push({
+              name: "Contacts",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
+            this.merits.backgrounds.flaws.push({
+              name: "Influence: Disliked",
+              desc: "Each dot of resources grows your wealth, one dot of resources might equal a minimum wage worker, where five would put you on par with Jeff Bezos.",
+              cost: 1,
+              maxCost: 5,
+            });
             break;
           case "Siren":
+            this.merits.merits.advantages.push({
+              cost: 2,
+              desc: "You are considered beautiful.",
+              name: "Beautiful",
+            });
+            this.merits.backgrounds.flaws.push({
+              cost: 2,
+              desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+              name: "Enemy: Spurned Lover",
+            });
+            break;
+          case "Typhus":
+            this.merits.merits.advantages.push({
+              cost: 3,
+              desc: "You can feed from rancid, bagged and processed blood.",
+              name: "Iron Gullet",
+            });
+            this.merits.merits.flaws.push({
+              name: "Prey Exclusion: Healthy",
+              cost: 2,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
             break;
           default:
         }
@@ -1198,12 +1519,18 @@ export default defineComponent({
           break;
         case "Bagger":
           arr = ["Obfuscate"];
-          if (this.clan === "Tremere") {
+          if (this.clan === "Tremere" || this.clan === "Banu Haqim") {
             arr.push("Blood Sorcery");
           }
           break;
         case "Blood Leech":
           arr = ["Celerity", "Protean"];
+          break;
+        case "Booth Buffet":
+          arr = ["Auspex", "Presence"];
+          break;
+        case "Catfisher":
+          arr = ["Dominate", "Obfuscate"];
           break;
         case "Cleaver":
           arr = ["Dominate", "Animalism"];
@@ -1211,8 +1538,17 @@ export default defineComponent({
         case "Consensualist":
           arr = ["Auspex", "Fortitude"];
           break;
+        case "Extortionist":
+          arr = ["Dominate", "Potence"];
+          break;
         case "Farmer":
           arr = ["Animalism", "Protean"];
+          break;
+        case "Graverobber":
+          arr = ["Fortitude", "Oblivion"];
+          break;
+        case "House Cat":
+          arr = ["Dominate", "Presence"];
           break;
         case "Osiris":
           arr = ["Presence"];
@@ -1223,11 +1559,17 @@ export default defineComponent({
         case "Sandman":
           arr = ["Auspex", "Obfuscate"];
           break;
+        case "Roadside Killer":
+          arr = ["Fortitude", "Protean"];
+          break;
         case "Scene Queen":
           arr = ["Dominate", "Potence"];
           break;
         case "Siren":
           arr = ["Fortitude", "Presence"];
+          break;
+        case "Typhus":
+          arr = ["Auspex", "Fortitude"];
           break;
         default:
           arr = ["Celerity", "Potence"];
@@ -1255,6 +1597,18 @@ export default defineComponent({
             { skill: "Stealth", specialty: "Against Kindred" },
           ];
           break;
+        case "Booth Buffet":
+          arr = [
+            { skill: "Craft", specialty: "Specific Trade" },
+            { skill: "Medicine", specialty: "Specific Trade" },
+          ];
+          break;
+        case "Catfisher":
+          arr = [
+            { skill: "Insight", specialty: "Loneliness" },
+            { skill: "Technology", specialty: "Social Media" },
+          ];
+          break;
         case "Cleaver":
           arr = [
             { skill: "Persuasion", specialty: "Gaslighting" },
@@ -1267,10 +1621,28 @@ export default defineComponent({
             { skill: "Persuasion", specialty: "Victims" },
           ];
           break;
+        case "Extortionist":
+          arr = [
+            { skill: "Intimidation", specialty: "Coercion" },
+            { skill: "Larceny", specialty: "Security" },
+          ];
+          break;
         case "Farmer":
           arr = [
             { skill: "AnimalKen", specialty: "Specific Animal" },
             { skill: "Survival", specialty: "Hunting" },
+          ];
+          break;
+        case "Graverobber":
+          arr = [
+            { skill: "Occult", specialty: "Grave Rituals" },
+            { skill: "Medicine", specialty: "Cadavers" },
+          ];
+          break;
+        case "House Cat":
+          arr = [
+            { skill: "Technology", specialty: "Mobile Apps" },
+            { skill: "Subterfuge", specialty: "Luring" },
           ];
           break;
         case "Osiris":
@@ -1285,6 +1657,12 @@ export default defineComponent({
             { skill: "Stealth", specialty: "Break-in" },
           ];
           break;
+        case "Roadside Killer":
+          arr = [
+            { skill: "Survival", specialty: "The Road" },
+            { skill: "Investigation", specialty: "Vampire Cant" },
+          ];
+          break;
         case "Scene Queen":
           arr = [
             { skill: "Etiquette", specialty: "Specific scene" },
@@ -1296,6 +1674,12 @@ export default defineComponent({
           arr = [
             { skill: "Persuasion", specialty: "Seduction" },
             { skill: "Subterfuge", specialty: "Seduction" },
+          ];
+          break;
+        case "Typhus":
+          arr = [
+            { skill: "Medicine", specialty: "Pharmacy" },
+            { skill: "Insight", specialty: "Grief" },
           ];
           break;
         default:

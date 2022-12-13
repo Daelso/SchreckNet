@@ -380,6 +380,9 @@ export default defineComponent({
         console.log(err);
         return "blah";
       });
+
+    console.log(kindred.advantages);
+
     return {
       attributeInfo,
       clanBanes,

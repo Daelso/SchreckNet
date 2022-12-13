@@ -2,6 +2,8 @@
 
 This is a character creator app based on the World of Darkness (Vampire: the Masquerade, Werewolf: the Apocalypse, etc) line of games. It features book-legal character creation, character saving and sharing, export to PDF and more.
 
+https://discord.gg/CvUuaM84Ng
+
 ## Env format:
 
 ```

@@ -63,7 +63,20 @@ router.route("/new").post(async (req, res) => {
 router.route("/vampire/:id").get(async (req, res) => {
   try {
     const kindred = await Vampires.findByPk(req.params.id);
+    console.log("REEEEEEEEEEEEEEEEEEE");
     res.send(kindred.dataValues);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+router.route("/card").get(async (req, res) => {
+  try {
+    const kindred = await Vampires.findAll({
+      limit: 3,
+      order: [["createdAt", "DESC"]],
+    });
+    res.send(kindred);
   } catch (err) {
     res.status(404).send(err);
   }

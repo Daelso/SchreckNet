@@ -381,8 +381,6 @@ export default defineComponent({
         return "blah";
       });
 
-    console.log(kindred.advantages);
-
     return {
       attributeInfo,
       clanBanes,

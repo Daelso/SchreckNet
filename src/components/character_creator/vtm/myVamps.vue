@@ -197,13 +197,14 @@ export default {
   async setup() {
     const router = useRouter();
 
-    let kindred = ref({});
-
     return {
-      kindred,
       router,
-      lorem:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    };
+  },
+
+  data() {
+    return {
+      kindred: [],
     };
   },
 
@@ -231,6 +232,8 @@ export default {
         console.log(err);
         return "Not found!";
       });
+
+    console.log(this.kindred);
   },
 
   methods: {

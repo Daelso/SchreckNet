@@ -1049,7 +1049,7 @@ export default defineComponent({
             desc: "Instead of hunting you secure your blood from the black market, robbery or a night shift at the blood bank. Ventrue cannot select this option.",
             choices: [
               "Alleycats gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
-              "Choose between one dot of blood sorcery (if Tremere) or obfuscate.",
+              "Choose between one dot of blood sorcery (if Tremere or Banu Haqim) or obfuscate.",
               "Gain the Feeding Merit: Iron Gullet (•••)",
               "Gain the enemy flaw: (••) Someone believes you owe them or something else keeps you off the streets.",
             ],
@@ -1365,8 +1365,8 @@ export default defineComponent({
             break;
           case "Farmer":
             this.merits.merits.flaws.push({
-              name: "Prey Exclusion: Non-Animals",
-              cost: 1,
+              name: "Feeding Flaw: Farmer",
+              cost: 2,
               desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
             });
             this.humanity++;
@@ -1406,10 +1406,24 @@ export default defineComponent({
             });
             break;
           case "Osiris":
-            this.merits.backgrounds.advantages.push({
-              name: "Herd",
-              desc: "You have assembled a group of mortals from which you regularly and easily feed. They are also capable of performing menial tasks for you, though not loyally. Your first dot awards 1-3 mortals. Each dot essentially doubles the size of your herd",
-              cost: 3,
+            this.advantages = this.advantages + 3;
+            this.flaws = this.flaws + 2;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 3 advantage dots have been provided to be divided amongst Herd and Fame backgrounds.",
+            });
+            this.$q.notify({
+              color: "primary",
+              position: "top",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional 2 flaw dots have been provided to be divided amongst Enemy and Mythic flaws.",
             });
             break;
           case "Sandman":
@@ -1505,7 +1519,7 @@ export default defineComponent({
           break;
         case "Bagger":
           arr = ["Obfuscate"];
-          if (this.clan === "Tremere") {
+          if (this.clan === "Tremere" || this.clan === "Banu Haqim") {
             arr.push("Blood Sorcery");
           }
           break;

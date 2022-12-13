@@ -326,7 +326,11 @@
               >
             </q-item-section>
           </q-item>
-          <q-item clickable @click="clanSelected">
+          <q-item
+            :disable="!this.skillsDone || !this.attributesDone"
+            clickable
+            @click="clanSelected"
+          >
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"

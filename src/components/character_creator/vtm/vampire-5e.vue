@@ -771,8 +771,8 @@ export default {
           this.generation = data.generation;
           this.humanity = data.humanity;
           this.xp = data.xp;
-          this.advantages = this.baseAdvantages + data.advantages.value;
-          this.flaws = this.baseFlaws + data.flaws.value;
+          this.advantages = data.advantages;
+          this.flaws = data.flaws;
           this.disciplineSkills = data.discSkillsSelected;
           this.predatorType = data.predatorType;
           this.specialtiesFromPred = data.specialtiesFromPred;

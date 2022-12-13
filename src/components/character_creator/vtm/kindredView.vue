@@ -461,12 +461,12 @@ export default defineComponent({
       this.setClanBane();
       const pdfDoc = await PDFDocument.load(this.charSheet);
       const form = pdfDoc.getForm();
-      const fields = form.getFields();
-      fields.forEach((field) => {
-        const type = field.constructor.name;
-        const name = field.getName();
-        console.log(`${type}: ${name}`);
-      });
+      // const fields = form.getFields();
+      // fields.forEach((field) => {
+      //   const type = field.constructor.name;
+      //   const name = field.getName();
+      //   console.log(`${type}: ${name}`);
+      // });
 
       const nameField = form.getTextField("Name");
       const conceptField = form.getTextField("Concept");

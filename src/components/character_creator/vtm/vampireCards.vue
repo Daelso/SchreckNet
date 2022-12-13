@@ -18,20 +18,69 @@
         <q-item-label style="color: white" caption>
           {{ vamp.clan }} ({{ vamp.sect }}) - {{ vamp.predator_type }}
         </q-item-label>
+        <q-item-label style="color: white" caption>
+          Generation: {{ vamp.generation }} ({{ vamp.age }})
+        </q-item-label>
+        <q-item-label style="color: white" caption>
+          Cult: {{ vamp.cult }}
+        </q-item-label>
       </q-item-section>
     </q-item>
 
     <q-separator />
-
     <q-card-section horizontal>
-      <q-card-section>
-        {{ lorem }}
-      </q-card-section>
-
-      <q-separator vertical />
-
-      <q-card-section class="col-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      <q-card-section class="base-info">
+        <q-list bordered separator>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <q-expansion-item expand-separator label="Attributes" dark>
+                <q-card>
+                  <q-card-section
+                    v-for="(attribute, key) in Object.keys(
+                      vamp.attributes
+                    ).sort()"
+                    :key="key"
+                    class="backgroundDefault"
+                  >
+                    <div class="attribute">
+                      {{ attribute }} - {{ vamp.attributes[attribute] }}
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </q-expansion-item></q-item-section
+            >
+          </q-item>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <q-expansion-item expand-separator label="Disciplines" dark>
+                <q-card>
+                  <q-card-section
+                    v-for="(discipline, key) in vamp.disciplines"
+                    :key="key"
+                    class="backgroundDefault"
+                  >
+                    {{ key }} - {{ discipline }} dots
+                  </q-card-section>
+                </q-card>
+              </q-expansion-item></q-item-section
+            >
+          </q-item>
+          <q-item clickable v-ripple>
+            <q-item-section>
+              <q-expansion-item expand-separator label="Convictions" dark>
+                <q-card>
+                  <q-card-section
+                    v-for="(conviction, key) in vamp.convictions"
+                    :key="key"
+                    class="backgroundDefault"
+                  >
+                    {{ conviction }}
+                  </q-card-section>
+                </q-card>
+              </q-expansion-item></q-item-section
+            >
+          </q-item>
+        </q-list>
       </q-card-section>
     </q-card-section>
     <q-separator />
@@ -44,7 +93,7 @@
           this.router.push({ name: 'vampire5eView', params: { id: vamp.id } })
         "
       >
-        View Character
+        View Full Character
       </q-btn>
     </q-card-actions>
   </q-card>
@@ -52,10 +101,23 @@
 <style scoped>
 .my-card {
   width: 100%;
-  max-width: 350px;
+  max-width: 450px;
   margin-right: 15px;
   color: white;
   background-color: #222831;
+}
+.backgroundDefault {
+  background-color: #171a1e;
+}
+.base-info {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: auto;
+}
+
+.attribute::first-letter {
+  text-transform: capitalize;
 }
 
 @media (max-width: 800px) {

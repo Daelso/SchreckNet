@@ -90,7 +90,7 @@
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline>Concept</q-item-label>
-              <q-item-label>{{ vamp.concept.slice(0, 50) }}</q-item-label>
+              <q-item-label>{{ truncate(vamp.concept, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -99,7 +99,7 @@
               <q-item-label style="color: white" overline
                 >Archetype</q-item-label
               >
-              <q-item-label>{{ vamp.archetype.slice(0, 50) }}</q-item-label>
+              <q-item-label>{{ truncate(vamp.archetype, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -108,13 +108,13 @@
               <q-item-label style="color: white" overline
                 >Ambition</q-item-label
               >
-              <q-item-label>{{ vamp.ambition.slice(0, 50) }}</q-item-label>
+              <q-item-label>{{ truncate(vamp.ambition, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline>Desire</q-item-label>
-              <q-item-label>{{ vamp.desire.slice(0, 50) }}</q-item-label>
+              <q-item-label>{{ truncate(vamp.desire, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
@@ -208,15 +208,13 @@ export default {
     };
   },
 
-  computed: {
-    filter: function (text, length, clamp) {
-      clamp = clamp || "...";
-      var node = document.createElement("div");
-      node.innerHTML = text;
-      var content = node.textContent;
-      return content.length > length
-        ? content.slice(0, length) + clamp
-        : content;
+  methods: {
+    truncate(value, length) {
+      if (value.length > length) {
+        return value.substring(0, length) + "...";
+      } else {
+        return value;
+      }
     },
   },
 };

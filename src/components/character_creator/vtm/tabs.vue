@@ -400,6 +400,16 @@
             Remaining dots of advantages: {{ advantagePoints }}
           </div>
           <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
+          <div
+            v-if="this.advantageCategory == 'Loresheets'"
+            class="q-my-sm"
+            style="color: red; font-weight: bold"
+          >
+            Loresheets are too varied and too numerous to handle automatically,
+            the sheet will track the dots you take, but please assign any
+            additional bonuses on your sheet manually after.
+          </div>
+
           <q-separator />
           <div v-if="this.clan === 'Thin-Blood'">
             <div>
@@ -414,7 +424,7 @@
           <q-select
             v-model="advantageCategory"
             :options="advantageCategories"
-            label="Select merits, backgrounds and loresheets"
+            label="Select merits, backgrounds, and loresheets"
             label-color="primary"
             bg-color="grey-3"
             filled
@@ -426,7 +436,8 @@
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Cult' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Haven'
+              this.advantageCategory == 'Haven' ||
+              this.advantageCategory == 'Loresheets'
             "
           >
             <q-select
@@ -441,7 +452,9 @@
             />
           </div>
           <q-separator />
-          <div v-if="this.meritCategory">
+          <div
+            v-if="this.meritCategory && this.advantageCategory !== 'Loresheets'"
+          >
             <q-select
               v-model="advOrFlaw"
               :options="advorFlawOptions()"
@@ -465,7 +478,12 @@
               @update:model-value="clearDotField()"
             />
           </div>
-          <div v-if="this.advFlawChoice.maxCost">
+          <div
+            v-if="
+              this.advFlawChoice.maxCost ||
+              (this.advantageCategory === 'Loresheets' && this.meritCategory)
+            "
+          >
             <q-select
               v-model="howManyDots"
               :options="dotOptions()"
@@ -531,7 +549,23 @@
               ]"
             />
           </div>
-          <div v-if="this.advFlawChoice">
+          <div
+            v-if="this.advantageCategory === 'Loresheets' && this.meritCategory"
+          >
+            Description:
+            {{
+              this.loresheets.loresheets.find(
+                (x) => x.Name === this.meritCategory
+              ).Description
+            }}
+            <br />
+            <div v-if="this.howManyDots">
+              Dot Cost: {{ this.advFlawChoice.cost }} <br />
+            </div>
+          </div>
+          <div
+            v-if="this.advFlawChoice && this.advantageCategory !== 'Loresheets'"
+          >
             Description: {{ this.advFlawChoice.desc }}
             <br />
             Dot Cost: {{ this.advFlawChoice.cost }} <br />
@@ -678,6 +712,44 @@
             </q-list>
           </div>
           <br />
+          <!-- Loresheets -->
+          <div
+            v-if="
+              this.advantagesObj.loresheets.advantages.length > 0 ||
+              this.advantagesObj.loresheets.flaws.length > 0
+            "
+          >
+            <span class="text-h6">Loresheets</span>
+            <q-separator />
+            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
+
+            <q-list bordered>
+              <q-item
+                v-for="(advantage, key) in advantagesObj.loresheets.advantages"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeAdvantage(
+                    $event.target.id,
+                    advantage.cost,
+                    advantage.name,
+                    'loresheets'
+                  )
+                "
+              >
+                <q-item-section :id="key"
+                  >Advantage:
+                  {{ advantage.name }}
+                  - {{ advantage.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+          <br />
           <!-- Haven -->
           <div
             v-if="
@@ -772,6 +844,7 @@ import allCultMerits from "../vtm/5eCultMerits.json";
 import allBackgrounds from "../vtm/5eBackgrounds.json";
 import disciplinesList from "../vtm/5eDisciplines.json";
 import havenMerits from "../vtm/havens.json";
+import loresheets from "../vtm/loresheets.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -850,13 +923,20 @@ export default defineComponent({
       cultCategory: "",
       sect: "Camarilla",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: ["Merits", "Backgrounds", "Haven", "Cult"],
+      advantageCategories: [
+        "Merits",
+        "Backgrounds",
+        "Haven",
+        "Cult",
+        "Loresheets",
+      ],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
       sireInput: props.sire,
       thinFlaws: 0,
       thinAdvantages: 0,
+      loresheets,
     };
   },
   methods: {
@@ -991,6 +1071,20 @@ export default defineComponent({
         case "Haven":
           arr = Object.keys(havenMerits.havens);
           break;
+        case "Loresheets":
+          for (const [key, value] of Object.entries(
+            this.loresheets.loresheets
+          )) {
+            if (
+              value.Prerequisite !== null &&
+              value.Prerequisite !== this.clan
+            ) {
+              continue;
+            }
+            arr.push(value.Name);
+          }
+
+          break;
       }
 
       return arr;
@@ -1035,12 +1129,26 @@ export default defineComponent({
     dotOptions() {
       let arr = [];
 
+      if (this.advantageCategory === "Loresheets") {
+        return this.range(5, 1);
+      }
       arr = this.range(this.advFlawChoice.maxCost, 1);
 
       return arr;
     },
     costAdjustment() {
-      if (this.howManyDots) {
+      if (this.howManyDots && this.advantageCategory === "Loresheets") {
+        let loresheet = this.loresheets.loresheets.find(
+          (x) => x.Name === this.meritCategory
+        );
+        this.advFlawChoice = {
+          name: loresheet.Name,
+          desc: loresheet.Description,
+          cost: this.howManyDots,
+        };
+      }
+
+      if (this.howManyDots && this.advantageCategory !== "Loresheets") {
         this.advFlawChoice.cost = this.howManyDots;
       }
     },
@@ -1107,6 +1215,13 @@ export default defineComponent({
             modifiedObj.haven.advantages.push(choiceObj);
           } else {
             modifiedObj.haven.flaws.push(choiceObj);
+          }
+          break;
+        case "Loresheets":
+          if (advOrFlaw === true) {
+            modifiedObj.loresheets.advantages.push(choiceObj);
+          } else {
+            modifiedObj.loresheets.flaws.push(choiceObj);
           }
           break;
       }
@@ -1340,6 +1455,13 @@ export default defineComponent({
 
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
+
+      if (this.advantageCategory === "Loresheets") {
+        if (this.canPurchase(true) === true) {
+          this.sortAdvantageChoice(this.advFlawChoice, true);
+          this.clearFields();
+        }
+      }
 
       if (this.advOrFlaw.toLowerCase() === "advantages") {
         if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {

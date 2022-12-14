@@ -73,10 +73,9 @@ router.route("/myVampire/:id").get(async (req, res) => {
   try {
     const kindred = await Vampires.findAll({
       where: {
-        created_by: 1,
+        created_by: req.params.id,
       },
     });
-    console.log("we hit");
     res.status(200).send(kindred);
   } catch (err) {
     res.status(404).send(err);

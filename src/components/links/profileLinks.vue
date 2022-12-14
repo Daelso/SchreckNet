@@ -2,7 +2,7 @@
   <q-item
     clickable
     style="color: red"
-    :to="{ name: 'myVamps', params: { id: 1 } }"
+    :to="{ name: 'myVamps', params: { id: this.currentUser.id } }"
   >
     <q-item-section avatar>
       <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
@@ -45,7 +45,9 @@ export default defineComponent({
       baseUrl = window.location.origin;
     }
 
-    let currentUser = await axios
+    let currentUser = ref(null);
+
+    currentUser = await axios
       .get(baseUrl + "/user/currentUser", {
         withCredentials: true,
       })
@@ -54,6 +56,7 @@ export default defineComponent({
       });
 
     return {
+      currentUser,
       async logout() {
         await axios
           .post(

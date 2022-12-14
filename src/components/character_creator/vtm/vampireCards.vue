@@ -198,8 +198,6 @@ export default {
         return "Not found!";
       });
 
-    console.log(kindred);
-
     return {
       kindred,
       router,

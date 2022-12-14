@@ -23,8 +23,79 @@
             option-label="label"
             @update:model-value="distributionSelected"
           />
-          <div class="blurb">
-            {{ distBlurb }}
+          <div
+            v-if="this.skillDistribution.label === 'Jack-of-all-trades'"
+            class="blurb"
+          >
+            <span
+              :style="
+                colorCheck()[1] === 1 ? { color: 'green' } : { color: 'white' }
+              "
+              >One Skill at 3;
+            </span>
+            <span
+              :style="
+                colorCheck()[2] === 8 ? { color: 'green' } : { color: 'white' }
+              "
+              >eight Skills at 2;
+            </span>
+            <span
+              :style="
+                colorCheck()[3] === 10 ? { color: 'green' } : { color: 'white' }
+              "
+              >ten Skills at 1
+            </span>
+          </div>
+
+          <div v-if="this.skillDistribution.label === 'Balanced'" class="blurb">
+            <span
+              :style="
+                colorCheck()[1] === 3 ? { color: 'green' } : { color: 'white' }
+              "
+              >Three Skills at 3;
+            </span>
+            <span
+              :style="
+                colorCheck()[2] === 5 ? { color: 'green' } : { color: 'white' }
+              "
+              >five Skills at 2;
+            </span>
+            <span
+              :style="
+                colorCheck()[3] === 7 ? { color: 'green' } : { color: 'white' }
+              "
+              >seven Skills at 1
+            </span>
+          </div>
+
+          <div
+            v-if="this.skillDistribution.label === 'Specialist'"
+            class="blurb"
+          >
+            <span
+              :style="
+                colorCheck()[0] === 1 ? { color: 'green' } : { color: 'white' }
+              "
+              >One Skill at 4;
+            </span>
+            <span
+              :style="
+                colorCheck()[1] === 3 ? { color: 'green' } : { color: 'white' }
+              "
+              >three Skills at 3;
+            </span>
+            <span
+              :style="
+                colorCheck()[2] === 3 ? { color: 'green' } : { color: 'white' }
+              "
+              >three Skills at 2;
+            </span>
+            <span
+              :style="
+                colorCheck()[3] === 3 ? { color: 'green' } : { color: 'white' }
+              "
+              >three Skills at 1
+            </span>
           </div>
 
           <div class="q-pa-md doc-container">
@@ -242,7 +313,7 @@ export default defineComponent({
             this.$q.notify({
               type: "positive",
               textColor: "white",
-              position: "top",
+              position: "top-right",
               message: `Free specialty acquired from ${data}`,
             });
           }
@@ -256,7 +327,7 @@ export default defineComponent({
             this.$q.notify({
               type: "positive",
               textColor: "white",
-              position: "top",
+              position: "top-right",
               message: `Free specialty acquired from ${data}`,
             });
           }
@@ -270,7 +341,7 @@ export default defineComponent({
             this.$q.notify({
               type: "positive",
               textColor: "white",
-              position: "top",
+              position: "top-right",
               message: `Free specialty acquired from ${data}`,
             });
           }
@@ -284,7 +355,7 @@ export default defineComponent({
             this.$q.notify({
               type: "positive",
               textColor: "white",
-              position: "top",
+              position: "top-right",
               message: `Free specialty acquired from ${data}`,
             });
           }
@@ -442,11 +513,21 @@ export default defineComponent({
       });
     },
     colorCheck() {
+      let skills = [];
+
+      for (const property in this.baseSkills) {
+        skills.push(this.baseSkills[property]);
+      }
+
+      let sortedArr = skills.sort(function (a, b) {
+        return b - a;
+      });
+
       let fourCount = 0;
       let threeCount = 0;
       let twoCount = 0;
       let oneCount = 0;
-      this.sortedArr.filter((x) => {
+      sortedArr.filter((x) => {
         switch (x) {
           case 4:
             fourCount++;

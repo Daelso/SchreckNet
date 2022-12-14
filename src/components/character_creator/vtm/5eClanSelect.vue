@@ -893,12 +893,20 @@ export default defineComponent({
 
     ageSelected() {
       switch (this.age.label) {
+        case "Fledgling":
+          this.xp = 0;
+          this.humanity = 7;
+          this.flaws = 2;
+          this.advantages = 7;
+          break;
         case "Childer":
           this.xp = 0;
+          this.humanity = 7;
           this.flaws = 2;
           this.advantages = 7;
           break;
         case "Neonate":
+          this.humanity = 7;
           this.xp = 15;
           this.flaws = 2;
           this.advantages = 7;

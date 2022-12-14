@@ -204,7 +204,7 @@ export default {
 
   data() {
     return {
-      kindred: [],
+      kindred: null,
     };
   },
 
@@ -220,11 +220,14 @@ export default {
     this.$q.loading.show({
       delay: 450, // ms
     });
+
+    console.log("kindred id " + kindredId);
     this.kindred = await this.$axios
       .get(baseUrl + "/vampires/myVampire/" + kindredId, {
         withCredentials: true,
       })
       .then((resp) => {
+        console.log(resp);
         this.$q.loading.hide();
         return resp.data;
       })

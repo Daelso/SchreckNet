@@ -31,6 +31,7 @@
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+import { ref } from "vue";
 
 export default defineComponent({
   name: "EssentialLink",
@@ -47,12 +48,12 @@ export default defineComponent({
 
     let currentUser = ref(null);
 
-    currentUser = await axios
+    currentUser.value = await axios
       .get(baseUrl + "/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {
-        console.log(resp.data);
+        return resp.data;
       });
 
     return {

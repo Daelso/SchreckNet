@@ -462,6 +462,25 @@ import attributes from "../vtm/5eAttributes.vue";
 import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
+import { useMeta } from "quasar";
+
+const metaData = {
+  title: "SchreckNet",
+  titleTemplate: (title) => `${title} - VtM 5e Creator`,
+
+  // meta tags
+  meta: {
+    description: {
+      name: "description",
+      content: "Vampire: The Masquerade 5e (vtm 5e) character creator",
+    },
+    keywords: {
+      name: "keywords",
+      content:
+        "vtm, vampire, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness",
+    },
+  },
+};
 
 export default {
   components: {
@@ -470,6 +489,7 @@ export default {
   setup() {
     const router = useRouter();
     const axios = require("axios");
+    useMeta(metaData);
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {

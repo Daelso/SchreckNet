@@ -26,7 +26,6 @@
           >
         </q-tab>
         <q-tab
-          :disable="!this.discDone"
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"
@@ -442,12 +441,15 @@
           >
             <q-select
               v-model="meritCategory"
-              :options="meritCatOptions()"
+              :options="filteredOptions"
               class="q-my-sm"
               :label="this.advantageCategory + ' Category'"
               label-color="primary"
               bg-color="grey-3"
               filled
+              @filter="filterFn"
+              use-input
+              input-debounce="0"
               @update:model-value="changeMeritCat()"
             />
           </div>
@@ -884,10 +886,12 @@ export default defineComponent({
     "sect",
     "chronicle",
   ],
+
   setup() {
     function range(size, startAt = 0) {
       return [...Array(size).keys()].map((i) => i + startAt);
     }
+
     return {
       range,
       tab: ref("coreConcept"),
@@ -908,6 +912,7 @@ export default defineComponent({
       archetype: "",
       charName: "",
       thinClanBane: "",
+      filteredOptions: [],
       cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
@@ -940,6 +945,23 @@ export default defineComponent({
     };
   },
   methods: {
+    filterFn(val, update) {
+      if (val === "") {
+        update(() => {
+          this.filteredOptions = this.meritCatOptions();
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+
+        this.filteredOptions = this.meritCatOptions().filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+
     removeConviction(event) {
       this.convictions.splice(event, 1);
     },

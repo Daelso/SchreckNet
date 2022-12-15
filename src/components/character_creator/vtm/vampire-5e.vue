@@ -465,10 +465,8 @@ import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
 
 const metaData = {
-  // sets document title
-  title: "Index Page",
-  // optional; sets final title as "Index Page - My Website", useful for multiple level meta
-  titleTemplate: (title) => `${title} - My Website`,
+  title: "SchreckNet",
+  titleTemplate: (title) => `${title} - VtM 5e Creator`,
 
   // meta tags
   meta: {

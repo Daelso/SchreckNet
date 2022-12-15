@@ -26,6 +26,7 @@
           >
         </q-tab>
         <q-tab
+          :disable="!this.discDone"
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"

@@ -470,14 +470,10 @@ const metaData = {
 
   // meta tags
   meta: {
-    description: {
-      name: "description",
-      content: "Vampire: The Masquerade 5e (vtm 5e) character creator",
-    },
     keywords: {
       name: "keywords",
       content:
-        "vtm, vampire, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness",
+        "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness",
     },
   },
 };

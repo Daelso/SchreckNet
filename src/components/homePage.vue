@@ -37,10 +37,27 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 import nosImage from "../assets/images/Nosfer_logo.png";
 import vampCards from "./character_creator/vtm/vampireCards.vue";
+import { useMeta } from "quasar";
+
+const metaData = {
+  title: "SchreckNet",
+  titleTemplate: (title) => `${title}`,
+
+  // meta tags
+  meta: {
+    keywords: {
+      name: "keywords",
+      content:
+        "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse",
+    },
+  },
+};
 
 export default {
   components: { vampCards },
   setup() {
+    useMeta(metaData);
+
     const $q = useQuasar();
     const axios = require("axios");
     let currentUser = ref(false);

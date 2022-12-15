@@ -97,7 +97,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Notify", "Dialog", "Loading"],
+      plugins: ["Notify", "Dialog", "Loading", "Meta"],
     },
 
     // animations: 'all', // --- includes all animations
@@ -144,37 +144,17 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Login System`,
-        short_name: `Login System`,
-        description: `A template for vue-based user authentication`,
+        name: `SchreckNet - World of Darkness Character Creator`,
+        short_name: `SchreckNet`,
+        description: `A web app designed to create, find and house various World of Darkness characters like Vampire: the Masquerade or Werewolf: the Apocalypse. Currently in early development. `,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#027be3",
         icons: [
           {
-            src: "icons/icon-128x128.png",
+            src: "icons/favicon-128x128.png",
             sizes: "128x128",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-256x256.png",
-            sizes: "256x256",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-384x384.png",
-            sizes: "384x384",
-            type: "image/png",
-          },
-          {
-            src: "icons/icon-512x512.png",
-            sizes: "512x512",
             type: "image/png",
           },
         ],
@@ -209,7 +189,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: "login-system",
+        appId: "schreckNet",
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

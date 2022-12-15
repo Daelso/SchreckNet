@@ -449,7 +449,11 @@ export default defineComponent({
     return {};
   },
   data() {
-    return {};
+    return {
+      capitalize(s) {
+        return s[0].toUpperCase() + s.slice(1);
+      },
+    };
   },
   methods: {
     async modifyPdf() {
@@ -487,6 +491,7 @@ export default defineComponent({
       const powerField = form.getTextField("Power Bonus");
       const rouseField = form.getTextField("Rouse ReRoll");
       const feedPenField = form.getTextField("Feeding Penalty");
+      const notesField = form.getTextField("Notes");
 
       nameField.setText(this.charName);
       conceptField.setText(this.concept);
@@ -650,6 +655,21 @@ export default defineComponent({
           advCheckBox.check();
         }
       }
+
+      // Specialties
+      let fullSpecString = "";
+      for (let i = 0; i < this.specialties.length; i++) {
+        let specialString = "Specialty: ";
+        let mergedString =
+          specialString +
+          this.capitalize(this.specialties[i].skill) +
+          " - " +
+          this.specialties[i].specialty +
+          "\n";
+        fullSpecString += mergedString;
+      }
+      notesField.setText(fullSpecString);
+
       const pdfBytes = await pdfDoc.save();
       download(
         pdfBytes,

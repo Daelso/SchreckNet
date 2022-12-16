@@ -868,6 +868,7 @@ export default defineComponent({
           withCredentials: true,
         })
         .then((res) => {
+          this.favCount.count++;
           this.$q.notify({
             color: "green-4",
             textColor: "white",

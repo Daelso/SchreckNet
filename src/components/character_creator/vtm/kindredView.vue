@@ -342,11 +342,14 @@
 import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
-import { degrees, PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { degrees, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
 import download from "downloadjs";
 import charSheet from "raw-loader!./sheetbase64.txt";
+
+import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 import clanBanes from "../vtm/5eClanBanes.json";
+import fontkit from "@pdf-lib/fontkit";
 
 import { ref } from "vue";
 
@@ -465,6 +468,12 @@ export default defineComponent({
       this.setClanBane();
       const pdfDoc = await PDFDocument.load(this.charSheet);
       const form = pdfDoc.getForm();
+      const ubuntuFontBytes = await fetch(ubuntuFont).then((res) =>
+        res.arrayBuffer()
+      );
+      pdfDoc.registerFontkit(fontkit);
+      const supportFont = await pdfDoc.embedFont(ubuntuFontBytes);
+
       // const fields = form.getFields();
       // fields.forEach((field) => {
       //   const type = field.constructor.name;
@@ -511,6 +520,9 @@ export default defineComponent({
       rouseField.setText(`${this.rouseAmt}`);
       feedPenField.setText(`${this.feedPenalty}`);
       baneField.setText(this.clanBane);
+      sireField.updateAppearances(supportFont);
+      nameField.updateAppearances(supportFont);
+      chronicleField.updateAppearances(supportFont);
 
       conceptField.setFontSize(10);
 
@@ -670,6 +682,7 @@ export default defineComponent({
       }
       notesField.setText(fullSpecString);
 
+      console.log(pdfDoc.save());
       const pdfBytes = await pdfDoc.save();
       download(
         pdfBytes,

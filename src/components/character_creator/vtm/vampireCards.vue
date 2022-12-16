@@ -97,8 +97,8 @@
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline
-                >Archetype</q-item-label
-              >
+                >Archetype
+              </q-item-label>
               <q-item-label>{{ truncate(vamp.archetype, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
@@ -134,6 +134,13 @@
       >
         View Full Character
       </q-btn>
+      <q-btn
+        @click="this.favoriteChar(vamp.id, vamp.charName)"
+        style="margin: auto"
+        flat
+        v-if="this.currentUser !== false"
+        >Favorite</q-btn
+      >
     </q-card-actions>
   </q-card>
 </template>
@@ -175,7 +182,8 @@
 import { useRouter } from "vue-router";
 
 export default {
-  async setup() {
+  props: ["currentUser"],
+  async setup(props) {
     const router = useRouter();
 
     const axios = require("axios");
@@ -213,6 +221,47 @@ export default {
       } else {
         return value;
       }
+    },
+
+    favoriteChar(sheet_id, charName) {
+      let baseUrl = "";
+      if (window.location.href.includes("localhost")) {
+        baseUrl = "http://localhost:5000";
+      } else {
+        baseUrl = window.location.origin;
+      }
+      const payload = {
+        game_id: 1,
+        sheet_id: sheet_id,
+      };
+      this.$axios
+        .post(baseUrl + "/favorites/add", payload, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          this.$q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: `Favorited ${charName}`,
+          });
+        })
+        .catch((err) => {
+          if (err.response.status === 409) {
+            return this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "You have already favorited this character!",
+            });
+          }
+          this.$q.notify({
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+            message: err.message,
+          });
+        });
     },
   },
 };

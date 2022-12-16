@@ -10,7 +10,23 @@
 
     <q-item-section>
       <q-item-label>My VtM Characters</q-item-label>
-      <q-item-label caption style="color: white">quasar.dev</q-item-label>
+      <q-item-label caption style="color: white"
+        >View your created characters</q-item-label
+      >
+    </q-item-section>
+  </q-item>
+  <q-separator />
+
+  <q-item clickable style="color: red" :to="{ name: 'myFavs' }">
+    <q-item-section avatar>
+      <q-icon color="secondary" name="favorite" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>My Favorited Characters</q-item-label>
+      <q-item-label caption style="color: white"
+        >View your favorited characters</q-item-label
+      >
     </q-item-section>
   </q-item>
   <q-separator />
@@ -22,7 +38,9 @@
 
     <q-item-section>
       <q-item-label>Logout</q-item-label>
-      <q-item-label caption style="color: white">quasar.dev</q-item-label>
+      <q-item-label caption style="color: white"
+        >Stay safe, Kindred.</q-item-label
+      >
     </q-item-section>
   </q-item>
 </template>

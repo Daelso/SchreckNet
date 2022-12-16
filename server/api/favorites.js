@@ -64,4 +64,18 @@ router.route("/my").get(lib.authenticateToken, async (req, res) => {
   }
 });
 
+router.route("/favCount/:id").get(async (req, res) => {
+  try {
+    const count = await Favorites.findAndCountAll({
+      where: {
+        sheet_id: req.params.id,
+      },
+    });
+
+    res.status(200).send(count);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 module.exports = router; //Exports our routes

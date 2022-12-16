@@ -54,9 +54,11 @@ router.route("/remove").post(lib.authenticateToken, async (req, res) => {
 
 router.route("/my").get(lib.authenticateToken, async (req, res) => {
   try {
-    const dbName = "login";
+    const dbName = null;
 
-    if (process.env.ENV === "prod") {
+    if (window.location.href.includes("localhost")) {
+      dbName = "login";
+    } else {
       dbName = process.env.PROD_DB_NAME;
     }
 

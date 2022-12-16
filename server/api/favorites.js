@@ -56,7 +56,7 @@ router.route("/my").get(lib.authenticateToken, async (req, res) => {
   try {
     const dbName = "login";
 
-    if (process.env.env === "prod") {
+    if (process.env.ENV === "prod") {
       dbName = process.env.PROD_DB_NAME;
     }
 

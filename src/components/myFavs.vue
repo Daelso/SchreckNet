@@ -1,4 +1,10 @@
 <template>
+  <div
+    v-if="this.favorites === null || this.favorites.length === 0"
+    class="banner"
+  >
+    No characters favorited yet!
+  </div>
   <div class="container">
     <!-- <div class="">
       <q-select
@@ -176,6 +182,15 @@
   background-color: #222831;
   height: auto;
 }
+
+.banner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  font-size: 35px;
+}
 .backgroundDefault {
   background-color: #171a1e;
 }
@@ -257,6 +272,8 @@ export default {
         console.log(err);
         return "Not found!";
       });
+
+    console.log(this.favorites);
   },
 
   methods: {

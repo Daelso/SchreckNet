@@ -55,7 +55,7 @@ router.route("/remove").post(lib.authenticateToken, async (req, res) => {
 router.route("/my").get(lib.authenticateToken, async (req, res) => {
   try {
     const [results, metadata] = await sequelize.sequelize.query(
-      "SELECT favs.id as favId, favs.game_id, favs.sheet_id, vamps.* FROM login.favorites as favs INNER JOIN login.vampires vamps ON favs.sheet_id = vamps.id"
+      "SELECT favs.id as favId, favs.game_id, favs.sheet_id, vamps.* FROM ey140u9j4rs9xcib.favorites as favs INNER JOIN ey140u9j4rs9xcib.vampires vamps ON favs.sheet_id = vamps.id"
     );
 
     res.status(200).send([results, req.currentUser]);

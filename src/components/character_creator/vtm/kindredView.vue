@@ -2,6 +2,7 @@
   <div v-if="!this.pageFound">
     <notfound />
   </div>
+  {{ updateMetaTags() }}
   <div
     v-if="this.pageFound"
     class="q-pa-md row justify-center text-center"
@@ -353,11 +354,42 @@ import fontkit from "@pdf-lib/fontkit";
 
 import { ref } from "vue";
 
+import { useMeta } from "quasar";
+
 export default defineComponent({
   name: "kindred-view",
   components: { notfound },
 
   async setup() {
+    const siteTitle = ref("SchreckNet");
+    const meta = {
+      description: {
+        name: "description",
+        content: "Vampire: The Masquerade 5th Edition Character Generator",
+      },
+      keywords: {
+        name: "keywords",
+        content:
+          "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse",
+      },
+    };
+
+    useMeta(() => {
+      return {
+        title: siteTitle.value,
+        meta,
+      };
+    });
+
+    function updateMetaTags() {
+      siteTitle.value = "SchreckNet - " + this.charName; // will automatically trigger a Meta update due to the binding
+      meta.description.content =
+        this.generation +
+        " Gen " +
+        this.clan +
+        "Created using SchreckNet, a Vampire: The Masquerade character creator.";
+    }
+
     const axios = require("axios");
     let pageFound = ref(false);
 
@@ -428,6 +460,7 @@ export default defineComponent({
       rouseAmt: 0,
       feedPenalty: "",
       clanBane: "",
+      updateMetaTags,
     };
   },
   async created() {
@@ -682,7 +715,6 @@ export default defineComponent({
       }
       notesField.setText(fullSpecString);
 
-      console.log(pdfDoc.save());
       const pdfBytes = await pdfDoc.save();
       download(
         pdfBytes,

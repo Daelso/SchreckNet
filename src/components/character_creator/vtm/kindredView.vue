@@ -285,7 +285,10 @@
       </div>
 
       <template v-slot:action>
-        <div class="q-mr-lg">Created by: {{ creator }}</div>
+        <div class="q-mr-lg">
+          Created by: {{ creator }}, Favorited:
+          {{ this.favCount.count }} time(s)
+        </div>
         <q-btn
           flat
           label="Export to PDF"
@@ -294,7 +297,10 @@
           color="white"
         />
         <q-btn
-          v-if="this.currentUser !== false"
+          v-if="
+            this.currentUser !== false &&
+            this.currentUser.username !== this.creator
+          "
           flat
           label="Favorite Character"
           @click="this.favoriteChar(this.kindredId, this.charName)"
@@ -500,6 +506,7 @@ export default defineComponent({
       capitalize(s) {
         return s[0].toUpperCase() + s.slice(1);
       },
+      favCount: 0,
     };
   },
   async mounted() {
@@ -516,6 +523,16 @@ export default defineComponent({
       .then((resp) => {
         return resp.data;
       });
+
+    this.favCount = await this.$axios
+      .get(baseUrl + "/favorites/favCount/" + this.kindredId, {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        return resp.data;
+      });
+
+    console.log(this.favCount.count);
   },
   methods: {
     async modifyPdf() {

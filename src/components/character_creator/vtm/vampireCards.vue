@@ -138,7 +138,9 @@
         @click="this.favoriteChar(vamp.id, vamp.charName)"
         style="margin: auto"
         flat
-        v-if="this.currentUser !== false"
+        v-if="
+          this.currentUser !== false && vamp.created_by !== this.currentUser.id
+        "
         >Favorite</q-btn
       >
     </q-card-actions>

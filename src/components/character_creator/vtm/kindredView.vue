@@ -285,11 +285,25 @@
       </div>
 
       <template v-slot:action>
-        <div class="q-mr-lg">Created by: {{ creator }}</div>
+        <div class="q-mr-lg">
+          Created by: {{ creator }}, Favorited:
+          {{ this.favCount.count }} time(s)
+        </div>
         <q-btn
           flat
           label="Export to PDF"
           @click="this.modifyPdf()"
+          type="submit"
+          color="white"
+        />
+        <q-btn
+          v-if="
+            this.currentUser !== false &&
+            this.currentUser.username !== this.creator
+          "
+          flat
+          label="Favorite Character"
+          @click="this.favoriteChar(this.kindredId, this.charName)"
           type="submit"
           color="white"
         />
@@ -391,6 +405,7 @@ export default defineComponent({
     }
 
     const axios = require("axios");
+    let currentUser = ref(false);
     let pageFound = ref(false);
 
     let creator = ref("Anonymous");
@@ -401,10 +416,10 @@ export default defineComponent({
     } else {
       baseUrl = window.location.origin;
     }
-    let kindredId = window.location.href.split("/")[5];
+    let kindredId = ref(window.location.href.split("/")[5]);
 
     let kindred = await axios
-      .get(baseUrl + "/vampires/vampire/" + kindredId, {
+      .get(baseUrl + "/vampires/vampire/" + kindredId.value, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -417,6 +432,8 @@ export default defineComponent({
       });
 
     return {
+      currentUser,
+      kindredId,
       attributeInfo,
       clanBanes,
       skillInfo,
@@ -489,7 +506,33 @@ export default defineComponent({
       capitalize(s) {
         return s[0].toUpperCase() + s.slice(1);
       },
+      favCount: 0,
     };
+  },
+  async mounted() {
+    let baseUrl = "";
+    if (window.location.href.includes("localhost")) {
+      baseUrl = "http://localhost:5000";
+    } else {
+      baseUrl = window.location.origin;
+    }
+    this.currentUser = await this.$axios
+      .get(baseUrl + "/user/currentUser", {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        return resp.data;
+      });
+
+    this.favCount = await this.$axios
+      .get(baseUrl + "/favorites/favCount/" + this.kindredId, {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        return resp.data;
+      });
+
+    console.log(this.favCount.count);
   },
   methods: {
     async modifyPdf() {
@@ -807,6 +850,47 @@ export default defineComponent({
     },
     setClanBane() {
       this.clanBane = this.clanBanes.clans[this.clan];
+    },
+
+    favoriteChar(sheet_id, charName) {
+      let baseUrl = "";
+      if (window.location.href.includes("localhost")) {
+        baseUrl = "http://localhost:5000";
+      } else {
+        baseUrl = window.location.origin;
+      }
+      const payload = {
+        game_id: 1,
+        sheet_id: sheet_id,
+      };
+      this.$axios
+        .post(baseUrl + "/favorites/add", payload, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          this.$q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: `Favorited ${charName}`,
+          });
+        })
+        .catch((err) => {
+          if (err.response.status === 409) {
+            return this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "You have already favorited this character!",
+            });
+          }
+          this.$q.notify({
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+            message: err.message,
+          });
+        });
     },
   },
 });

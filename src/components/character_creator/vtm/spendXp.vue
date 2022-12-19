@@ -34,8 +34,19 @@
             <!-- Blood Rituals -->
             <q-select
               v-if="this.categoryInput === 'Blood Sorcery Ritual'"
+              v-model="ritualLevel"
+              :options="ritualLevelOptions"
+              label="What level ritual?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+              option-label="name"
+            />
+            <q-select
+              v-if="this.ritualLevel"
               v-model="ritualInput"
-              :options="attributeOptions"
+              :options="bloodRitualOptions"
               label="Which ritual would you like to purchase?"
               label-color="primary"
               bg-color="grey-3"
@@ -43,6 +54,7 @@
               class="q-my-sm"
               option-label="name"
             />
+
             <!-- Clan Disciplines and Caitiff Disciplines -->
             <q-select
               v-if="
@@ -142,6 +154,18 @@
               >
 
               <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
+              <div
+                v-if="this.ritualInput"
+                class="q-my-md"
+                style="
+                  overflow-wrap: break-word;
+                  width: 350px;
+                  background-color: #222831;
+                  color: white;
+                "
+              >
+                Description: {{ this.ritualInput.description }}
+              </div>
               <div class="q-mt-sm" v-if="this.cost > 0">
                 <q-btn
                   flat
@@ -149,11 +173,7 @@
                   @click="purchaseMade()"
                   color="white"
                   class="bg-primary"
-                  :disable="!disciplinePower"
                 />
-                <q-tooltip v-if="!disciplinePower" class="bg-dark text-body2"
-                  >Please select a discipline power first.</q-tooltip
-                >
               </div>
             </div>
           </div>
@@ -168,6 +188,7 @@ import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import clanDisciplines from "../vtm/5eClanDiscs.json";
 import disciplineSkills from "../vtm/5eDisciplines.json";
+import bloodRituals from "../vtm/5eBloodRituals.json";
 
 export default defineComponent({
   name: "spendXP",
@@ -212,6 +233,7 @@ export default defineComponent({
       advantagePoints,
       cost: ref(0),
       localXP,
+      bloodRituals,
       canBuy: ref(true),
       clanDisciplines,
       disciplineSkills,
@@ -220,6 +242,8 @@ export default defineComponent({
       categoryInput: ref(""),
       clanDiscInput: ref(""),
       disciplinePower: ref(""),
+      ritualInput: ref(""),
+      ritualLevel: ref(""),
       specialtyInput: ref(""),
       specialtyDefinition: ref(""),
       dotsInput: ref(1),
@@ -250,7 +274,7 @@ export default defineComponent({
           this.cost = (this.potency + 1) * 10;
           break;
         case "Blood Sorcery Ritual":
-          this.cost = 3 * 3;
+          this.cost = this.ritualLevel * 3;
           break;
         case "Caitiff Discipline":
           if (this.disciplines[this.clanDiscInput] === 0) {
@@ -298,6 +322,7 @@ export default defineComponent({
       this.specialtyDefinition = "";
       this.skillCategory = "";
       this.ritualInput = "";
+      this.ritualLevel = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -310,6 +335,7 @@ export default defineComponent({
       this.specialtyDefinition = "";
       this.skillCategory = "";
       this.ritualInput = "";
+      this.ritualLevel = "";
     },
 
     purchaseMade() {
@@ -344,7 +370,25 @@ export default defineComponent({
           this.potency = this.potency + this.dotsInput;
           break;
         case "Blood Sorcery Ritual":
-          // code block
+          if (
+            this.disciplineSkillsObj.filter(
+              (e) => e.skill === this.disciplinePower
+            ).length > 0
+          ) {
+            this.disciplinePower = "";
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              message: "You have already selected this skill!",
+            });
+            return;
+          }
+
+          this.disciplineSkillsObj.push({
+            discipline: "Blood Sorcery",
+            skill: "Ritual: " + this.ritualInput.name,
+          });
+
           break;
         case "Caitiff Discipline":
           if (
@@ -552,6 +596,18 @@ export default defineComponent({
         }
       }
       return optionsArr.sort();
+    },
+    ritualLevelOptions() {
+      let arr = [];
+      arr = this.range(5, 1);
+
+      return arr;
+    },
+
+    bloodRitualOptions() {
+      let arr = this.bloodRituals.Rituals[this.ritualLevel - 1];
+
+      return arr;
     },
   },
 });

@@ -17,24 +17,28 @@
           label="Touchstones/Convictions"
         />
         <q-tab
-          :disable="sortSkills().length < 1"
+          :disable="sortSkills().length < 1 && this.debug !== true"
           name="specialties"
           label="Specialties"
           style="color: white"
           id="specTab"
         >
-          <q-tooltip v-if="sortSkills().length < 1" class="bg-dark text-body2"
+          <q-tooltip
+            v-if="sortSkills().length < 1 && this.debug !== true"
+            class="bg-dark text-body2"
             >Must have any skill over 1 to set specialties.</q-tooltip
           >
         </q-tab>
         <q-tab
-          :disable="!this.discDone"
+          :disable="!this.discDone && this.debug !== true"
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"
           id="advantageTab"
         >
-          <q-tooltip v-if="!this.discDone" class="bg-dark text-body2"
+          <q-tooltip
+            v-if="!this.discDone && this.debug !== true"
+            class="bg-dark text-body2"
             >Please set your clan and disciplines first.</q-tooltip
           >
         </q-tab>
@@ -869,6 +873,7 @@ export default defineComponent({
     "disciplines",
     "clanBane",
     "discDone",
+    "debug",
   ],
   emits: [
     "update:specialtiePoints",
@@ -1082,6 +1087,9 @@ export default defineComponent({
           if (this.clan !== "Thin-Blood") {
             arr = arr.filter((x) => x !== "Thin-blood");
           }
+          if (this.clan === "Thin-Blood") {
+            arr = arr.filter((x) => x !== "Bonding");
+          }
           break;
         case "Cult":
           arr = Object.keys(allCultMerits.Cults);
@@ -1093,6 +1101,11 @@ export default defineComponent({
           break;
         case "Backgrounds":
           arr = Object.keys(allBackgrounds.Backgrounds);
+          if (this.clan === "Thin-Blood") {
+            arr = arr.filter(
+              (x) => x !== "Mawla" && x !== "Status" && x !== "Retainers"
+            );
+          }
           break;
         case "Haven":
           arr = Object.keys(havenMerits.havens);

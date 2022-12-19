@@ -8,6 +8,7 @@
         indicator-color="secondary"
         align="justify"
         narrow-indicator
+        mobile-arrows
       >
         <q-tab style="color: white" name="coreConcept" label="Core Concept" />
         <q-tab
@@ -20,6 +21,7 @@
           name="specialties"
           label="Specialties"
           style="color: white"
+          id="specTab"
         >
           <q-tooltip v-if="sortSkills().length < 1" class="bg-dark text-body2"
             >Must have any skill over 1 to set specialties.</q-tooltip
@@ -30,6 +32,7 @@
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"
+          id="advantageTab"
         >
           <q-tooltip v-if="!this.discDone" class="bg-dark text-body2"
             >Please set your clan and disciplines first.</q-tooltip
@@ -888,7 +891,7 @@ export default defineComponent({
     "chronicle",
   ],
 
-  setup() {
+  setup(props) {
     function range(size, startAt = 0) {
       return [...Array(size).keys()].map((i) => i + startAt);
     }

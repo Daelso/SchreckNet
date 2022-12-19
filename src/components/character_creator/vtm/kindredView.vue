@@ -3,6 +3,7 @@
     <notfound />
   </div>
   {{ updateMetaTags() }}
+  {{ chunkArrays() }}
   <div
     v-if="this.pageFound"
     class="q-pa-md row justify-center text-center"
@@ -53,7 +54,21 @@
             dark
           >
             <q-card>
-              <q-card-section class="backgroundDefault">
+              <q-card-section class="backgroundDefault attributes">
+                <div
+                  v-for="i in Math.ceil(attributeInfo.Attributes.length / 3)"
+                  :key="i"
+                >
+                  {{
+                    i === 1
+                      ? "Physical"
+                      : i === 2
+                      ? "Social"
+                      : i === 3
+                      ? "Mental"
+                      : ""
+                  }}
+                </div>
                 <div
                   v-for="(attribute, key) in attributeInfo.Attributes"
                   :key="key"
@@ -74,8 +89,24 @@
           >
             <q-card>
               <q-card-section class="backgroundDefault">
-                <div v-for="(skill, key) in skillInfo.skills.sort()" :key="key">
-                  {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
+                <div class="attributes">
+                  <div
+                    v-for="i in Math.ceil(attributeInfo.Attributes.length / 3)"
+                    :key="i"
+                  >
+                    {{
+                      i === 1
+                        ? "Physical"
+                        : i === 2
+                        ? "Social"
+                        : i === 3
+                        ? "Mental"
+                        : ""
+                    }}
+                  </div>
+                  <div v-for="(skill, key) in skillInfo.skills" :key="key">
+                    {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
+                  </div>
                 </div>
                 <q-separator />
                 <br />
@@ -323,11 +354,7 @@
 .backgroundDefault {
   background-color: #171a1e;
 }
-@media only screen and (max-width: 600px) {
-  .select {
-    width: 300px;
-  }
-}
+
 .info {
   display: grid;
   gap: 3px;
@@ -344,6 +371,26 @@
   display: grid;
   gap: 3px;
   grid-template-columns: repeat(2, 1fr);
+}
+
+.attributes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  grid-row-gap: 5px;
+}
+
+@media only screen and (max-width: 650px) {
+  .select {
+    width: 300px;
+  }
+  .attributes {
+    display: grid;
+    grid-row-gap: 20px;
+    width: 100%;
+    font-size: 3vw;
+    width: 365px;
+  }
 }
 
 .concept {
@@ -516,6 +563,12 @@ export default defineComponent({
     } else {
       baseUrl = window.location.origin;
     }
+
+    this.favCount = await this.$axios
+      .get(baseUrl + "/favorites/favCount/" + this.kindredId)
+      .then((resp) => {
+        return resp.data;
+      });
     this.currentUser = await this.$axios
       .get(baseUrl + "/user/currentUser", {
         withCredentials: true,
@@ -523,16 +576,6 @@ export default defineComponent({
       .then((resp) => {
         return resp.data;
       });
-
-    this.favCount = await this.$axios
-      .get(baseUrl + "/favorites/favCount/" + this.kindredId, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      });
-
-    console.log(this.favCount.count);
   },
   methods: {
     async modifyPdf() {
@@ -892,6 +935,18 @@ export default defineComponent({
             message: err.message,
           });
         });
+    },
+
+    chunkArrays() {
+      const chunkSize = 3;
+      for (
+        let i = 0;
+        i < this.attributeInfo.Attributes.length;
+        i += chunkSize
+      ) {
+        const chunk = this.attributeInfo.Attributes.slice(i, i + chunkSize);
+        console.log(chunk);
+      }
     },
   },
 });

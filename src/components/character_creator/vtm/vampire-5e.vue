@@ -47,7 +47,21 @@
               dark
             >
               <q-card>
-                <q-card-section class="backgroundDefault">
+                <q-card-section class="backgroundDefault attributes">
+                  <div
+                    v-for="i in Math.ceil(attributeInfo.Attributes.length / 3)"
+                    :key="i"
+                  >
+                    {{
+                      i === 1
+                        ? "Physical"
+                        : i === 2
+                        ? "Social"
+                        : i === 3
+                        ? "Mental"
+                        : ""
+                    }}
+                  </div>
                   <div
                     v-for="(attribute, key) in attributeInfo.Attributes"
                     :key="key"
@@ -67,11 +81,26 @@
             >
               <q-card>
                 <q-card-section class="backgroundDefault">
-                  <div
-                    v-for="(skill, key) in skillInfo.skills.sort()"
-                    :key="key"
-                  >
-                    {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
+                  <div class="attributes">
+                    <div
+                      v-for="i in Math.ceil(
+                        attributeInfo.Attributes.length / 3
+                      )"
+                      :key="i"
+                    >
+                      {{
+                        i === 1
+                          ? "Physical"
+                          : i === 2
+                          ? "Social"
+                          : i === 3
+                          ? "Mental"
+                          : ""
+                      }}
+                    </div>
+                    <div v-for="(skill, key) in skillInfo.skills" :key="key">
+                      {{ skill }}: {{ this.trueSkills[skill.toLowerCase()] }}/5
+                    </div>
                   </div>
                   <q-separator />
                   <br />
@@ -326,11 +355,7 @@
               >
             </q-item-section>
           </q-item>
-          <q-item
-            :disable="!this.skillsDone || !this.attributesDone"
-            clickable
-            @click="clanSelected"
-          >
+          <q-item clickable @click="clanSelected">
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
               class="bg-dark text-body2"
@@ -347,13 +372,7 @@
               >
             </q-item-section>
           </q-item>
-          <q-item
-            clickable
-            @click="spendXp"
-            :disable="
-              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
-            "
-          >
+          <q-item clickable @click="spendXp">
             <q-tooltip
               v-if="
                 !this.skillsDone ||
@@ -422,9 +441,23 @@
 .backgroundDefault {
   background-color: #171a1e;
 }
+.attributes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  grid-row-gap: 5px;
+}
+
 @media only screen and (max-width: 600px) {
   .select {
     width: 300px;
+  }
+  .attributes {
+    display: grid;
+    grid-row-gap: 20px;
+    width: 100%;
+    font-size: 3vw;
+    width: 365px;
   }
 }
 .info {

@@ -227,7 +227,9 @@
                   "
                   color="primary"
                   label="Confirm Predator Selection"
-                  :disable="!bonusSpecs || !bonusDisc"
+                  :disable="
+                    (!bonusSpecs || !bonusDisc) && this.clan !== 'Thin-Blood'
+                  "
                 >
                   <q-tooltip
                     v-if="!bonusSpecs || !bonusDisc"

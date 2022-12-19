@@ -3,7 +3,9 @@
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
-          <q-toolbar-title>Base Skill Selection</q-toolbar-title>
+          <q-toolbar-title class="attHeader"
+            >Base Skill Selection</q-toolbar-title
+          >
           <q-btn color="primary" label="Save" @click="onOKClick"> </q-btn>
 
           <br />
@@ -192,10 +194,19 @@
 }
 
 @media only screen and (max-width: 600px) {
+  .attName {
+    color: white;
+    font-weight: bold;
+    margin: auto;
+    font-size: 12px;
+  }
+
+  .attHeader {
+    font-size: 15px;
+  }
   .row {
     height: 6rem;
     background: #222831;
-    width: 100%;
   }
   .row > div {
     padding: 3px 5px;

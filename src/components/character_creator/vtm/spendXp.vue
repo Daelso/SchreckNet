@@ -31,6 +31,18 @@
               class="q-my-sm"
               option-label="name"
             />
+            <!-- Blood Rituals -->
+            <q-select
+              v-if="this.categoryInput === 'Blood Sorcery Ritual'"
+              v-model="ritualInput"
+              :options="attributeOptions"
+              label="Which ritual would you like to purchase?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+              option-label="name"
+            />
             <!-- Clan Disciplines and Caitiff Disciplines -->
             <q-select
               v-if="
@@ -102,7 +114,8 @@
                 this.categoryInput !== 'Specialty' &&
                 this.categoryInput !== 'Caitiff Discipline' &&
                 this.categoryInput !== 'Out of Clan Discipline' &&
-                this.categoryInput !== 'Skills'
+                this.categoryInput !== 'Skills' &&
+                this.categoryInput !== 'Blood Sorcery Ritual'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -237,7 +250,7 @@ export default defineComponent({
           this.cost = (this.potency + 1) * 10;
           break;
         case "Blood Sorcery Ritual":
-          // code block
+          this.cost = 3 * 3;
           break;
         case "Caitiff Discipline":
           if (this.disciplines[this.clanDiscInput] === 0) {
@@ -284,6 +297,7 @@ export default defineComponent({
       this.specialtyInput = "";
       this.specialtyDefinition = "";
       this.skillCategory = "";
+      this.ritualInput = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -295,6 +309,7 @@ export default defineComponent({
       this.specialtyInput = "";
       this.specialtyDefinition = "";
       this.skillCategory = "";
+      this.ritualInput = "";
     },
 
     purchaseMade() {
@@ -418,6 +433,7 @@ export default defineComponent({
         "Advantage",
         "Attributes",
         "Blood Potency",
+        "Blood Sorcery Ritual",
         "Caitiff Discipline",
         "Clan Discipline",
         "Out of Clan Discipline",

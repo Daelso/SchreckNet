@@ -945,7 +945,6 @@ export default defineComponent({
         i += chunkSize
       ) {
         const chunk = this.attributeInfo.Attributes.slice(i, i + chunkSize);
-        console.log(chunk);
       }
     },
   },

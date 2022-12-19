@@ -76,9 +76,9 @@
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
-                  val.length <= 2000 &&
+                  val.length <= 164 &&
                   val.length >= 1) ||
-                'Please keep this field between 50 and 2000 characters',
+                'Please keep this field between 1 and 164 characters',
             ]"
           />
           <q-input

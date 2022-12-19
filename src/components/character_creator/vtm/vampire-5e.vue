@@ -356,7 +356,9 @@
             </q-item-section>
           </q-item>
           <q-item
-            :disable="!this.skillsDone || !this.attributesDone"
+            :disable="
+              (!this.skillsDone || !this.attributesDone) && this.debug !== true
+            "
             clickable
             @click="clanSelected"
           >
@@ -380,7 +382,10 @@
             clickable
             @click="spendXp"
             :disable="
-              !this.skillsDone || !this.attributesDone || !this.disciplinesDone
+              (!this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone) &&
+              this.debug !== true
             "
           >
             <q-tooltip
@@ -433,6 +438,7 @@
         :specialtiesFromPred="this.specialtiesFromPred"
         :age="this.age"
         :clan="this.clan"
+        :debug="this.debug"
       />
     </div>
   </q-form>
@@ -545,6 +551,7 @@ export default {
   },
   data() {
     return {
+      debug: true,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },

@@ -136,7 +136,11 @@
                   @click="purchaseMade()"
                   color="white"
                   class="bg-primary"
+                  :disable="!disciplinePower"
                 />
+                <q-tooltip v-if="!disciplinePower" class="bg-dark text-body2"
+                  >Please select a discipline power first.</q-tooltip
+                >
               </div>
             </div>
           </div>
@@ -243,18 +247,10 @@ export default defineComponent({
           this.cost = this.disciplines[this.clanDiscInput] * 6;
           break;
         case "Clan Discipline":
-          if (this.disciplines[this.clanDiscInput] === 0) {
-            this.cost = 5;
-            break;
-          }
-          this.cost = this.disciplines[this.clanDiscInput] * 5;
+          this.cost = (this.disciplines[this.clanDiscInput] + 1) * 5;
           break;
         case "Out of Clan Discipline":
-          if (this.disciplines[this.clanDiscInput] === 0) {
-            this.cost = 7;
-            break;
-          }
-          this.cost = this.disciplines[this.clanDiscInput] * 7;
+          this.cost = (this.disciplines[this.clanDiscInput] + 1) * 7;
           break;
         case "Skills":
           if (this.skills[this.skillCategory.toLowerCase()] === 0) {

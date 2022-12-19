@@ -599,7 +599,7 @@ export default defineComponent({
     },
     ritualLevelOptions() {
       let arr = [];
-      arr = this.range(5, 1);
+      arr = this.range(this.disciplines["Blood Sorcery"], 1);
 
       return arr;
     },

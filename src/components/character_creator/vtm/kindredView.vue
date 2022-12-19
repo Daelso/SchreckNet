@@ -340,12 +340,25 @@
         />
       </template>
     </q-banner>
+    <a
+      href="https://renegadegamestudios.com/vampire-the-masquerade-5th-edition-roleplaying-game-pdf-fillable-character-sheet/#product-reviews"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="charSheetBlurb"
+      >Sheets Provided by Renegade Game Studios
+    </a>
   </div>
 </template>
 
 <style scoped>
 .q-field__counter {
   color: white;
+}
+
+.charSheetBlurb {
+  color: white;
+  font-style: italic;
+  margin-top: 5px;
 }
 .q-field__bottom {
   color: white;

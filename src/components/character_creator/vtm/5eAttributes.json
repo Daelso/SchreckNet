@@ -1,13 +1,13 @@
 {
   "Attributes": [
     "Strength",
-    "Dexterity",
-    "Stamina",
     "Charisma",
-    "Manipulation",
-    "Composure",
     "Intelligence",
+    "Dexterity",
+    "Manipulation",
     "Wits",
+    "Stamina",
+    "Composure",
     "Resolve"
   ]
 }

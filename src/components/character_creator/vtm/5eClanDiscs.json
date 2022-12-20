@@ -14,6 +14,8 @@
     "Tzimisce": { "disciplines": ["Animalism", "Dominate", "Protean"] },
     "Ventrue": { "disciplines": ["Dominate", "Fortitude", "Presence"] },
     "The Ministry": { "disciplines": ["Obfuscate", "Presence", "Protean"] },
-    "Thin-Blood": { "disciplines": ["Thin-blood Alchemy"] }
+    "Thin-Blood": {
+      "disciplines": ["Athanor Corporis", "Calcinatio", "Fixatio"]
+    }
   }
 }

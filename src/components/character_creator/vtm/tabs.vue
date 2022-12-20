@@ -424,9 +424,9 @@
               taken in a balanced amount.
             </div>
             <div class="q-my-sm">
-              Thin-Blood Advantages: {{ thinAdvantages }}
+              Thin-Blood Advantages: {{ thinAdvantagesTab }}
             </div>
-            <div class="q-my-sm">Thin-Blood Flaws: {{ thinFlaws }}</div>
+            <div class="q-my-sm">Thin-Blood Flaws: {{ thinFlawsTab }}</div>
           </div>
           <q-select
             v-model="advantageCategory"
@@ -874,6 +874,8 @@ export default defineComponent({
     "clanBane",
     "discDone",
     "debug",
+    "thinAdvantages",
+    "thinFlaws",
   ],
   emits: [
     "update:specialtiePoints",
@@ -884,6 +886,8 @@ export default defineComponent({
     "update:advantagesObj",
     "update:clanBane",
     "update:cult",
+    "update:thinAdvantages",
+    "update:thinFlaws",
     "specialties",
     "convictions",
     "touchstones",
@@ -948,8 +952,8 @@ export default defineComponent({
       skillSelect: "",
       specialties: props.specials,
       sireInput: props.sire,
-      thinFlaws: 0,
-      thinAdvantages: 0,
+      thinFlawsTabs: props.thinFlaws,
+      thinAdvantagesTabs: props.thinAdvantages,
       loresheets,
     };
   },
@@ -999,7 +1003,9 @@ export default defineComponent({
           this.$emit("update:disciplines", newDisc);
         }
         modifiedObj.merits.advantages.splice(event, 1);
-        this.thinAdvantages--;
+        this.thinAdvantagesTab--;
+        this.$emit("update:thinAdvantages", this.thinAdvantagesTabs);
+
         return;
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
@@ -1011,7 +1017,9 @@ export default defineComponent({
       if (name.includes("Thin-Blood")) {
         let modifiedObj = { ...{}, ...this.advantagesObj };
         modifiedObj.merits.flaws.splice(event, 1);
-        this.thinFlaws--;
+        this.thinFlawsTab--;
+        this.$emit("update:thinFlaws", this.thinFlawsTabs);
+
         return;
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
@@ -1432,7 +1440,8 @@ export default defineComponent({
         }
 
         modifiedObj.merits.advantages.push(this.advFlawChoice);
-        this.thinAdvantages++;
+        this.thinAdvantagesTab++;
+        this.$emit("update:thinAdvantages", this.thinAdvantagesTabs);
         this.clearFields();
       } else {
         let haveIt;
@@ -1487,7 +1496,9 @@ export default defineComponent({
         }
 
         modifiedObj.merits.flaws.push(this.advFlawChoice);
-        this.thinFlaws++;
+        this.thinFlawsTab++;
+        this.$emit("update:thinFlaws", this.thinFlawsTabs);
+
         this.clearFields();
       }
     },

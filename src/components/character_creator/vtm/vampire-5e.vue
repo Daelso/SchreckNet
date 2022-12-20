@@ -135,7 +135,7 @@
                     Not yet selected
                   </div>
                   <div v-for="(discipline, key) in disciplines" :key="key">
-                    <div v-if="discipline > 0">{{ key }}: {{ discipline }}</div>
+                    <div>{{ key }}: {{ discipline }}</div>
                   </div>
                   <br />
                   Powers:
@@ -432,6 +432,8 @@
         v-model:tab="tab"
         v-model:disciplines="disciplines"
         v-model:clanBane="clanBane"
+        v-model:thinAdvantages="thinAdvantages"
+        v-model:thinFlaws="thinFlaws"
         :discDone="this.disciplinesDone"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
@@ -551,7 +553,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
@@ -596,6 +598,8 @@ export default {
       baseAdvantages: 7,
       flaws: 2,
       advantages: 7,
+      thinAdvantages: 0,
+      thinFlaws: 0,
       chronicle: "",
       convictions: [],
       disciplineSkills: [],
@@ -824,6 +828,8 @@ export default {
               generation: this.generation,
               humanity: this.humanity,
               predatorType: this.predatorType,
+              thinAdvantages: this.thinAdvantages,
+              thinFlaws: this.thinFlaws,
               tooltips: this.tooltips,
               xp: this.xp,
               disciplinesDone: this.disciplinesDone,
@@ -849,6 +855,9 @@ export default {
           this.specialtiesFromPred = data.specialtiesFromPred;
           this.disciplinesDone = data.disciplinesDone;
           this.advantagesObj = data.merits;
+          this.thinAdvantages = data.thinAdvantages;
+          this.thinFlaws = data.thinFlaws;
+          console.log(this.disciplines);
         });
     },
     attributes() {
@@ -1009,6 +1018,14 @@ export default {
         return true;
       }
 
+      if (
+        this.clan === "Thin-Blood" &&
+        this.thinAdvantages !== this.thinFlaws
+      ) {
+        this.disableBlurb =
+          "Thin-Bloods must have an equal amount of thin-blood merits and flaws.";
+        return true;
+      }
       return false;
     },
 

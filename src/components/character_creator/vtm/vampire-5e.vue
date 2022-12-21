@@ -431,6 +431,7 @@
         v-model:cult="cult"
         v-model:tab="tab"
         v-model:disciplines="disciplines"
+        v-model:disciplineSkills="this.disciplineSkills"
         v-model:clanBane="clanBane"
         v-model:thinAdvantages="thinAdvantages"
         v-model:thinFlaws="thinFlaws"
@@ -857,7 +858,6 @@ export default {
           this.advantagesObj = data.merits;
           this.thinAdvantages = data.thinAdvantages;
           this.thinFlaws = data.thinFlaws;
-          console.log(this.disciplines);
         });
     },
     attributes() {
@@ -1052,7 +1052,6 @@ export default {
         )
           check = true;
       })(navigator.userAgent || navigator.vendor || window.opera);
-      console.log(check);
       return check;
     },
   },

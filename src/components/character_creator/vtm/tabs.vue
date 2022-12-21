@@ -844,6 +844,7 @@ export default defineComponent({
     "debug",
     "thinAdvantages",
     "thinFlaws",
+    "disciplineSkills",
   ],
   emits: [
     "update:specialtiePoints",
@@ -856,6 +857,7 @@ export default defineComponent({
     "update:cult",
     "update:thinAdvantages",
     "update:thinFlaws",
+    "update:disciplineSkills",
     "specialties",
     "convictions",
     "touchstones",
@@ -955,25 +957,7 @@ export default defineComponent({
     },
     removeAdvantage(event, cost, name, category) {
       if (name.includes("Thin-Blood")) {
-        let modifiedObj = { ...{}, ...this.advantagesObj };
-        if (name === "Thin-Blood: Thin-blood Alchemist") {
-          let newDisc = { ...{}, ...this.disciplines };
-          newDisc["Thin-blood Alchemy"]--;
-          this.$emit("update:disciplines", newDisc);
-        }
-        if (name === "Thin-Blood: Discipline Affinity") {
-          let newDisc = { ...{}, ...this.disciplines };
-          newDisc = Object.fromEntries(
-            Object.entries(newDisc).filter(([key]) =>
-              key.includes("Thin-blood")
-            )
-          );
-          this.$emit("update:disciplines", newDisc);
-        }
-        modifiedObj.merits.advantages.splice(event, 1);
-        this.thinAdvantagesTab--;
-        this.$emit("update:thinAdvantages", this.thinAdvantagesTabs);
-
+        this.removeThinAdvantage(event, name);
         return;
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
@@ -983,11 +967,7 @@ export default defineComponent({
     },
     removeFlaw(event, cost, name, category) {
       if (name.includes("Thin-Blood")) {
-        let modifiedObj = { ...{}, ...this.advantagesObj };
-        modifiedObj.merits.flaws.splice(event, 1);
-        this.thinFlawsTab--;
-        this.$emit("update:thinFlaws", this.thinFlawsTabs);
-
+        this.removeThinFlaw(event, name);
         return;
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
@@ -1060,7 +1040,7 @@ export default defineComponent({
           if (this.age.label !== "Ancillae") {
             arr = arr.filter((x) => x !== "Archaic");
           }
-          if (this.clan) {
+          if (this.clan !== "Thin-Blood") {
             arr = arr.filter((x) => x !== "Thin-blood");
           }
           if (this.clan === "Thin-Blood") {
@@ -1310,6 +1290,68 @@ export default defineComponent({
       arr = arr.filter((x) => x !== "Thin-blood Alchemy");
 
       return arr;
+    },
+
+    removeThinAdvantage(event, name) {
+      let modifiedObj = { ...{}, ...this.advantagesObj };
+      let newDisc = { ...{}, ...this.disciplines };
+      modifiedObj.merits.advantages.splice(event, 1);
+      let newDiscSkills = this.disciplineSkills;
+      switch (name) {
+        case "Thin-Blood: Anarch Comrades":
+          modifiedObj.backgrounds.advantages =
+            modifiedObj.backgrounds.advantages.filter(
+              (e) => e.name !== "Mawla: Anarchs"
+            );
+          break;
+        case "Thin-Blood: Camarilla Contact":
+          modifiedObj.backgrounds.advantages =
+            modifiedObj.backgrounds.advantages.filter(
+              (e) => e.name !== "Mawla: Camarilla"
+            );
+          break;
+        case "Thin-Blood: Discipline Affinity":
+          let keys = Object.keys(newDisc);
+
+          keys.forEach((x) => {
+            if (
+              x !== "Athanor Corporis" &&
+              x !== "Calcinatio" &&
+              x !== "Fixatio"
+            ) {
+              newDiscSkills = newDiscSkills.filter((e) => e.discipline !== x);
+              delete newDisc[x];
+            }
+          });
+
+          break;
+        case "Thin-Blood: Thin-blood Alchemist":
+          newDisc["Athanor Corporis"] = 0;
+          newDisc["Calcinatio"] = 0;
+          newDisc["Fixatio"] = 0;
+          newDiscSkills = newDiscSkills.filter(
+            (e) =>
+              e.discipline !== "Athanor Corporis" &&
+              e.discipline !== "Calcinatio" &&
+              e.discipline !== "Fixatio"
+          );
+
+          break;
+      }
+      this.thinAdvantagesTab--;
+      this.$emit("update:thinAdvantages", this.thinAdvantagesTabs);
+      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
+      this.$emit("update:disciplines", newDisc);
+      this.$emit("update:disciplineSkills", newDiscSkills);
+    },
+
+    removeThinFlaw(event, name) {
+      let modifiedObj = { ...{}, ...this.advantagesObj };
+      modifiedObj.merits.flaws.splice(event, 1);
+
+      this.thinFlawsTabs--;
+      this.$emit("update:thinFlaws", this.thinFlawsTabs);
+      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
     },
 
     thinClanBanes() {

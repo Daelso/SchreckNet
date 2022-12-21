@@ -5,7 +5,17 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Vampire: The Masquerade (Early Alpha)</q-item-label>
+      <q-item-label>Vampire: The Masquerade (Beta)</q-item-label>
+      <q-item-label caption style="color: white">5e</q-item-label>
+    </q-item-section>
+  </q-item>
+  <q-item style="color: red" clickable :to="{ name: 'hunter5e' }">
+    <q-item-section avatar>
+      <q-icon color="secondary" name="app:hunter" style="scale: 145%" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>Hunter: The Reckoning (Alpha)</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>

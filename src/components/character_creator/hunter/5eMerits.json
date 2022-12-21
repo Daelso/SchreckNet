@@ -1,0 +1,199 @@
+{
+  "Merits": {
+    "Linguistics": {
+      "advantages": [
+        {
+          "name": "Language fluency",
+          "cost": 1,
+          "desc": "You speak, read and write another language fluently."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Illiterate",
+          "cost": 2,
+          "desc": "You cannot read or write."
+        }
+      ]
+    },
+    "Looks": {
+      "advantages": [
+        {
+          "name": "Beautiful",
+          "cost": 2,
+          "desc": "You are considered beautiful."
+        },
+        {
+          "name": "Stunning",
+          "cost": 4,
+          "desc": "You are considered exceptionally good-looking, you turn heads everywhere you go."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Repulsive",
+          "cost": 2,
+          "desc": "Your appearance is exceptionally horrifying."
+        },
+        {
+          "name": "Ugly",
+          "cost": 1,
+          "desc": "You aren't very good-looking."
+        }
+      ]
+    },
+    "Nutritionist": {
+      "advantages": [
+        {
+          "name": "Eat food",
+          "cost": 2,
+          "desc": "You can eat food, though it provides no nourishment and must be expelled before daysleep."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Stake Bait",
+          "cost": 2,
+          "desc": "Being staked brings final death to the vampire"
+        },
+        {
+          "name": "Folkloric Bane",
+          "cost": 1,
+          "desc": "You take aggravated damage from one folkloric bane, like ultraviolet light, silver or holy water."
+        },
+        {
+          "name": "Folkloric Block",
+          "cost": 1,
+          "desc": "You must recoil or spend a willpower when faced with one Folkloric Block, like white animals, running water, garlic, etc."
+        },
+        {
+          "name": "Stigmata",
+          "cost": 1,
+          "desc": "You bleed from your hands, feet and forehead when your hunger becomes intense."
+        }
+      ]
+    },
+    "Psychological": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Living on the Edge",
+          "cost": 2,
+          "desc": "You suffer a compulsion to always partake of new experiences."
+        },
+        {
+          "name": "Weak-Willed",
+          "cost": 3,
+          "desc": "Your will is weak and you struggle assert your own personality when confronted with the will of another."
+        }
+      ]
+    },
+    "Substance Use": {
+      "advantages": [
+        {
+          "name": "High-Functioning Addict",
+          "cost": 1,
+          "desc": "You gain a die to one category of pool whenever you drink from a mortal who is on your drug of choice."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Hopeless Addiction",
+          "cost": 2,
+          "desc": "Lose 2 die from all pools if you feed from someone not on your drug of choice."
+        },
+        {
+          "name": "Addiction",
+          "cost": 1,
+          "desc": "Lose 1 die from all pools if you feed from someone not on your drug of choice."
+        }
+      ]
+    },
+    "Thin-blood": {
+      "advantages": [
+        {
+          "name": "Thin-Blood: Anarch Comrades",
+          "cost": 1,
+          "desc": "You managed to make friends with the local anarch sect. Add a one-dot anarch mawla to your relationship map."
+        },
+        {
+          "name": "Thin-Blood: Camarilla Contact",
+          "cost": 1,
+          "desc": "You've made a contact within the camarilla who promises you full membership and a chance at becoming full-blooded so long as you follow orders. Add a one-dot camarilla mawla to your relationship map."
+        },
+        {
+          "name": "Thin-Blood: Catenating Blood",
+          "cost": 1,
+          "desc": "You can create blood bonds and perform the embrace. Any kindred you create are thin-blooded."
+        },
+        {
+          "name": "Thin-Blood: Day Drinker",
+          "cost": 1,
+          "desc": "Sunlight halves your health pool. In the sun you lose access to all vampiric abilities. You still suffer Hunger normally and must sleep occasionally."
+        },
+        {
+          "name": "Thin-Blood: Discipline Affinity",
+          "cost": 1,
+          "desc": "You gain a dot in your discipline of choice and can continue to level it with experience as an out-of-clan discipline."
+        },
+        {
+          "name": "Thin-Blood: Lifelike",
+          "cost": 1,
+          "desc": "You have a heartbeat, can eat food and enjoy sex like a mortal. Only detailed examinations would reveal anything out of the ordinary."
+        },
+        {
+          "name": "Thin-Blood: Thin-blood Alchemist",
+          "cost": 1,
+          "desc": "Gain a dot in Thin-blood alchemy and an additional recipe as discussed with your ST."
+        },
+        {
+          "name": "Thin-Blood: Vampiric Resilience",
+          "cost": 1,
+          "desc": "You are as tough as ordinary Kindred, treating puncture and slashing wounds as superficial damage."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Thin-Blood: Baby Teeth",
+          "cost": 1,
+          "desc": "Your fangs never came in, you can only drink via other methods of blood extraction."
+        },
+        {
+          "name": "Thin-Blood: Bestial Temper",
+          "cost": 1,
+          "desc": "You have the same level of beast as a full-blooded kindred. Normal frenzy rules apply to you."
+        },
+        {
+          "name": "Thin-Blood: Branded by the Camarilla",
+          "cost": 1,
+          "desc": "Branded by the local camarilla, you are known and watched for even the slightest error."
+        },
+        {
+          "name": "Thin-Blood: Clan Curse",
+          "cost": 1,
+          "desc": "You suffer the clan of your choices bane at severity level 1. Brujah/Gangrel only available with Bestial Temper Flaw, Tremere only with Catenating Blood Merit."
+        },
+        {
+          "name": "Thin-Blood: Mortal Frailty",
+          "cost": 1,
+          "desc": "You cannot rouse blood to heal like normal Kindred, you heal as a mortal. You cannot take vampiric resilience with this perk."
+        },
+        {
+          "name": "Thin-Blood: Dead Flesh",
+          "cost": 1,
+          "desc": "You are noticebly decaying and putrifying. Any real examination will reveal that you are undead. You may not take Lifelike merit."
+        },
+        {
+          "name": "Thin-Blood: Shunned by the Anarchs",
+          "cost": 1,
+          "desc": "You broke some unwritten rule and pissed off the local anarch sect. You cannot take anarch comrades with this flaw."
+        },
+        {
+          "name": "Thin-Blood: Vitae Dependency",
+          "cost": 1,
+          "desc": "You must slake at least 1 Hunger on kindred blood each week or lose all access to discipline until you do so."
+        }
+      ]
+    }
+  }
+}

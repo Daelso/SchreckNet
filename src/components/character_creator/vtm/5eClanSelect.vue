@@ -115,6 +115,7 @@
                   option-label="name"
                 />
                 <div class="description">{{ this.thinBloodMerits.desc }}</div>
+                <!-- alchemist -->
                 <q-select
                   v-if="
                     this.thinBloodMerits.name ===
@@ -134,6 +135,44 @@
                   v-model="formula"
                   label="Select your formula"
                   :options="formulaOptions"
+                  bg-color="grey-3"
+                  filled
+                  style="width: 100%"
+                  class="select q-my-sm"
+                  label-color="primary"
+                />
+                <!-- Disciplines -->
+                <q-select
+                  v-if="
+                    this.thinBloodMerits.name ===
+                    'Thin-Blood: Discipline Affinity'
+                  "
+                  v-model="thinDisc"
+                  label="Which Discipline Would You Like?"
+                  :options="filteredDiscOptions"
+                  bg-color="grey-3"
+                  filled
+                  style="width: 100%"
+                  class="select q-my-sm"
+                  label-color="primary"
+                />
+                <q-select
+                  v-if="this.thinDisc"
+                  v-model="thinDiscPower"
+                  label="Which power would you like?"
+                  :options="disciplineOptions(this.thinDisc, 1)"
+                  bg-color="grey-3"
+                  filled
+                  style="width: 100%"
+                  class="select q-my-sm"
+                  label-color="primary"
+                />
+                <!-- Clan Bane Flaw -->
+                <q-select
+                  v-if="this.thinBloodMerits.name === 'Thin-Blood: Clan Curse'"
+                  v-model="thinBane"
+                  label="Which Clan's Bane would you like?"
+                  :options="thinClanBanes"
                   bg-color="grey-3"
                   filled
                   style="width: 100%"
@@ -534,6 +573,9 @@ export default defineComponent({
       age,
       advantagesOrFlaws: ref(""),
       alchemyDiscipline: ref(""),
+      thinDisc: ref(""),
+      thinDiscPower: ref(""),
+      thinBane: ref(""),
       advantagesOrFlawsOptions: ref(["Advantages", "Flaws"]),
       formula: ref(""),
       advantages,
@@ -655,6 +697,9 @@ export default defineComponent({
       this.thinBloodMerits = "";
       this.alchemyDiscipline = "";
       this.formula = "";
+      this.thinDisc = "";
+      this.thinDiscPower = "";
+      this.thinBane = "";
       //Thin blood stuff above
       this.skillsSelected = [];
       this.discChoices = [0, 0, 0];
@@ -1820,14 +1865,10 @@ export default defineComponent({
       return arr;
     },
     handleThinMerits() {
-      if (this.clanThinAdvantages === 3 && this.clanThinFlaws === 3) {
-        this.$q.notify({
-          type: "negative",
-          textColor: "white",
-          message: "You may only take 3 Thin-Blood Merits or Flaws",
-        });
+      if (this.thinGuard() === true) {
         return;
       }
+
       switch (this.thinBloodMerits.name) {
         case "Thin-Blood: Anarch Comrades":
           this.clanThinAdvantages++;
@@ -1881,7 +1922,21 @@ export default defineComponent({
 
           this.clearThinFields();
           break;
+        case "Thin-Blood: Discipline Affinity":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.finalDisciplineObj[this.thinDisc] = 1;
 
+          this.skillsSelected.push({
+            discipline: this.thinDisc,
+            skill: this.thinDiscPower,
+          });
+          this.clearThinFields();
+          break;
         case "Thin-Blood: Lifelike":
           this.clanThinAdvantages++;
           this.merits.merits.advantages.push({
@@ -1948,6 +2003,56 @@ export default defineComponent({
 
           this.clearThinFields();
           break;
+        case "Thin-Blood: Clan Curse":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name + " (" + this.thinBane + ")",
+          });
+
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Mortal Frailty":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Dead Flesh":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Shunned by the Anarchs":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Vitae Dependency":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+
+          this.clearThinFields();
+          break;
       }
     },
     clearThinFields() {
@@ -1955,6 +2060,43 @@ export default defineComponent({
       this.thinBloodMerits = "";
       this.alchemyDiscipline = "";
       this.formula = "";
+      this.thinDisc = "";
+      this.thinDiscPower = "";
+      this.thinBane = "";
+    },
+    thinGuard() {
+      if (this.clanThinAdvantages === 3) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You may only take 3 Thin-Blood Merits ",
+        });
+        return true;
+      }
+      if (this.clanThinFlaws === 3) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You may only take 3 Thin-Blood Flaws",
+        });
+        return true;
+      }
+      if (
+        this.merits.merits.advantages.filter(
+          (e) => e.name === this.thinBloodMerits.name
+        ).length > 0 ||
+        this.merits.merits.flaws.filter(
+          (e) => e.name === this.thinBloodMerits.name
+        ).length > 0
+      ) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You have already selected this merit!",
+        });
+        return true;
+      }
+      return false;
     },
   },
   computed: {
@@ -1991,6 +2133,56 @@ export default defineComponent({
         arr = arr.filter(
           (x) => x.label === "14th" || x.label === "15th" || x.label === "16th"
         );
+      }
+
+      return arr;
+    },
+    filteredDiscOptions() {
+      let arr = Object.keys(this.disciplineSkills.Disciplines);
+      if (this.clan === "Thin-Blood") {
+        arr = arr.filter(
+          (x) =>
+            x !== "Athanor Corporis" &&
+            x !== "Fixatio" &&
+            x !== "Calcinatio" &&
+            x !== "Thin-blood Alchemy"
+        );
+      }
+
+      return arr;
+    },
+    thinClanBanes() {
+      let haveIt;
+      let arr = [
+        "Banu Haqim",
+        "Brujah",
+        "Caitiff",
+        "Gangrel",
+        "Hecata",
+        "Lasombra",
+        "Malkavian",
+        "Nosferatu",
+        "Ravnos",
+        "Salubri",
+        "Toreador",
+        "Tremere",
+        "Tzimisce",
+        "Ventrue",
+        "The Ministry",
+      ];
+
+      haveIt = this.merits.merits.flaws.find(
+        (o) => o.name === "Thin-Blood: Bestial Temper"
+      );
+      if (typeof haveIt === "undefined") {
+        arr = arr.filter((x) => x !== "Brujah" && x !== "Gangrel");
+      }
+
+      haveIt = this.merits.merits.advantages.find(
+        (o) => o.name === "Thin-Blood: Catenating Blood"
+      );
+      if (typeof haveIt === "undefined") {
+        arr = arr.filter((x) => x !== "Tremere");
       }
 
       return arr;

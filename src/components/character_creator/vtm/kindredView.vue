@@ -137,7 +137,7 @@
                   Not yet selected
                 </div>
                 <div v-for="(discipline, key) in disciplines" :key="key">
-                  <div v-if="discipline > 0">{{ key }}: {{ discipline }}</div>
+                  <div>{{ key }}: {{ discipline }}</div>
                 </div>
                 <br />
                 Powers:
@@ -906,6 +906,15 @@ export default defineComponent({
     },
     setClanBane() {
       this.clanBane = this.clanBanes.clans[this.clan];
+      if (this.clan === "Thin-Blood") {
+        let meme = this.advantagesObj.merits.flaws.find((o) =>
+          o.name.search("Clan Curse")
+        );
+        let splitStr = meme.name.split(/[()]+/).filter(function (e) {
+          return e;
+        });
+        this.clanBane = this.clanBanes.clans[splitStr[1]];
+      }
     },
 
     favoriteChar(sheet_id, charName) {

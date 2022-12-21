@@ -88,6 +88,80 @@
                 </div>
                 <q-separator />
                 <div class="q-my-sm">Thin-Blood Flaws: {{ clanThinFlaws }}</div>
+                <div>
+                  <q-list
+                    dark
+                    padding
+                    bordered
+                    class="rounded-borders q-mb-md"
+                    style="max-width: 378px"
+                  >
+                    <q-expansion-item icon="trending_up" label="Merits">
+                      <q-card style="background-color: #222831">
+                        <q-card-section>
+                          <q-list bordered separator>
+                            <div
+                              v-if="this.merits.merits.advantages.length < 1"
+                            >
+                              None Selected
+                            </div>
+                            <q-item
+                              v-for="(advantage, key) in this.merits.merits
+                                .advantages"
+                              :key="key"
+                              clickable
+                              v-ripple
+                              @click="
+                                removeThinAdvantage(
+                                  $event.target.id,
+                                  advantage.name
+                                )
+                              "
+                            >
+                              <q-item-section :id="key">
+                                {{ advantage.name }}
+                                - {{ advantage.cost }} dots
+                                <q-tooltip class="bg-dark text-body2"
+                                  >Click to delete</q-tooltip
+                                >
+                              </q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item>
+                    <q-separator />
+                    <q-expansion-item icon="support" label="Flaws">
+                      <q-card style="background-color: #222831">
+                        <q-card-section>
+                          <q-list bordered separator>
+                            <div v-if="this.merits.merits.flaws.length < 1">
+                              None Selected
+                            </div>
+                            <q-item
+                              v-for="(advantage, key) in this.merits.merits
+                                .flaws"
+                              :key="key"
+                              clickable
+                              v-ripple
+                              @click="
+                                removeThinFlaw($event.target.id, advantage.name)
+                              "
+                            >
+                              <q-item-section :id="key">
+                                {{ advantage.name }}
+                                - {{ advantage.cost }} dots
+                                <q-tooltip class="bg-dark text-body2"
+                                  >Click to delete</q-tooltip
+                                >
+                              </q-item-section>
+                            </q-item>
+                          </q-list>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item>
+                  </q-list>
+                </div>
                 <q-select
                   v-model="advantagesOrFlaws"
                   label="Select Thin-Blood Advantages or Flaws"
@@ -2098,14 +2172,110 @@ export default defineComponent({
       }
       return false;
     },
+    removeThinAdvantage(event, name) {
+      this.merits.merits.advantages.splice(event, 1);
+
+      switch (name) {
+        case "Thin-Blood: Anarch Comrades":
+          this.merits.backgrounds.advantages =
+            this.merits.backgrounds.advantages.filter(
+              (e) => e.name !== "Mawla: Anarchs"
+            );
+          break;
+        case "Thin-Blood: Camarilla Contact":
+          this.merits.backgrounds.advantages =
+            this.merits.backgrounds.advantages.filter(
+              (e) => e.name !== "Mawla: Camarilla"
+            );
+          break;
+        case "Thin-Blood: Discipline Affinity":
+          let keys = Object.keys(this.finalDisciplineObj);
+
+          keys.forEach((x) => {
+            if (
+              x !== "Athanor Corporis" &&
+              x !== "Calcinatio" &&
+              x !== "Fixatio"
+            ) {
+              this.skillsSelected = this.skillsSelected.filter(
+                (e) => e.discipline !== x
+              );
+              delete this.finalDisciplineObj[x];
+            }
+          });
+
+          break;
+        case "Thin-Blood: Thin-blood Alchemist":
+          this.finalDisciplineObj["Athanor Corporis"] = 0;
+          this.finalDisciplineObj["Calcinatio"] = 0;
+          this.finalDisciplineObj["Fixatio"] = 0;
+          this.skillsSelected = this.skillsSelected.filter(
+            (e) =>
+              e.discipline !== "Athanor Corporis" &&
+              e.discipline !== "Calcinatio" &&
+              e.discipline !== "Fixatio"
+          );
+
+          break;
+      }
+
+      this.clanThinAdvantages--;
+    },
+    removeThinFlaw(event, name) {
+      this.merits.merits.flaws.splice(event, 1);
+
+      this.clanThinFlaws--;
+    },
   },
   computed: {
     allThinBloodOptions() {
+      //fix this its beyond horrible
       let arr = [];
+      let haveIt;
       if (this.advantagesOrFlaws === "Advantages") {
         arr = this.meritJSON.Merits["Thin-blood"].advantages;
+
+        haveIt = this.merits.merits.flaws.find(
+          (o) => o.name === "Thin-Blood: Dead Flesh"
+        );
+        if (typeof haveIt !== "undefined") {
+          arr = arr.filter((x) => x.name !== "Thin-Blood: Lifelike");
+        }
+        haveIt = this.merits.merits.flaws.find(
+          (o) => o.name === "Thin-Blood: Mortal Frailty"
+        );
+        if (typeof haveIt !== "undefined") {
+          arr = arr.filter((x) => x.name !== "Thin-Blood: Vampiric Resilience");
+        }
+        haveIt = this.merits.merits.flaws.find(
+          (o) => o.name === "Thin-Blood: Shunned by the Anarchs"
+        );
+        if (typeof haveIt !== "undefined") {
+          arr = arr.filter((x) => x.name !== "Thin-Blood: Anarch Comrades");
+        }
       } else {
         arr = this.meritJSON.Merits["Thin-blood"].flaws;
+
+        haveIt = this.merits.merits.advantages.find(
+          (o) => o.name === "Thin-Blood: Lifelike"
+        );
+        if (typeof haveIt !== "undefined") {
+          arr = arr.filter((x) => x.name !== "Thin-Blood: Dead Flesh");
+        }
+        haveIt = this.merits.merits.advantages.find(
+          (o) => o.name === "Thin-Blood: Vampiric Resilience"
+        );
+        if (typeof haveIt !== "undefined") {
+          arr = arr.filter((x) => x.name !== "Thin-Blood: Mortal Frailty");
+        }
+        haveIt = this.merits.merits.advantages.find(
+          (o) => o.name === "Thin-Blood: Anarch Comrades"
+        );
+        if (typeof haveIt !== "undefined") {
+          arr = arr.filter(
+            (x) => x.name !== "Thin-Blood: Shunned by the Anarchs"
+          );
+        }
       }
 
       return arr;

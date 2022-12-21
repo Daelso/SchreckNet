@@ -146,15 +146,135 @@
       "threat": 2,
       "resonance": "Varies",
       "skills": [
-        ["Far Reach", "Haze"],
-        ["Envelop"],
+        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
         [
-          "Defractionate",
-          "Profane Heiros Gamos",
-          "Chemically-Induced Flashback",
-          "Concoct Ashe"
+          "Blood of Mandagloire",
+
+          "Counterfeit - Level 1",
+          "Envelop",
+          "Mirror of Trust",
+          "Red's Flamin' Hot Sauce"
         ],
-        ["Airborne Momentum", "Discipline Channeling"]
+        [
+          "Chemically-Induced Flashback",
+          "Concoct Ashe",
+          "Counterfeit - Level 2",
+          "Defractionate",
+          "Fang-Stinger",
+          "Freezer Fluid",
+          "On-Demand Sunburn",
+          "Profane Heiros Gamos",
+          "Stay the Falling Sand"
+        ],
+        [
+          "Airborne Momentum",
+          "Counterfeit - Level 3",
+          "Discipline Channeling",
+          "Hollow Leg"
+        ],
+        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+      ]
+    },
+    "Athanor Corporis": {
+      "type": "Alchemical",
+      "threat": 2,
+      "resonance": "Varies",
+      "skills": [
+        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
+        [
+          "Blood of Mandagloire",
+
+          "Counterfeit - Level 1",
+          "Envelop",
+          "Mirror of Trust",
+          "Red's Flamin' Hot Sauce"
+        ],
+        [
+          "Chemically-Induced Flashback",
+          "Concoct Ashe",
+          "Counterfeit - Level 2",
+          "Defractionate",
+          "Fang-Stinger",
+          "Freezer Fluid",
+          "On-Demand Sunburn",
+          "Profane Heiros Gamos",
+          "Stay the Falling Sand"
+        ],
+        [
+          "Airborne Momentum",
+          "Counterfeit - Level 3",
+          "Discipline Channeling",
+          "Hollow Leg"
+        ],
+        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+      ]
+    },
+    "Calcinatio": {
+      "type": "Alchemical",
+      "threat": 2,
+      "resonance": "Varies",
+      "skills": [
+        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
+        [
+          "Blood of Mandagloire",
+
+          "Counterfeit - Level 1",
+          "Envelop",
+          "Mirror of Trust",
+          "Red's Flamin' Hot Sauce"
+        ],
+        [
+          "Chemically-Induced Flashback",
+          "Concoct Ashe",
+          "Counterfeit - Level 2",
+          "Defractionate",
+          "Fang-Stinger",
+          "Freezer Fluid",
+          "On-Demand Sunburn",
+          "Profane Heiros Gamos",
+          "Stay the Falling Sand"
+        ],
+        [
+          "Airborne Momentum",
+          "Counterfeit - Level 3",
+          "Discipline Channeling",
+          "Hollow Leg"
+        ],
+        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+      ]
+    },
+    "Fixatio": {
+      "type": "Alchemical",
+      "threat": 2,
+      "resonance": "Varies",
+      "skills": [
+        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
+        [
+          "Blood of Mandagloire",
+
+          "Counterfeit - Level 1",
+          "Envelop",
+          "Mirror of Trust",
+          "Red's Flamin' Hot Sauce"
+        ],
+        [
+          "Chemically-Induced Flashback",
+          "Concoct Ashe",
+          "Counterfeit - Level 2",
+          "Defractionate",
+          "Fang-Stinger",
+          "Freezer Fluid",
+          "On-Demand Sunburn",
+          "Profane Heiros Gamos",
+          "Stay the Falling Sand"
+        ],
+        [
+          "Airborne Momentum",
+          "Counterfeit - Level 3",
+          "Discipline Channeling",
+          "Hollow Leg"
+        ],
+        ["Awaken the Sleeper", "Counterfeit - Level 4"]
       ]
     }
   }

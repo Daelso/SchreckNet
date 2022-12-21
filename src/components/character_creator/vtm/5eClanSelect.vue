@@ -100,14 +100,11 @@
                       <q-card style="background-color: #222831">
                         <q-card-section>
                           <q-list bordered separator>
-                            <div
-                              v-if="this.merits.merits.advantages.length < 1"
-                            >
+                            <div v-if="this.thinMeritsOnly.length < 1">
                               None Selected
                             </div>
                             <q-item
-                              v-for="(advantage, key) in this.merits.merits
-                                .advantages"
+                              v-for="(advantage, key) in this.thinMeritsOnly"
                               :key="key"
                               clickable
                               v-ripple
@@ -135,12 +132,11 @@
                       <q-card style="background-color: #222831">
                         <q-card-section>
                           <q-list bordered separator>
-                            <div v-if="this.merits.merits.flaws.length < 1">
+                            <div v-if="this.thinFlawsOnly.length < 1">
                               None Selected
                             </div>
                             <q-item
-                              v-for="(advantage, key) in this.merits.merits
-                                .flaws"
+                              v-for="(advantage, key) in this.thinFlawsOnly"
                               :key="key"
                               clickable
                               v-ripple
@@ -2318,6 +2314,22 @@ export default defineComponent({
             x !== "Thin-blood Alchemy"
         );
       }
+
+      return arr;
+    },
+
+    thinMeritsOnly() {
+      let arr = this.merits.merits.advantages;
+
+      arr = arr.filter((x) => x.name.includes("Thin-Blood"));
+
+      return arr;
+    },
+
+    thinFlawsOnly() {
+      let arr = this.merits.merits.flaws;
+
+      arr = arr.filter((x) => x.name.includes("Thin-Blood"));
 
       return arr;
     },

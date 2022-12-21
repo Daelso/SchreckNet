@@ -418,16 +418,7 @@
           </div>
 
           <q-separator />
-          <div v-if="this.clan === 'Thin-Blood'">
-            <div>
-              Thin-Blood merits and flaws do not cost normal dots, they must be
-              taken in a balanced amount.
-            </div>
-            <div class="q-my-sm">
-              Thin-Blood Advantages: {{ thinAdvantagesTab }}
-            </div>
-            <div class="q-my-sm">Thin-Blood Flaws: {{ thinFlawsTab }}</div>
-          </div>
+
           <q-select
             v-model="advantageCategory"
             :options="advantageCategories"
@@ -505,30 +496,7 @@
               @update:model-value="costAdjustment()"
             />
           </div>
-          <div
-            v-if="this.advFlawChoice.name === 'Thin-Blood: Discipline Affinity'"
-          >
-            <q-select
-              v-model="thinBonusDiscInput"
-              :options="thinBloodBonusDiscs()"
-              label="Choose your bonus discipline"
-              label-color="primary"
-              bg-color="grey-3"
-              class="q-mt-sm"
-              filled
-            />
-          </div>
-          <div v-if="this.advFlawChoice.name === 'Thin-Blood: Clan Curse'">
-            <q-select
-              v-model="thinClanBane"
-              :options="thinClanBanes()"
-              label="Choose your clan bane"
-              label-color="primary"
-              bg-color="grey-3"
-              class="q-mt-sm"
-              filled
-            />
-          </div>
+
           <div
             v-if="
               this.advFlawChoice.specNeeded === true && this.howManyDots >= 1
@@ -1092,7 +1060,7 @@ export default defineComponent({
           if (this.age.label !== "Ancillae") {
             arr = arr.filter((x) => x !== "Archaic");
           }
-          if (this.clan !== "Thin-Blood") {
+          if (this.clan) {
             arr = arr.filter((x) => x !== "Thin-blood");
           }
           if (this.clan === "Thin-Blood") {

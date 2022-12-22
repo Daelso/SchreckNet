@@ -20,7 +20,7 @@
             <div>Redemption: {{ !redemption ? "None" : redemption }}</div>
           </div>
           <q-separator class="q-my-md" />
-          <div class="stats">
+          <div class="stats q-my-sm">
             <div>Health: {{ stamina + 3 }}</div>
             <div>Willpower: {{ composure + resolve }}</div>
             <div>Advantage Dots Remaining: {{ advantages }}</div>
@@ -114,7 +114,7 @@
           </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
-              icon="app:whiteankh"
+              icon="app:whiteHunter"
               label="Edges & Perks"
               caption="View edges and perks"
               dark
@@ -329,10 +329,15 @@
             "
           >
             <q-tooltip
-              v-if="!this.skillsDone || !this.attributesDone || !this.edgeDone"
+              v-if="
+                !this.skillsDone ||
+                !this.attributesDone ||
+                !this.edgeDone ||
+                this.xp === 0
+              "
               class="bg-dark text-body2"
-              >Please set valid base attributes, skills and complete your
-              edges/perks section.</q-tooltip
+              >Please set valid base attributes, skills, complete your
+              edges/perks section and have xp remaining to spend.</q-tooltip
             >
             <q-item-section avatar>
               <q-icon color="secondary" name="upgrade" />
@@ -598,7 +603,7 @@ export default {
       desire: "",
       concept: "",
       touchstones: [],
-      xp: 0,
+      xp: 55,
       spentXp: 0,
       skillsDone: false,
       edgeDone: false,
@@ -623,10 +628,10 @@ export default {
         desire: this.desire,
         chronicle: this.chronicle,
         health: this.stamina + 3,
-        humanity: this.humanity,
+        edgeArr: this.edgeArr,
         willpower: this.composure + this.resolve,
-
         xp: this.xp,
+        spentXp: this.spentXp,
         creed: this.creed,
         touchstones: this.touchstones,
         remainingSpecialties: this.totalSpecialty,
@@ -649,7 +654,7 @@ export default {
       };
 
       axios
-        .post(baseUrl + "/vampires/new", character, {
+        .post(baseUrl + "/hunters/new", character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -659,10 +664,10 @@ export default {
             icon: "cloud_done",
             message: "Hunter created!",
           });
-          this.$router.push({
-            name: "vampire5eView",
-            params: { id: res.data },
-          });
+          // this.$router.push({
+          //   name: "hunter5eView",
+          //   params: { id: res.data },
+          // });
         })
         .catch((err) =>
           this.$q.notify({
@@ -800,6 +805,7 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
               spentXp: this.spentXp,
+              edgeArr: this.edgeArr,
             },
           },
         })
@@ -813,6 +819,7 @@ export default {
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
+          this.edgeArr = data.edgeArr;
         });
     },
 

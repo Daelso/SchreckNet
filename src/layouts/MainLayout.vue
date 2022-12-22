@@ -103,6 +103,8 @@ import whiteAnkh from "../assets/images/ankhWhite.png";
 import claws from "../assets/images/claws.png";
 import mage from "../assets/images/mage.png";
 import hunter from "../assets/images/hunter.png";
+import whiteHunter from "../assets/images/whiteHunter.png";
+
 import changeling from "../assets/images/changeling.png";
 import wod from "../assets/images/WoDLogo.png";
 import { useQuasar } from "quasar";
@@ -125,6 +127,7 @@ export default defineComponent({
       "app:claws": `img:${claws}`,
       "app:mage": `img:${mage}`,
       "app:hunter": `img:${hunter}`,
+      "app:whiteHunter": `img:${whiteHunter}`,
       "app:changeling": `img:${changeling}`,
       "app:wod": `img:${wod}`,
     };

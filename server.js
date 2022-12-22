@@ -41,6 +41,8 @@ const userRoutes = require("./server/api/user");
 app.use("/user", userRoutes);
 const vampireRoutes = require("./server/api/vampires");
 app.use("/vampires", vampireRoutes);
+const hunterRoutes = require("./server/api/hunters");
+app.use("/hunters", hunterRoutes);
 const favoriteRoutes = require("./server/api/favorites");
 app.use("/favorites", favoriteRoutes);
 //Uses userRoutes file to handle all user related endpoints

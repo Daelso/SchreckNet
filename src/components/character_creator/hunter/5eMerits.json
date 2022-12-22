@@ -1,0 +1,112 @@
+{
+  "Merits": {
+    "Linguistics": {
+      "advantages": [
+        {
+          "name": "Language fluency",
+          "cost": 1,
+          "desc": "You speak, read and write another language fluently."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Illiterate",
+          "cost": 2,
+          "desc": "You cannot read or write."
+        }
+      ]
+    },
+    "Looks": {
+      "advantages": [
+        {
+          "name": "Beautiful",
+          "cost": 2,
+          "desc": "You are considered beautiful."
+        },
+        {
+          "name": "Stunning",
+          "cost": 4,
+          "desc": "You are considered exceptionally good-looking, you turn heads everywhere you go."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Repulsive",
+          "cost": 2,
+          "desc": "Your appearance is exceptionally horrifying."
+        },
+        {
+          "name": "Ugly",
+          "cost": 1,
+          "desc": "You aren't very good-looking."
+        }
+      ]
+    },
+    "Nutritionist": {
+      "advantages": [
+        {
+          "name": "Solo Cooking",
+          "cost": 1,
+          "desc": "You regain one superficial health at the start of a session that begins with you preparing a meal."
+        },
+        {
+          "name": "Cell Chef",
+          "cost": 2,
+          "desc": "Your entire cell regains one superficial health at the start of a session that begins with you preparing a meal for them."
+        }
+      ],
+      "flaws": []
+    },
+    "Psychological": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Living on the Edge",
+          "cost": 2,
+          "desc": "You suffer a compulsion to always partake of new experiences."
+        },
+        {
+          "name": "Weak-Willed",
+          "cost": 2,
+          "desc": "Your will is weak and you struggle assert your own personality when confronted with the will of another."
+        }
+      ]
+    },
+    "Substance Use": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Severe Addiction",
+          "cost": 2,
+          "desc": "Lose 2 die from all pools if you do not indulge in your substance of choice during the last scene."
+        },
+        {
+          "name": "Addiction",
+          "cost": 1,
+          "desc": "Lose 1 die from all pools if you do not indulge in your substance of choice during the last scene."
+        }
+      ]
+    },
+    "Supernatural Situations": {
+      "advantages": [
+        {
+          "name": "Unseemly Aura",
+          "cost": 2,
+          "desc": "Monsters do not perceive you instantly as a mortal. Some can even mistake you for one of their own."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Stigmata",
+          "cost": 1,
+          "desc": "You bleed from open wounds on your hands, feet, and forehead when you suffer physical injury or Willpower damage."
+        },
+        {
+          "name": "Crone's Curse",
+          "cost": 2,
+          "desc": "Some supernatural curse afflicts you, you age rapidly and appear at least a decade older than you should. Lose 1 hp."
+        }
+      ]
+    }
+  }
+}

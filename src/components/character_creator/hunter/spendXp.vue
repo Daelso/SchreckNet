@@ -32,6 +32,46 @@
               option-label="name"
             />
 
+            <!-- Edges -->
+            <q-separator class="q-my-sm" />
+            <q-select
+              v-if="this.categoryInput === 'Edge'"
+              bg-color="grey-3"
+              filled
+              label-color="primary"
+              v-model="edgeCat"
+              :options="Object.keys(edgesList)"
+              label="Edge Category"
+              option-label="dist"
+            />
+            <q-separator class="q-my-sm" />
+            <q-select
+              v-if="this.edgeCat"
+              bg-color="grey-3"
+              filled
+              label-color="primary"
+              v-model="edge"
+              :options="Object.keys(edgesList[this.edgeCat].edges)"
+              :label="this.edgeCat + ': ' + 'Edges'"
+              option-label="dist"
+            />
+            <div v-if="this.edge" class="edgeDesc q-my-sm">
+              {{ this.edgesList[edgeCat].edges[this.edge].desc }}
+            </div>
+            <!-- Perks -->
+            <q-select
+              v-if="this.categoryInput === 'Perk'"
+              bg-color="grey-3"
+              filled
+              :options="perkOptions"
+              label-color="primary"
+              v-model="perk"
+              label="Select your perks"
+              option-label="name"
+            />
+            <div v-if="this.perk" class="edgeDesc q-my-sm">
+              {{ this.perk.parent }} - {{ this.perk.desc }}
+            </div>
             <!-- Specialty -->
             <q-select
               v-if="this.categoryInput === 'Specialty'"
@@ -69,7 +109,9 @@
                 this.categoryInput &&
                 this.categoryInput !== 'Attributes' &&
                 this.categoryInput !== 'Specialty' &&
-                this.categoryInput !== 'Skills'
+                this.categoryInput !== 'Skills' &&
+                this.categoryInput !== 'Edge' &&
+                this.categoryInput !== 'Perk'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -112,6 +154,7 @@
 <script>
 import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import edgesList from "../hunter/edgesAndPerks.json";
 
 export default defineComponent({
   name: "spendXP",
@@ -131,6 +174,7 @@ export default defineComponent({
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     let localSpentXp = ref(props.info.spentXp);
+    let localEdgeArr = ref(props.info.edgeArr);
     return {
       dialogRef,
       onDialogHide,
@@ -142,6 +186,7 @@ export default defineComponent({
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
           spentXp: localSpentXp,
+          edgeArr: localEdgeArr,
         });
       },
       range,
@@ -154,7 +199,11 @@ export default defineComponent({
       cost: ref(0),
       localXP,
       localSpentXp,
-
+      edgeCat: ref(""),
+      edge: ref(""),
+      perk: ref(""),
+      edgesList,
+      localEdgeArr,
       canBuy: ref(true),
       attributeInput: ref(""),
       categoryInput: ref(""),
@@ -216,6 +265,9 @@ export default defineComponent({
       this.specialtyInput = "";
       this.specialtyDefinition = "";
       this.skillCategory = "";
+      this.edgeCat = "";
+      this.edge = "";
+      this.perk = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -225,6 +277,9 @@ export default defineComponent({
       this.specialtyInput = "";
       this.specialtyDefinition = "";
       this.skillCategory = "";
+      this.edgeCat = "";
+      this.edge = "";
+      this.perk = "";
     },
 
     purchaseMade() {
@@ -255,7 +310,18 @@ export default defineComponent({
           this.attributeInput.points++;
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
-
+        case "Edge":
+          this.localEdgeArr.edges.push({
+            category: this.edgeCat,
+            edge: this.edge,
+          });
+          break;
+        case "Perk":
+          this.localEdgeArr.perks.push({
+            category: this.perk.parent,
+            perk: this.perk.name,
+          });
+          break;
         case "Skills":
           this.skills[this.skillCategory.toLowerCase()]++;
           break;
@@ -319,6 +385,15 @@ export default defineComponent({
         }
       }
       return optionsArr.sort();
+    },
+
+    perkOptions() {
+      let arr = [];
+      this.localEdgeArr.edges.forEach((edge) => {
+        arr = arr.concat(this.edgesList[edge.category].edges[edge.edge].perks);
+      });
+
+      return arr;
     },
   },
 });

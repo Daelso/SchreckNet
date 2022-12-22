@@ -7,6 +7,12 @@
         <vampCards :currentUser="this.currentUser" />
       </div>
     </Suspense>
+    <div class="banner q-my-md">Beware these Hunter's</div>
+    <Suspense>
+      <div class="vamps">
+        <huntCards :currentUser="this.currentUser" />
+      </div>
+    </Suspense>
   </div>
 </template>
 
@@ -38,6 +44,8 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 import nosImage from "../assets/images/Nosfer_logo.png";
 import vampCards from "./character_creator/vtm/vampireCards.vue";
+import huntCards from "./character_creator/hunter/hunterCards.vue";
+
 import { useMeta } from "quasar";
 
 const metaData = {
@@ -55,7 +63,7 @@ const metaData = {
 };
 
 export default {
-  components: { vampCards },
+  components: { vampCards, huntCards },
   setup() {
     useMeta(metaData);
 

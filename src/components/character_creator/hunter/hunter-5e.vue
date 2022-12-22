@@ -6,9 +6,9 @@
         <div class="container">
           Hunter: The Reckoning
           <div class="info q-my-sm">
-            <div>Name: {{ charName }}</div>
-            <div>Creed: {{ creed.name }}</div>
-            <div>Cell: {{ cell }}</div>
+            <div>Name: {{ charName ? charName : "Unknown" }}</div>
+            <div>Creed: {{ creed.name ? creed.name : "Unknown" }}</div>
+            <div>Cell: {{ cell ? cell : "Unknown" }}</div>
           </div>
           <div class="concept q-mt-md">
             <div>Concept: {{ !concept ? "None" : concept }}</div>
@@ -112,7 +112,35 @@
               </q-card>
             </q-expansion-item>
           </q-list>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item
+              icon="app:whiteankh"
+              label="Edges & Perks"
+              caption="View edges and perks"
+              dark
+            >
+              <q-card>
+                <q-card-section class="backgroundDefault">
+                  Edges:
+                  <div v-if="this.edgeArr.edges.length === 0">
+                    Not yet selected
+                  </div>
+                  <div v-for="(edge, key) in this.edgeArr.edges" :key="key">
+                    <div>{{ edge.category }} - {{ edge.edge }}</div>
+                  </div>
+                  <br />
+                  Perks:
+                  <div v-if="this.edgeArr.perks.length === 0">
+                    Not yet selected
+                  </div>
 
+                  <div v-for="(perk, key) in this.edgeArr.perks" :key="key">
+                    {{ perk.category }} - {{ perk.perk }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
               icon="military_tech"
@@ -296,21 +324,15 @@
             clickable
             @click="spendXp"
             :disable="
-              (!this.skillsDone ||
-                !this.attributesDone ||
-                !this.disciplinesDone) &&
+              (!this.skillsDone || !this.attributesDone || !this.edgeDone) &&
               this.debug !== true
             "
           >
             <q-tooltip
-              v-if="
-                !this.skillsDone ||
-                !this.attributesDone ||
-                !this.disciplinesDone
-              "
+              v-if="!this.skillsDone || !this.attributesDone || !this.edgeDone"
               class="bg-dark text-body2"
               >Please set valid base attributes, skills and complete your
-              clan/discipline section.</q-tooltip
+              edges/perks section.</q-tooltip
             >
             <q-item-section avatar>
               <q-icon color="secondary" name="upgrade" />
@@ -331,7 +353,6 @@
         @concept="handleConcept($event)"
         @ambition="handleAmbition($event)"
         @desire="handleDesire($event)"
-        @creeds="handleCreeds($event)"
         @touchstones="handleTouchstones($event)"
         @chronicle="handleChronicle($event)"
         @specialties="handleSpecialties($event)"
@@ -342,7 +363,9 @@
         v-model:creed="creed"
         v-model:drive="drive"
         v-model:redemption="redemption"
+        v-model:cell="cell"
         v-model:tab="tab"
+        v-model:xp="xp"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :cell="this.cell"
@@ -417,7 +440,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import tabs from "../hunter/tabs.vue";
-import spendXp from "../vtm/spendXp.vue";
+import spendXp from "../hunter/spendXp.vue";
 import attributes from "../hunter/5eAttributes.vue";
 import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
@@ -476,6 +499,7 @@ export default {
       ambition: "",
       drive: "",
       redemption: "",
+      edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
       attributePoints: 22,
       skillPoints: 29,
       charName: "",
@@ -500,8 +524,7 @@ export default {
       thinAdvantages: 0,
       thinFlaws: 0,
       chronicle: "",
-      creeds: [],
-      edgeArr: [],
+      edgeArr: { edges: [], perks: [] },
       baseSkills: {
         athletics: 0,
         brawl: 0,
@@ -571,13 +594,14 @@ export default {
       },
       specialties: [],
       specialtiesFromXp: [],
-      cell: ref("None"),
+      cell: ref(""),
       desire: "",
-      disciplines: {},
       concept: "",
       touchstones: [],
       xp: 0,
+      spentXp: 0,
       skillsDone: false,
+      edgeDone: false,
     };
   },
   methods: {
@@ -603,7 +627,7 @@ export default {
         willpower: this.composure + this.resolve,
 
         xp: this.xp,
-        creeds: this.creeds,
+        creed: this.creed,
         touchstones: this.touchstones,
         remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,
@@ -661,9 +685,7 @@ export default {
     handleDesire(data) {
       this.desire = data;
     },
-    handleCreeds(data) {
-      this.creeds = data;
-    },
+
     handleTouchstones(data) {
       this.touchstones = data;
     },
@@ -744,12 +766,16 @@ export default {
           componentProps: {
             info: {
               edgeArr: this.edgeArr,
+              edgeDist: this.edgeDist,
+              edgeDone: this.edgeDone,
             },
           },
         })
         .onOk((data) => {
           this.edgeArr = data.edgeArr;
-          console.log(this.edgeArr);
+          this.edgeDist = data.edgeDist;
+          this.edgeDone = data.edgeDone;
+          console.log(this.edgeDone);
         });
     },
     spendXp() {
@@ -770,20 +796,18 @@ export default {
                 { name: "Strength", points: this.strength },
                 { name: "Wits", points: this.wits },
               ],
-              cell: this.cell,
-              disciplines: this.disciplines,
-              disciplineSkills: this.disciplineSkills,
               skills: this.trueSkills,
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
+              spentXp: this.spentXp,
             },
           },
         })
         .onOk((data) => {
           this.xp = data.xp;
+          this.spentXp = data.spentXp;
+          console.log(this.spentXp);
           this.advantages = this.advantages + data.advantages.value;
-          this.disciplines = data.disciplines;
-          this.disciplineSkills = data.disciplineSkillsObj;
           this.specialtiesFromXp = data.specialtiesFromXp;
           this.trueSkills = data.skills;
           data.attributes.value.forEach((attribute) => {
@@ -801,19 +825,14 @@ export default {
 
     saveGuard() {
       //primary sections
-      if (!this.skillsDone || !this.attributesDone) {
+      if (!this.skillsDone || !this.attributesDone || !this.edgeDone) {
         this.disableBlurb =
-          "Please complete the base attributes, skills sections.";
+          "Please complete the base attributes, skills sections and edges/perks.";
         return true;
       }
-      //Touchstones/creeds
-      if (
-        this.creeds.length < 1 ||
-        this.touchstones < 1 ||
-        this.touchstones.length !== this.creeds.length
-      ) {
-        this.disableBlurb =
-          "Must between 1-3 creeds/touchstones, they also must be equal.";
+      //Touchstones
+      if (this.touchstones < 1 || this.touchstones.length > 3) {
+        this.disableBlurb = "Must have between 1-3 touchstones.";
         return true;
       }
       //Core Concept
@@ -822,22 +841,16 @@ export default {
         !this.concept ||
         !this.ambition ||
         !this.desire ||
-        !this.archtypeModel ||
-        !this.chronicle
+        !this.cell ||
+        !this.chronicle ||
+        !this.drive ||
+        !this.creed
       ) {
         this.disableBlurb =
           "Please complete all * fields in the core concept tab.";
         return true;
       }
 
-      if (
-        this.clan === "Thin-Blood" &&
-        this.thinAdvantages !== this.thinFlaws
-      ) {
-        this.disableBlurb =
-          "Thin-Bloods must have an equal amount of thin-blood merits and flaws.";
-        return true;
-      }
       return false;
     },
 

@@ -58,6 +58,23 @@
           />
           <q-input
             filled
+            class="select"
+            bg-color="grey-3"
+            v-model="cellInput"
+            label="Your cell's name *"
+            lazy-rules
+            label-color="primary"
+            @update:model-value="$emit('update:cell', this.cellInput)"
+            :rules="[
+              (val) =>
+                (typeof val === 'string' &&
+                  val.length > 3 &&
+                  val.length <= 128) ||
+                'Please enter a valid name, between 3-128 characters',
+            ]"
+          />
+          <q-input
+            filled
             bg-color="grey-3"
             class="select"
             v-model="concept"
@@ -177,6 +194,20 @@
           <div v-if="this.creedInput" class="q-my-sm text-white">
             {{ this.creedInput.desc }}
           </div>
+
+          <q-input
+            filled
+            class="select"
+            bg-color="grey-3"
+            v-model="xpInput"
+            type="number"
+            label="Your Starting XP *"
+            lazy-rules
+            label-color="primary"
+            hint="There are no written rules for amount of starting XP, discuss with your ST."
+            hide-hint
+            @update:model-value="$emit('update:xp', this.xpInput)"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">
@@ -301,22 +332,6 @@
                 <q-tooltip class="bg-dark text-body2"
                   >Click to delete</q-tooltip
                 >
-              </q-item-section>
-            </q-item>
-          </q-list>
-          <q-separator />
-          <div class="text-h6" style="font-family: monospace">
-            Specialties from Predator Type
-          </div>
-
-          <q-list bordered separator>
-            <q-item v-for="(specialty, key) in specialtiesFromPred" :key="key">
-              <q-item-section :id="key"
-                >Skill:
-                {{
-                  specialty.skill[0].toUpperCase() + specialty.skill.slice(1)
-                }}
-                - {{ specialty.specialty }}
               </q-item-section>
             </q-item>
           </q-list>
@@ -689,6 +704,8 @@ export default defineComponent({
     "creed",
     "drive",
     "redemption",
+    "cell",
+    "xp",
   ],
   emits: [
     "update:specialtiePoints",
@@ -698,6 +715,8 @@ export default defineComponent({
     "update:creed",
     "update:drive",
     "update:redemption",
+    "update:cell",
+    "update:xp",
     "specialties",
     "creeds",
     "touchstones",
@@ -720,6 +739,12 @@ export default defineComponent({
   },
   data(props) {
     return {
+      xpRules: [
+        (val) => (val !== null && val !== "") || "Please type your xp amount",
+        (val) =>
+          (val > 0 && val < 100 && !isNaN(val)) ||
+          "Please type a valid number between 0 & 100",
+      ],
       advantagesArr: [],
       allMerits: allMerits.Merits,
       allBackgrounds: allBackgrounds.Backgrounds,
@@ -736,6 +761,8 @@ export default defineComponent({
       creedInput: props.creed,
       driveInput: props.drive,
       redemptionChoice: props.redemption,
+      cellInput: props.cell,
+      xpInput: props.xp,
       touchStoneInput: "",
       creeds: [],
       touchstones: [],
@@ -745,13 +772,10 @@ export default defineComponent({
       concept: "",
       meritCategory: "",
       cultCategory: "",
-      sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
       advantageCategories: ["Merits", "Backgrounds", "Safe House"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
-      thinFlawsTabs: props.thinFlaws,
-      thinAdvantagesTabs: props.thinAdvantages,
     };
   },
   methods: {

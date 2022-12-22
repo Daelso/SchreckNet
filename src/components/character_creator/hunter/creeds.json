@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Entrepreneurial",
+    "desc": "Hunters take on their quarry with bold innovations and experimental approaches"
+  },
+  {
+    "name": "Faithful",
+    "desc": "Hunters operate with a belief in higher powers and a divinely informed worldview"
+  },
+  {
+    "name": "Inquisitive",
+    "desc": "Hunters accumulate and employ knowledge against the occult, using both cutting-edge and ancient methods to study and learn about monsters and what they do"
+  },
+  {
+    "name": "Martial",
+    "desc": "Hunters reason that hammering down the supernatural threat requires a devotion to arms and tactics"
+  },
+  {
+    "name": "Underground",
+    "desc": "Hunters have learned that guile, subterfuge, and knowing the right people can gain one access to the quarry they seek"
+  }
+]

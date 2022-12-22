@@ -370,7 +370,7 @@
 
 .info {
   display: grid;
-  gap: 3px;
+  gap: 8px;
   grid-template-columns: repeat(3, 1fr);
 }
 
@@ -403,6 +403,18 @@
     width: 100%;
     font-size: 3vw;
     width: 365px;
+  }
+  .info {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(3, 1fr);
+    font-size: 12px;
+  }
+  .stats {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    font-size: 13px;
   }
 }
 

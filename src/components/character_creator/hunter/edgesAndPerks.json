@@ -6,19 +6,23 @@
         "perks": [
           {
             "name": "Team Requisition",
-            "desc": "The Hunter can provide copies of the same weapon up to the margin of the win."
+            "desc": "The Hunter can provide copies of the same weapon up to the margin of the win.",
+            "parent": "Arsenal"
           },
           {
             "name": "Special Features",
-            "desc": "The weapon comes with a number of special features up to the margin of the win. Features could be a thermal scope or disguised case."
+            "desc": "The weapon comes with a number of special features up to the margin of the win. Features could be a thermal scope or disguised case.",
+            "parent": "Arsenal"
           },
           {
             "name": "Exotics",
-            "desc": "You possess a rare form of weaponry such as silver bullets or a ritual dagger."
+            "desc": "You possess a rare form of weaponry such as silver bullets or a ritual dagger.",
+            "parent": "Arsenal"
           },
           {
             "name": "Untraceable",
-            "desc": "Any weapons procured are completely untraceable and will never lead back to the Cell."
+            "desc": "Any weapons procured are completely untraceable and will never lead back to the Cell.",
+            "parent": "Arsenal"
           }
         ]
       },
@@ -27,19 +31,23 @@
         "perks": [
           {
             "name": "Armor",
-            "desc": "Vehicles provided will be armored against small arms fire."
+            "desc": "Vehicles provided will be armored against small arms fire.",
+            "parent": "Fleet"
           },
           {
             "name": "Performance",
-            "desc": "Vehicles provided come with enhanced handling and driving, providing a bonus equal to the win amount. Provides bonuses to driving tests."
+            "desc": "Vehicles provided come with enhanced handling and driving, providing a bonus equal to the win amount. Provides bonuses to driving tests.",
+            "parent": "Fleet"
           },
           {
             "name": "Surveillance",
-            "desc": "Vehicles provided come with a broad range of concealed surveillance instruments. Provides bonuses to things like stakeouts."
+            "desc": "Vehicles provided come with a broad range of concealed surveillance instruments. Provides bonuses to things like stakeouts.",
+            "parent": "Fleet"
           },
           {
             "name": "Untraceable",
-            "desc": "Any vehicles procured are completely untraceable and will never lead back to the Cell."
+            "desc": "Any vehicles procured are completely untraceable and will never lead back to the Cell.",
+            "parent": "Fleet"
           }
         ]
       },
@@ -48,19 +56,23 @@
         "perks": [
           {
             "name": "Multiple Payloads",
-            "desc": "The hunter can provide additional copies of the same ordnance up to the margin of the win."
+            "desc": "The hunter can provide additional copies of the same ordnance up to the margin of the win.",
+            "parent": "Ordnance"
           },
           {
             "name": "Non-Lethal Munitions",
-            "desc": "This perk provides a wide range of non-lethal explosives like tear gas, flashbangs or knockout gas."
+            "desc": "This perk provides a wide range of non-lethal explosives like tear gas, flashbangs or knockout gas.",
+            "parent": "Ordnance"
           },
           {
             "name": "Exotics",
-            "desc": "The Hunter can fill their explosives with rare or exotic contents such as consecrated water or sandalwood shrapnel."
+            "desc": "The Hunter can fill their explosives with rare or exotic contents such as consecrated water or sandalwood shrapnel.",
+            "parent": "Ordnance"
           },
           {
             "name": "Disguised Delivery",
-            "desc": "Any explosive is disguised as everyday objects of appropriate size making them more difficult to detect."
+            "desc": "Any explosive is disguised as everyday objects of appropriate size making them more difficult to detect.",
+            "parent": "Ordnance"
           }
         ]
       },
@@ -69,19 +81,23 @@
         "perks": [
           {
             "name": "Where They hide",
-            "desc": "Clues provide a bonus equal to the margin of the win when attempting to locate the lair of your prey."
+            "desc": "Clues provide a bonus equal to the margin of the win when attempting to locate the lair of your prey.",
+            "parent": "Library"
           },
           {
             "name": "Who They Are",
-            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to identify prey."
+            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to identify prey.",
+            "parent": "Library"
           },
           {
             "name": "How To Halt Them",
-            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to ward an area, protect an area or poerson from your prey."
+            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to ward an area, protect an area or poerson from your prey.",
+            "parent": "Library"
           },
           {
             "name": "How To Harm Them",
-            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to harm the prey by exploiting a supernatural weakness."
+            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to harm the prey by exploiting a supernatural weakness.",
+            "parent": "Library"
           }
         ]
       }
@@ -94,19 +110,23 @@
         "perks": [
           {
             "name": "Frugal",
-            "desc": "The Hunter is able to construct most items out of the trinkets and tools they carry, no matter how bare their location."
+            "desc": "The Hunter is able to construct most items out of the trinkets and tools they carry, no matter how bare their location.",
+            "parent": "Improvised Gear"
           },
           {
             "name": "Mass Production",
-            "desc": "The Hunter is able to create a number of additional items equal to the margin of the test."
+            "desc": "The Hunter is able to create a number of additional items equal to the margin of the test.",
+            "parent": "Improvised Gear"
           },
           {
             "name": "Specialization",
-            "desc": "The Hunter can specialize in augmenting a particular Skill"
+            "desc": "The Hunter can specialize in augmenting a particular Skill",
+            "parent": "Improvised Gear"
           },
           {
             "name": "Speed Crafting",
-            "desc": "With this Perk, the Hunter can craft a tool in three turns, minus the margin on the test, to a minimum of one turn, regardless of outside circumstances such as bullets flying."
+            "desc": "With this Perk, the Hunter can craft a tool in three turns, minus the margin on the test, to a minimum of one turn, regardless of outside circumstances such as bullets flying.",
+            "parent": "Improvised Gear"
           }
         ]
       },
@@ -115,19 +135,23 @@
         "perks": [
           {
             "name": "Watching Big Brother",
-            "desc": "The Hunter is able to not only gain access to but also manipulate digital surveillance footage."
+            "desc": "The Hunter is able to not only gain access to but also manipulate digital surveillance footage.",
+            "parent": "Global Access"
           },
           {
             "name": "All-Access Pass",
-            "desc": "The Hunter can bypass electronic locks and disable or manipulate alarm systems and other security countermeasures."
+            "desc": "The Hunter can bypass electronic locks and disable or manipulate alarm systems and other security countermeasures.",
+            "parent": "Global Access"
           },
           {
             "name": "Money Tap",
-            "desc": "The Hunter can manipulate financial data and move currency with the push of a button. Can be used offensively and defensively."
+            "desc": "The Hunter can manipulate financial data and move currency with the push of a button. Can be used offensively and defensively.",
+            "parent": "Global Access"
           },
           {
             "name": "The Letter of the Law",
-            "desc": "The Hunter can manipulate criminal records, both national and international."
+            "desc": "The Hunter can manipulate criminal records, both national and international.",
+            "parent": "Global Access"
           }
         ]
       },
@@ -136,27 +160,33 @@
         "perks": [
           {
             "name": "Autonomous",
-            "desc": "The Hunter is able to program simple behaviours into their drone, such as patrol-and-attack patterns or tailing."
+            "desc": "The Hunter is able to program simple behaviours into their drone, such as patrol-and-attack patterns or tailing.",
+            "parent": "Drone Jockey"
           },
           {
             "name": "Variants",
-            "desc": "Each copy of this Perk allows an additional drone variant (complete with two Skills, which can differ among the variant drones) to be acquired."
+            "desc": "Each copy of this Perk allows an additional drone variant (complete with two Skills, which can differ among the variant drones) to be acquired.",
+            "parent": "Drone Jockey"
           },
           {
             "name": "Specialist Skill",
-            "desc": "The drone can utilize an additional Skill."
+            "desc": "The drone can utilize an additional Skill.",
+            "parent": "Drone Jockey"
           },
           {
             "name": "Armaments",
-            "desc": "A drone variant can be armed with the equivalent of a submachine gun or a taser, using a flat five-dice pool to use it."
+            "desc": "A drone variant can be armed with the equivalent of a submachine gun or a taser, using a flat five-dice pool to use it.",
+            "parent": "Drone Jockey"
           },
           {
             "name": "Payload",
-            "desc": "The drone can carry a unit of cargo many times what its size suggests."
+            "desc": "The drone can carry a unit of cargo many times what its size suggests.",
+            "parent": "Drone Jockey"
           },
           {
             "name": "System",
-            "desc": "On acquiring this Edge, the Hunter must choose one type of animal and which key action pools it possesses."
+            "desc": "On acquiring this Edge, the Hunter must choose one type of animal and which key action pools it possesses.",
+            "parent": "Drone Jockey"
           }
         ]
       },
@@ -165,19 +195,23 @@
         "perks": [
           {
             "name": "Incorruptible",
-            "desc": "Through conditioning, medication, or unwavering loyalty, the animal is immune to supernatural powers that would otherwise sway it from its master's side."
+            "desc": "Through conditioning, medication, or unwavering loyalty, the animal is immune to supernatural powers that would otherwise sway it from its master's side.",
+            "parent": "Beast Whisperer"
           },
           {
             "name": "Menagerie",
-            "desc": "The Hunter can choose another animal type and add it to the available pool of animals they have available"
+            "desc": "The Hunter can choose another animal type and add it to the available pool of animals they have available",
+            "parent": "Beast Whisperer"
           },
           {
             "name": "Complex Commands",
-            "desc": "The animal can understand and execute more complex commands, such as the retrieval of specific objects, keeping a lookout for certain individuals."
+            "desc": "The animal can understand and execute more complex commands, such as the retrieval of specific objects, keeping a lookout for certain individuals.",
+            "parent": "Beast Whisperer"
           },
           {
             "name": "Incognito",
-            "desc": "The animal can masterfully stay out of sight."
+            "desc": "The animal can masterfully stay out of sight.",
+            "parent": "Beast Whisperer"
           }
         ]
       }
@@ -190,19 +224,23 @@
         "perks": [
           {
             "name": "Creature Specialization",
-            "desc": "The Hunter gains a two-dice bonus to sense a specific type of creature."
+            "desc": "The Hunter gains a two-dice bonus to sense a specific type of creature.",
+            "parent": "Sense the Unnatural"
           },
           {
             "name": "Range",
-            "desc": "The range of the ability is extended to cover roughly the size of a city block."
+            "desc": "The range of the ability is extended to cover roughly the size of a city block.",
+            "parent": "Sense the Unnatural"
           },
           {
             "name": "Precision",
-            "desc": "The Hunter is able to determine exactly who among those present in a room is a creature of the supernatural."
+            "desc": "The Hunter is able to determine exactly who among those present in a room is a creature of the supernatural.",
+            "parent": "Sense the Unnatural"
           },
           {
             "name": "Handsfree",
-            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge."
+            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge.",
+            "parent": "Sense the Unnatural"
           }
         ]
       },
@@ -211,19 +249,23 @@
         "perks": [
           {
             "name": "Ward",
-            "desc": "The Hunter can extend the area of protection to include an area roughly 2 meters around them. Effects all in range."
+            "desc": "The Hunter can extend the area of protection to include an area roughly 2 meters around them. Effects all in range.",
+            "parent": "Repel the Unnatural"
           },
           {
             "name": "Damage",
-            "desc": "While this power is active, the Hunter can use their object of focus as a melee weapon with +0 damage, inflicting Aggravated damage to the creature under its effect."
+            "desc": "While this power is active, the Hunter can use their object of focus as a melee weapon with +0 damage, inflicting Aggravated damage to the creature under its effect.",
+            "parent": "Repel the Unnatural"
           },
           {
             "name": "Creature Specialization",
-            "desc": "The Hunter gains a two-dice bonus to repel a specific type of creature."
+            "desc": "The Hunter gains a two-dice bonus to repel a specific type of creature.",
+            "parent": "Repel the Unnatural"
           },
           {
             "name": "Handsfree",
-            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge."
+            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge.",
+            "parent": "Repel the Unnatural"
           }
         ]
       },
@@ -232,19 +274,23 @@
         "perks": [
           {
             "name": "Creature Specialization",
-            "desc": "The Hunter gains a two-dice bonus to resist a specific type of creature."
+            "desc": "The Hunter gains a two-dice bonus to resist a specific type of creature.",
+            "parent": "Thwart the Unnatural"
           },
           {
             "name": "Ward",
-            "desc": "The Hunter can extend the area of protection to include an area roughly 2 meters around them. Effects all in range."
+            "desc": "The Hunter can extend the area of protection to include an area roughly 2 meters around them. Effects all in range.",
+            "parent": "Thwart the Unnatural"
           },
           {
             "name": "Recognition",
-            "desc": "On successfully resisting an ability, the Hunter is made aware of the attempt and what the power would have done to them."
+            "desc": "On successfully resisting an ability, the Hunter is made aware of the attempt and what the power would have done to them.",
+            "parent": "Thwart the Unnatural"
           },
           {
             "name": "Handsfree",
-            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge."
+            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge.",
+            "parent": "Thwart the Unnatural"
           }
         ]
       },
@@ -253,19 +299,23 @@
         "perks": [
           {
             "name": "Empower",
-            "desc": "Once per scene, the Hunter can make an Edge Test at Difficulty 4 to increase the Artifact's dice bonus to three dice."
+            "desc": "Once per scene, the Hunter can make an Edge Test at Difficulty 4 to increase the Artifact's dice bonus to three dice.",
+            "parent": "Artifact"
           },
           {
             "name": "Attraction",
-            "desc": "The Artifact is sought after by any number of supernatural parties. It can be used as bait, and provides a two-dice bonus to any ambush attempts."
+            "desc": "The Artifact is sought after by any number of supernatural parties. It can be used as bait, and provides a two-dice bonus to any ambush attempts.",
+            "parent": "Artifact"
           },
           {
             "name": "Detection",
-            "desc": "The Artifact reacts to the presence of the supernatural, similar to the Sense the Unnatural Edge."
+            "desc": "The Artifact reacts to the presence of the supernatural, similar to the Sense the Unnatural Edge.",
+            "parent": "Artifact"
           },
           {
             "name": "Shield",
-            "desc": "The Artifact shields the Hunter from harm by supernatural forces."
+            "desc": "The Artifact shields the Hunter from harm by supernatural forces.",
+            "parent": "Artifact"
           }
         ]
       }

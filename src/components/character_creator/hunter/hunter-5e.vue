@@ -782,7 +782,6 @@ export default {
           this.edgeArr = data.edgeArr;
           this.edgeDist = data.edgeDist;
           this.edgeDone = data.edgeDone;
-          console.log(this.edgeDone);
         });
     },
     spendXp() {
@@ -814,7 +813,6 @@ export default {
         .onOk((data) => {
           this.xp = data.xp;
           this.spentXp = data.spentXp;
-          console.log(this.spentXp);
           this.advantages = this.advantages + data.advantages.value;
           this.specialtiesFromXp = data.specialtiesFromXp;
           this.trueSkills = data.skills;

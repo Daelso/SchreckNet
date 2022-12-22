@@ -29,7 +29,7 @@ const Hunters = db.sequelize.define("hunters", {
     allowNull: false,
   },
   drive: {
-    type: Sequelize.STRING,
+    type: Sequelize.JSON,
     allowNull: false,
   },
   spentXp: {

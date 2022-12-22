@@ -11,11 +11,7 @@
         mobile-arrows
       >
         <q-tab style="color: white" name="coreConcept" label="Core Concept" />
-        <q-tab
-          style="color: white"
-          name="touchstones"
-          label="Touchstones/Creeds"
-        />
+        <q-tab style="color: white" name="touchstones" label="Touchstones" />
         <q-tab
           :disable="sortSkills().length < 1 && this.debug !== true"
           name="specialties"
@@ -30,17 +26,12 @@
           >
         </q-tab>
         <q-tab
-          :disable="!this.discDone && this.debug !== true"
+          :disable="this.debug !== true"
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"
           id="advantageTab"
         >
-          <q-tooltip
-            v-if="!this.discDone && this.debug !== true"
-            class="bg-dark text-body2"
-            >Please set your clan and disciplines first.</q-tooltip
-          >
         </q-tab>
       </q-tabs>
 
@@ -143,48 +134,56 @@
                 'Please keep this field between 3 and 128 characters',
             ]"
           />
+
+          <q-select
+            filled
+            bg-color="grey-3"
+            v-model="driveInput"
+            :options="driveOptions"
+            option-label="name"
+            label="Drive *"
+            class="select"
+            label-color="primary"
+            @update:model-value="
+              () => {
+                this.$emit('update:drive', this.driveInput);
+                this.redemptionChoice = this.driveInput.redemption;
+                this.$emit('update:redemption', this.redemptionChoice);
+              }
+            "
+            hint="What drives your hunt? (Triggers desperation die)"
+            hide-hint
+          />
+          <div v-if="this.driveInput" class="q-my-sm text-white">
+            {{ this.driveInput.desc }}
+          </div>
+          <div v-if="this.driveInput" class="q-my-sm text-white">
+            Redemption Trigger: {{ this.driveInput.redemption }}
+          </div>
+          <q-select
+            filled
+            bg-color="grey-3"
+            v-model="creedInput"
+            :options="creedOptions"
+            option-label="name"
+            label="Creeds *"
+            class="select"
+            label-color="primary"
+            @update:model-value="this.$emit('update:creed', this.creedInput)"
+            hint="Helps give context to your hunting style"
+            hide-hint
+          />
+
+          <div v-if="this.creedInput" class="q-my-sm text-white">
+            {{ this.creedInput.desc }}
+          </div>
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">
           <div class="q-mb-sm">Must have 1-3 touchtones.</div>
           <div class="q-mb-sm" style="color: white">
-            Creeds and touchstones are
-            <span v-if="this.creeds.length != this.touchstones.length"
-              >NOT</span
-            >
-            equal.
+            {{ this.touchstones.length }} touchstones
           </div>
-          <q-input
-            filled
-            bg-color="grey-3"
-            v-model="creedInput"
-            label="Creed *"
-            hint="Human values your coterie attempts to uphold even after death. Must have 1-3. (Press enter to confirm)"
-            hide-hint
-            autogrow
-            class="select"
-            label-color="primary"
-            lazy-rules
-            v-on:keydown.enter.prevent="
-              () => {
-                if (!this.creedInput) {
-                  return;
-                }
-                if (this.creeds.length === 3) {
-                  this.convicWarning();
-                  return;
-                }
-                this.creeds.push(this.creedInput);
-                this.creedInput = '';
-                this.$emit('creeds', this.creeds);
-              }
-            "
-            :rules="[
-              (val) =>
-                (typeof val === 'string' && val.length <= 2000) ||
-                'Please keep this field under 2000 characters',
-            ]"
-          />
           <q-input
             filled
             bg-color="grey-3"
@@ -201,9 +200,17 @@
                 if (!this.touchStoneInput) {
                   return;
                 }
-                this.touchstones.push(this.touchStoneInput);
-                this.touchStoneInput = '';
-                this.$emit('touchstones', this.touchstones);
+                if (this.touchstones.length <= 2) {
+                  this.touchstones.push(this.touchStoneInput);
+                  this.touchStoneInput = '';
+                  this.$emit('touchstones', this.touchstones);
+                } else {
+                  this.$q.notify({
+                    message: 'You may have a max of 3 touchstones',
+                    color: 'red-5',
+                    icon: 'warning',
+                  });
+                }
               }
             "
             :rules="[
@@ -212,25 +219,6 @@
                 'Please keep this field under 2000 characters',
             ]"
           />
-          <q-separator />
-          <div class="text-h6" style="font-family: monospace">Creeds</div>
-
-          <q-list bordered separator>
-            <q-item
-              v-for="(creed, key) in creeds"
-              :key="key"
-              clickable
-              v-ripple
-              @click="removeCreed($event.target.id)"
-            >
-              <q-item-section :id="key"
-                >{{ creed }}
-                <q-tooltip class="bg-dark text-body2"
-                  >Click to delete</q-tooltip
-                >
-              </q-item-section>
-            </q-item>
-          </q-list>
 
           <q-separator />
           <div class="text-h6" style="font-family: monospace">Touchstones</div>
@@ -343,22 +331,13 @@
             Remaining dots of advantages: {{ advantagePoints }}
           </div>
           <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
-          <div
-            v-if="this.advantageCategory == 'Loresheets'"
-            class="q-my-sm"
-            style="color: red; font-weight: bold"
-          >
-            Loresheets are too varied and too numerous to handle automatically,
-            the sheet will track the dots you take, but please assign any
-            additional bonuses on your sheet manually after.
-          </div>
 
           <q-separator />
 
           <q-select
             v-model="advantageCategory"
             :options="advantageCategories"
-            label="Select merits, backgrounds, and loresheets"
+            label="Select merits and backgrounds"
             label-color="primary"
             bg-color="grey-3"
             filled
@@ -368,10 +347,8 @@
           <div
             v-if="
               this.advantageCategory === 'Merits' ||
-              this.advantageCategory == 'Cult' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Safe House' ||
-              this.advantageCategory == 'Loresheets'
+              this.advantageCategory == 'Safe House'
             "
           >
             <q-select
@@ -389,9 +366,7 @@
             />
           </div>
           <q-separator />
-          <div
-            v-if="this.meritCategory && this.advantageCategory !== 'Loresheets'"
-          >
+          <div v-if="this.meritCategory">
             <q-select
               v-model="advOrFlaw"
               :options="advorFlawOptions()"
@@ -415,12 +390,7 @@
               @update:model-value="clearDotField()"
             />
           </div>
-          <div
-            v-if="
-              this.advFlawChoice.maxCost ||
-              (this.advantageCategory === 'Loresheets' && this.meritCategory)
-            "
-          >
+          <div v-if="this.advFlawChoice.maxCost">
             <q-select
               v-model="howManyDots"
               :options="dotOptions()"
@@ -463,23 +433,7 @@
               ]"
             />
           </div>
-          <div
-            v-if="this.advantageCategory === 'Loresheets' && this.meritCategory"
-          >
-            Description:
-            {{
-              this.loresheets.loresheets.find(
-                (x) => x.Name === this.meritCategory
-              ).Description
-            }}
-            <br />
-            <div v-if="this.howManyDots">
-              Dot Cost: {{ this.advFlawChoice.cost }} <br />
-            </div>
-          </div>
-          <div
-            v-if="this.advFlawChoice && this.advantageCategory !== 'Loresheets'"
-          >
+          <div v-if="this.advFlawChoice">
             Description: {{ this.advFlawChoice.desc }}
             <br />
             Dot Cost: {{ this.advFlawChoice.cost }} <br />
@@ -626,44 +580,6 @@
             </q-list>
           </div>
           <br />
-          <!-- Loresheets -->
-          <div
-            v-if="
-              this.advantagesObj.loresheets.advantages.length > 0 ||
-              this.advantagesObj.loresheets.flaws.length > 0
-            "
-          >
-            <span class="text-h6">Loresheets</span>
-            <q-separator />
-            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
-
-            <q-list bordered>
-              <q-item
-                v-for="(advantage, key) in advantagesObj.loresheets.advantages"
-                :key="key"
-                clickable
-                v-ripple
-                @click="
-                  removeAdvantage(
-                    $event.target.id,
-                    advantage.cost,
-                    advantage.name,
-                    'loresheets'
-                  )
-                "
-              >
-                <q-item-section :id="key"
-                  >Advantage:
-                  {{ advantage.name }}
-                  - {{ advantage.cost }} dots
-                  <q-tooltip class="bg-dark text-body2"
-                    >Click to delete</q-tooltip
-                  >
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </div>
-          <br />
           <!-- Safe House -->
           <div
             v-if="
@@ -755,9 +671,9 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import allMerits from "../hunter/5eMerits.json";
 import allBackgrounds from "../hunter/5eBackgrounds.json";
-import disciplinesList from "../vtm/5eDisciplines.json";
 import safeHouseMerits from "../hunter/safeHouses.json";
-import loresheets from "../vtm/loresheets.json";
+import creedList from "../hunter/creeds.json";
+import driveList from "../hunter/drives.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -768,27 +684,20 @@ export default defineComponent({
     "specialtiesFromPred",
     "advantagePoints",
     "flawPoints",
-    "age",
     "advantagesObj",
-    "clan",
-    "disciplines",
-    "clanBane",
-    "discDone",
     "debug",
-    "thinAdvantages",
-    "thinFlaws",
-    "disciplineSkills",
+    "creed",
+    "drive",
+    "redemption",
   ],
   emits: [
     "update:specialtiePoints",
     "update:advantagePoints",
     "update:flawPoints",
-    "update:disciplines",
     "update:advantagesObj",
-    "update:clanBane",
-    "update:thinAdvantages",
-    "update:thinFlaws",
-    "update:disciplineSkills",
+    "update:creed",
+    "update:drive",
+    "update:redemption",
     "specialties",
     "creeds",
     "touchstones",
@@ -816,20 +725,20 @@ export default defineComponent({
       allBackgrounds: allBackgrounds.Backgrounds,
       advOrFlaw: "",
       advFlawChoice: "",
+      creedList,
+      driveList,
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
       ambition: "",
       charName: "",
-      thinClanBane: "",
       filteredOptions: [],
-      cultInput: this.cult,
-      creedInput: "",
+      creedInput: props.creed,
+      driveInput: props.drive,
+      redemptionChoice: props.redemption,
       touchStoneInput: "",
       creeds: [],
       touchstones: [],
-      disciplinesList,
-      thinBonusDiscInput: "",
       chronicle: "",
       safeHouseMerits,
       desire: "",
@@ -837,18 +746,12 @@ export default defineComponent({
       meritCategory: "",
       cultCategory: "",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: [
-        "Merits",
-        "Backgrounds",
-        "Safe House",
-        "Loresheets",
-      ],
+      advantageCategories: ["Merits", "Backgrounds", "Safe House"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
       thinFlawsTabs: props.thinFlaws,
       thinAdvantagesTabs: props.thinAdvantages,
-      loresheets,
     };
   },
   methods: {
@@ -880,20 +783,12 @@ export default defineComponent({
       this.handlePoints(false);
     },
     removeAdvantage(event, cost, name, category) {
-      if (name.includes("Thin-Blood")) {
-        this.removeThinAdvantage(event, name);
-        return;
-      }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj[category].advantages.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
       this.$emit("update:advantagePoints", this.advantagePoints + cost);
     },
     removeFlaw(event, cost, name, category) {
-      if (name.includes("Thin-Blood")) {
-        this.removeThinFlaw(event, name);
-        return;
-      }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj[category].flaws.splice(event, 1);
       this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
@@ -946,14 +841,6 @@ export default defineComponent({
     advorFlawOptions() {
       let arr = ["Advantages", "Flaws"];
 
-      if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {
-        if (this.thinAdvantages > this.thinFlaws) {
-          arr = ["Flaws"];
-        } else if (this.thinFlaws > this.thinAdvantages) {
-          arr = ["Advantages"];
-        }
-      }
-
       return arr;
     },
     meritCatOptions() {
@@ -961,41 +848,13 @@ export default defineComponent({
       switch (this.advantageCategory) {
         case "Merits":
           arr = Object.keys(allMerits.Merits);
-          if (this.age.label !== "Ancillae") {
-            arr = arr.filter((x) => x !== "Archaic");
-          }
-          if (this.clan !== "Thin-Blood") {
-            arr = arr.filter((x) => x !== "Thin-blood");
-          }
-          if (this.clan === "Thin-Blood") {
-            arr = arr.filter((x) => x !== "Bonding");
-          }
           break;
 
         case "Backgrounds":
           arr = Object.keys(allBackgrounds.Backgrounds);
-          if (this.clan === "Thin-Blood") {
-            arr = arr.filter(
-              (x) => x !== "Mawla" && x !== "Status" && x !== "Retainers"
-            );
-          }
           break;
         case "Safe House":
           arr = Object.keys(safeHouseMerits["Safe House"]);
-          break;
-        case "Loresheets":
-          for (const [key, value] of Object.entries(
-            this.loresheets.loresheets
-          )) {
-            if (
-              value.Prerequisite !== null &&
-              value.Prerequisite !== this.clan
-            ) {
-              continue;
-            }
-            arr.push(value.Name);
-          }
-
           break;
       }
 
@@ -1037,28 +896,12 @@ export default defineComponent({
     dotOptions() {
       let arr = [];
 
-      if (this.advantageCategory === "Loresheets") {
-        return this.range(5, 1);
-      }
       arr = this.range(this.advFlawChoice.maxCost, 1);
 
       return arr;
     },
     costAdjustment() {
-      if (this.howManyDots && this.advantageCategory === "Loresheets") {
-        let loresheet = this.loresheets.loresheets.find(
-          (x) => x.Name === this.meritCategory
-        );
-        this.advFlawChoice = {
-          name: loresheet.Name,
-          desc: loresheet.Description,
-          cost: this.howManyDots,
-        };
-      }
-
-      if (this.howManyDots && this.advantageCategory !== "Loresheets") {
-        this.advFlawChoice.cost = this.howManyDots;
-      }
+      this.advFlawChoice.cost = this.howManyDots;
     },
     clearDotField() {
       this.howManyDots = "";
@@ -1086,8 +929,6 @@ export default defineComponent({
       this.advantageCategory = "";
       this.howManyDots = "";
       this.specificationInput = "";
-      this.thinBonusDiscInput = "";
-      this.thinClanBane = "";
     },
 
     sortAdvantageChoice(choiceObj, advOrFlaw) {
@@ -1117,13 +958,6 @@ export default defineComponent({
             modifiedObj.haven.advantages.push(choiceObj);
           } else {
             modifiedObj.haven.flaws.push(choiceObj);
-          }
-          break;
-        case "Loresheets":
-          if (advOrFlaw === true) {
-            modifiedObj.loresheets.advantages.push(choiceObj);
-          } else {
-            modifiedObj.loresheets.flaws.push(choiceObj);
           }
           break;
       }
@@ -1188,253 +1022,10 @@ export default defineComponent({
       return true;
     },
 
-    thinBloodBonusDiscs() {
-      let arr = [];
-      Object.keys(this.disciplinesList.Disciplines).forEach((element) => {
-        arr.push(element);
-      });
-
-      arr = arr.filter((x) => x !== "Thin-blood Alchemy");
-
-      return arr;
-    },
-
-    removeThinAdvantage(event, name) {
-      let modifiedObj = { ...{}, ...this.advantagesObj };
-      let newDisc = { ...{}, ...this.disciplines };
-      modifiedObj.merits.advantages.splice(event, 1);
-      let newDiscSkills = this.disciplineSkills;
-      switch (name) {
-        case "Thin-Blood: Anarch Comrades":
-          modifiedObj.backgrounds.advantages =
-            modifiedObj.backgrounds.advantages.filter(
-              (e) => e.name !== "Mawla: Anarchs"
-            );
-          break;
-        case "Thin-Blood: Camarilla Contact":
-          modifiedObj.backgrounds.advantages =
-            modifiedObj.backgrounds.advantages.filter(
-              (e) => e.name !== "Mawla: Camarilla"
-            );
-          break;
-        case "Thin-Blood: Discipline Affinity":
-          let keys = Object.keys(newDisc);
-
-          keys.forEach((x) => {
-            if (
-              x !== "Athanor Corporis" &&
-              x !== "Calcinatio" &&
-              x !== "Fixatio"
-            ) {
-              newDiscSkills = newDiscSkills.filter((e) => e.discipline !== x);
-              delete newDisc[x];
-            }
-          });
-
-          break;
-        case "Thin-Blood: Thin-blood Alchemist":
-          newDisc["Athanor Corporis"] = 0;
-          newDisc["Calcinatio"] = 0;
-          newDisc["Fixatio"] = 0;
-          newDiscSkills = newDiscSkills.filter(
-            (e) =>
-              e.discipline !== "Athanor Corporis" &&
-              e.discipline !== "Calcinatio" &&
-              e.discipline !== "Fixatio"
-          );
-
-          break;
-      }
-      this.thinAdvantagesTab--;
-      this.$emit("update:thinAdvantages", this.thinAdvantagesTabs);
-      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
-      this.$emit("update:disciplines", newDisc);
-      this.$emit("update:disciplineSkills", newDiscSkills);
-    },
-
-    removeThinFlaw(event, name) {
-      let modifiedObj = { ...{}, ...this.advantagesObj };
-      modifiedObj.merits.flaws.splice(event, 1);
-
-      this.thinFlawsTabs--;
-      this.$emit("update:thinFlaws", this.thinFlawsTabs);
-      this.$emit("update:advantagesObj", { ...{}, ...modifiedObj });
-    },
-
-    thinClanBanes() {
-      let haveIt;
-      let arr = [
-        "Banu Haqim",
-        "Brujah",
-        "Caitiff",
-        "Gangrel",
-        "Hecata",
-        "Lasombra",
-        "Malkavian",
-        "Nosferatu",
-        "Ravnos",
-        "Salubri",
-        "Toreador",
-        "Tremere",
-        "Tzimisce",
-        "Ventrue",
-        "The Ministry",
-      ];
-
-      haveIt = this.advantagesObj.merits.flaws.find(
-        (o) => o.name === "Thin-Blood: Bestial Temper"
-      );
-      if (typeof haveIt === "undefined") {
-        arr = arr.filter((x) => x !== "Brujah" && x !== "Gangrel");
-      }
-
-      haveIt = this.advantagesObj.merits.advantages.find(
-        (o) => o.name === "Thin-Blood: Catenating Blood"
-      );
-      if (typeof haveIt === "undefined") {
-        arr = arr.filter((x) => x !== "Tremere");
-      }
-
-      return arr;
-    },
-
-    handleThinBloods(advOrFlaw, modifiedObj) {
-      if (advOrFlaw === true) {
-        let haveIt;
-        switch (this.advFlawChoice.name) {
-          case "Thin-Blood: Lifelike":
-            haveIt = modifiedObj.merits.flaws.find(
-              (o) => o.name === "Thin-Blood: Dead Flesh"
-            );
-            if (typeof haveIt !== "undefined") {
-              this.$q.notify({
-                type: "negative",
-                textColor: "white",
-                message: "Cannot take Dead Flesh with the Lifelike merit!",
-              });
-              return;
-            }
-            break;
-          case "Thin-Blood: Vampiric Resilience":
-            haveIt = modifiedObj.merits.flaws.find(
-              (o) => o.name === "Thin-Blood: Mortal Frailty"
-            );
-            if (typeof haveIt !== "undefined") {
-              this.$q.notify({
-                type: "negative",
-                textColor: "white",
-                message:
-                  "Cannot take Vampiric Resilience with the Mortal Frailty merit!",
-              });
-              return;
-            }
-            break;
-          case "Thin-Blood: Anarch Comrades":
-            haveIt = modifiedObj.merits.flaws.find(
-              (o) => o.name === "Thin-Blood: Shunned by the Anarchs"
-            );
-            if (typeof haveIt !== "undefined") {
-              this.$q.notify({
-                type: "negative",
-                textColor: "white",
-                message:
-                  "Cannot take Anarch Comrades with the Shunned by the Anarchs merit!",
-              });
-              return;
-            }
-            break;
-        }
-
-        if (this.advFlawChoice.name === "Thin-Blood: Thin-blood Alchemist") {
-          let newDisc = { ...{}, ...this.disciplines };
-          newDisc["Thin-blood Alchemy"]++;
-          this.$emit("update:disciplines", newDisc);
-        }
-        if (this.advFlawChoice.name === "Thin-Blood: Discipline Affinity") {
-          let newDisc = { ...{}, ...this.disciplines };
-          newDisc[this.thinBonusDiscInput] = 1;
-          this.$emit("update:disciplines", newDisc);
-        }
-
-        modifiedObj.merits.advantages.push(this.advFlawChoice);
-        this.thinAdvantagesTab++;
-        this.$emit("update:thinAdvantages", this.thinAdvantagesTabs);
-        this.clearFields();
-      } else {
-        let haveIt;
-
-        switch (this.advFlawChoice.name) {
-          case "Thin-Blood: Dead Flesh":
-            haveIt = modifiedObj.merits.advantages.find(
-              (o) => o.name === "Thin-Blood: Lifelike"
-            );
-            if (typeof haveIt !== "undefined") {
-              this.$q.notify({
-                type: "negative",
-                textColor: "white",
-                message: "Cannot take Dead Flesh with the Lifelike merit!",
-              });
-              return;
-            }
-            break;
-          case "Thin-Blood: Mortal Frailty":
-            haveIt = modifiedObj.merits.advantages.find(
-              (o) => o.name === "Thin-Blood: Vampiric Resilience"
-            );
-            if (typeof haveIt !== "undefined") {
-              this.$q.notify({
-                type: "negative",
-                textColor: "white",
-                message:
-                  "Cannot take Vampiric Resilience with the Mortal Frailty merit!",
-              });
-              return;
-            }
-            break;
-          case "Thin-Blood: Shunned by the Anarchs":
-            haveIt = modifiedObj.merits.advantages.find(
-              (o) => o.name === "Thin-Blood: Anarch Comrades"
-            );
-            if (typeof haveIt !== "undefined") {
-              this.$q.notify({
-                type: "negative",
-                textColor: "white",
-                message:
-                  "Cannot take Anarch Comrades with the Shunned by the Anarchs merit!",
-              });
-              return;
-            }
-            break;
-          case "Thin-Blood: Clan Curse":
-            this.advFlawChoice.name =
-              this.advFlawChoice.name + " " + this.thinClanBane;
-            this.$emit("update:clanBane", this.thinClanBane);
-            break;
-        }
-
-        modifiedObj.merits.flaws.push(this.advFlawChoice);
-        this.thinFlawsTab++;
-        this.$emit("update:thinFlaws", this.thinFlawsTabs);
-
-        this.clearFields();
-      }
-    },
-
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
 
-      if (this.advantageCategory === "Loresheets") {
-        if (this.canPurchase(true) === true) {
-          this.sortAdvantageChoice(this.advFlawChoice, true);
-          this.clearFields();
-        }
-      }
-
       if (this.advOrFlaw.toLowerCase() === "advantages") {
-        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {
-          this.handleThinBloods(true, modifiedObj);
-          return;
-        }
         //true represents an advantage, false a flaw
         if (this.canPurchase(true) === true) {
           this.sortAdvantageChoice(this.advFlawChoice, true);
@@ -1443,15 +1034,24 @@ export default defineComponent({
       }
 
       if (this.advOrFlaw.toLowerCase() === "flaws") {
-        if (this.clan === "Thin-Blood" && this.meritCategory === "Thin-blood") {
-          this.handleThinBloods(false, modifiedObj);
-          return;
-        }
         if (this.canPurchase(false) === true) {
           this.sortAdvantageChoice(this.advFlawChoice, false);
           this.clearFields();
         }
       }
+    },
+  },
+  computed: {
+    creedOptions() {
+      let arr = this.creedList;
+
+      return arr;
+    },
+
+    driveOptions() {
+      let arr = this.driveList;
+
+      return arr;
     },
   },
 });

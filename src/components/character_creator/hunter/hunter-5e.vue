@@ -7,15 +7,17 @@
           Hunter: The Reckoning
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
-            <div>Cell: {{ clan }}</div>
-            <div>Creed: {{ creed }}</div>
-            <div>Drive: {{ age.label }}</div>
-            <div>Redemption: {{ generation.label }}</div>
-            <div>Concept: {{ !concept ? "None" : concept }}</div>
+            <div>Creed: {{ creed.name }}</div>
+            <div>Cell: {{ cell }}</div>
           </div>
-          <div class="concept">
+          <div class="concept q-mt-md">
+            <div>Concept: {{ !concept ? "None" : concept }}</div>
             <div>Ambition: {{ !ambition ? "None" : ambition }}</div>
             <div>Desire: {{ !desire ? "None" : desire }}</div>
+          </div>
+          <div class="q-mt-md">
+            <div>Drive: {{ !drive ? "None" : drive.name }}</div>
+            <div>Redemption: {{ !redemption ? "None" : redemption }}</div>
           </div>
           <q-separator class="q-my-md" />
           <div class="stats">
@@ -110,40 +112,12 @@
               </q-card>
             </q-expansion-item>
           </q-list>
-          <q-list bordered class="rounded-borders">
-            <q-expansion-item
-              icon="app:whiteankh"
-              label="Disciplines"
-              caption="View disciplines and powers"
-              dark
-            >
-              <q-card>
-                <q-card-section class="backgroundDefault">
-                  Disciplines:
-                  <div v-if="Object.keys(disciplines).length === 0">
-                    Not yet selected
-                  </div>
-                  <div v-for="(discipline, key) in disciplines" :key="key">
-                    <div>{{ key }}: {{ discipline }}</div>
-                  </div>
-                  <br />
-                  Powers:
-                  <div v-if="Object.keys(disciplineSkills).length === 0">
-                    Not yet selected
-                  </div>
 
-                  <div v-for="(discipline, key) in disciplineSkills" :key="key">
-                    {{ discipline.discipline }}: {{ discipline.skill }}
-                  </div>
-                </q-card-section>
-              </q-card>
-            </q-expansion-item>
-          </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
               icon="military_tech"
               label="Advantages/Flaws"
-              caption="View current advantages, flaws, backgrounds, havens, and loresheets"
+              caption="View current advantages, flaws, backgrounds and safe houses"
               dark
             >
               <q-card>
@@ -177,7 +151,6 @@
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
-
                     <br />
                     <div>
                       <div style="font-size: larger">Backgrounds:</div>
@@ -241,34 +214,6 @@
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
                     <br />
-                    <div style="font-size: larger">Loresheets:</div>
-                    <br />
-                    Advantages:
-                    <div
-                      class="q-my-sm"
-                      v-if="advantagesObj.loresheets.advantages.length === 0"
-                    >
-                      Not yet selected
-                    </div>
-                    <div
-                      v-for="advantage in advantagesObj.loresheets.advantages"
-                      :key="advantage.name"
-                    >
-                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                    </div>
-                    Flaws:
-                    <div
-                      class="q-my-sm"
-                      v-if="advantagesObj.loresheets.flaws.length === 0"
-                    >
-                      Not yet selected
-                    </div>
-                    <div
-                      v-for="flaw in advantagesObj.loresheets.flaws"
-                      :key="flaw.name"
-                    >
-                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
-                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -277,19 +222,10 @@
           <q-list bordered class="rounded-borders">
             <q-expansion-item
               icon="settings_accessibility"
-              label="Touchstones and Creeds"
-              caption="Review who your kindred really is"
+              label="Touchstones"
+              caption="Who do you fight for?"
               dark
             >
-              <q-card>
-                <q-card-section class="backgroundDefault">
-                  Creeds
-                  <div v-if="creeds.length < 1">None</div>
-                  <div v-for="(conviction, key) in creeds" :key="key">
-                    {{ conviction }}
-                  </div>
-                </q-card-section>
-              </q-card>
               <q-card>
                 <q-card-section class="backgroundDefault">
                   Touchstones
@@ -345,29 +281,6 @@
             </q-item-section>
           </q-item>
           <q-item
-            :disable="
-              (!this.skillsDone || !this.attributesDone) && this.debug !== true
-            "
-            clickable
-            @click="clanSelected"
-          >
-            <q-tooltip
-              v-if="!this.skillsDone || !this.attributesDone"
-              class="bg-dark text-body2"
-              >Please set valid base attributes and skills.</q-tooltip
-            >
-            <q-item-section avatar>
-              <q-icon color="primary" name="app:ankh" style="scale: 170%" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label>Clan/Coterie</q-item-label>
-              <q-item-label caption class="text-white"
-                >Manage things like clan, disciplines and coterie</q-item-label
-              >
-            </q-item-section>
-          </q-item>
-          <q-item
             clickable
             @click="spendXp"
             :disable="
@@ -414,18 +327,13 @@
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
         v-model:advantagesObj="advantagesObj"
+        v-model:creed="creed"
+        v-model:drive="drive"
+        v-model:redemption="redemption"
         v-model:tab="tab"
-        v-model:disciplines="disciplines"
-        v-model:disciplineSkills="this.disciplineSkills"
-        v-model:clanBane="clanBane"
-        v-model:thinAdvantages="thinAdvantages"
-        v-model:thinFlaws="thinFlaws"
-        :discDone="this.disciplinesDone"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
-        :specialtiesFromPred="this.specialtiesFromPred"
-        :age="this.age"
-        :clan="this.clan"
+        :cell="this.cell"
         :debug="this.debug"
       />
     </div>
@@ -466,9 +374,10 @@
   }
 }
 .info {
-  display: grid;
-  gap: 3px;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 45px;
 }
 
 .stats {
@@ -481,19 +390,20 @@
   display: grid;
   gap: 3px;
   grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
 }
 
 .concept {
-  display: grid;
-  gap: 3px;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 45px;
 }
 </style>
 
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../hunter/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";
 import attributes from "../hunter/5eAttributes.vue";
@@ -550,9 +460,9 @@ export default {
       attributeInfo,
       skillInfo,
       creed: "",
-      age: { label: "Childer", bonusXp: 0 },
-      archtypeModel: ref(null),
       ambition: "",
+      drive: "",
+      redemption: "",
       attributePoints: 22,
       skillPoints: 29,
       charName: "",
@@ -561,7 +471,6 @@ export default {
       baseSpecialties: 1,
       gainedSpecialties: 0,
       totalSpecialty: 1,
-      disciplinesDone: false,
       charisma: 0,
       composure: 0,
       dexterity: 0,
@@ -579,7 +488,6 @@ export default {
       thinFlaws: 0,
       chronicle: "",
       creeds: [],
-      disciplineSkills: [],
       baseSkills: {
         athletics: 0,
         brawl: 0,
@@ -647,33 +555,15 @@ export default {
         ],
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
-      predatorType: "Alleycat",
       specialties: [],
-      specialtiesFromPred: [],
       specialtiesFromXp: [],
-      clan: ref("Brujah"),
-      clanBane: ref(
-        "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
-      ),
-      clanDesc: ref(
-        "The 'Rabble' rebel against power and rage against tyranny."
-      ),
-      clanCompulsion: ref(
-        "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)"
-      ),
+      cell: ref("None"),
       desire: "",
       disciplines: {},
-      humanity: 7,
       concept: "",
-      generation: { label: "12th", potency: 1, maxPotency: 3 },
       touchstones: [],
       xp: 0,
       skillsDone: false,
-      tooltips: ref([
-        "Supernatural quickness and reflexes",
-        "The Discipline of physical vigor and strength",
-        "The ability to attract, sway, and control emotions",
-      ]),
     };
   },
   methods: {
@@ -689,24 +579,18 @@ export default {
 
       let character = {
         name: this.charName,
-        clan: this.clan,
+        cell: this.cell,
         concept: this.concept,
         ambition: this.ambition,
         desire: this.desire,
         chronicle: this.chronicle,
-        age: this.age.label,
-        generation: this.generation.label,
-        predatorType: this.predatorType,
         health: this.stamina + 3,
         humanity: this.humanity,
         willpower: this.composure + this.resolve,
-        potency: this.generation.potency,
-        maxPotency: this.generation.maxPotency,
+
         xp: this.xp,
         creeds: this.creeds,
         touchstones: this.touchstones,
-        disciplines: this.disciplines,
-        disciplineSkills: this.disciplineSkills,
         remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,
         attributes: {
@@ -776,54 +660,6 @@ export default {
       this.specialties = data;
     },
 
-    clanSelected() {
-      this.$q
-        .dialog({
-          component: clanSelect,
-          persistent: true,
-          componentProps: {
-            info: {
-              age: this.age,
-              bane: this.clanBane,
-              clan: this.clan,
-              compulsion: this.compulsion,
-              desc: this.clanDesc,
-              disciplines: this.disciplines,
-              discSkills: this.disciplineSkills,
-              generation: this.generation,
-              humanity: this.humanity,
-              predatorType: this.predatorType,
-              thinAdvantages: this.thinAdvantages,
-              thinFlaws: this.thinFlaws,
-              tooltips: this.tooltips,
-              xp: this.xp,
-              disciplinesDone: this.disciplinesDone,
-              merits: this.advantagesObj,
-            },
-          },
-        })
-        .onOk((data) => {
-          this.age = data.age;
-          this.clan = data.clan;
-          this.clanBane = data.bane;
-          this.disciplines = data.disciplines;
-          this.tooltips = data.tooltips;
-          this.clanDesc = data.desc;
-          this.compulsion = data.compulsion;
-          this.generation = data.generation;
-          this.humanity = data.humanity;
-          this.xp = data.xp;
-          this.advantages = data.advantages;
-          this.flaws = data.flaws;
-          this.disciplineSkills = data.discSkillsSelected;
-          this.predatorType = data.predatorType;
-          this.specialtiesFromPred = data.specialtiesFromPred;
-          this.disciplinesDone = data.disciplinesDone;
-          this.advantagesObj = data.merits;
-          this.thinAdvantages = data.thinAdvantages;
-          this.thinFlaws = data.thinFlaws;
-        });
-    },
     attributes() {
       this.$q
         .dialog({
@@ -904,12 +740,11 @@ export default {
                 { name: "Strength", points: this.strength },
                 { name: "Wits", points: this.wits },
               ],
-              clan: this.clan,
+              cell: this.cell,
               disciplines: this.disciplines,
               disciplineSkills: this.disciplineSkills,
               skills: this.trueSkills,
               specialtiesFromXp: this.specialtiesFromXp,
-              potency: this.generation.potency,
               xp: this.xp,
             },
           },
@@ -917,7 +752,6 @@ export default {
         .onOk((data) => {
           this.xp = data.xp;
           this.advantages = this.advantages + data.advantages.value;
-          this.generation.potency = data.potency;
           this.disciplines = data.disciplines;
           this.disciplineSkills = data.disciplineSkillsObj;
           this.specialtiesFromXp = data.specialtiesFromXp;
@@ -930,19 +764,16 @@ export default {
 
     finalSpecialties() {
       let specialties = [];
-      specialties = this.specialties.concat(
-        this.specialtiesFromPred,
-        this.specialtiesFromXp
-      );
+      specialties = this.specialties.concat(this.specialtiesFromXp);
 
       return specialties;
     },
 
     saveGuard() {
       //primary sections
-      if (!this.skillsDone || !this.attributesDone || !this.disciplinesDone) {
+      if (!this.skillsDone || !this.attributesDone) {
         this.disableBlurb =
-          "Please complete the base attributes, skills and disciplines sections.";
+          "Please complete the base attributes, skills sections.";
         return true;
       }
       //Touchstones/creeds

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Atonement",
+    "desc": "You knowingly or unknowingly aided a monster in the past, this action caused innocents to come to harm. Atone for your sins.",
+    "redemption": "The cell must protect someone from a quarry."
+  },
+  {
+    "name": "Curiosity",
+    "desc": "The hunter is driven in the pursuit of knowledge. What, why and how do these monsters exist?",
+    "redemption": "The cell must uncover new information about a quarry."
+  },
+  {
+    "name": "Envy",
+    "desc": "Why have monsters been granted such amazing advantages?",
+    "redemption": "Befriend a quarry or obtain some of its power."
+  },
+  {
+    "name": "Greed",
+    "desc": "A greedy who Hunter who hunts to take what a monster has. Their ill-gotten gains rightfully belong to you.",
+    "redemption": "Gain resources from a quarry or similar creatures."
+  },
+  {
+    "name": "Oath",
+    "desc": "The Hunter has sworn to defeat the creatures of the night, their word is their bond.",
+    "redemption": "Uphold your oath or bring it closer to completion."
+  },
+  {
+    "name": "Pride",
+    "desc": "A supernatural encounter has lit a fire of ambition to prove oneself against creatures handed immense power.",
+    "redemption": "The cell must best the quarry in some form of challenge."
+  },
+  {
+    "name": "Vengeance",
+    "desc": "Balance the scales, someone close to you was hurt by the supernatural and its up to you to right the wrong.",
+    "redemption": "The cell must hurt their quarry, directly or indirectly."
+  }
+]

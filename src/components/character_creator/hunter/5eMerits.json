@@ -45,33 +45,17 @@
     "Nutritionist": {
       "advantages": [
         {
-          "name": "Eat food",
+          "name": "Solo Cooking",
+          "cost": 1,
+          "desc": "You regain one superficial health at the start of a session that begins with you preparing a meal."
+        },
+        {
+          "name": "Cell Chef",
           "cost": 2,
-          "desc": "You can eat food, though it provides no nourishment and must be expelled before daysleep."
+          "desc": "Your entire cell regains one superficial health at the start of a session that begins with you preparing a meal for them."
         }
       ],
-      "flaws": [
-        {
-          "name": "Stake Bait",
-          "cost": 2,
-          "desc": "Being staked brings final death to the vampire"
-        },
-        {
-          "name": "Folkloric Bane",
-          "cost": 1,
-          "desc": "You take aggravated damage from one folkloric bane, like ultraviolet light, silver or holy water."
-        },
-        {
-          "name": "Folkloric Block",
-          "cost": 1,
-          "desc": "You must recoil or spend a willpower when faced with one Folkloric Block, like white animals, running water, garlic, etc."
-        },
-        {
-          "name": "Stigmata",
-          "cost": 1,
-          "desc": "You bleed from your hands, feet and forehead when your hunger becomes intense."
-        }
-      ]
+      "flaws": []
     },
     "Psychological": {
       "advantages": [],
@@ -83,115 +67,44 @@
         },
         {
           "name": "Weak-Willed",
-          "cost": 3,
+          "cost": 2,
           "desc": "Your will is weak and you struggle assert your own personality when confronted with the will of another."
         }
       ]
     },
     "Substance Use": {
-      "advantages": [
-        {
-          "name": "High-Functioning Addict",
-          "cost": 1,
-          "desc": "You gain a die to one category of pool whenever you drink from a mortal who is on your drug of choice."
-        }
-      ],
+      "advantages": [],
       "flaws": [
         {
-          "name": "Hopeless Addiction",
+          "name": "Severe Addiction",
           "cost": 2,
-          "desc": "Lose 2 die from all pools if you feed from someone not on your drug of choice."
+          "desc": "Lose 2 die from all pools if you do not indulge in your substance of choice during the last scene."
         },
         {
           "name": "Addiction",
           "cost": 1,
-          "desc": "Lose 1 die from all pools if you feed from someone not on your drug of choice."
+          "desc": "Lose 1 die from all pools if you do not indulge in your substance of choice during the last scene."
         }
       ]
     },
-    "Thin-blood": {
+    "Supernatural Situations": {
       "advantages": [
         {
-          "name": "Thin-Blood: Anarch Comrades",
-          "cost": 1,
-          "desc": "You managed to make friends with the local anarch sect. Add a one-dot anarch mawla to your relationship map."
-        },
-        {
-          "name": "Thin-Blood: Camarilla Contact",
-          "cost": 1,
-          "desc": "You've made a contact within the camarilla who promises you full membership and a chance at becoming full-blooded so long as you follow orders. Add a one-dot camarilla mawla to your relationship map."
-        },
-        {
-          "name": "Thin-Blood: Catenating Blood",
-          "cost": 1,
-          "desc": "You can create blood bonds and perform the embrace. Any kindred you create are thin-blooded."
-        },
-        {
-          "name": "Thin-Blood: Day Drinker",
-          "cost": 1,
-          "desc": "Sunlight halves your health pool. In the sun you lose access to all vampiric abilities. You still suffer Hunger normally and must sleep occasionally."
-        },
-        {
-          "name": "Thin-Blood: Discipline Affinity",
-          "cost": 1,
-          "desc": "You gain a dot in your discipline of choice and can continue to level it with experience as an out-of-clan discipline."
-        },
-        {
-          "name": "Thin-Blood: Lifelike",
-          "cost": 1,
-          "desc": "You have a heartbeat, can eat food and enjoy sex like a mortal. Only detailed examinations would reveal anything out of the ordinary."
-        },
-        {
-          "name": "Thin-Blood: Thin-blood Alchemist",
-          "cost": 1,
-          "desc": "Gain a dot in Thin-blood alchemy and an additional recipe as discussed with your ST."
-        },
-        {
-          "name": "Thin-Blood: Vampiric Resilience",
-          "cost": 1,
-          "desc": "You are as tough as ordinary Kindred, treating puncture and slashing wounds as superficial damage."
+          "name": "Unseemly Aura",
+          "cost": 2,
+          "desc": "Monsters do not perceive you instantly as a mortal. Some can even mistake you for one of their own."
         }
       ],
       "flaws": [
         {
-          "name": "Thin-Blood: Baby Teeth",
+          "name": "Stigmata",
           "cost": 1,
-          "desc": "Your fangs never came in, you can only drink via other methods of blood extraction."
+          "desc": "You bleed from open wounds on your hands, feet, and forehead when you suffer physical injury or Willpower damage."
         },
         {
-          "name": "Thin-Blood: Bestial Temper",
-          "cost": 1,
-          "desc": "You have the same level of beast as a full-blooded kindred. Normal frenzy rules apply to you."
-        },
-        {
-          "name": "Thin-Blood: Branded by the Camarilla",
-          "cost": 1,
-          "desc": "Branded by the local camarilla, you are known and watched for even the slightest error."
-        },
-        {
-          "name": "Thin-Blood: Clan Curse",
-          "cost": 1,
-          "desc": "You suffer the clan of your choices bane at severity level 1. Brujah/Gangrel only available with Bestial Temper Flaw, Tremere only with Catenating Blood Merit."
-        },
-        {
-          "name": "Thin-Blood: Mortal Frailty",
-          "cost": 1,
-          "desc": "You cannot rouse blood to heal like normal Kindred, you heal as a mortal. You cannot take vampiric resilience with this perk."
-        },
-        {
-          "name": "Thin-Blood: Dead Flesh",
-          "cost": 1,
-          "desc": "You are noticebly decaying and putrifying. Any real examination will reveal that you are undead. You may not take Lifelike merit."
-        },
-        {
-          "name": "Thin-Blood: Shunned by the Anarchs",
-          "cost": 1,
-          "desc": "You broke some unwritten rule and pissed off the local anarch sect. You cannot take anarch comrades with this flaw."
-        },
-        {
-          "name": "Thin-Blood: Vitae Dependency",
-          "cost": 1,
-          "desc": "You must slake at least 1 Hunger on kindred blood each week or lose all access to discipline until you do so."
+          "name": "Crone's Curse",
+          "cost": 2,
+          "desc": "Some supernatural curse afflicts you, you age rapidly and appear at least a decade older than you should. Lose 1 hp."
         }
       ]
     }

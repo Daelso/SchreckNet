@@ -370,7 +370,7 @@
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Cult' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Haven' ||
+              this.advantageCategory == 'Safe House' ||
               this.advantageCategory == 'Loresheets'
             "
           >
@@ -664,14 +664,14 @@
             </q-list>
           </div>
           <br />
-          <!-- Haven -->
+          <!-- Safe House -->
           <div
             v-if="
               this.advantagesObj.haven.advantages.length > 0 ||
               this.advantagesObj.haven.flaws.length > 0
             "
           >
-            <span class="text-h6">Haven</span>
+            <span class="text-h6">Safe House</span>
             <q-separator />
             <div class="q-my-sm" style="font-family: monospace">Advantages</div>
 
@@ -754,9 +754,9 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import allMerits from "../hunter/5eMerits.json";
-import allBackgrounds from "../vtm/5eBackgrounds.json";
+import allBackgrounds from "../hunter/5eBackgrounds.json";
 import disciplinesList from "../vtm/5eDisciplines.json";
-import havenMerits from "../vtm/havens.json";
+import safeHouseMerits from "../hunter/safeHouses.json";
 import loresheets from "../vtm/loresheets.json";
 
 export default defineComponent({
@@ -831,13 +831,18 @@ export default defineComponent({
       disciplinesList,
       thinBonusDiscInput: "",
       chronicle: "",
-      havenMerits,
+      safeHouseMerits,
       desire: "",
       concept: "",
       meritCategory: "",
       cultCategory: "",
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
-      advantageCategories: ["Merits", "Backgrounds", "Haven", "Loresheets"],
+      advantageCategories: [
+        "Merits",
+        "Backgrounds",
+        "Safe House",
+        "Loresheets",
+      ],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
@@ -975,8 +980,8 @@ export default defineComponent({
             );
           }
           break;
-        case "Haven":
-          arr = Object.keys(havenMerits.havens);
+        case "Safe House":
+          arr = Object.keys(safeHouseMerits["Safe House"]);
           break;
         case "Loresheets":
           for (const [key, value] of Object.entries(
@@ -1007,8 +1012,8 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
             break;
-          case "Haven":
-            arr = havenMerits.havens[this.meritCategory].advantages;
+          case "Safe House":
+            arr = safeHouseMerits["Safe House"][this.meritCategory].advantages;
             break;
         }
       }
@@ -1021,8 +1026,8 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
             break;
-          case "Haven":
-            arr = havenMerits.havens[this.meritCategory].flaws;
+          case "Safe House":
+            arr = safeHouseMerits["Safe House"][this.meritCategory].flaws;
             break;
         }
       }
@@ -1107,7 +1112,7 @@ export default defineComponent({
             modifiedObj.backgrounds.flaws.push(choiceObj);
           }
           break;
-        case "Haven":
+        case "Safe House":
           if (advOrFlaw === true) {
             modifiedObj.haven.advantages.push(choiceObj);
           } else {

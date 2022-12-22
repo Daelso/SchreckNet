@@ -212,7 +212,7 @@
                     </div>
                   </div>
                   <div>
-                    <div style="font-size: larger">Haven:</div>
+                    <div style="font-size: larger">Safe House:</div>
                     <br />
                     Advantages:
                     <div

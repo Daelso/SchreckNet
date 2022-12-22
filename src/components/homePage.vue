@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md" style="max-width: 1200px">
+  <div class="q-pa-md" style="max-width: 1400px">
     <div class="banner">Elysium's Newest Kindred</div>
 
     <Suspense>

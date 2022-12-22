@@ -263,7 +263,6 @@ export default defineComponent({
       }
       this.edgeArr.edges.push({ category: this.edgeCat, edge: this.edge });
       this.clearFields();
-      console.log(this.edgeArr);
     },
     takePerk() {
       if (this.perkDistCheck === true) {
@@ -279,7 +278,6 @@ export default defineComponent({
         perk: this.perk.name,
       });
       this.clearFields();
-      console.log(this.edgeArr);
     },
     removeEdge(event) {
       this.edgeArr.edges.splice(event, 1);

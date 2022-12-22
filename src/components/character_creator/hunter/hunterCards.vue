@@ -191,8 +191,6 @@ export default {
         return "Not found!";
       });
 
-    console.log(hunter);
-
     return {
       hunter,
       router,

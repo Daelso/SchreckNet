@@ -280,6 +280,18 @@
               >
             </q-item-section>
           </q-item>
+          <q-item clickable @click="edges">
+            <q-item-section avatar>
+              <q-icon color="secondary" name="app:hunter" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Edges & Perks</q-item-label>
+              <q-item-label caption class="text-white"
+                >Select your Edges & Perks</q-item-label
+              >
+            </q-item-section>
+          </q-item>
           <q-item
             clickable
             @click="spendXp"
@@ -411,6 +423,7 @@ import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
+import edgeComponent from "../hunter/edges.vue";
 
 const metaData = {
   title: "SchreckNet",
@@ -488,6 +501,7 @@ export default {
       thinFlaws: 0,
       chronicle: "",
       creeds: [],
+      edgeArr: [],
       baseSkills: {
         athletics: 0,
         brawl: 0,
@@ -720,6 +734,22 @@ export default {
           this.skillsDone = data.skillsDone;
           this.totalSpecialty = data.specialtyPoints;
           this.specialties = data.specialties;
+        });
+    },
+    edges() {
+      this.$q
+        .dialog({
+          component: edgeComponent,
+          persistent: true,
+          componentProps: {
+            info: {
+              edgeArr: this.edgeArr,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.edgeArr = data.edgeArr;
+          console.log(this.edgeArr);
         });
     },
     spendXp() {

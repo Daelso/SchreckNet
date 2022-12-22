@@ -490,7 +490,7 @@ export default {
   },
   data() {
     return {
-      debug: true,
+      debug: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
@@ -603,7 +603,7 @@ export default {
       desire: "",
       concept: "",
       touchstones: [],
-      xp: 55,
+      xp: 0,
       spentXp: 0,
       skillsDone: false,
       edgeDone: false,
@@ -632,6 +632,8 @@ export default {
         willpower: this.composure + this.resolve,
         xp: this.xp,
         spentXp: this.spentXp,
+        drive: this.drive,
+        redemption: this.redemption,
         creed: this.creed,
         touchstones: this.touchstones,
         remainingSpecialties: this.totalSpecialty,

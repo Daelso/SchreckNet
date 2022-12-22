@@ -26,7 +26,6 @@
           >
         </q-tab>
         <q-tab
-          :disable="this.debug !== true"
           style="color: white"
           name="advantages"
           label="Advantages & Flaws"

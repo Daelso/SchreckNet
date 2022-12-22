@@ -283,13 +283,13 @@
           Created by: {{ creator }}, Favorited:
           {{ this.favCount.count }} time(s)
         </div>
-        <q-btn
+        <!-- <q-btn
           flat
           label="Export to PDF"
           @click="this.modifyPdf()"
           type="submit"
           color="white"
-        />
+        /> -->
         <q-btn
           v-if="
             this.currentUser !== false &&
@@ -304,11 +304,12 @@
       </template>
     </q-banner>
     <a
-      href="https://renegadegamestudios.com/hunter-the-reckoning-5th-edition-roleplaying-game-fillable-pdf-character-sheet/"
+      href="https://linktr.ee/nerdbert"
       target="_blank"
       rel="noopener noreferrer"
       class="charSheetBlurb"
-      >Sheets Provided by Renegade Game Studios
+      >Export to PDF coming when a working fillable PDF exists, I recommend
+      using Nerdberts for now.
     </a>
   </div>
 </template>
@@ -465,8 +466,6 @@ export default defineComponent({
         return "blah";
       });
 
-    console.log(hunter);
-
     return {
       currentUser,
       hunterId,
@@ -547,7 +546,7 @@ export default defineComponent({
 
       const pdfDoc = await PDFDocument.load(this.charSheet);
 
-      const form = pdfDoc.getForm();
+      const form = await pdfDoc.getForm();
 
       const ubuntuFontBytes = await fetch(ubuntuFont).then((res) =>
         res.arrayBuffer()
@@ -557,20 +556,20 @@ export default defineComponent({
       const supportFont = await pdfDoc.embedFont(ubuntuFontBytes);
 
       const fields = form.getFields();
-      console.log(fields);
+      console.log(form.getFields());
 
-      fields.forEach((field) => {
-        const type = field.constructor.name;
-        const name = field.getName();
-        console.log(`${type}: ${name}`);
-      });
+      // fields.forEach((field) => {
+      //   const type = field.constructor.name;
+      //   const name = field.getName();
+      //   console.log(`${type}: ${name}`);
+      // });
 
-      // const pdfBytes = await pdfDoc.save();
-      // download(
-      //   pdfBytes,
-      //   `schrecknet_htr5e_${this.hunter.charName}.pdf`,
-      //   "application/pdf"
-      // );
+      const pdfBytes = await pdfDoc.save();
+      download(
+        pdfBytes,
+        `schrecknet_htr5e_${this.hunter.charName}.pdf`,
+        "application/pdf"
+      );
       this.$q.loading.hide();
     },
 

@@ -666,10 +666,10 @@ export default {
             icon: "cloud_done",
             message: "Hunter created!",
           });
-          // this.$router.push({
-          //   name: "hunter5eView",
-          //   params: { id: res.data },
-          // });
+          this.$router.push({
+            name: "hunter5eView",
+            params: { id: res.data },
+          });
         })
         .catch((err) =>
           this.$q.notify({

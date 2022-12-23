@@ -7,7 +7,7 @@
         <vampCards :currentUser="this.currentUser" />
       </div>
     </Suspense>
-    <div class="banner q-my-md">Beware these Hunter's</div>
+    <div class="banner q-my-md">Beware these Hunters</div>
     <Suspense>
       <div class="vamps">
         <huntCards :currentUser="this.currentUser" />

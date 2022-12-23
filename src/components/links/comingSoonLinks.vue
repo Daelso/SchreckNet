@@ -11,16 +11,7 @@
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>
-  <q-item style="color: red">
-    <q-item-section avatar>
-      <q-icon color="secondary" name="app:hunter" style="scale: 145%" />
-    </q-item-section>
 
-    <q-item-section>
-      <q-item-label>Hunter: The Reckoning</q-item-label>
-      <q-item-label caption style="color: white">5e</q-item-label>
-    </q-item-section>
-  </q-item>
   <q-item style="color: red">
     <q-item-section avatar>
       <q-icon color="secondary" name="app:mage" />

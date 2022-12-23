@@ -1,4 +1,7 @@
 <template>
+  <div v-if="this.kindred === null || this.kindred.length === 0" class="banner">
+    No characters created yet!
+  </div>
   <div class="container">
     <q-card
       v-for="vamp in this.kindred"
@@ -158,6 +161,15 @@
   background-color: #222831;
   height: auto;
 }
+
+.banner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  font-size: 35px;
+}
 .backgroundDefault {
   background-color: #171a1e;
 }
@@ -218,7 +230,7 @@ export default {
     let kindredId = window.location.href.split("/")[6];
 
     this.$q.loading.show({
-      delay: 450, // ms
+      delay: 150, // ms
     });
 
     this.kindred = await this.$axios
@@ -233,8 +245,6 @@ export default {
         console.log(err);
         return "Not found!";
       });
-
-    console.log(this.kindred);
   },
 
   methods: {

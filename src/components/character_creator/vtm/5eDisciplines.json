@@ -8,7 +8,8 @@
         ["Bond Famulus", "Sense the Beast"],
         ["Feral Whispers", "Atavism"],
         ["Animal Succulence", "Quell the Beast", "Unliving Hive"],
-        ["Subsume Spirit"]
+        ["Subsume Spirit"],
+        ["Animal Dominion", "Drawing Out the Beast"]
       ]
     },
     "Auspex": {
@@ -18,7 +19,7 @@
       "skills": [
         ["Heightened Senses", "Sense the Unseen"],
         ["Premonition", "Obeah"],
-        ["Scry the Soul", "Share the Senses"],
+        ["Eyes of Beasts", "Scry the Soul", "Share the Senses"],
         ["Spirit's Touch"]
       ]
     },

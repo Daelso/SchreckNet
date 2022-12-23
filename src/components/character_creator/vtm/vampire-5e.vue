@@ -1003,9 +1003,6 @@ export default {
     },
 
     saveGuard() {
-      if (this.saving === true) {
-        return true;
-      }
       //primary sections
       if (!this.skillsDone || !this.attributesDone || !this.disciplinesDone) {
         this.disableBlurb =

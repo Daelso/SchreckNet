@@ -555,6 +555,7 @@ export default {
   data() {
     return {
       debug: false,
+      saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
@@ -704,6 +705,16 @@ export default {
   },
   methods: {
     onSubmit() {
+      if (this.saving === true) {
+        this.$q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: "Saving...",
+        });
+        return;
+      }
+      this.saving = true;
       this.$q.loading.show({
         delay: 50, // ms
       });
@@ -783,6 +794,7 @@ export default {
             message: err.message,
           })
         );
+      this.saving = false;
       this.$q.loading.hide();
     },
     handleCharName(data) {
@@ -991,6 +1003,9 @@ export default {
     },
 
     saveGuard() {
+      if (this.saving === true) {
+        return true;
+      }
       //primary sections
       if (!this.skillsDone || !this.attributesDone || !this.disciplinesDone) {
         this.disableBlurb =

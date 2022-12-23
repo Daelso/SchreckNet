@@ -607,10 +607,20 @@ export default {
       spentXp: 0,
       skillsDone: false,
       edgeDone: false,
+      saving: false,
     };
   },
   methods: {
     onSubmit() {
+      if (this.saving === true) {
+        this.$q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: "Saving...",
+        });
+      }
+      this.saving = true;
       this.$q.loading.show({
         delay: 50, // ms
       });
@@ -683,6 +693,7 @@ export default {
           })
         );
       this.$q.loading.hide();
+      this.saving = false;
     },
     handleCharName(data) {
       this.charName = data;

@@ -611,6 +611,9 @@ export default {
   },
   methods: {
     onSubmit() {
+      this.$q.loading.show({
+        delay: 50, // ms
+      });
       const axios = require("axios");
 
       let baseUrl = "";
@@ -679,6 +682,7 @@ export default {
             message: err.message,
           })
         );
+      this.$q.loading.hide();
     },
     handleCharName(data) {
       this.charName = data;

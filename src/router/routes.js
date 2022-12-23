@@ -80,6 +80,11 @@ const routes = [
         component: () => import("pages/character_creator/vtm/myChars.vue"),
       },
       {
+        name: "myHunts",
+        path: "hunter/5e/profile/:id",
+        component: () => import("pages/character_creator/hunter/myChars.vue"),
+      },
+      {
         name: "myFavs",
         path: "/myFavorites",
         component: () => import("pages/myFavs.vue"),

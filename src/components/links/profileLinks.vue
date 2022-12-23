@@ -11,7 +11,24 @@
     <q-item-section>
       <q-item-label>My VtM Characters</q-item-label>
       <q-item-label caption style="color: white"
-        >View your created characters</q-item-label
+        >View your created kindred</q-item-label
+      >
+    </q-item-section>
+  </q-item>
+  <q-separator />
+  <q-item
+    clickable
+    style="color: red"
+    :to="{ name: 'myHunts', params: { id: this.currentUser.id } }"
+  >
+    <q-item-section avatar>
+      <q-icon color="secondary" name="app:hunter" style="scale: 150%" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>My HtR Characters</q-item-label>
+      <q-item-label caption style="color: white"
+        >View your created hunters</q-item-label
       >
     </q-item-section>
   </q-item>

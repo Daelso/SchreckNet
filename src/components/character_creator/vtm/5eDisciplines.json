@@ -7,7 +7,12 @@
       "skills": [
         ["Bond Famulus", "Sense the Beast"],
         ["Feral Whispers", "Atavism"],
-        ["Animal Succulence", "Quell the Beast", "Unliving Hive"],
+        [
+          "Animal Succulence",
+          "Quell the Beast",
+          "Scent of Prey",
+          "Unliving Hive"
+        ],
         ["Subsume Spirit"],
         ["Animal Dominion", "Drawing Out the Beast"]
       ]
@@ -18,7 +23,7 @@
       "resonance": "Phlegmatic",
       "skills": [
         ["Heightened Senses", "Sense the Unseen"],
-        ["Premonition", "Obeah"],
+        ["Premonition", "Obeah", "Unerring Pursuit"],
         ["Eyes of Beasts", "Scry the Soul", "Share the Senses"],
         ["Spirit's Touch"]
       ]
@@ -34,7 +39,7 @@
           "Shape the Sanguine Sacrament"
         ],
         ["Extinguish Vitae"],
-        ["Blood of Potency", "Scorpion's Touch"],
+        ["Blood of Potency", "Scorpion's Touch", "Transitive Bond"],
         ["Theft of Vitae"]
       ]
     },
@@ -57,7 +62,7 @@
         ["Cloud Memory", "Compel"],
         ["Mesmerize", "Dementation", "Slavish Devotion", "Domitor's Favor"],
         ["The Forgetful Mind", "Submerged Directive"],
-        ["Rationalize", "Unerring Aim", "Ancestral Dominion"]
+        ["Ancestral Dominion", "Rationalize", "Tabula Rasa"]
       ]
     },
     "Fortitude": {
@@ -66,8 +71,8 @@
       "resonance": "Melancholic",
       "skills": [
         ["Resilience", "Unswayable Mind"],
-        ["Toughness", "Enduring Beasts", "Obdurate", "Valeren"],
-        ["Defy Bane", "Fortify the Inner Facade"],
+        ["Enduring Beasts", "Obdurate", "Toughness", "Valeren"],
+        ["Defy Bane", "Fortify the Inner Facade", "Seal the Beast's Maw"],
         ["Draught of Endurance", "Shatter"]
       ]
     },
@@ -77,8 +82,20 @@
       "resonance": "Empty",
       "skills": [
         ["Cloak of Shadows", "Silence of Death"],
-        ["Unseen Passage", "Chimestry", "Mental Maze"],
-        ["Ghost in the Machine", "Mask of a Thousand Faces", "Fata Morgana"],
+        [
+          "Chimestry",
+          "Ghost's Passing",
+          "Mental Maze",
+          "Unseen Passage",
+          "Ventriloquism"
+        ],
+        [
+          "Fata Morgana",
+          "Ghost in the Machine",
+          "Mask of a Thousand Faces",
+          "Mask of Isolation",
+          "Mental Maze"
+        ],
         ["Conceal", "Vanish"]
       ]
     },
@@ -88,10 +105,10 @@
       "resonance": "Melancholic",
       "skills": [
         [
-          "Shadow Cloak",
-          "Oblivion's Sight",
           "Ashes to Ashes",
-          "The Binding Feather"
+          "Binding Fetter",
+          "Oblivion's Sight",
+          "Shadow Cloak"
         ],
         [
           "Arms of Ahriman",
@@ -100,12 +117,12 @@
           "Where the Shroud Thins"
         ],
         [
-          "Shadow Perspective",
-          "Touch of Oblivion",
           "Aura of Decay",
-          "Passion Feast"
+          "Passion Feast",
+          "Shadow Perspective",
+          "Touch of Oblivion"
         ],
-        ["Stygian Shroud"]
+        ["Necrotic Plague", "Stygian Shroud", "Umbrous Clutch"]
       ]
     },
     "Potence": {
@@ -126,8 +143,8 @@
       "skills": [
         ["Awe", "Daunt", "Eyes of the Serpent"],
         ["Lingering Kiss"],
-        ["Dread Gaze", "Entrancement", "True Love's Face"],
-        ["Irresistable Voice", "Summon"]
+        ["Clear the Field", "Dread Gaze", "Entrancement", "True Love's Face"],
+        ["Irresistable Voice", "Magnum Opus", "Summon"]
       ]
     },
     "Protean": {
@@ -137,8 +154,8 @@
       "skills": [
         ["Eyes of the Beast", "Weight of the Feather"],
         ["Feral Weapons", "Vicissitude"],
-        ["Earth Meld", "Shapechange", "Flesh Crafting"],
-        ["Metamorphosis", "Horrid Form"]
+        ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
+        ["Horrid Form", "Metamorphosis"]
       ]
     },
 

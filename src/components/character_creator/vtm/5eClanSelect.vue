@@ -1170,8 +1170,6 @@ export default defineComponent({
         this.clanThinAdvantages >= 1 &&
         this.clanThinAdvantages <= 3
       ) {
-        // console.log(this.merits);
-
         return false;
       }
 
@@ -1218,6 +1216,297 @@ export default defineComponent({
         this.disciplineSkills.Disciplines[data].skills[i].forEach((x) => {
           mergedOptions.push(x);
         });
+      }
+
+      for (let i = mergedOptions.length - 1; i >= 0; i--) {
+        switch (mergedOptions[i]) {
+          case "Unliving Hive":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Obeah":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unerring Pursuit":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Eyes of Beasts":
+            if (
+              this.finalDisciplineObj.Animalism === undefined ||
+              this.finalDisciplineObj.Animalism < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unerring Aim":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Dementation":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Slavish Devotion":
+            if (
+              this.finalDisciplineObj.Presence === undefined ||
+              this.finalDisciplineObj.Presence < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Ancestral Dominion":
+            if (
+              this.finalDisciplineObj["Blood Sorcery"] === undefined ||
+              this.finalDisciplineObj["Blood Sorcery"] < 3 ||
+              this.cult !== "Mithraic Mysteries"
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Submerged Directive":
+            if (
+              this.skillsSelected.some((e) => e.skill !== "Mesmerize") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+
+            break;
+          case "Enduring Beasts":
+            if (
+              this.finalDisciplineObj.Animalism === undefined ||
+              this.finalDisciplineObj.Animalism < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Obdurate":
+            if (
+              this.finalDisciplineObj.Potence === undefined ||
+              this.finalDisciplineObj.Potence < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Valeran":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Chimerstry":
+            if (
+              this.finalDisciplineObj.Presence === undefined ||
+              this.finalDisciplineObj.Presence < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Ghost's Passing":
+            if (
+              this.finalDisciplineObj.Animalism === undefined ||
+              this.finalDisciplineObj.Animalism < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Ventriloquism":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fata Morgana":
+            if (
+              this.finalDisciplineObj.Presence === undefined ||
+              this.finalDisciplineObj.Presence < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mental Maze":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mask of Isolation":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 1 ||
+              this.skillsSelected.some(
+                (e) => e.skill !== "Mask of a Thousand Faces"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Conceal":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Vanish":
+            if (
+              this.skillsSelected.some(
+                (e) => e.skill !== "Cloak of Shadows"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+
+            break;
+          case "Arms of Ahriman":
+            if (
+              this.finalDisciplineObj.Potence === undefined ||
+              this.finalDisciplineObj.Potence < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fatal Precognition":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Passion Feast":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Spark of Rage":
+            if (
+              this.finalDisciplineObj.Presence === undefined ||
+              this.finalDisciplineObj.Presence < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Eyes of the Serpent":
+            if (
+              this.finalDisciplineObj.Protean === undefined ||
+              this.finalDisciplineObj.Protean < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Clear the Field":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "True Love's Face":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 3 ||
+              this.cult !== "Church of Set"
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Irresistible Voice":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Magnum Opus":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Vicissitude":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Flesh Crafting":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 2 ||
+              this.skillsSelected.some((e) => e.skill !== "Vicissitude") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+
+          case "Visceral Absorption":
+            if (
+              this.finalDisciplineObj["Blood Sorcery"] === undefined ||
+              this.finalDisciplineObj["Blood Sorcery"] < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+
+          case "Horrid Form":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 2 ||
+              this.skillsSelected.some((e) => e.skill !== "Vicissitude") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+
+          case "Metamorphosis":
+            if (
+              this.skillsSelected.some((e) => e.skill !== "Shapechange") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+        }
       }
       return mergedOptions;
     },

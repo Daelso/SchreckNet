@@ -2588,6 +2588,10 @@ export default defineComponent({
         arr = arr.filter(
           (x) => x.label === "14th" || x.label === "15th" || x.label === "16th"
         );
+      } else {
+        arr = arr.filter(
+          (x) => x.label !== "14th" && x.label !== "15th" && x.label !== "16th"
+        );
       }
 
       return arr;

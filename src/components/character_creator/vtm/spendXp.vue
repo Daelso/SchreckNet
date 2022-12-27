@@ -281,7 +281,7 @@ export default defineComponent({
             this.cost = 6;
             break;
           }
-          this.cost = this.disciplines[this.clanDiscInput] * 6;
+          this.cost = (this.disciplines[this.clanDiscInput] + 1) * 6;
           break;
         case "Clan Discipline":
           this.cost = (this.disciplines[this.clanDiscInput] + 1) * 5;

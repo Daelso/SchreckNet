@@ -577,6 +577,302 @@ export default defineComponent({
           }
         );
       }
+
+      for (let i = mergedOptions.length - 1; i >= 0; i--) {
+        switch (mergedOptions[i]) {
+          case "Unliving Hive":
+            if (
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Obeah":
+            if (
+              this.disciplines.Fortitude === undefined ||
+              this.disciplines.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unerring Pursuit":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Eyes of Beasts":
+            if (
+              this.disciplines.Animalism === undefined ||
+              this.disciplines.Animalism < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unerring Aim":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Dementation":
+            if (
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Slavish Devotion":
+            if (
+              this.disciplines.Presence === undefined ||
+              this.disciplines.Presence < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Ancestral Dominion":
+            if (
+              this.disciplines["Blood Sorcery"] === undefined ||
+              this.disciplines["Blood Sorcery"] < 3 ||
+              this.cult !== "Mithraic Mysteries"
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Submerged Directive":
+            if (
+              this.disciplineSkillsObj.some((e) => e.skill !== "Mesmerize") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+
+            break;
+          case "Enduring Beasts":
+            if (
+              this.disciplines.Animalism === undefined ||
+              this.disciplines.Animalism < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Obdurate":
+            if (
+              this.disciplines.Potence === undefined ||
+              this.disciplines.Potence < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Valeran":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Chimerstry":
+            if (
+              this.disciplines.Presence === undefined ||
+              this.disciplines.Presence < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Ghost's Passing":
+            if (
+              this.disciplines.Animalism === undefined ||
+              this.disciplines.Animalism < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Ventriloquism":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fata Morgana":
+            if (
+              this.disciplines.Presence === undefined ||
+              this.disciplines.Presence < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mental Maze":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mask of Isolation":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 1 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Mask of a Thousand Faces"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Conceal":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Vanish":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Cloak of Shadows"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+
+            break;
+          case "Arms of Ahriman":
+            if (
+              this.disciplines.Potence === undefined ||
+              this.disciplines.Potence < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fatal Precognition":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Passion Feast":
+            if (
+              this.disciplines.Fortitude === undefined ||
+              this.disciplines.Fortitude < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Spark of Rage":
+            if (
+              this.disciplines.Presence === undefined ||
+              this.disciplines.Presence < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Eyes of the Serpent":
+            if (
+              this.disciplines.Protean === undefined ||
+              this.disciplines.Protean < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Clear the Field":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "True Love's Face":
+            if (
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 3 ||
+              this.cult !== "Church of Set"
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Irresistible Voice":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Magnum Opus":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Vicissitude":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Flesh Crafting":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 2 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Vicissitude"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+
+          case "Visceral Absorption":
+            if (
+              this.disciplines["Blood Sorcery"] === undefined ||
+              this.disciplines["Blood Sorcery"] < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+
+          case "Horrid Form":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 2 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Vicissitude"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+
+          case "Metamorphosis":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Shapechange"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+        }
+      }
+
       return mergedOptions;
     },
     sortSkills() {

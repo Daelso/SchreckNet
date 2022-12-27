@@ -1309,7 +1309,7 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
-          case "Valeran":
+          case "Valeren":
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 1

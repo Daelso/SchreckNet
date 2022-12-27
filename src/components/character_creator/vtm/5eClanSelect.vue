@@ -1170,8 +1170,6 @@ export default defineComponent({
         this.clanThinAdvantages >= 1 &&
         this.clanThinAdvantages <= 3
       ) {
-        // console.log(this.merits);
-
         return false;
       }
 
@@ -1219,6 +1217,7 @@ export default defineComponent({
           mergedOptions.push(x);
         });
       }
+
       for (let i = mergedOptions.length - 1; i >= 0; i--) {
         switch (mergedOptions[i]) {
           case "Unliving Hive":
@@ -1468,7 +1467,7 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
-          case "Fleshcrafting":
+          case "Flesh Crafting":
             if (
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 2 ||

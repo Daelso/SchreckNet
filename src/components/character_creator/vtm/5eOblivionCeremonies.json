@@ -1,0 +1,90 @@
+{
+  "Ceremonies": [
+    [
+      {
+        "name": "Gift of False Life",
+        "description": "Raise either a single corpse or a group to perform simple single or repetitive tasks."
+      },
+      {
+        "name": "Knowing Stone",
+        "description": "Identify the locations of specific ghosts. "
+      },
+      {
+        "name": "Summon Spirit",
+        "description": "Summon a spirit from the underworld."
+      },
+      {
+        "name": "Traveler's Call",
+        "description": "Summon another Shalimite."
+      }
+    ],
+    [
+      {
+        "name": "Awaken the Homuncular Servant",
+        "description": "Create spies and stalkers out of body parts or small animals"
+      },
+      {
+        "name": "Blinding the Alloy Eye",
+        "description": "Cameras cannot perceive the user clearly."
+      },
+      {
+        "name": "Compel Spirit",
+        "description": "Bend a wraith to a vampire's will. "
+      }
+    ],
+    [
+      {
+        "name": "Fortezza Sindonica",
+        "description": "Create a barrier that harms wraiths."
+      },
+      {
+        "name": "Harrowhaunt",
+        "description": "Keep unwanted visitors from their haven."
+      },
+      {
+        "name": "Host Spirit",
+        "description": "Allows the user to open their body to a ghost for possession."
+      },
+      {
+        "name": "Name of the Father",
+        "description": "Strike a victim's mind with the empty void of Oblivion, leaving them paralyzed."
+      },
+      {
+        "name": "Shambling Hordes",
+        "description": "Raise a group of aggressive walking dead."
+      }
+    ],
+    [
+      {
+        "name": "Befoul Vessel",
+        "description": "Turn a mortal's blood into poison for other vampires."
+      },
+      {
+        "name": "Bind the Spirit",
+        "description": "Bind a wraith to a specific location or person."
+      },
+      {
+        "name": "Death Rattle",
+        "description": "Inflict the sensory experience of a wraith's death onto a target."
+      },
+      {
+        "name": "Split the Shroud",
+        "description": "Create a tear into a shroud to allow wraith and vampires to enter."
+      }
+    ],
+    [
+      {
+        "name": "Ex Nihilo",
+        "description": "Enter the Shadowlands."
+      },
+      {
+        "name": "Lazarene Blessing",
+        "description": "Bring a fresh corpse back to life."
+      },
+      {
+        "name": "Pit of Contemplation",
+        "description": "Cast an enemy into Oblivion itself."
+      }
+    ]
+  ]
+}

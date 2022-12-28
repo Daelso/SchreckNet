@@ -957,6 +957,7 @@ export default {
                 { name: "Strength", points: this.strength },
                 { name: "Wits", points: this.wits },
               ],
+              cult: this.cult,
               clan: this.clan,
               disciplines: this.disciplines,
               disciplineSkills: this.disciplineSkills,

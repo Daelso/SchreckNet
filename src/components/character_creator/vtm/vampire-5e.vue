@@ -554,7 +554,7 @@ export default {
   },
   data() {
     return {
-      debug: true,
+      debug: false,
       saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
@@ -694,7 +694,7 @@ export default {
       concept: "",
       generation: { label: "12th", potency: 1, maxPotency: 3 },
       touchstones: [],
-      xp: 45,
+      xp: 0,
       skillsDone: false,
       tooltips: ref([
         "Supernatural quickness and reflexes",

@@ -554,7 +554,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
@@ -694,7 +694,7 @@ export default {
       concept: "",
       generation: { label: "12th", potency: 1, maxPotency: 3 },
       touchstones: [],
-      xp: 0,
+      xp: 45,
       skillsDone: false,
       tooltips: ref([
         "Supernatural quickness and reflexes",
@@ -957,6 +957,7 @@ export default {
                 { name: "Strength", points: this.strength },
                 { name: "Wits", points: this.wits },
               ],
+              cult: this.cult,
               clan: this.clan,
               disciplines: this.disciplines,
               disciplineSkills: this.disciplineSkills,

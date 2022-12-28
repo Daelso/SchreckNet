@@ -55,6 +55,31 @@
               option-label="name"
             />
 
+            <!-- Oblivion Ceremonies -->
+
+            <q-select
+              v-if="this.categoryInput === 'Oblivion Ceremony'"
+              v-model="ceremonyLevel"
+              :options="ceremonyLevelOptions"
+              label="What level ceremony?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+              option-label="name"
+            />
+            <q-select
+              v-if="this.ceremonyLevel"
+              v-model="oblivionInput"
+              :options="ceremonyOptions"
+              label="Which ceremony would you like to purchase?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              class="q-my-sm"
+              option-label="name"
+            />
+
             <!-- Clan Disciplines and Caitiff Disciplines -->
             <q-select
               v-if="
@@ -127,7 +152,8 @@
                 this.categoryInput !== 'Caitiff Discipline' &&
                 this.categoryInput !== 'Out of Clan Discipline' &&
                 this.categoryInput !== 'Skills' &&
-                this.categoryInput !== 'Blood Sorcery Ritual'
+                this.categoryInput !== 'Blood Sorcery Ritual' &&
+                this.categoryInput !== 'Oblivion Ceremony'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -154,6 +180,19 @@
               >
 
               <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
+              <div
+                v-if="this.oblivionInput"
+                class="q-my-md"
+                style="
+                  overflow-wrap: break-word;
+                  width: 350px;
+                  background-color: #222831;
+                  color: white;
+                "
+              >
+                Description: {{ this.oblivionInput.description }}
+              </div>
+
               <div
                 v-if="this.ritualInput"
                 class="q-my-md"
@@ -189,6 +228,7 @@ import { useDialogPluginComponent } from "quasar";
 import clanDisciplines from "../vtm/5eClanDiscs.json";
 import disciplineSkills from "../vtm/5eDisciplines.json";
 import bloodRituals from "../vtm/5eBloodRituals.json";
+import oblivionCeremonies from "../vtm/5eOblivionCeremonies.json";
 
 export default defineComponent({
   name: "spendXP",
@@ -211,6 +251,7 @@ export default defineComponent({
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     return {
       dialogRef,
+      cult: props.info.cult,
       onDialogHide,
       onOKClick() {
         onDialogOK({
@@ -231,6 +272,7 @@ export default defineComponent({
 
       //Begin actual vars below
       advantagePoints,
+      oblivionCeremonies,
       cost: ref(0),
       localXP,
       bloodRituals,
@@ -244,6 +286,8 @@ export default defineComponent({
       disciplinePower: ref(""),
       ritualInput: ref(""),
       ritualLevel: ref(""),
+      oblivionInput: ref(""),
+      ceremonyLevel: ref(""),
       specialtyInput: ref(""),
       specialtyDefinition: ref(""),
       dotsInput: ref(1),
@@ -286,6 +330,9 @@ export default defineComponent({
         case "Clan Discipline":
           this.cost = (this.disciplines[this.clanDiscInput] + 1) * 5;
           break;
+        case "Oblivion Ceremony":
+          this.cost = this.ceremonyLevel * 3;
+          break;
         case "Out of Clan Discipline":
           this.cost = (this.disciplines[this.clanDiscInput] + 1) * 7;
           break;
@@ -323,6 +370,8 @@ export default defineComponent({
       this.skillCategory = "";
       this.ritualInput = "";
       this.ritualLevel = "";
+      this.ceremonyLevel = "";
+      this.oblivionInput = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -336,6 +385,8 @@ export default defineComponent({
       this.skillCategory = "";
       this.ritualInput = "";
       this.ritualLevel = "";
+      this.ceremonyLevel = "";
+      this.oblivionInput = "";
     },
 
     purchaseMade() {
@@ -432,6 +483,27 @@ export default defineComponent({
             skill: this.disciplinePower,
           });
           break;
+        case "Oblivion Ceremony":
+          if (
+            this.disciplineSkillsObj.filter(
+              (e) => e.skill === this.disciplinePower
+            ).length > 0
+          ) {
+            this.disciplinePower = "";
+            this.$q.notify({
+              type: "negative",
+              textColor: "white",
+              message: "You have already selected this skill!",
+            });
+            return;
+          }
+
+          this.disciplineSkillsObj.push({
+            discipline: "Oblivion",
+            skill: "Ceremony: " + this.oblivionInput.name,
+          });
+
+          break;
         case "Out of Clan Discipline":
           if (
             this.disciplineSkillsObj.filter(
@@ -480,6 +552,7 @@ export default defineComponent({
         "Blood Sorcery Ritual",
         "Caitiff Discipline",
         "Clan Discipline",
+        "Oblivion Ceremony",
         "Out of Clan Discipline",
         "Skills",
         "Specialty",
@@ -500,6 +573,10 @@ export default defineComponent({
 
       if (!("Blood Sorcery" in this.disciplines)) {
         arr = arr.filter((x) => x !== "Blood Sorcery Ritual");
+      }
+
+      if (!("Oblivion" in this.disciplines)) {
+        arr = arr.filter((x) => x !== "Oblivion Ceremony");
       }
 
       return arr;
@@ -902,6 +979,199 @@ export default defineComponent({
 
     bloodRitualOptions() {
       let arr = this.bloodRituals.Rituals[this.ritualLevel - 1];
+
+      return arr;
+    },
+
+    ceremonyLevelOptions() {
+      let arr = [];
+      arr = this.range(this.disciplines["Oblivion"], 1);
+
+      return arr;
+    },
+
+    ceremonyOptions() {
+      let arr = this.oblivionCeremonies.Ceremonies[this.ceremonyLevel - 1];
+
+      for (let i = arr.length - 1; i >= 0; i--) {
+        switch (arr[i].name) {
+          case "Gift of False Life":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Ashes to Ashes"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Summon Spirit":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Binding Fetter"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Traveler's Call":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Oblivion Sight"
+              ) === false &&
+              this.cult !== "Cult of Shalim"
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Awaken the Homuncular Servant":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Where the Shroud Thins"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Blinding the Alloy Eye":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Shadow Cast"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Compel Spirit":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Where the Shroud Thins"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Fortezza Sindonica":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Where the Shroud Thins"
+              ) === false &&
+              this.clan !== "Hecata"
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Harrowhaunt":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Aura of Decay"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Host Spirit":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Aura of Decay"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Knit the Veil":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Where the Shroud Thins"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Name of the Father":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Shadow Perspective"
+              ) === false &&
+              this.cult !== "Cult of Shalim"
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Shambling Hordes":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Aura of Decay"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Befoul Vessel":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Necrotic Plague"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Bind the Spirit":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Necrotic Plague"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Death Rattle":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Fatal Precognition"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Split the Shroud":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Necrotic Plague"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Ex Nihilo":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Withering Spirit"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Lazarene Blessing":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Skuld Fulfilled"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Pit of Contemplation":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Tenebrous Avatar"
+              ) === false &&
+              this.cult !== "Cult of Shalim"
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+        }
+      }
 
       return arr;
     },

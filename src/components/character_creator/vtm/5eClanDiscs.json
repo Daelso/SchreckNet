@@ -4,7 +4,7 @@
     "Brujah": { "disciplines": ["Celerity", "Potence", "Presence"] },
     "Gangrel": { "disciplines": ["Animalism", "Fortitude", "Protean"] },
     "Hecata": { "disciplines": ["Auspex", "Fortitude", "Oblivion"] },
-    "Lasombra": { "disciplines": ["Blood Sorcery", "Celerity", "Obfuscate"] },
+    "Lasombra": { "disciplines": ["Dominate", "Oblivion", "Potence"] },
     "Malkavian": { "disciplines": ["Auspex", "Dominate", "Obfuscate"] },
     "Nosferatu": { "disciplines": ["Animalism", "Obfuscate", "Potence"] },
     "Ravnos": { "disciplines": ["Animalism", "Obfuscate", "Presence"] },

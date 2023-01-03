@@ -125,7 +125,6 @@
     <q-separator />
     <q-card-actions>
       <q-btn
-        style="margin: auto"
         flat
         color="white"
         @click="
@@ -149,11 +148,16 @@
 <style scoped>
 .my-card {
   width: 100%;
-  max-width: 450px;
+  max-width: 650px;
   margin-right: 15px;
+  display: flex;
+  flex-flow: row wrap;
   color: white;
   background-color: #222831;
+  align-items: center;
+  justify-content: center;
 }
+
 .backgroundDefault {
   background-color: #171a1e;
 }

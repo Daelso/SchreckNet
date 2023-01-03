@@ -803,6 +803,12 @@ export default defineComponent({
       }
 
       for (let i = 0; i < meritArr.length; i++) {
+        if (i + 1 === 12) {
+          let mergedString =
+            `${meritArr[i].name} - (${meritArr[i].cost})` + "\n";
+          notesField.setText(mergedString);
+          continue;
+        }
         let advTextBox = form.getTextField(`adflaw${i + 1}`);
         advTextBox.setText(`${meritArr[i].name}`);
 

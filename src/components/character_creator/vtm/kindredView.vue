@@ -744,7 +744,6 @@ export default defineComponent({
       }
 
       let curIndex = 0;
-      console.log(mergedDisciplines);
 
       for (const discipline in mergedDisciplines) {
         if (this.clan === "Caitiff") {
@@ -839,12 +838,12 @@ export default defineComponent({
       }
       notesField.setText(fullSpecString);
 
-      // const pdfBytes = await pdfDoc.save();
-      // download(
-      //   pdfBytes,
-      //   `schrecknet_vtm5e_${this.charName}.pdf`,
-      //   "application/pdf"
-      // );
+      const pdfBytes = await pdfDoc.save();
+      download(
+        pdfBytes,
+        `schrecknet_vtm5e_${this.charName}.pdf`,
+        "application/pdf"
+      );
       this.$q.loading.hide();
     },
 

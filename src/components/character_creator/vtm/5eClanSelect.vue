@@ -2424,7 +2424,10 @@ export default defineComponent({
       this.thinBane = "";
     },
     thinGuard() {
-      if (this.clanThinAdvantages === 3) {
+      if (
+        this.clanThinAdvantages === 3 &&
+        this.advantagesOrFlaws === "Advantages"
+      ) {
         this.$q.notify({
           type: "negative",
           textColor: "white",
@@ -2432,7 +2435,7 @@ export default defineComponent({
         });
         return true;
       }
-      if (this.clanThinFlaws === 3) {
+      if (this.clanThinFlaws === 3 && this.advantagesOrFlaws === "Flaws") {
         this.$q.notify({
           type: "negative",
           textColor: "white",

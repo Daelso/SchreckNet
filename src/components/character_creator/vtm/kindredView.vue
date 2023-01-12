@@ -433,6 +433,7 @@ import { degrees, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
 import download from "downloadjs";
 import charSheet from "raw-loader!./sheetbase64.txt";
+import smallX from "../../../assets/images/small_x.png";
 
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 import clanBanes from "../vtm/5eClanBanes.json";
@@ -583,6 +584,7 @@ export default defineComponent({
       },
       favCount: 0,
       clanCompulsion: "",
+      smallX,
     };
   },
   async mounted() {
@@ -852,9 +854,9 @@ export default defineComponent({
         }
       }
       // humanity checkbox
-      const pngImageBytes = await fetch(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Small_uppercase_letter_X.svg/1200px-Small_uppercase_letter_X.svg.png"
-      ).then((res) => res.arrayBuffer());
+      const pngImageBytes = await fetch(smallX).then((res) =>
+        res.arrayBuffer()
+      );
 
       const pngImage = await pdfDoc.embedPng(pngImageBytes);
       for (let i = 1; i < this.humanity + 1; i++) {

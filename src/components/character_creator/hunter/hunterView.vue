@@ -283,13 +283,13 @@
           Created by: {{ creator }}, Favorited:
           {{ this.favCount.count }} time(s)
         </div>
-        <!-- <q-btn
+        <q-btn
           flat
           label="Export to PDF"
           @click="this.modifyPdf()"
           type="submit"
           color="white"
-        /> -->
+        />
         <q-btn
           v-if="
             this.currentUser !== false &&
@@ -308,8 +308,7 @@
       target="_blank"
       rel="noopener noreferrer"
       class="charSheetBlurb"
-      >Export to PDF coming when a working fillable PDF exists, I recommend
-      using Nerdberts for now.
+      >Sheets provided by Nerdbert, support him here.
     </a>
   </div>
 </template>
@@ -556,13 +555,338 @@ export default defineComponent({
       const supportFont = await pdfDoc.embedFont(ubuntuFontBytes);
 
       const fields = form.getFields();
-      console.log(form.getFields());
 
-      // fields.forEach((field) => {
-      //   const type = field.constructor.name;
-      //   const name = field.getName();
-      //   console.log(`${type}: ${name}`);
-      // });
+      let edgeArr = [];
+      fields.forEach((field) => {
+        const type = field.constructor.name;
+        const name = field.getName();
+        // console.log(`${type}: ${name}`);
+        if (name.includes("Edge")) {
+          edgeArr.push(name);
+        }
+      });
+
+      const nameField = form.getTextField("Name");
+      const conceptField = form.getTextField("pcConcept");
+      const chronicleField = form.getTextField("Chronicle");
+      const ambitionField = form.getTextField("Ambition");
+      const creedField = form.getTextField("Creed");
+      const creedDescField = form.getTextField("Convictions");
+      const desireField = form.getTextField("Desire");
+      const driveField = form.getTextField("Drive");
+      const cellField = form.getTextField("Cell");
+      const redemptionField = form.getTextField("Redemption");
+      const touchstoneField = form.getTextField("touchstoneNotes");
+      const totalXpField = form.getTextField("tEXP");
+      const spentXpField = form.getTextField("cEXP");
+
+      nameField.setText(this.hunter.charName);
+      conceptField.setText(this.hunter.concept);
+      chronicleField.setText(this.hunter.chronicle);
+      ambitionField.setText(this.hunter.ambition);
+      creedField.setText(this.hunter.creed.name);
+      creedDescField.setText(this.hunter.creed.desc);
+
+      desireField.setText(this.hunter.desire);
+      driveField.setText(this.hunter.drive.name);
+      totalXpField.setText(`${this.hunter.xp}`);
+      spentXpField.setText(`${this.hunter.spentXp}`);
+      cellField.setText(this.hunter.cell);
+      redemptionField.setText(this.hunter.redemption);
+
+      nameField.updateAppearances(supportFont);
+      chronicleField.updateAppearances(supportFont);
+
+      conceptField.setFontSize(10);
+
+      // text fields above, dots and loops required go below
+      // touchstones
+      let touchstones = "";
+
+      for (let i = 0; i < this.hunter.touchstones.length; i++) {
+        let mergedString = this.hunter.touchstones[i] + "\n";
+        touchstones += mergedString;
+      }
+      touchstoneField.setText(touchstones);
+
+      // health boxes
+      for (let i = 1; i < this.hunter.attributes.stamina + 3 + 1; i++) {
+        let healthBox = form.getCheckBox(`Health-${i}`);
+        healthBox.check();
+      }
+
+      //wp boxes
+      for (
+        let i = 1;
+        i <
+        this.hunter.attributes.composure + this.hunter.attributes.resolve + 1;
+        i++
+      ) {
+        let wpBox = form.getCheckBox(`WP-${i}`);
+        wpBox.check();
+      }
+
+      const checkAtts = (attribute) => {
+        let attributeBox = form.getCheckBox(attribute);
+        attributeBox.check();
+      };
+      // attribute checkbox
+      for (const attribute in this.hunter.attributes) {
+        for (let i = 1; i < this.hunter.attributes[attribute] + 1; i++) {
+          switch (attribute) {
+            case "strength":
+              checkAtts(`Str-${i}`);
+              break;
+            case "dexterity":
+              checkAtts(`Dex-${i}`);
+              break;
+            case "stamina":
+              checkAtts(`Sta-${i}`);
+              break;
+            case "charisma":
+              checkAtts(`Cha-${i}`);
+              break;
+            case "manipulation":
+              checkAtts(`Man-${i}`);
+              break;
+            case "composure":
+              checkAtts(`Com-${i}`);
+              break;
+            case "intelligence":
+              checkAtts(`Int-${i}`);
+              break;
+            case "wits":
+              checkAtts(`Wit-${i}`);
+              break;
+            case "resolve":
+              checkAtts(`Res-${i}`);
+              break;
+          }
+        }
+      }
+
+      const checkSkills = (skill) => {
+        let skillBox = form.getCheckBox(skill);
+        skillBox.check();
+      };
+
+      // skill checkbox
+      for (const skill in this.hunter.skills) {
+        for (let i = 1; i < this.hunter.skills[skill] + 1; i++) {
+          switch (skill) {
+            case "athletics":
+              checkSkills(`Ath-${i}`);
+              break;
+            case "animalken":
+              checkSkills(`AniKen-${i}`);
+              break;
+            case "academics":
+              checkSkills(`Acad-${i}`);
+              break;
+            case "brawl":
+              checkSkills(`Bra-${i}`);
+              break;
+            case "etiquette":
+              checkSkills(`Etiq-${i}`);
+              break;
+            case "awareness":
+              checkSkills(`Awar-${i}`);
+              break;
+            case "craft":
+              checkSkills(`Cra-${i}`);
+              break;
+            case "insight":
+              checkSkills(`Insi-${i}`);
+              break;
+            case "finance":
+              checkSkills(`Fina-${i}`);
+              break;
+            case "drive":
+              checkSkills(`Dri-${i}`);
+              break;
+            case "intimidation":
+              checkSkills(`Inti-${i}`);
+              break;
+            case "investigation":
+              checkSkills(`Inve-${i}`);
+              break;
+            case "firearms":
+              checkSkills(`Fri-${i}`);
+              break;
+            case "leadership":
+              checkSkills(`Lead-${i}`);
+              break;
+            case "medicine":
+              checkSkills(`Medi-${i}`);
+              break;
+            case "larceny":
+              checkSkills(`Lar-${i}`);
+              break;
+            case "performance":
+              checkSkills(`Perf-${i}`);
+              break;
+            case "occult":
+              checkSkills(`Occu-${i}`);
+              break;
+            case "melee":
+              checkSkills(`Mel-${i}`);
+              break;
+            case "persuasion":
+              checkSkills(`Pers-${i}`);
+              break;
+            case "politics":
+              checkSkills(`Poli-${i}`);
+              break;
+            case "stealth":
+              checkSkills(`Ste-${i}`);
+              break;
+            case "streetwise":
+              checkSkills(`Stre-${i}`);
+              break;
+            case "science":
+              checkSkills(`Scie-${i}`);
+              break;
+            case "survival":
+              checkSkills(`Sur-${i}`);
+              break;
+            case "subterfuge":
+              checkSkills(`Subt-${i}`);
+              break;
+            case "technology":
+              checkSkills(`Tech-${i}`);
+              break;
+          }
+        }
+      }
+
+      //Specs
+      const fillSpecs = (skill, spec) => {
+        let specField = form.getTextField(skill);
+        specField.setText(spec);
+      };
+
+      this.hunter.specialties.forEach((spec) => {
+        switch (spec.skill) {
+          case "athletics":
+            fillSpecs("specAth", spec.specialty);
+            break;
+          case "animalken":
+            fillSpecs("specAniKen", spec.specialty);
+            break;
+          case "academics":
+            fillSpecs("specAcad", spec.specialty);
+            break;
+          case "brawl":
+            fillSpecs("specBra", spec.specialty);
+            break;
+          case "etiquette":
+            fillSpecs("specEtiq", spec.specialty);
+            break;
+          case "awareness":
+            fillSpecs("specAwar", spec.specialty);
+            break;
+          case "craft":
+            fillSpecs("specCra", spec.specialty);
+            break;
+          case "insight":
+            fillSpecs("specInsi", spec.specialty);
+            break;
+          case "finance":
+            fillSpecs("specFina", spec.specialty);
+            break;
+          case "drive":
+            fillSpecs("specDri", spec.specialty);
+            break;
+          case "intimidation":
+            fillSpecs("specInti", spec.specialty);
+            break;
+          case "investigation":
+            fillSpecs("specInve", spec.specialty);
+            break;
+          case "firearms":
+            fillSpecs("specFir", spec.specialty);
+            break;
+          case "leadership":
+            fillSpecs("specLea", spec.specialty);
+            break;
+          case "medicine":
+            fillSpecs("specMedi", spec.specialty);
+            break;
+          case "larceny":
+            fillSpecs("specLar", spec.specialty);
+            break;
+          case "performance":
+            fillSpecs("specPerf", spec.specialty);
+            break;
+          case "occult":
+            fillSpecs("specOccu", spec.specialty);
+            break;
+          case "melee":
+            fillSpecs("specMel", spec.specialty);
+            break;
+          case "persuasion":
+            fillSpecs("specPers", spec.specialty);
+            break;
+          case "politics":
+            fillSpecs("specPoli", spec.specialty);
+            break;
+          case "stealth":
+            fillSpecs("specStea", spec.specialty);
+            break;
+          case "streetwise":
+            fillSpecs("specStree", spec.specialty);
+            break;
+          case "science":
+            fillSpecs("specScie", spec.specialty);
+            break;
+          case "survival":
+            fillSpecs("specSur", spec.specialty);
+            break;
+          case "subterfuge":
+            fillSpecs("specSubt", spec.specialty);
+            break;
+          case "technology":
+            fillSpecs("specTech", spec.specialty);
+            break;
+        }
+      });
+
+      let edgeLength =
+        this.hunter.edges.edges.length + this.hunter.edges.perks.length;
+
+      let combinedEdges = [];
+
+      this.hunter.edges.edges.forEach((edge) => {
+        combinedEdges.push("Edge: " + edge.edge);
+      });
+
+      this.hunter.edges.perks.forEach((perk) => {
+        combinedEdges.push("Perk: " + perk.perk);
+      });
+
+      for (let i = 0; i < edgeLength; i++) {
+        console.log(edgeArr[i]);
+        let edgeField = form.getTextField(edgeArr[i]);
+        edgeField.setText(combinedEdges[i]);
+      }
+
+      // Advantages/flaws
+      let meritArr = [];
+      for (const attribute in this.hunter.advantages) {
+        for (const flaw in this.hunter.advantages[attribute]) {
+          meritArr = meritArr.concat(this.hunter.advantages[attribute][flaw]);
+        }
+      }
+
+      for (let i = 0; i < meritArr.length; i++) {
+        let advTextBox = form.getTextField(`Merit${i + 1}`);
+        advTextBox.setText(`${meritArr[i].name}`);
+
+        for (let j = 1; j < meritArr[i].cost + 1; j++) {
+          let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);
+          advCheckBox.check();
+        }
+      }
 
       const pdfBytes = await pdfDoc.save();
       download(

@@ -800,7 +800,6 @@ export default defineComponent({
       }
 
       // Advantages/flaws
-
       let meritArr = [];
       for (const attribute in this.advantagesObj) {
         for (const flaw in this.advantagesObj[attribute]) {

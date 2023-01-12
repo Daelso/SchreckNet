@@ -1,0 +1,68 @@
+{
+  "clans": {
+    "Banu Haqim": {
+      "name": "Judgement",
+      "desc": "Urged to punish a wrongdoer, the vampire must slake one Hunger from anyone that acts against their own Convictions. Failing to do so results in a three-dice penalty to all rolls until the Compulsion is satisfied or the scene ends. Should the victim be a vampire, the Bane applies."
+    },
+    "Brujah": {
+      "name": "Rebellion",
+      "desc": "The Brujah craves to take a stance against those who represent the status quo. This does not relent until they have gone against orders, expectations, or changed someone's mind. During this Compulsion, they suffer a -2 to dice all pools."
+    },
+    "Caitiff": {
+      "name": "None",
+      "desc": "None."
+    },
+    "Gangrel": {
+      "name": "Feral Impulses",
+      "desc": "Unleash the animal hidden in their Blood. This urges the Gangrel to regress into an animalistic state where speech becomes difficult, clothes become too constrictive and arguments and best settled with claws and teeth. For one scene the Gangrel suffers a -3 dice penalty to all rolls involving Manipulation and Intelligence as they are only able to speak one word sentences during this Compulsion."
+    },
+    "Hecata": {
+      "name": "Morbidity",
+      "desc": "The Hecata must study individuals around them for signs of illness or impending death. Until they either predict a death without supernatural means or solved the cause of a local death, they suffer a three-dice penalty to other rolls until the scene ends. The conclusions are not required to be entirely correct, but should be within the bounds of possible."
+    },
+    "Lasombra": {
+      "name": "Ruthlessness",
+      "desc": "The next time the vampire fails an action they receive a two-dice penalty to all rolls until a future attempt at the same action succeeds. This penalty applies to future attempts of the same action still."
+    },
+    "Malkavian": {
+      "name": "Delusion",
+      "desc": "Whether it's figments of their imagination or extrasensory perception of the truths. For one scene, the Malkavian suffers a 2 dice penalty to rolls involving Dexterity, Manipulation, Composure, or Wits. As well as rolls to resist terror Frenzy."
+    },
+    "Nosferatu": {
+      "name": "Cryptophilia",
+      "desc": "Consumed by a hunger for private secrets, the Nosferatu seeks to obtain knowledge no matter big or small as long as it's not a well-known bit of information. During this, they also refuse to give up their secrets except in strict trade for something greater than their own. Any action not actively working towards gaining them a secret they take a two-dice penalty. This Compulsion does not end till they learn a secret they deem to be useful, sharing this secret is entirely optional."
+    },
+    "Ravnos": {
+      "name": "Tempting Fate",
+      "desc": "When faced with their next problem, the Daredevil must attempt the solution with the most dangerous or daring of actions, anything less incurs a two-dice penalty. Context appropriate flashy or risky attempts may even net bonus dice. They are free to convince others to follow them in their actions but may as well go it alone. This Compulsion persists until the problem is solved or further attempts become impossible to accomplish."
+    },
+    "Salubri": {
+      "name": "Affective Empathy",
+      "desc": "Overwhelmed with empathy for a personal problem of someone else, any action not taken to help the person mitigate the suffering they take a two-dice penalty. This Compulsion continues until the sufferer's burden is eased, a more critical problem arises or the scene ends."
+    },
+    "Toreador": {
+      "name": "Obsession",
+      "desc": "Utterly obsessed with a single thing, the Toreador cannot speak of anything but that object. Be it a person, a piece of artwork, a blood splatter in the right lighting, or the sunrise itself, they cannot take their attention from it. Any other actions receive a two-dice penalty. This Compulsion lasts until they can no longer perceive the object or the scene ends."
+    },
+    "Tremere": {
+      "name": "Perfectionism",
+      "desc": "Nothing but the best will satisfy them, anything less than exceptional still instills a profound sense of failure. When afflicted by this, the Warlock suffers a two-dice penalty to all dice pools. The penalty is reduced to one die when actions are being repeated and removed entirely on a second repeat. This does not end till they managed to score a critical win on a Skill roll or the scene ends."
+    },
+    "Tzimisce": {
+      "name": "Covetousness",
+      "desc": "When afflicted with this compulsion they become obsessed with owning something in the scene, be it an object, or property to a living person. Whatever it is, they must add it to their collection and any action taken not towards this purpose incurs a two-dice penalty. This penalty continues until ownership is established or the object of their desire is unobtainable."
+    },
+    "Ventrue": {
+      "name": "Arrogance",
+      "desc": "Fueled by the beast and their natural desire for power, the Ventrue must force someone to obey a command given. The order cannot be given through supernatural means such as Dominate. Until they satisfy the requirements, they receive a two-dice penalty for any actions not directly related to leadership."
+    },
+    "The Ministry": {
+      "name": "Transgression",
+      "desc": "The Minister suffers a burning desire to influence those around them to shatter the chains of their own making. They suffer a two-dice penalty to all dice pools that do not relate to enticing someone or themselves to break a Chronicle or personal Conviction. The Compulsion ends once the Minister causes someone, or themselves, at least one stain."
+    },
+    "Thin-Blood": {
+      "name": "None",
+      "desc": "None."
+    }
+  }
+}

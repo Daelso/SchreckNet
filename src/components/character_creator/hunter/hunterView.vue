@@ -766,7 +766,7 @@ export default defineComponent({
       };
 
       this.hunter.specialties.forEach((spec) => {
-        switch (spec.skill) {
+        switch (spec.skill.toLowerCase()) {
           case "athletics":
             fillSpecs("specAth", spec.specialty);
             break;

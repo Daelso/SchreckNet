@@ -341,11 +341,11 @@
       </template>
     </q-banner>
     <a
-      href="https://renegadegamestudios.com/vampire-the-masquerade-5th-edition-roleplaying-game-pdf-fillable-character-sheet/#product-reviews"
+      href="https://linktr.ee/nerdbert"
       target="_blank"
       rel="noopener noreferrer"
       class="charSheetBlurb"
-      >Sheets Provided by Renegade Game Studios
+      >Sheets provided by Nerdbert, support him here.
     </a>
   </div>
 </template>
@@ -436,6 +436,8 @@ import charSheet from "raw-loader!./sheetbase64.txt";
 
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 import clanBanes from "../vtm/5eClanBanes.json";
+import clanCompulsions from "../vtm/5eClanCompulsions.json";
+
 import fontkit from "@pdf-lib/fontkit";
 
 import { ref } from "vue";
@@ -508,6 +510,7 @@ export default defineComponent({
       kindredId,
       attributeInfo,
       clanBanes,
+      clanCompulsions,
       skillInfo,
       charName: kindred.charName,
       clan: kindred.clan,
@@ -579,6 +582,7 @@ export default defineComponent({
         return s[0].toUpperCase() + s.slice(1);
       },
       favCount: 0,
+      clanCompulsion: "",
     };
   },
   async mounted() {
@@ -610,6 +614,7 @@ export default defineComponent({
       this.calculateSpentXp();
       this.bloodPotencyModifiers();
       this.setClanBane();
+      this.setClanCompulsion();
       const pdfDoc = await PDFDocument.load(this.charSheet);
       const form = pdfDoc.getForm();
       const ubuntuFontBytes = await fetch(ubuntuFont).then((res) =>
@@ -626,25 +631,31 @@ export default defineComponent({
       // });
 
       const nameField = form.getTextField("Name");
-      const conceptField = form.getTextField("Concept");
-      const predatorField = form.getTextField("Predator");
+      const conceptField = form.getTextField("pcConcept");
+      const predatorField = form.getTextField("Predator type");
       const chronicleField = form.getTextField("Chronicle");
       const ambitionField = form.getTextField("Ambition");
       const clanField = form.getTextField("Clan");
+      const sectField = form.getTextField("Sect");
       const sireField = form.getTextField("Sire");
       const desireField = form.getTextField("Desire");
-      const generationField = form.getTextField("Generation");
-      const convictionField = form.getTextField("Touchstones Convictions");
-      const totalXpField = form.getTextField("totalxp");
-      const spentXpField = form.getTextField("spentxp");
-      const baneField = form.getTextField("Clan Banes");
-      const baneSeverityField = form.getTextField("Bane Severity");
-      const surgeField = form.getTextField("Blood Surge");
-      const mendField = form.getTextField("Mend Amount");
-      const powerField = form.getTextField("Power Bonus");
-      const rouseField = form.getTextField("Rouse ReRoll");
-      const feedPenField = form.getTextField("Feeding Penalty");
-      const notesField = form.getTextField("Notes");
+      const generationField = form.getTextField("Title");
+      const convictionField = form.getTextField("Convictions");
+      const touchstoneField = form.getTextField("touchstoneNotes");
+      const rankField = form.getTextField("Rank");
+      const totalXpField = form.getTextField("tEXP");
+      const spentXpField = form.getTextField("cEXP");
+      const baneField = form.getTextField("ClanBane");
+      const compName = form.getTextField("NameCompulsion");
+      const compDesc = form.getTextField("ClanCompulsion");
+
+      const baneSeverityField = form.getTextField("BaneSev");
+      const surgeField = form.getTextField("BloodSurge");
+      const mendField = form.getTextField("Mend");
+      const powerField = form.getTextField("PowBonus");
+      const rouseField = form.getTextField("ReRouse");
+      const feedPenField = form.getTextField("FeedPen");
+      const notesField = form.getTextField("PC_Notes");
 
       nameField.setText(this.charName);
       conceptField.setText(this.concept);
@@ -652,9 +663,11 @@ export default defineComponent({
       chronicleField.setText(this.chronicle);
       ambitionField.setText(this.ambition);
       clanField.setText(this.clan);
+      sectField.setText(this.sect);
       sireField.setText(this.sire === null ? "Unknown" : this.sire);
       desireField.setText(this.desire);
       generationField.setText(this.generation);
+      rankField.setText(this.age);
       totalXpField.setText(`${this.xp}`);
       spentXpField.setText(`${this.spentXp}`);
       baneSeverityField.setText(`${this.baneseverity}`);
@@ -664,6 +677,8 @@ export default defineComponent({
       rouseField.setText(`${this.rouseAmt}`);
       feedPenField.setText(`${this.feedPenalty}`);
       baneField.setText(this.clanBane);
+      compName.setText(this.clanCompulsion.name);
+      compDesc.setText(this.clanCompulsion.desc);
       sireField.updateAppearances(supportFont);
       nameField.updateAppearances(supportFont);
       chronicleField.updateAppearances(supportFont);
@@ -674,22 +689,24 @@ export default defineComponent({
       // touchstones/convictions are a weird concat string situation so we'll do it up top near the text boxes
       let convicStoneString = "";
       for (let i = 0; i < this.convictions.length; i++) {
-        let convicString = "Conviction: ";
-        let mergedString = convicString + this.convictions[i] + "\n";
-        convicStoneString += mergedString;
-      }
-
-      for (let i = 0; i < this.touchstones.length; i++) {
-        let touchString = "Touchstone: ";
-        let mergedString = touchString + this.touchstones[i] + "\n";
+        let mergedString = this.convictions[i] + "\n";
         convicStoneString += mergedString;
       }
       convictionField.setText(convicStoneString);
 
+      let touchStoneString = "";
+
+      for (let i = 0; i < this.touchstones.length; i++) {
+        let mergedString = this.touchstones[i] + "\n";
+        touchStoneString += mergedString;
+      }
+
+      touchstoneField.setText(touchStoneString);
+
       // health boxes
       for (let i = 1; i < this.attributes.stamina + 3 + 1; i++) {
-        let healthBox = form.getTextField(`health${i}`);
-        healthBox.setText("X");
+        let healthBox = form.getCheckBox(`Health-${i}`);
+        healthBox.check();
       }
 
       //wp boxes
@@ -698,34 +715,156 @@ export default defineComponent({
         i < this.attributes.composure + this.attributes.resolve + 1;
         i++
       ) {
-        let wpBox = form.getTextField(`will${i}`);
-        wpBox.setText("X");
+        let wpBox = form.getCheckBox(`WP-${i}`);
+        wpBox.check();
       }
 
+      const checkAtts = (attribute) => {
+        let attributeBox = form.getCheckBox(attribute);
+        attributeBox.check();
+      };
       // attribute checkbox
       for (const attribute in this.attributes) {
         for (let i = 1; i < this.attributes[attribute] + 1; i++) {
-          let attributeBox = form.getCheckBox(`${attribute}${i}`);
-          attributeBox.check();
+          switch (attribute) {
+            case "strength":
+              checkAtts(`Str-${i}`);
+              break;
+            case "dexterity":
+              checkAtts(`Dex-${i}`);
+              break;
+            case "stamina":
+              checkAtts(`Sta-${i}`);
+              break;
+            case "charisma":
+              checkAtts(`Cha-${i}`);
+              break;
+            case "manipulation":
+              checkAtts(`Man-${i}`);
+              break;
+            case "composure":
+              checkAtts(`Com-${i}`);
+              break;
+            case "intelligence":
+              checkAtts(`Int-${i}`);
+              break;
+            case "wits":
+              checkAtts(`Wit-${i}`);
+              break;
+            case "resolve":
+              checkAtts(`Res-${i}`);
+              break;
+          }
         }
       }
+
+      const checkSkills = (skill) => {
+        let skillBox = form.getCheckBox(skill);
+        skillBox.check();
+      };
 
       // skill checkbox
       for (const skill in this.trueSkills) {
         for (let i = 1; i < this.trueSkills[skill] + 1; i++) {
-          let skillBox = form.getCheckBox(`${skill}${i}`);
-          skillBox.check();
+          switch (skill) {
+            case "athletics":
+              checkSkills(`Ath-${i}`);
+              break;
+            case "animalken":
+              checkSkills(`AniKen-${i}`);
+              break;
+            case "academics":
+              checkSkills(`Acad-${i}`);
+              break;
+            case "brawl":
+              checkSkills(`Bra-${i}`);
+              break;
+            case "etiquette":
+              checkSkills(`Etiq-${i}`);
+              break;
+            case "awareness":
+              checkSkills(`Awar-${i}`);
+              break;
+            case "craft":
+              checkSkills(`Cra-${i}`);
+              break;
+            case "insight":
+              checkSkills(`Insi-${i}`);
+              break;
+            case "finance":
+              checkSkills(`Fina-${i}`);
+              break;
+            case "drive":
+              checkSkills(`Dri-${i}`);
+              break;
+            case "intimidation":
+              checkSkills(`Inti-${i}`);
+              break;
+            case "investigation":
+              checkSkills(`Inve-${i}`);
+              break;
+            case "firearms":
+              checkSkills(`Fri-${i}`);
+              break;
+            case "leadership":
+              checkSkills(`Lead-${i}`);
+              break;
+            case "medicine":
+              checkSkills(`Medi-${i}`);
+              break;
+            case "larceny":
+              checkSkills(`Lar-${i}`);
+              break;
+            case "performance":
+              checkSkills(`Perf-${i}`);
+              break;
+            case "occult":
+              checkSkills(`Occu-${i}`);
+              break;
+            case "melee":
+              checkSkills(`Mel-${i}`);
+              break;
+            case "persuasion":
+              checkSkills(`Pers-${i}`);
+              break;
+            case "politics":
+              checkSkills(`Poli-${i}`);
+              break;
+            case "stealth":
+              checkSkills(`Ste-${i}`);
+              break;
+            case "streetwise":
+              checkSkills(`Stre-${i}`);
+              break;
+            case "science":
+              checkSkills(`Scie-${i}`);
+              break;
+            case "survival":
+              checkSkills(`Sur-${i}`);
+              break;
+            case "subterfuge":
+              checkSkills(`Subt-${i}`);
+              break;
+            case "technology":
+              checkSkills(`Tech-${i}`);
+              break;
+          }
         }
       }
       // humanity checkbox
+      const pngImageBytes = await fetch(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Small_uppercase_letter_X.svg/1200px-Small_uppercase_letter_X.svg.png"
+      ).then((res) => res.arrayBuffer());
+
+      const pngImage = await pdfDoc.embedPng(pngImageBytes);
       for (let i = 1; i < this.humanity + 1; i++) {
-        let humanityBox = form.getCheckBox(`humanity-${i}`);
-        humanityBox.check();
+        let humanityBox = form.getButton(`Humanity-${i}`);
+        humanityBox.setImage(pngImage);
       }
 
       // potency
       for (let i = 1; i < this.potency + 1; i++) {
-        let potencyBox = form.getCheckBox(`potency${i}`);
+        let potencyBox = form.getCheckBox(`BloodPotency-${i}`);
         potencyBox.check();
       }
 
@@ -751,50 +890,20 @@ export default defineComponent({
             continue;
           }
         }
-        curIndex++;
-        let mainBox = form.getTextField(`Main${curIndex}`);
+        ++curIndex;
+        let mainBox = form.getTextField(`Disc${curIndex}`);
         mainBox.setText(discipline);
-        switch (curIndex) {
-          case 1:
-            mergedDisciplines[discipline].skills.forEach((x, index) => {
-              let rowField = form.getTextField(`Row${index + 1}`);
-              rowField.setText(`${x.skill}`);
-            });
-            break;
-          case 2:
-            mergedDisciplines[discipline].skills.forEach((x, index) => {
-              let rowField = form.getTextField(`Row${index + 1}_2`);
-              rowField.setText(`${x.skill}`);
-            });
-            break;
-          case 3:
-            mergedDisciplines[discipline].skills.forEach((x, index) => {
-              let rowField = form.getTextField(`Row${index + 1}_3`);
-              rowField.setText(`${x.skill}`);
-            });
-            break;
-          case 4:
-            mergedDisciplines[discipline].skills.forEach((x, index) => {
-              let rowField = form.getTextField(`Row${index + 1}_4`);
-              rowField.setText(`${x.skill}`);
-            });
-            break;
-          case 5:
-            mergedDisciplines[discipline].skills.forEach((x, index) => {
-              let rowField = form.getTextField(`Row${index + 1}_5`);
-              rowField.setText(`${x.skill}`);
-            });
-            break;
-          case 6:
-            mergedDisciplines[discipline].skills.forEach((x, index) => {
-              let rowField = form.getTextField(`Row${index + 1}_6`);
-              rowField.setText(`${x.skill}`);
-            });
-            break;
-        }
+
+        mergedDisciplines[discipline].skills.forEach((x, index) => {
+          let rowField = form.getTextField(
+            `Disc${curIndex}_Ability${index + 1}`
+          );
+
+          rowField.setText(`${x.skill}`);
+        });
 
         for (let j = 1; j < mergedDisciplines[discipline].dots + 1; j++) {
-          let mainCheckBox = form.getCheckBox(`main${curIndex}-${j}`);
+          let mainCheckBox = form.getCheckBox(`Disc${curIndex}-${j}`);
           mainCheckBox.check();
         }
       }
@@ -814,28 +923,106 @@ export default defineComponent({
           notesField.setText(mergedString);
           continue;
         }
-        let advTextBox = form.getTextField(`adflaw${i + 1}`);
+        let advTextBox = form.getTextField(`Merit${i + 1}`);
         advTextBox.setText(`${meritArr[i].name}`);
 
         for (let j = 1; j < meritArr[i].cost + 1; j++) {
-          let advCheckBox = form.getCheckBox(`adflaw${i + 1}-${j}`);
+          let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);
           advCheckBox.check();
         }
       }
 
-      // Specialties
-      let fullSpecString = "";
-      for (let i = 0; i < this.specialties.length; i++) {
-        let specialString = "Specialty: ";
-        let mergedString =
-          specialString +
-          this.capitalize(this.specialties[i].skill) +
-          " - " +
-          this.specialties[i].specialty +
-          "\n";
-        fullSpecString += mergedString;
-      }
-      notesField.setText(fullSpecString);
+      //Specs
+      const fillSpecs = (skill, spec) => {
+        let specField = form.getTextField(skill);
+        specField.setText(spec);
+      };
+
+      this.specialties.forEach((spec) => {
+        switch (spec.skill.toLowerCase()) {
+          case "athletics":
+            fillSpecs("specAth", spec.specialty);
+            break;
+          case "animalken":
+            fillSpecs("specAniKen", spec.specialty);
+            break;
+          case "academics":
+            fillSpecs("specAcad", spec.specialty);
+            break;
+          case "brawl":
+            fillSpecs("specBra", spec.specialty);
+            break;
+          case "etiquette":
+            fillSpecs("specEtiq", spec.specialty);
+            break;
+          case "awareness":
+            fillSpecs("specAwar", spec.specialty);
+            break;
+          case "craft":
+            fillSpecs("specCra", spec.specialty);
+            break;
+          case "insight":
+            fillSpecs("specInsi", spec.specialty);
+            break;
+          case "finance":
+            fillSpecs("specFina", spec.specialty);
+            break;
+          case "drive":
+            fillSpecs("specDri", spec.specialty);
+            break;
+          case "intimidation":
+            fillSpecs("specInti", spec.specialty);
+            break;
+          case "investigation":
+            fillSpecs("specInve", spec.specialty);
+            break;
+          case "firearms":
+            fillSpecs("specFir", spec.specialty);
+            break;
+          case "leadership":
+            fillSpecs("specLea", spec.specialty);
+            break;
+          case "medicine":
+            fillSpecs("specMedi", spec.specialty);
+            break;
+          case "larceny":
+            fillSpecs("specLar", spec.specialty);
+            break;
+          case "performance":
+            fillSpecs("specPerf", spec.specialty);
+            break;
+          case "occult":
+            fillSpecs("specOccu", spec.specialty);
+            break;
+          case "melee":
+            fillSpecs("specMel", spec.specialty);
+            break;
+          case "persuasion":
+            fillSpecs("specPers", spec.specialty);
+            break;
+          case "politics":
+            fillSpecs("specPoli", spec.specialty);
+            break;
+          case "stealth":
+            fillSpecs("specStea", spec.specialty);
+            break;
+          case "streetwise":
+            fillSpecs("specStree", spec.specialty);
+            break;
+          case "science":
+            fillSpecs("specScie", spec.specialty);
+            break;
+          case "survival":
+            fillSpecs("specSur", spec.specialty);
+            break;
+          case "subterfuge":
+            fillSpecs("specSubt", spec.specialty);
+            break;
+          case "technology":
+            fillSpecs("specTech", spec.specialty);
+            break;
+        }
+      });
 
       const pdfBytes = await pdfDoc.save();
       download(
@@ -938,6 +1125,10 @@ export default defineComponent({
         });
         this.clanBane = this.clanBanes.clans[splitStr[1]];
       }
+    },
+
+    setClanCompulsion() {
+      this.clanCompulsion = this.clanCompulsions.clans[this.clan];
     },
 
     favoriteChar(sheet_id, charName) {

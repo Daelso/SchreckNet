@@ -17,7 +17,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               @update:model-value="clearBelowCat()"
+              popup-content-style="background-color:#222831; color:white"
             />
             <!-- Attributes -->
             <q-select
@@ -27,9 +29,11 @@
               label="Which attribute would you like to upgrade?"
               label-color="primary"
               bg-color="grey-3"
+              color="secondary"
               filled
               class="q-my-sm"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
             <!-- Blood Rituals -->
             <q-select
@@ -40,8 +44,10 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
             <q-select
               v-if="this.ritualLevel"
@@ -51,8 +57,10 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
 
             <!-- Oblivion Ceremonies -->
@@ -65,8 +73,10 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
             <q-select
               v-if="this.ceremonyLevel"
@@ -77,7 +87,9 @@
               bg-color="grey-3"
               filled
               class="q-my-sm"
+              color="secondary"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
 
             <!-- Clan Disciplines and Caitiff Disciplines -->
@@ -99,7 +111,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <q-select
               v-if="this.clanDiscInput"
@@ -108,6 +122,7 @@
               :options="disciplineOptions"
               bg-color="grey-3"
               filled
+              color="secondary"
               label-color="primary"
               option-label="label"
             />
@@ -120,7 +135,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <q-input
               v-if="this.specialtyInput && this.categoryInput !== 'Skills'"
@@ -140,7 +157,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <!-- Purchase multiple dots -->
             <q-select
@@ -160,8 +179,10 @@
               label="How many dots would you like to purchase??"
               label-color="primary"
               bg-color="grey-3"
+              color="secondary"
               filled
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <div class="upgradeCost" v-if="this.categoryInput">
               <q-badge v-if="this.attributeInput"

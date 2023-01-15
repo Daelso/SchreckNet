@@ -23,7 +23,9 @@
             class="select"
             label-color="primary"
             option-label="label"
+            color="secondary"
             @update:model-value="distributionSelected"
+            popup-content-style="background-color:#222831; color:white"
           />
           <div
             v-if="this.skillDistribution.label === 'Jack-of-all-trades'"

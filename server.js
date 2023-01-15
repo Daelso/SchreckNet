@@ -45,6 +45,8 @@ const hunterRoutes = require("./server/api/hunters");
 app.use("/hunters", hunterRoutes);
 const favoriteRoutes = require("./server/api/favorites");
 app.use("/favorites", favoriteRoutes);
+const searchRoutes = require("./server/api/search");
+app.use("/search", searchRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

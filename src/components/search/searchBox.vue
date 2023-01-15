@@ -97,6 +97,7 @@
     </div>
     <q-btn
       icon="search"
+      :loading="loading"
       color="#171A1E"
       text-color="white"
       label="Search"
@@ -154,7 +155,6 @@ export default defineComponent({
     "clan",
     "predator",
     "kindred",
-    "loader",
     "drive",
     "hunter",
     "creed",
@@ -166,7 +166,6 @@ export default defineComponent({
     "update:predator",
     "update:kindred",
     "update:hunter",
-    "update:loader",
     "update:drive",
     "update:creed",
   ],
@@ -225,7 +224,7 @@ export default defineComponent({
       vampires: [],
       hunters: [],
       wolves: [],
-      loading: props.loader,
+      loading: false,
       clanOptions: Object.keys(clans.clans),
       predatorOptions: predatorTypes.predator,
       driveOptions: driveTypes,
@@ -236,7 +235,6 @@ export default defineComponent({
   methods: {
     async doSearch() {
       this.loading = true;
-      this.$emit("update:loader", this.loading);
       this.vampires = [];
       this.hunters = [];
       this.wolves = [];
@@ -266,8 +264,7 @@ export default defineComponent({
           }
         );
         this.$emit("update:kindred", this.vampires.data);
-        this.loading = false;
-        this.$emit("update:loader", this.loading);
+        this.$emit("update:hunter", []);
       }
 
       if (this.splatPick === "Hunter: the Reckoning") {
@@ -288,10 +285,10 @@ export default defineComponent({
             withCredentials: true,
           }
         );
+        this.$emit("update:kindred", []);
         this.$emit("update:hunter", this.hunters.data);
-        this.loading = false;
-        this.$emit("update:loader", this.loading);
       }
+      this.loading = false;
     },
   },
 });

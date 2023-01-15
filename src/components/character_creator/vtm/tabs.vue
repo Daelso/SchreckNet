@@ -152,7 +152,9 @@
             label-color="primary"
             bg-color="grey-3"
             filled
+            color="secondary"
             @update:model-value="this.$emit('sect', this.sect)"
+            popup-content-style="background-color:#222831; color:white"
           />
           <q-select
             v-model="cultInput"
@@ -169,9 +171,11 @@
             label="Cult"
             class="q-mt-md"
             label-color="primary"
+            color="secondary"
             bg-color="grey-3"
             filled
             @update:model-value="this.$emit('update:cult', this.cultInput)"
+            popup-content-style="background-color:#222831; color:white"
           />
           <q-input
             filled
@@ -328,12 +332,14 @@
             label-color="primary"
             bg-color="grey-3"
             filled
+            popup-content-style="background-color:#222831; color:white"
           />
           <q-input
             filled
             bg-color="grey-3"
             v-model="specialtyInput"
             label="Specialty *"
+            color="secondary"
             hint="Write your specialty (Press enter to confirm)"
             hide-hint
             autogrow
@@ -425,7 +431,9 @@
             label="Select merits, backgrounds, and loresheets"
             label-color="primary"
             bg-color="grey-3"
+            color="secondary"
             filled
+            popup-content-style="background-color:#222831; color:white"
             @update:model-value="changeAdvCat()"
           />
           <q-separator />
@@ -446,8 +454,10 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               @filter="filterFn"
               use-input
+              popup-content-style="background-color:#222831; color:white"
               input-debounce="0"
               @update:model-value="changeMeritCat()"
             />
@@ -462,8 +472,10 @@
               label="Select advantages or flaws"
               label-color="primary"
               class="q-mb-sm"
+              color="secondary"
               bg-color="grey-3"
               filled
+              popup-content-style="background-color:#222831; color:white"
             />
           </div>
           <q-separator />
@@ -474,9 +486,11 @@
               label="Choose your merit"
               label-color="primary"
               bg-color="grey-3"
+              color="secondary"
               filled
               option-label="name"
               @update:model-value="clearDotField()"
+              popup-content-style="background-color:#222831; color:white"
             />
           </div>
           <div
@@ -492,8 +506,10 @@
               label-color="primary"
               bg-color="grey-3"
               class="q-mt-sm"
+              color="secondary"
               filled
               @update:model-value="costAdjustment()"
+              popup-content-style="background-color:#222831; color:white"
             />
           </div>
 

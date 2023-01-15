@@ -89,6 +89,11 @@ const routes = [
         path: "/myFavorites",
         component: () => import("pages/myFavs.vue"),
       },
+      {
+        name: "baseSearch",
+        path: "/search",
+        component: () => import("pages/search/baseSearch.vue"),
+      },
     ],
   },
 

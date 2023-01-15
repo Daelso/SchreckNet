@@ -32,7 +32,9 @@
             >
               <q-select
                 v-model="clan"
+                color="secondary"
                 label="Clan"
+                popup-content-style="background-color:#222831; color:white"
                 :options="clanOptions"
                 bg-color="grey-3"
                 filled
@@ -161,8 +163,10 @@
                 <q-select
                   v-model="advantagesOrFlaws"
                   label="Select Thin-Blood Advantages or Flaws"
+                  popup-content-style="background-color:#222831; color:white"
                   :options="advantagesOrFlawsOptions"
                   bg-color="grey-3"
+                  color="secondary"
                   filled
                   style="margin-bottom: 20px; width: 100%"
                   class="select"
@@ -179,6 +183,8 @@
                   :options="allThinBloodOptions"
                   bg-color="grey-3"
                   filled
+                  color="secondary"
+                  popup-content-style="background-color:#222831; color:white"
                   style="margin-bottom: 20px; width: 100%"
                   class="select"
                   label-color="primary"
@@ -198,7 +204,9 @@
                   filled
                   style="width: 100%"
                   class="select q-my-sm"
+                  popup-content-style="background-color:#222831; color:white"
                   label-color="primary"
+                  color="secondary"
                 />
                 <q-select
                   v-if="this.alchemyDiscipline"
@@ -209,7 +217,9 @@
                   filled
                   style="width: 100%"
                   class="select q-my-sm"
+                  color="secondary"
                   label-color="primary"
+                  popup-content-style="background-color:#222831; color:white"
                 />
                 <!-- Disciplines -->
                 <q-select
@@ -222,8 +232,10 @@
                   :options="filteredDiscOptions"
                   bg-color="grey-3"
                   filled
+                  color="secondary"
                   style="width: 100%"
                   class="select q-my-sm"
+                  popup-content-style="background-color:#222831; color:white"
                   label-color="primary"
                 />
                 <q-select
@@ -235,7 +247,9 @@
                   filled
                   style="width: 100%"
                   class="select q-my-sm"
+                  color="secondary"
                   label-color="primary"
+                  popup-content-style="background-color:#222831; color:white"
                 />
                 <!-- Clan Bane Flaw -->
                 <q-select
@@ -248,6 +262,8 @@
                   style="width: 100%"
                   class="select q-my-sm"
                   label-color="primary"
+                  color="secondary"
+                  popup-content-style="background-color:#222831; color:white"
                 />
                 <q-separator />
                 <q-btn
@@ -294,7 +310,9 @@
                 style="margin-bottom: 20px; width: 100%"
                 class="select"
                 label-color="primary"
+                color="secondary"
                 option-label="label"
+                popup-content-style="background-color:#222831; color:white"
               />
               <q-separator />
               <div>Blood Potency: {{ generation.potency }}</div>
@@ -312,7 +330,9 @@
                 class="select"
                 label-color="primary"
                 option-label="label"
+                color="secondary"
                 @update:model-value="ageSelected"
+                popup-content-style="background-color:#222831; color:white"
               />
               <q-separator />
               Bonus XP: {{ age.bonusXp }}
@@ -339,7 +359,9 @@
                 class="select"
                 label-color="primary"
                 option-label="label"
+                color="secondary"
                 @update:model-value="predatorPicked()"
+                popup-content-style="background-color:#222831; color:white"
               />
               <div v-if="modifyPredatorTypes().length === 1">
                 Thin-Bloods and Fledglings do not have a predator type.
@@ -365,6 +387,8 @@
                     class="select"
                     label-color="primary"
                     option-label="label"
+                    color="secondary"
+                    popup-content-style="background-color:#222831; color:white"
                   />
                   <q-separator />
                 </div>
@@ -379,6 +403,8 @@
                     class="select"
                     label-color="primary"
                     option-label="skill"
+                    color="secondary"
+                    popup-content-style="background-color:#222831; color:white"
                   />
                   <q-separator />
                 </div>
@@ -453,9 +479,11 @@
                     class="select"
                     label-color="primary"
                     option-label="label"
+                    color="secondary"
                     @update:model-value="
                       skillPicked(this.disciplineChoice[key], key)
                     "
+                    popup-content-style="background-color:#222831; color:white"
                   />
                   <q-separator />
                 </div>

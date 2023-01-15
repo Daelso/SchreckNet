@@ -14,7 +14,7 @@ const lib = require("../lib");
 router.route("/vampires").post(async (req, res) => {
   try {
     const params = req.body.searchParams;
-    let baseQuery = "SELECT * FROM login.vampires WHERE 1=1";
+    let baseQuery = "SELECT * FROM ey140u9j4rs9xcib.vampires WHERE 1=1";
     if (params.user) {
       baseQuery += ` AND created_by = ${params.user}`;
     }
@@ -35,7 +35,7 @@ router.route("/vampires").post(async (req, res) => {
 router.route("/hunters").post(async (req, res) => {
   try {
     const params = req.body.searchParams;
-    let baseQuery = "SELECT * FROM login.hunters WHERE 1=1";
+    let baseQuery = "SELECT * FROM ey140u9j4rs9xcib.hunters WHERE 1=1";
     if (params.user) {
       baseQuery += ` AND created_by = ${params.user}`;
     }

@@ -14,7 +14,6 @@ const lib = require("../lib");
 router.route("/vampires").post(async (req, res) => {
   try {
     const params = req.body.searchParams;
-    console.log(params);
     let baseQuery = "SELECT * FROM login.vampires WHERE 1=1";
     if (params.user) {
       baseQuery += ` AND created_by = ${params.user}`;
@@ -25,6 +24,28 @@ router.route("/vampires").post(async (req, res) => {
     if (params.predator) {
       baseQuery += ` AND predator_type = "${params.predator}"`;
     }
+    const [results, metadata] = await sequelize.sequelize.query(baseQuery);
+
+    res.status(200).send(results);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+router.route("/hunters").post(async (req, res) => {
+  try {
+    const params = req.body.searchParams;
+    let baseQuery = "SELECT * FROM login.hunters WHERE 1=1";
+    if (params.user) {
+      baseQuery += ` AND created_by = ${params.user}`;
+    }
+    if (params.drive) {
+      baseQuery += ` AND drive->"$.name" = "${params.drive.name}"`;
+    }
+    if (params.creed) {
+      baseQuery += ` AND creed->"$.name" = "${params.creed.name}"`;
+    }
+
     const [results, metadata] = await sequelize.sequelize.query(baseQuery);
 
     res.status(200).send(results);

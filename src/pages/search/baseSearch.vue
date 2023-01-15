@@ -6,14 +6,17 @@
         v-model:user="user"
         v-model:clan="clan"
         v-model:predator="predator"
+        v-model:drive="drive"
+        v-model:creed="creed"
         v-model:kindred="kindred"
+        v-model:hunter="hunter"
         v-model:loader="loader"
       />
     </Suspense>
     <div
       v-if="
         this.kindred.length === 0 &&
-        this.hunters.length === 0 &&
+        this.hunter.length === 0 &&
         this.wolves.length === 0
       "
       class="banner q-my-md"
@@ -176,6 +179,156 @@
         </q-card-actions>
       </q-card>
     </div>
+    <div class="cards">
+      <q-card
+        v-for="hunt in this.hunter"
+        :key="hunt"
+        class="my-card"
+        flat
+        bordered
+      >
+        <q-item>
+          <q-item-section avatar>
+            <q-avatar>
+              <q-icon color="secondary" name="app:hunter" style="scale: 170%" />
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>{{ hunt.charName }}</q-item-label>
+            <q-item-label style="color: white" caption>
+              {{ hunt.creed.name }} ({{ hunt.drive.name }}) - {{ hunt.cell }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
+        <div class="row">
+          <q-card-section horizontal class="col">
+            <q-card-section class="base-info">
+              <q-list bordered separator>
+                <q-item>
+                  <q-item-section>
+                    <q-expansion-item expand-separator label="Attributes" dark>
+                      <q-card>
+                        <q-card-section
+                          v-for="(attribute, key) in Object.keys(
+                            hunt.attributes
+                          ).sort()"
+                          :key="key"
+                          class="backgroundDefault"
+                        >
+                          <div class="attribute">
+                            {{ attribute }} - {{ hunt.attributes[attribute] }}
+                          </div>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item></q-item-section
+                  >
+                </q-item>
+                <q-item>
+                  <q-item-section>
+                    <q-expansion-item expand-separator label="Edges/Perks" dark>
+                      <q-card>
+                        <q-card-section class="backgroundDefault">
+                          Edges:
+                          <div
+                            v-for="(edge, key) in hunt.edges.edges"
+                            :key="key"
+                          >
+                            <div>{{ edge.category }} - {{ edge.edge }}</div>
+                          </div>
+                          <br />
+                          Perks:
+                          <div
+                            v-for="(perk, key) in hunt.edges.perks"
+                            :key="key"
+                          >
+                            {{ perk.category }} - {{ perk.perk }}
+                          </div>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item></q-item-section
+                  >
+                </q-item>
+                <q-item>
+                  <q-item-section>
+                    <q-expansion-item expand-separator label="Touchstones" dark>
+                      <q-card>
+                        <q-card-section
+                          v-for="(touchstone, key) in hunt.touchstones"
+                          :key="key"
+                          class="backgroundDefault"
+                        >
+                          {{ touchstone }}
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item></q-item-section
+                  >
+                </q-item>
+              </q-list>
+            </q-card-section>
+          </q-card-section>
+          <!-- Right side of card -->
+          <div class="right-side">
+            <q-list separator>
+              <q-item>
+                <q-item-section>
+                  <q-item-label style="color: white" overline
+                    >Concept</q-item-label
+                  >
+                  <q-item-label>{{ truncate(hunt.concept, 50) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item>
+                <q-item-section>
+                  <q-item-label style="color: white" overline
+                    >Ambition</q-item-label
+                  >
+                  <q-item-label>{{ truncate(hunt.ambition, 50) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  <q-item-label style="color: white" overline
+                    >Desire</q-item-label
+                  >
+                  <q-item-label>{{ truncate(hunt.desire, 50) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+              <q-separator />
+            </q-list>
+          </div>
+        </div>
+        <q-separator />
+        <q-card-actions>
+          <q-btn
+            style="margin: auto"
+            flat
+            color="white"
+            :to="{
+              name: 'hunter5eView',
+              params: { id: hunt.id },
+            }"
+            target="_blank"
+          >
+            View Full Character
+          </q-btn>
+          <q-btn
+            @click="this.favoriteChar(hunt.id, hunt.charName)"
+            style="margin: auto"
+            flat
+            v-if="
+              this.currentUser !== false &&
+              hunt.created_by !== this.currentUser.id
+            "
+            >Favorite</q-btn
+          >
+        </q-card-actions>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -268,9 +421,11 @@ export default defineComponent({
       user: "",
       clan: "",
       predator: "",
+      drive: "",
+      creed: "",
       kindred: [],
       wolves: [],
-      hunters: [],
+      hunter: [],
       loader: false,
     };
   },

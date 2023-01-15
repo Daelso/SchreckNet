@@ -21,12 +21,14 @@
             or one edge and two perks.
           </div>
           <q-select
+            color="secondary"
             bg-color="grey-3"
             filled
             label-color="primary"
             v-model="edgeDist"
             :options="edgeDistOptions"
             label="Edge Distribution"
+            popup-content-style="background-color:#222831; color:white"
             option-label="dist"
             @update:model-value="changeDist()"
           />
@@ -35,8 +37,10 @@
             v-if="this.distCheck === false"
             bg-color="grey-3"
             filled
+            color="secondary"
             label-color="primary"
             v-model="edgeCat"
+            popup-content-style="background-color:#222831; color:white"
             :options="Object.keys(edgesList)"
             label="Edge Category"
             option-label="dist"
@@ -47,6 +51,8 @@
             v-if="this.edgeCat"
             bg-color="grey-3"
             filled
+            color="secondary"
+            popup-content-style="background-color:#222831; color:white"
             label-color="primary"
             v-model="edge"
             :options="Object.keys(edgesList[this.edgeCat].edges)"
@@ -71,11 +77,13 @@
             v-if="this.distCheck === true && this.perkDistCheck === false"
             bg-color="grey-3"
             filled
+            color="secondary"
             :options="perkOptions"
             label-color="primary"
             v-model="perk"
             label="Select your perks"
             option-label="name"
+            popup-content-style="background-color:#222831; color:white"
           />
           <div v-if="this.perk" class="edgeDesc q-my-sm">
             {{ this.perk.parent }} - {{ this.perk.desc }}

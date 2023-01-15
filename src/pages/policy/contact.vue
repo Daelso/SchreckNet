@@ -43,13 +43,14 @@
           ]"
         />
         <q-select
-          color="teal"
+          color="secondary"
           filled
           bg-color="white"
           v-model="reason"
           :options="options"
           label="Subject"
           style="margin-bottom: 25px"
+          popup-content-style="background-color:#222831; color:white"
         >
           <template v-slot:prepend>
             <q-icon name="chat_bubble" />

@@ -46,6 +46,37 @@
         popup-content-style="background-color:#222831; color:white"
       />
 
+      <!-- Hunter only -->
+      <q-select
+        v-if="this.splatPick === 'Hunter: the Reckoning'"
+        class="select"
+        filled
+        clearable
+        color="secondary"
+        bg-color="grey-3"
+        v-model="drivePick"
+        @update:model-value="this.$emit('update:drive', this.drivePick)"
+        :options="driveOptions"
+        option-label="name"
+        label="Search by Drive"
+        popup-content-style="background-color:#222831; color:white"
+      />
+
+      <q-select
+        v-if="this.splatPick === 'Hunter: the Reckoning'"
+        class="select"
+        filled
+        clearable
+        color="secondary"
+        bg-color="grey-3"
+        v-model="creedPick"
+        @update:model-value="this.$emit('update:creed', this.creedPick)"
+        :options="creedOptions"
+        option-label="name"
+        label="Search by Creed"
+        popup-content-style="background-color:#222831; color:white"
+      />
+
       <!-- User search -->
       <q-select
         class="select"
@@ -112,17 +143,32 @@ import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import clans from "../character_creator/vtm/5eClanBanes.json";
 import predatorTypes from "../character_creator/vtm/predatorTypes.json";
+import driveTypes from "../character_creator/hunter/drives.json";
+import creedTypes from "../character_creator/hunter/creeds.json";
 
 export default defineComponent({
   name: "searchBox",
-  props: ["splat", "user", "clan", "predator", "kindred", "loader"],
+  props: [
+    "splat",
+    "user",
+    "clan",
+    "predator",
+    "kindred",
+    "loader",
+    "drive",
+    "hunter",
+    "creed",
+  ],
   emits: [
     "update:splat",
     "update:user",
     "update:clan",
     "update:predator",
     "update:kindred",
+    "update:hunter",
     "update:loader",
+    "update:drive",
+    "update:creed",
   ],
   async setup() {
     let baseUrl = "";
@@ -174,12 +220,16 @@ export default defineComponent({
       pickedUser: props.user,
       clanPick: props.clan,
       predatorPick: props.predator,
+      drivePick: props.drive,
+      creedPick: props.creed,
       vampires: [],
       hunters: [],
       wolves: [],
       loading: props.loader,
       clanOptions: Object.keys(clans.clans),
       predatorOptions: predatorTypes.predator,
+      driveOptions: driveTypes,
+      creedOptions: creedTypes,
     };
   },
 
@@ -216,6 +266,29 @@ export default defineComponent({
           }
         );
         this.$emit("update:kindred", this.vampires.data);
+        this.loading = false;
+        this.$emit("update:loader", this.loading);
+      }
+
+      if (this.splatPick === "Hunter: the Reckoning") {
+        let searchParams = {
+          game: this.splatPick,
+          drive: this.drivePick,
+          creed: this.creedPick,
+        };
+
+        if (this.pickedUser !== null) {
+          searchParams.user = this.pickedUser.user_id;
+        }
+
+        this.hunters = await this.$axios.post(
+          baseUrl + "/search/hunters",
+          { searchParams },
+          {
+            withCredentials: true,
+          }
+        );
+        this.$emit("update:hunter", this.hunters.data);
         this.loading = false;
         this.$emit("update:loader", this.loading);
       }

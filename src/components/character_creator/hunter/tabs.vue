@@ -159,7 +159,9 @@
             option-label="name"
             label="Drive *"
             class="select"
+            color="secondary"
             label-color="primary"
+            popup-content-style="background-color:#222831; color:white"
             @update:model-value="
               () => {
                 this.$emit('update:drive', this.driveInput);
@@ -179,10 +181,12 @@
           <q-select
             filled
             bg-color="grey-3"
+            popup-content-style="background-color:#222831; color:white"
             v-model="creedInput"
             :options="creedOptions"
             option-label="name"
             label="Creeds *"
+            color="secondary"
             class="select"
             label-color="primary"
             @update:model-value="this.$emit('update:creed', this.creedInput)"
@@ -280,7 +284,9 @@
             label="Which skill *"
             class="select q-mb-md"
             label-color="primary"
+            color="secondary"
             bg-color="grey-3"
+            popup-content-style="background-color:#222831; color:white"
             filled
           />
           <q-input
@@ -354,6 +360,8 @@
             label="Select merits and backgrounds"
             label-color="primary"
             bg-color="grey-3"
+            color="secondary"
+            popup-content-style="background-color:#222831; color:white"
             filled
             @update:model-value="changeAdvCat()"
           />
@@ -373,6 +381,8 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
+              popup-content-style="background-color:#222831; color:white"
               @filter="filterFn"
               use-input
               input-debounce="0"
@@ -388,7 +398,9 @@
               label-color="primary"
               class="q-mb-sm"
               bg-color="grey-3"
+              popup-content-style="background-color:#222831; color:white"
               filled
+              color="secondary"
             />
           </div>
           <q-separator />
@@ -400,7 +412,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
               @update:model-value="clearDotField()"
             />
           </div>
@@ -413,6 +427,8 @@
               bg-color="grey-3"
               class="q-mt-sm"
               filled
+              color="secondary"
+              popup-content-style="background-color:#222831; color:white"
               @update:model-value="costAdjustment()"
             />
           </div>

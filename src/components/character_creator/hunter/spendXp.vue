@@ -17,7 +17,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               @update:model-value="clearBelowCat()"
+              popup-content-style="background-color:#222831; color:white"
             />
             <!-- Attributes -->
             <q-select
@@ -28,8 +30,10 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
 
             <!-- Edges -->
@@ -38,22 +42,26 @@
               v-if="this.categoryInput === 'Edge'"
               bg-color="grey-3"
               filled
+              color="secondary"
               label-color="primary"
               v-model="edgeCat"
               :options="Object.keys(edgesList)"
               label="Edge Category"
               option-label="dist"
+              popup-content-style="background-color:#222831; color:white"
             />
             <q-separator class="q-my-sm" />
             <q-select
               v-if="this.edgeCat"
               bg-color="grey-3"
               filled
+              color="secondary"
               label-color="primary"
               v-model="edge"
               :options="Object.keys(edgesList[this.edgeCat].edges)"
               :label="this.edgeCat + ': ' + 'Edges'"
               option-label="dist"
+              popup-content-style="background-color:#222831; color:white"
             />
             <div v-if="this.edge" class="edgeDesc q-my-sm">
               {{ this.edgesList[edgeCat].edges[this.edge].desc }}
@@ -63,11 +71,13 @@
               v-if="this.categoryInput === 'Perk'"
               bg-color="grey-3"
               filled
+              color="secondary"
               :options="perkOptions"
               label-color="primary"
               v-model="perk"
               label="Select your perks"
               option-label="name"
+              popup-content-style="background-color:#222831; color:white"
             />
             <div v-if="this.perk" class="edgeDesc q-my-sm">
               {{ this.perk.parent }} - {{ this.perk.desc }}
@@ -80,8 +90,10 @@
               label="Which skill is this specialty for?"
               label-color="primary"
               bg-color="grey-3"
+              color="secondary"
               filled
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <q-input
               v-if="this.specialtyInput && this.categoryInput !== 'Skills'"
@@ -101,7 +113,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <!-- Purchase multiple dots -->
             <q-select
@@ -119,7 +133,9 @@
               label-color="primary"
               bg-color="grey-3"
               filled
+              color="secondary"
               class="q-my-sm"
+              popup-content-style="background-color:#222831; color:white"
             />
             <div class="upgradeCost" v-if="this.categoryInput">
               <q-badge v-if="this.attributeInput"

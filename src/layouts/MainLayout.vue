@@ -43,6 +43,19 @@
         <q-item-label header> Create a Character </q-item-label>
         <EssentialLink />
         <comingSoonLinks />
+        <q-item-label header> Search Characters </q-item-label>
+        <q-item clickable style="color: red" :to="{ name: 'baseSearch' }">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="search" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Search all Characters</q-item-label>
+            <q-item-label caption style="color: white"
+              >Find a character for your next game</q-item-label
+            >
+          </q-item-section>
+        </q-item>
         <socialLinks />
       </q-list>
     </q-drawer>

@@ -10,7 +10,6 @@
         v-model:creed="creed"
         v-model:kindred="kindred"
         v-model:hunter="hunter"
-        v-model:loader="loader"
       />
     </Suspense>
     <div
@@ -426,7 +425,6 @@ export default defineComponent({
       kindred: [],
       wolves: [],
       hunter: [],
-      loader: false,
     };
   },
   methods: {
@@ -435,16 +433,6 @@ export default defineComponent({
         return value.substring(0, length) + "...";
       } else {
         return value;
-      }
-    },
-
-    showLoading() {
-      if (this.loader === true) {
-        this.$q.loading.show({
-          delay: 5, // ms
-        });
-      } else {
-        this.$q.loading.hide();
       }
     },
 

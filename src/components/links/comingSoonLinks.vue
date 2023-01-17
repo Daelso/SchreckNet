@@ -7,7 +7,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Werewolf: The Apocalypse</q-item-label>
+      <q-item-label>Werewolf: the Apocalypse</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>
@@ -18,7 +18,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Mage the Ascension</q-item-label>
+      <q-item-label>Mage: the Ascension</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>

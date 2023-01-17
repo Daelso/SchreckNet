@@ -4,7 +4,7 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Hunter: The Reckoning
+          Hunter: the Reckoning
           <div class="info q-my-sm">
             <div>Name: {{ charName ? charName : "Unknown" }}</div>
             <div>Creed: {{ creed.name ? creed.name : "Unknown" }}</div>

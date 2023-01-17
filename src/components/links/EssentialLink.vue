@@ -15,7 +15,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Hunter: The Reckoning (Alpha)</q-item-label>
+      <q-item-label>Hunter: The Reckoning</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>

@@ -46,14 +46,17 @@
               <q-separator />
               <div>Clan Description: {{ clanDesc }}</div>
               <q-separator />
-              <div class="q-mt-md q-mb-sm" v-if="this.clan !== 'Thin-Blood'">
+              <div
+                class="q-mt-md q-mb-sm"
+                v-if="this.clan !== 'Thin-Blood' && this.clan !== 'Caitiff'"
+              >
                 Disciplines: (Choose two in-clan Disciplines. Put two dots in
                 one and one dot in the other.)
               </div>
               <q-item
                 v-for="(disciplines, key) in clanDisciplines"
                 :key="key"
-                v-if="this.clan !== 'Thin-Blood'"
+                v-if="this.clan !== 'Thin-Blood' && this.clan !== 'Caitiff'"
               >
                 <q-item>
                   {{ disciplines }}:
@@ -80,6 +83,50 @@
               <q-separator />
               <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
               <q-separator />
+              <div v-if="this.clan === 'Caitiff'">
+                <div class="q-my-md" style="font-weight: bold">
+                  Disciplines: (Choose three Caitiff Disciplines. Put two dots
+                  in one and one dot in the other. Select a third to be taken at
+                  0.)
+                </div>
+                <q-separator />
+                <q-item
+                  v-for="(disciplines, key) in clanDisciplines"
+                  :key="key"
+                >
+                  <q-item>
+                    {{ disciplines }}:
+                    <q-tooltip
+                      anchor="top right"
+                      self="center left"
+                      :offset="[10, 10]"
+                      class="bg-dark text-body2"
+                    >
+                      {{ discExplained[key] }}
+                    </q-tooltip>
+                  </q-item>
+                  <q-rating
+                    size="2.5em"
+                    icon="app:ankh"
+                    color="white"
+                    :max="2"
+                    v-model="discChoices[key]"
+                    @update:model-value="discSelected()"
+                  />
+                </q-item>
+                <q-select
+                  v-model="caitiffThird"
+                  label="Select your 3rd Caitiff Discipline (0 dots)"
+                  popup-content-style="background-color:#222831; color:white"
+                  :options="caitiffThirdOptions"
+                  bg-color="grey-3"
+                  color="secondary"
+                  filled
+                  style="margin-bottom: 20px; width: 100%"
+                  class="select"
+                  label-color="primary"
+                />
+              </div>
               <div v-if="this.clan === 'Thin-Blood'">
                 <div class="q-my-md" style="font-weight: bold">
                   Duskborn must choose between 1-3 Thin-Blood Merits, they must
@@ -280,7 +327,14 @@
               </div>
               <q-stepper-navigation>
                 <q-btn
-                  @click="step = 2"
+                  @click="
+                    () => {
+                      step = 2;
+                      if (this.clan === 'Caitiff') {
+                        this.disciplineObj[this.caitiffThird] = 0;
+                      }
+                    }
+                  "
                   color="primary"
                   label="Continue"
                   :disable="stepOne()"
@@ -629,9 +683,7 @@ export default defineComponent({
     ]);
     if (discArr.length === 0) {
       if (clan.value === "Caitiff") {
-        discChoices.value = [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ];
+        discChoices.value = [];
         clanDisciplines.value = [
           "Animalism",
           "Auspex",
@@ -787,6 +839,7 @@ export default defineComponent({
     return {
       bonusDisc: "",
       bonusSpecs: "",
+      caitiffThird: "",
     };
   },
   methods: {
@@ -1112,6 +1165,7 @@ export default defineComponent({
     discSelected() {
       this.skillsSelected = []; //reset it
       this.disciplineObj = {};
+      this.caitiffThird = "";
       let sum = 0;
       this.clanDisciplines.forEach(
         (key, i) => (this.disciplineObj[key] = this.discChoices[i])
@@ -1130,7 +1184,7 @@ export default defineComponent({
 
       if (sum > 3 || arrayEquals([1, 1, 1], this.discChoices)) {
         if (this.clan === "Caitiff") {
-          this.discChoices = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+          this.discChoices = [0, 0, 0];
         } else if (this.clan === "Thin-Blood") {
           this.discChoices = [0];
         } else {
@@ -1201,6 +1255,9 @@ export default defineComponent({
         return false;
       }
 
+      if (this.clan === "Caitiff" && !this.caitiffThird) {
+        return true;
+      }
       if (sum < 3) {
         return true;
       }
@@ -1804,6 +1861,9 @@ export default defineComponent({
       if (this.clan !== "Thin-Blood" && this.age.label !== "Fledgling") {
         if (this.bonusDisc in trueDiscs) {
           trueDiscs[this.bonusDisc]++;
+        } else if (this.clan === "Caitiff") {
+          trueDiscs[this.bonusDisc] = 1;
+          trueDiscs["Caitiff"] = this.bonusDisc;
         } else {
           trueDiscs[this.bonusDisc] = 1;
         }
@@ -2593,6 +2653,27 @@ export default defineComponent({
           );
         }
       }
+
+      return arr;
+    },
+
+    caitiffThirdOptions() {
+      let arr = Object.keys(this.disciplineSkills.Disciplines);
+
+      Object.keys(this.disciplineObj).forEach((discipline) => {
+        if (this.disciplineObj[discipline] < 1) {
+          delete this.disciplineObj[discipline];
+        }
+      });
+
+      arr = arr.filter(
+        (x) =>
+          x !== "Athanor Corporis" &&
+          x !== "Fixatio" &&
+          x !== "Calcinatio" &&
+          x !== "Thin-blood Alchemy" &&
+          !Object.keys(this.disciplineObj).includes(x)
+      );
 
       return arr;
     },

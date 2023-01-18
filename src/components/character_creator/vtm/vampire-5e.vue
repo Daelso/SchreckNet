@@ -4,7 +4,7 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Vampire: The Masquerade
+          Vampire: the Masquerade
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
             <div>Clan: {{ clan }}</div>
@@ -135,7 +135,9 @@
                     Not yet selected
                   </div>
                   <div v-for="(discipline, key) in disciplines" :key="key">
-                    <div>{{ key }}: {{ discipline }}</div>
+                    <div v-if="key !== 'Caitiff'">
+                      {{ key }}: {{ discipline }}
+                    </div>
                   </div>
                   <br />
                   Powers:

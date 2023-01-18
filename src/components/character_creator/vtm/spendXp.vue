@@ -583,9 +583,7 @@ export default defineComponent({
       }
 
       if (this.clan === "Caitiff") {
-        arr = arr.filter(
-          (x) => x !== "Clan Discipline" && x !== "Out of Clan Discipline"
-        );
+        arr = arr.filter((x) => x !== "Clan Discipline");
       }
 
       if (!("Thin-blood Alchemy" in this.disciplines)) {
@@ -646,6 +644,10 @@ export default defineComponent({
     clanDiscOptions() {
       let arr = [];
       if (this.categoryInput === "Out of Clan Discipline") {
+        if (this.clan === "Caitiff") {
+          arr.push(this.disciplines.Caitiff);
+          return arr;
+        }
         arr = Object.keys(this.disciplines).filter(
           (discipline) =>
             !this.clanDisciplines.clans[this.clan].disciplines.includes(
@@ -659,7 +661,11 @@ export default defineComponent({
         return arr;
       } else {
         let keyValueArr = Object.entries(this.disciplines);
-        keyValueArr = keyValueArr.filter((x) => x[1] > 0);
+        if (this.disciplines.Caitiff) {
+          keyValueArr = keyValueArr.filter(
+            (discipline) => !discipline.includes(this.disciplines.Caitiff)
+          );
+        }
         keyValueArr.forEach((x) => {
           arr.push(x[0]);
         });

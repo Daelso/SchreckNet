@@ -26,7 +26,7 @@
           <router-link to="/register">Register</router-link>
         </q-item>
 
-        <q-item v-if="logInCheck" clickable>
+        <q-item v-if="logInCheck" clickable style="align-items: center">
           <q-avatar @click="toggleRightDrawer">
             <img src="../assets/images/Nosfer_logo.png" />
           </q-avatar>

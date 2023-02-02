@@ -901,12 +901,13 @@ export default defineComponent({
           if (index + 1 >= 6) {
             emergencyString += x.discipline + ": " + x.skill + "\n";
             notesField.setText(emergencyString);
-          }
-          let rowField = form.getTextField(
-            `Disc${curIndex}_Ability${index + 1}`
-          );
+          } else {
+            let rowField = form.getTextField(
+              `Disc${curIndex}_Ability${index + 1}`
+            );
 
-          rowField.setText(`${x.skill}`);
+            rowField.setText(`${x.skill}`);
+          }
         });
 
         for (let j = 1; j < mergedDisciplines[discipline].dots + 1; j++) {

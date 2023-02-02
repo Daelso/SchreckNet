@@ -896,7 +896,12 @@ export default defineComponent({
         let mainBox = form.getTextField(`Disc${curIndex}`);
         mainBox.setText(discipline);
 
+        let emergencyString = "";
         mergedDisciplines[discipline].skills.forEach((x, index) => {
+          if (index + 1 >= 6) {
+            emergencyString += x.discipline + ": " + x.skill + "\n";
+            notesField.setText(emergencyString);
+          }
           let rowField = form.getTextField(
             `Disc${curIndex}_Ability${index + 1}`
           );

@@ -18,11 +18,11 @@
           <router-link to="/" class="titleLogo">SchreckNet</router-link>
         </q-toolbar-title>
 
-        <q-item v-if="!logInCheck" clickable>
+        <q-item v-if="!logInCheck" clickable style="align-items: center">
           <router-link to="/login">Login</router-link>
         </q-item>
 
-        <q-item v-if="!logInCheck" clickable>
+        <q-item v-if="!logInCheck" clickable style="align-items: center">
           <router-link to="/register">Register</router-link>
         </q-item>
 

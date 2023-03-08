@@ -684,6 +684,8 @@ export default defineComponent({
       sireField.updateAppearances(supportFont);
       nameField.updateAppearances(supportFont);
       chronicleField.updateAppearances(supportFont);
+      convictionField.updateAppearances(supportFont);
+      touchstoneField.updateAppearances(supportFont);
 
       conceptField.setFontSize(10);
 

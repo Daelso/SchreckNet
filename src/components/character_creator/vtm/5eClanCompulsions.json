@@ -18,7 +18,7 @@
     },
     "Hecata": {
       "name": "Morbidity",
-      "desc": "The Hecata must study individuals around them for signs of illness or impending death. Until they either predict a death without supernatural means or solved the cause of a local death, they suffer a three-dice penalty to other rolls until the scene ends. The conclusions are not required to be entirely correct, but should be within the bounds of possible."
+      "desc": "The Hecata becomes obsessed with returning something to life or giving it to death. Any actions not dedicated to this cause suffer a two-die penalty to all actions. The compulsion extends past just living things and to abstract concepts like an idea or conversation."
     },
     "Lasombra": {
       "name": "Ruthlessness",

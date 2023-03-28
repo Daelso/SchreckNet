@@ -1364,7 +1364,7 @@ export default defineComponent({
           case "Ancestral Dominion":
             if (
               this.finalDisciplineObj["Blood Sorcery"] === undefined ||
-              this.finalDisciplineObj["Blood Sorcery"] < 3 ||
+              this.finalDisciplineObj["Blood Sorcery"] < 2 ||
               this.cult !== "Mithraic Mysteries"
             ) {
               mergedOptions.splice(i, 1);
@@ -1479,7 +1479,7 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
-          case "Fatal Precognition":
+          case "Fatal Prediction":
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 2
@@ -1587,6 +1587,126 @@ export default defineComponent({
             if (
               this.skillsSelected.some((e) => e.skill !== "Shapechange") ===
               false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Animal Messenger":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Messenger's Command":
+            if (
+              this.skillsSelected.some(
+                (e) =>
+                  e.skill !== "Animal Messenger" ||
+                  e.skill !== "Compel" ||
+                  e.skill !== "Mesmerize"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Panacea":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fatal Flaw":
+            if (
+              this.finalDisciplineObj.Oblivion === undefined ||
+              this.finalDisciplineObj.Oblivion < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unburdening the Bestial Soul":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Weaving":
+            if (
+              this.skillsSelected.some((e) => e.skill !== "Rapid Reflexes") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unseen Strike":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 4 ||
+              this.skillsSelected.some((e) => e.skill !== "Blink") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Implant Suggestion":
+            if (this.finalDisciplineObj.Presence === undefined) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Invigorating Vitae":
+            if (this.finalDisciplineObj.Auspex === undefined) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mind Masque":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Wrecker":
+            if (
+              this.skillsSelected.some((e) => e.skill !== "Prowess") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Crash Down":
+            if (
+              this.skillsSelected.some((e) => e.skill !== "Soaring Leap") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Thrown Voice":
+            if (
+              (this.finalDisciplineObj.Auspex === undefined ||
+                this.finalDisciplineObj.Auspex < 1) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "One With the Land":
+            if (
+              (this.finalDisciplineObj.Animalism === undefined ||
+                this.finalDisciplineObj.Animalism < 2) === false ||
+              this.skillsSelected.some((e) => e.skill !== "Earth Meld") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Shadow Servant":
+            if (
+              (this.finalDisciplineObj.Auspex === undefined ||
+                this.finalDisciplineObj.Auspex < 1) === false
             ) {
               mergedOptions.splice(i, 1);
             }

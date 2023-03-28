@@ -1135,12 +1135,15 @@ export default defineComponent({
         let meme = this.advantagesObj.merits.flaws.find((o) =>
           o.name.includes("Clan Curse")
         );
+        if (meme !== undefined) {
+          let splitStr = meme.name.split(/[()]+/).filter(function (e) {
+            return e;
+          });
 
-        let splitStr = meme.name.split(/[()]+/).filter(function (e) {
-          return e;
-        });
-
-        this.clanBane = this.clanBanes.clans[splitStr[1]];
+          this.clanBane = this.clanBanes.clans[splitStr[1]];
+        } else {
+          this.clanBane = "None";
+        }
       }
     },
 

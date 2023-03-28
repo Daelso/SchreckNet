@@ -2660,7 +2660,60 @@ export default defineComponent({
 
           this.clearThinFields();
           break;
-
+        case "Thin-Blood: Abhorrent Blood":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Faith-Proof":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Lucid Dreamer":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Mortality's Mien":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Swift Feeder":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Low Appetite":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
         case "Thin-Blood: Vampiric Resilience":
           this.clanThinAdvantages++;
           this.merits.merits.advantages.push({
@@ -2694,6 +2747,78 @@ export default defineComponent({
             name: this.thinBloodMerits.name,
           });
 
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Heliophobia":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Night Terrors":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Plague Bearer":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Sloppy Drinker":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Sun-Faded":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Supernatural Tell":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Twilight Presence":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Unending Hunger":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
           this.clearThinFields();
           break;
         case "Thin-Blood: Bestial Temper":

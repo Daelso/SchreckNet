@@ -1133,11 +1133,13 @@ export default defineComponent({
         : this.clanBanes.clans[this.clan];
       if (this.clan === "Thin-Blood") {
         let meme = this.advantagesObj.merits.flaws.find((o) =>
-          o.name.search("Clan Curse")
+          o.name.includes("Clan Curse")
         );
+
         let splitStr = meme.name.split(/[()]+/).filter(function (e) {
           return e;
         });
+
         this.clanBane = this.clanBanes.clans[splitStr[1]];
       }
     },

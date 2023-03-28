@@ -26,8 +26,12 @@
         "description": "Creates a Bloodstone, a magical tracking device."
       },
       {
-        "name": "Dampen the Fear",
-        "description": "Temporarily subdues the caster's fear of fire."
+        "name": "Douse the Fear",
+        "description": "This Ritual allows the caster to briefly douse their natural vampiric fear of fire."
+      },
+      {
+        "name": "Seal the Brand",
+        "description": "Allows the user to mark their own flesh with things like tattoos permanently."
       },
       {
         "name": "Enrich the Blood",
@@ -56,6 +60,14 @@
     ],
     [
       {
+        "name": "As Fog on Water",
+        "description": "Allows the Vampire to walk on water silently."
+      },
+      {
+        "name": "Calix Secretus",
+        "description": "Allows the Vampire to turn a mundane object into a receptacle for their own blood, storing it for use later."
+      },
+      {
         "name": "Calling the Aura's Remnant",
         "description": "Allowing the vampire to speak with a corpse's aura (not their ghost)"
       },
@@ -76,7 +88,7 @@
         "description": "Allows the caster to perceive the past whereabouts of an individual through a glowing trail."
       },
       {
-        "name": "Ishtar's Touch",
+        "name": "Soporific Touch",
         "description": "The caster turns a dose of their own vitae into a narcotic, 'truth-serum' like substance that leaves a victim more suggestible and vulnerable to mind-affecting Disciplines like Presence and Dominate."
       },
       {
@@ -127,7 +139,7 @@
       },
       {
         "name": "Fire in the Blood",
-        "description": "A non-lethal ranged version of Cauldron of Blood."
+        "description": "Causes a painful, burn like pain in the blood of a victim."
       },
       {
         "name": "Firewalker",
@@ -153,6 +165,7 @@
         "name": "Illusion of Peaceful Death",
         "description": "Restores wounds on a corpse (at most half-unexsanguinated) to conceal evidence of an unnatural death."
       },
+
       {
         "name": "One with the Blade",
         "description": "The caster enchants a dedicated weapon with immunity to rust and dulling almost as if it were a ghoul, as long as it remains within their possession. If stolen, it ages and becomes able to perform Aggravated damage on its original enchanter."
@@ -188,12 +201,24 @@
         "description": "Allows the caster to possess a carnivorous bird."
       },
       {
+        "name": "Feast of Ashes",
+        "description": "Make another vampire unable to drink blood for a night."
+      },
+      {
+        "name": "Guided Memory",
+        "description": "By drinking the blood of a willing Kindred one can relive the memories of the donor."
+      },
+      {
         "name": "Incorporeal Passage",
         "description": "Allows the caster to pass freely through solid objects and become immune to physical damage."
       },
       {
         "name": "Innocence of the Child's Heart",
         "description": "Conceals the caster's Kindred aura from Auspex."
+      },
+      {
+        "name": "Invisible Chains of Binding",
+        "description": "Binds the victim in invisible chains, binding them to the spot for the duration of the ritual."
       },
       {
         "name": "Protean Curse",
@@ -218,8 +243,12 @@
     ],
     [
       {
-        "name": "Creatio Ignis",
+        "name": "Antebrachia Ignium",
         "description": "Allows the caster to coat their arms in vitae and light them on fire, being magically protected from the flames."
+      },
+      {
+        "name": "Dominion",
+        "description": "Allows the Vampire to prevent the use of disciplines by anyone but themselves."
       },
       {
         "name": "Eden's Bounty",

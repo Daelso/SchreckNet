@@ -855,6 +855,7 @@ export default {
               xp: this.xp,
               disciplinesDone: this.disciplinesDone,
               merits: this.advantagesObj,
+              altBane: this.altBane,
             },
           },
         })
@@ -878,6 +879,8 @@ export default {
           this.advantagesObj = data.merits;
           this.thinAdvantages = data.thinAdvantages;
           this.thinFlaws = data.thinFlaws;
+          this.altBane = data.altBane;
+          console.log(this.altBane);
         });
     },
     attributes() {

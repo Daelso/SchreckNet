@@ -16,5 +16,23 @@
     "Ventrue": "Rarefied Tastes: When a Ventrue drinks blood from any mortal outside their preference, a profound exertion of will is required or the blood taken surges back up as scarlet vomit. Ventrue can sense if a mortal possesses the blood they require. If Ventrue want to feed from anything but their preferred victim, they must spend Willpower points equal to the character's Bane Severity. ",
     "The Ministry": "Abhors the Light - when exposed to direct illumination - whether natural or artificial - members of the clan recoil.",
     "Thin-Blood": "Thin-bloods do not possess a clan bane, their vitae is too far removed. "
+  },
+  "altClans": {
+    "Banu Haqim": "Noxious Blood: When the blood of the assassins is drunk by a mortal it does not heal, instead it kills. Mortals takes agg damage equal to bane severity for every rouse check. ",
+    "Brujah": "Violence: On a messy crit the Brujah does agg HP or WP damage to their target equal to their bane severity.",
+    "Caitiff": "Caitiff characters begin with the Suspect (•) Flaw and you may not purchase positive Status for them during character creation. The Storyteller may always impose a one or two dice penalty on Social tests against fellow Kindred who know they are Caitiff, regardless of their eventual Status. Further, to improve one of the Disciplines of a Caitiff costs six times the level purchased in experience points ",
+    "Gangrel": "Survival Insticts: The Animals will to survive surpasses that of all clans. Subtract die equal to your bane severity from any roll to resist fear frenzy. Cannot go below 1.",
+    "Hecata": "Decay: All things around the Hecata decay and wither. Any assets or retainers of the Hecata die within a matter of days. Gain flaw dots equal to bane severity to spread between Retainer, Haven and Resources. These can be bought off by paying double the XP cost per dot.",
+    "Lasombra": "Callousness: When making a remorse roll (clearing stains), subtract die equal to your bane severity. Cannot take pool below 1.",
+    "Malkavian": "Unnatural Manifestations: The use of disciplines unsteadies anyone in your presence be they Kindred or Kine. Mortals suffer a social die penalty equal to the bane severity while Kindred immediately mark you as one of their own.",
+    "Nosferatu": "Infestation: No longer deformed but now followed by swarms of vermin everywhere they go. Within a scene, vermin will begin to arrive. Nosferatu havens suffer a 2 + bane severity penalty to any social tests or those requiring concentration. Controlling the swarm via Animalism comes with a penalty equal to the bane severity.",
+    "Ravnos": "Unbirth Name: The Tricksters keep secret their original names, for knowing ones unbirth name offers power over the Kindred. Speaking a Ravnos' true name grants a bonus equal to the Ravnos bane severity to resist discipline powers and causes the Ravnos to suffer an equal penalty to resisting the speakers own powers.",
+    "Salubri": "Asceticism: Whenever a Salubris hunger is below 3, they suffer penalty to all disciplines equal to their bane severity. (Their third eye still bleeds).",
+    "Toreador": "Agonizing Empathy: When a Diva harms a mortal while feeding the vampire suffers aggravated damage equal to the damage to the mortal (cannot exceed bane severity).",
+    "Tremere": "Stolen Blood: Tremere struggle to blood surge. In order to do so they must rouse an equal amount of times to their bane severity. They can continue to try until hunger 5 as which point they can back off their surge or accept it and stay at hunger 5.",
+    "Tzimisce": "Cursed Courtesy: A Tzimisce must be invited into the home or residence of any living being or expend WP equal to their bane severity to enter. While inside uninvited, they suffer a penalty to their discipline pool equal to bane severity.",
+    "Ventrue": "Hierarchy: Ventrue are unable to attack kindred of a lower generation without expending will power equal to bane severity. They also suffer a penalty to their discipline pool when attempting to use their powers on a lower generation kindred. ",
+    "The Ministry": "Cold Blooded: Ministers are unable to perform blush of life unless they have fed from a living vessel in the last hour. When they do use the blush, it requires a rouse check per level of bane severity.",
+    "Thin-Blood": "Thin-bloods do not possess a clan bane, their vitae is too far removed."
   }
 }

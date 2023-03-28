@@ -6,15 +6,17 @@
       "resonance": "Animal Blood",
       "skills": [
         ["Bond Famulus", "Sense the Beast"],
-        ["Feral Whispers", "Atavism"],
+        ["Feral Whispers", "Atavism", "Animal Messenger"],
         [
           "Animal Succulence",
           "Quell the Beast",
           "Scent of Prey",
-          "Unliving Hive"
+          "Unliving Hive",
+          "Messenger's Command",
+          "Plague of Beasts"
         ],
-        ["Subsume Spirit"],
-        ["Animal Dominion", "Drawing Out the Beast"]
+        ["Subsume Spirit", "Sway the Flock"],
+        ["Animal Dominion", "Drawing Out the Beast", "Coax the Bestial Temper"]
       ]
     },
     "Auspex": {
@@ -23,9 +25,16 @@
       "resonance": "Phlegmatic",
       "skills": [
         ["Heightened Senses", "Sense the Unseen"],
-        ["Premonition", "Obeah", "Unerring Pursuit"],
-        ["Eyes of Beasts", "Scry the Soul", "Share the Senses"],
-        ["Spirit's Touch"]
+        [
+          "Premonition",
+          "Obeah",
+          "Unerring Pursuit",
+          "Panacea",
+          "Reveal Temperament"
+        ],
+        ["Eyes of Beasts", "Scry the Soul", "Share the Senses", "Fatal Flaw"],
+        ["Spirit's Touch"],
+        ["Unburdening the Bestial Soul"]
       ]
     },
     "Blood Sorcery": {
@@ -38,9 +47,9 @@
           "A Taste For Blood",
           "Shape the Sanguine Sacrament"
         ],
-        ["Extinguish Vitae"],
+        ["Extinguish Vitae", "Scour Secrets"],
         ["Blood of Potency", "Scorpion's Touch", "Transitive Bond"],
-        ["Theft of Vitae"]
+        ["Blood Aegis", "Theft of Vitae"]
       ]
     },
     "Celerity": {
@@ -49,9 +58,14 @@
       "resonance": "Choleric",
       "skills": [
         ["Cat's Grace", "Rapid Reflexes"],
-        ["Fleetness"],
-        ["Blink", "Traversal"],
-        ["Draught of Elegance", "Unerring Aim"]
+        ["Fleetness", "Rush Job"],
+        ["Blink", "Traversal", "Weaving"],
+        [
+          "Draught of Elegance",
+          "Unerring Aim",
+          "Blurred Momentum",
+          "Unseen Strike"
+        ]
       ]
     },
     "Dominate": {
@@ -59,10 +73,15 @@
       "threat": 1,
       "resonance": "Phlegmatic",
       "skills": [
-        ["Cloud Memory", "Compel"],
-        ["Mesmerize", "Dementation", "Slavish Devotion", "Domitor's Favor"],
+        ["Cloud Memory", "Compel", "Slavish Devotion"],
+        ["Mesmerize", "Dementation", "Domitor's Favor"],
         ["The Forgetful Mind", "Submerged Directive"],
-        ["Ancestral Dominion", "Rationalize", "Tabula Rasa"]
+        [
+          "Ancestral Dominion",
+          "Rationalize",
+          "Tabula Rasa",
+          "Implant Suggestion"
+        ]
       ]
     },
     "Fortitude": {
@@ -71,9 +90,20 @@
       "resonance": "Melancholic",
       "skills": [
         ["Resilience", "Unswayable Mind"],
-        ["Enduring Beasts", "Obdurate", "Toughness", "Valeren"],
-        ["Defy Bane", "Fortify the Inner Facade", "Seal the Beast's Maw"],
-        ["Draught of Endurance", "Shatter"]
+        [
+          "Enduring Beasts",
+          "Obdurate",
+          "Toughness",
+          "Earth's Perseverance",
+          "Invigorating Vitae"
+        ],
+        [
+          "Defy Bane",
+          "Fortify the Inner Facade",
+          "Seal the Beast's Maw",
+          "Valeren"
+        ],
+        ["Draught of Endurance", "Shatter", "Gorgon's Scales"]
       ]
     },
     "Obfuscate": {
@@ -94,7 +124,8 @@
           "Ghost in the Machine",
           "Mask of a Thousand Faces",
           "Mask of Isolation",
-          "Mental Maze"
+          "Mental Maze",
+          "Mind Masque"
         ],
         ["Conceal", "Vanish"]
       ]
@@ -112,9 +143,9 @@
         ],
         [
           "Arms of Ahriman",
-          "Fatal Precognition",
+          "Fatal Prediction",
           "Shadow Cast",
-          "Where the Shroud Thins"
+          "Where the Veil Thins"
         ],
         [
           "Aura of Decay",
@@ -122,7 +153,8 @@
           "Shadow Perspective",
           "Touch of Oblivion"
         ],
-        ["Necrotic Plague", "Stygian Shroud", "Umbrous Clutch"]
+        ["Necrotic Plague", "Stygian Shroud", "Umbrous Clutch"],
+        ["Shadow Step", "Skuld Fulfilled", "Tenebrous Avatar"]
       ]
     },
     "Potence": {
@@ -131,9 +163,10 @@
       "resonance": "Choleric",
       "skills": [
         ["Lethal Body", "Soaring Leap"],
-        ["Prowess"],
-        ["Brutal Feed", "Spark of Rage", "Uncanny Grip"],
-        ["Draught of Might"]
+        ["Prowess", "Relentless Grasp"],
+        ["Brutal Feed", "Spark of Rage", "Uncanny Grip", "Wrecker"],
+        ["Draught of Might", "Crash Down"],
+        ["Subtle Hammer"]
       ]
     },
     "Presence": {
@@ -142,9 +175,15 @@
       "resonance": "Sanguine",
       "skills": [
         ["Awe", "Daunt", "Eyes of the Serpent"],
-        ["Lingering Kiss"],
-        ["Clear the Field", "Dread Gaze", "Entrancement", "True Love's Face"],
-        ["Irresistible Voice", "Magnum Opus", "Summon"]
+        ["Lingering Kiss", "Melpominee"],
+        [
+          "Clear the Field",
+          "Dread Gaze",
+          "Entrancement",
+          "Thrown Voice",
+          "True Love's Face"
+        ],
+        ["Irresistible Voice", "Magnum Opus", "Summon", "Suffuse the Edifice"]
       ]
     },
     "Protean": {
@@ -155,7 +194,8 @@
         ["Eyes of the Beast", "Weight of the Feather"],
         ["Feral Weapons", "Vicissitude"],
         ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
-        ["Horrid Form", "Metamorphosis"]
+        ["Horrid Form", "Metamorphosis"],
+        ["One With the Land"]
       ]
     },
 
@@ -164,12 +204,19 @@
       "threat": 2,
       "resonance": "Varies",
       "skills": [
-        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
+        [
+          "Far Reach",
+          "Gaoler's Bane",
+          "Haze",
+          "Mercurian Tongue",
+          "Plug-In",
+          "Portable Shade"
+        ],
         [
           "Blood of Mandagloire",
-
           "Counterfeit - Level 1",
           "Envelop",
+          "Friend's List",
           "Mirror of Trust",
           "Red's Flamin' Hot Sauce"
         ],
@@ -180,17 +227,27 @@
           "Defractionate",
           "Fang-Stinger",
           "Freezer Fluid",
+          "Mandagloire",
           "On-Demand Sunburn",
+          "Rumor",
           "Profane Heiros Gamos",
-          "Stay the Falling Sand"
+          "Stay the Falling Sand",
+          "Tank"
         ],
         [
           "Airborne Momentum",
           "Counterfeit - Level 3",
           "Discipline Channeling",
-          "Hollow Leg"
+          "Hollow Leg",
+          "Short Circuit",
+          "Toxic Personality"
         ],
-        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+        [
+          "Awaken the Sleeper",
+          "Counterfeit - Level 4",
+          "Flowering Amaranth",
+          "Moment of Clarity"
+        ]
       ]
     },
     "Athanor Corporis": {

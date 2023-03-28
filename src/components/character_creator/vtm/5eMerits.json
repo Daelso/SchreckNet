@@ -51,6 +51,72 @@
         }
       ]
     },
+    "Caitiff": {
+      "advantages": [
+        {
+          "name": "Favored Blood",
+          "cost": 4,
+          "desc": "You can buy dots in any discipline without tasting the blood of another kindred."
+        },
+        {
+          "name": "Mark of Caine",
+          "cost": 2,
+          "desc": "You have a mark that strikes fear in the hearts of Kindred who believe the Myth of Caine. Gain two die bonus to any intimidation tests against these Kindred."
+        },
+        {
+          "name": "Mockingbird",
+          "cost": 3,
+          "desc": "After drinking blood from another Kindred you can mimic a discipline of that Kindred up to the level of your highest discipline."
+        },
+        {
+          "name": "Sun-Scarred",
+          "cost": 5,
+          "desc": "You have the ability to survive, temporarily, in the sunlight."
+        },
+        {
+          "name": "Uncle Fangs",
+          "cost": 3,
+          "desc": "You've taken a small coterie of Thin-Bloods under your wing. Treat them similar to an Ally background."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Befouling Vitae",
+          "cost": 2,
+          "desc": "Any mortal you attempt to embrace or kill whilst feeding will return as a wight in a few nights."
+        },
+        {
+          "name": "Clan Curse",
+          "cost": 2,
+          "desc": "Suffer the Clan Bane of your sire."
+        },
+        {
+          "name": "Debt Peon",
+          "cost": 2,
+          "desc": "You owe several minor boons or a major boon to an influential Kindred."
+        },
+        {
+          "name": "Liquidator",
+          "cost": 1,
+          "desc": "Local Thin-Bloods are terrified of you, you have a reputation for being a Scourge or hunting them in the past."
+        },
+        {
+          "name": "Muddled Blood",
+          "cost": 1,
+          "desc": "Before you can use a discipline, each time you must taste the blood of another Kindred who possesses that discipline."
+        },
+        {
+          "name": "Walking Omen",
+          "cost": 2,
+          "desc": "Seers, wise men and other scryers often point to you as a reason for impending doom or disaster."
+        },
+        {
+          "name": "Word-Scarred",
+          "cost": 1,
+          "desc": "Part of your body is covered in ancient vampiric lore. Forces within your chronicle conspire to gain access to this text."
+        }
+      ]
+    },
     "Feeding": {
       "advantages": [
         {
@@ -62,6 +128,11 @@
           "name": "Iron Gullet",
           "cost": 3,
           "desc": "You can feed from rancid, bagged and processed blood."
+        },
+        {
+          "name": "Vessel Recognition",
+          "cost": 1,
+          "desc": "You can recognize when a kine belongs to someone elses herd or is a blood doll."
         }
       ],
       "flaws": [
@@ -84,6 +155,11 @@
           "name": "Prey Exclusion",
           "cost": 1,
           "desc": "You refuse to hunt a certain type of prey, be it women, addicts, homeless."
+        },
+        {
+          "name": "Vein Tapper",
+          "cost": 1,
+          "desc": "You cannot feed from mortals while being observed."
         }
       ]
     },
@@ -132,6 +208,21 @@
     "Looks": {
       "advantages": [
         {
+          "name": "Famous Face",
+          "cost": 1,
+          "desc": "You resemble someone very well known. You gain two die bonuses in situations where your look-alike helps you, and lose two die when it hurts."
+        },
+        {
+          "name": "Ingenue",
+          "cost": 1,
+          "desc": "You look innocent and blameless. Two die bonus to any rolls surrounding avoiding or deflecting blame."
+        },
+        {
+          "name": "Remarkable Feature",
+          "cost": 1,
+          "desc": "You have some kind of memorable facial feature. 2 die bonus to social interactions with strangers, 1 die penalty to disguising yourself."
+        },
+        {
           "name": "Beautiful",
           "cost": 2,
           "desc": "You are considered beautiful."
@@ -143,6 +234,16 @@
         }
       ],
       "flaws": [
+        {
+          "name": "Stench",
+          "cost": 1,
+          "desc": "Your breath and odor are exceptionally foul. Lose one die from seduction and similar social tests. Lose two die from stealth tests in which they could smell you."
+        },
+        {
+          "name": "Transparent",
+          "cost": 1,
+          "desc": "You are an exceptionally poor liar. Lose one die from any pools requiring subterfuge. You may not gain any further subterfuge dots."
+        },
         {
           "name": "Repulsive",
           "cost": 2,
@@ -161,6 +262,16 @@
           "name": "Eat food",
           "cost": 2,
           "desc": "You can eat food, though it provides no nourishment and must be expelled before daysleep."
+        },
+        {
+          "name": "Nuit Mode",
+          "cost": 2,
+          "desc": "Your body does not automatically revert to the death-state each night allowing you to keep haircuts, tattoos or things like piercings in. Only available while potency is 1 or lower."
+        },
+        {
+          "name": "Luck of the Devil",
+          "cost": 4,
+          "desc": "Once per session you can pass an attack, blame or misfortune towards another person present."
         }
       ],
       "flaws": [
@@ -180,9 +291,65 @@
           "desc": "You must recoil or spend a willpower when faced with one Folkloric Block, like white animals, running water, garlic, etc."
         },
         {
+          "name": "Starving Decay",
+          "cost": 2,
+          "desc": "You are constantly fighting off reverting to a corpse. When at hunger 3 or above you visibly decay suffering a two die penalty to all physical and social tests with mortals. MASQUERADE VIOLATION!"
+        },
+        {
           "name": "Stigmata",
           "cost": 1,
           "desc": "You bleed from your hands, feet and forehead when your hunger becomes intense."
+        },
+        {
+          "name": "Twice Cursed",
+          "cost": 2,
+          "desc": "You suffer from a second clan bane. Make note of it on your sheet."
+        }
+      ]
+    },
+    "Other": {
+      "advantages": [
+        {
+          "name": "Check the Trunk",
+          "cost": 1,
+          "desc": "You keep your tools of the trade nearby. You have easy access to a cache of tools or armory not exceeding resources 2."
+        },
+        {
+          "name": "Side Hustler",
+          "cost": 2,
+          "desc": "Once per session you can get your hands on a difficult to acquire item, piece of info or access to an event not exceeding Resources, Contacts or Influence 2."
+        },
+        {
+          "name": "Tempered Will",
+          "cost": 3,
+          "desc": "You are always aware when someone tries to use Dominate or Presence on you. You gain 2 extra die to resisting these events."
+        },
+        {
+          "name": "Untouchable",
+          "cost": 5,
+          "desc": "Once per story you can escape an official punishment from any entity that would normally see you destroyed or exiled. Lower level crimes may be ignored altogether."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Knowledge Hungry",
+          "cost": 1,
+          "desc": "You are obsessed with learning a certain topic. When you encounter a chance to learn more about that topic, make a willpower roll to resist chasing that obsession."
+        },
+        {
+          "name": "Prestation Debts",
+          "cost": 1,
+          "desc": "You owe another Kindred two minor boons."
+        },
+        {
+          "name": "Risk Taker",
+          "cost": 1,
+          "desc": "You suffer a two die penalty when you pass up the opportunity to engage in a risky activity like trying a new drug or taking a Kindred lover."
+        },
+        {
+          "name": "Weak-Willed",
+          "cost": 2,
+          "desc": "One die penalty to all social pools against anyone you consider a superior or a leader."
         }
       ]
     },
@@ -230,6 +397,11 @@
           "desc": "You managed to make friends with the local anarch sect. Add a one-dot anarch mawla to your relationship map."
         },
         {
+          "name": "Thin-Blood: Abhorrent Blood",
+          "cost": 1,
+          "desc": "When another kindred attempts to drink your blood they will find it unpalatable and vomit unless they spend willpower."
+        },
+        {
           "name": "Thin-Blood: Camarilla Contact",
           "cost": 1,
           "desc": "You've made a contact within the camarilla who promises you full membership and a chance at becoming full-blooded so long as you follow orders. Add a one-dot camarilla mawla to your relationship map."
@@ -250,9 +422,34 @@
           "desc": "You gain a dot in your discipline of choice and can continue to level it with experience as an out-of-clan discipline."
         },
         {
+          "name": "Thin-Blood: Faith-Proof",
+          "cost": 1,
+          "desc": "You cannot be affected by True Faith."
+        },
+        {
           "name": "Thin-Blood: Lifelike",
           "cost": 1,
           "desc": "You have a heartbeat, can eat food and enjoy sex like a mortal. Only detailed examinations would reveal anything out of the ordinary."
+        },
+        {
+          "name": "Thin-Blood: Low Appetite",
+          "cost": 1,
+          "desc": "When at hunger 0, 1 or rising for the day roll two die when rousing. If any succeeds you do not gain hunger."
+        },
+        {
+          "name": "Thin-Blood: Lucid Dreamer",
+          "cost": 1,
+          "desc": "Once per session, while asleep, you can ask the ST for a hint or clue from the previous night."
+        },
+        {
+          "name": "Thin-Blood: Mortality's Mien",
+          "cost": 1,
+          "desc": "Your aura appears mortal to any who care to check."
+        },
+        {
+          "name": "Thin-Blood: Swift Feeder",
+          "cost": 1,
+          "desc": "Once per scene you can rapidly slake one point of hunger and cleanly close the wound while feeding."
         },
         {
           "name": "Thin-Blood: Thin-blood Alchemist",
@@ -270,6 +467,11 @@
           "name": "Thin-Blood: Baby Teeth",
           "cost": 1,
           "desc": "Your fangs never came in, you can only drink via other methods of blood extraction."
+        },
+        {
+          "name": "Thin-Blood: Heliophobia",
+          "cost": 1,
+          "desc": "You fear sunlight like a normal Kindred. You can frenzy from sunlight."
         },
         {
           "name": "Thin-Blood: Bestial Temper",
@@ -297,9 +499,44 @@
           "desc": "You are noticebly decaying and putrifying. Any real examination will reveal that you are undead. You may not take Lifelike merit."
         },
         {
+          "name": "Thin-Blood: Night Terrors",
+          "cost": 1,
+          "desc": "Nightmares bleed into your wakening hours appearing as hallucinations or intangible feelings."
+        },
+        {
+          "name": "Thin-Blood: Plague Bearer",
+          "cost": 1,
+          "desc": "You are still able to become physically ill. Every time you feed roll, if you land on 1 you have caught an illness."
+        },
+        {
+          "name": "Thin-Blood: Sloppy Drinker",
+          "cost": 1,
+          "desc": "Your suck at feeding. Roll Dex + med to cover your feeding marks. A failure may lead to your prey bleeding out."
+        },
+        {
+          "name": "Thin-Blood: Sun-Faded",
+          "cost": 1,
+          "desc": "You cannot use any disciplines within the sunlight. Suffer a two die penalty during the day."
+        },
+        {
+          "name": "Thin-Blood: Supernatural Tell",
+          "cost": 1,
+          "desc": "Something about you instantly marks you as supernatural to other supernatural beings."
+        },
+        {
           "name": "Thin-Blood: Shunned by the Anarchs",
           "cost": 1,
           "desc": "You broke some unwritten rule and pissed off the local anarch sect. You cannot take anarch comrades with this flaw."
+        },
+        {
+          "name": "Thin-Blood: Twilight Presence",
+          "cost": 1,
+          "desc": "Mortals and other Kindred dislike you even more than usual. Only other Thin-Bloods tolerate your presence."
+        },
+        {
+          "name": "Thin-Blood: Unending Hunger",
+          "cost": 1,
+          "desc": "You sate one less hunger than other thin-bloods whilst feeding."
         },
         {
           "name": "Thin-Blood: Vitae Dependency",

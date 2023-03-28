@@ -272,8 +272,6 @@ export default {
         console.log(err);
         return "Not found!";
       });
-
-    console.log(this.favorites);
   },
 
   methods: {

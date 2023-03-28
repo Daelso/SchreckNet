@@ -128,6 +128,10 @@ const Vampires = db.sequelize.define("vampires", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
+  alt_bane: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
   created_by: {
     type: Sequelize.INTEGER,
     allowNull: true,

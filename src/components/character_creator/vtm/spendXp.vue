@@ -974,6 +974,130 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Animal Messenger":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Messenger's Command":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) =>
+                  e.skill === "Animal Messenger" ||
+                  e.skill === "Compel" ||
+                  e.skill === "Mesmerize"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Panacea":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fatal Flaw":
+            if (
+              this.finalDisciplineObj.Oblivion === undefined ||
+              this.finalDisciplineObj.Oblivion < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unburdening the Bestial Soul":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Weaving":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill === "Rapid Reflexes"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unseen Strike":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 4 ||
+              this.disciplineSkillsObj.some((e) => e.skill === "Blink") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Implant Suggestion":
+            if (this.finalDisciplineObj.Presence === undefined) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Invigorating Vitae":
+            if (this.finalDisciplineObj.Auspex === undefined) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mind Masque":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Wrecker":
+            if (
+              this.disciplineSkillsObj.some((e) => e.skill === "Prowess") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Crash Down":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill === "Soaring Leap"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Thrown Voice":
+            if (
+              (this.finalDisciplineObj.Auspex === undefined ||
+                this.finalDisciplineObj.Auspex < 1) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "One With the Land":
+            if (
+              (this.finalDisciplineObj.Animalism === undefined ||
+                this.finalDisciplineObj.Animalism < 2) === false ||
+              this.disciplineSkillsObj.some((e) => e.skill === "Earth Meld") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Shadow Servant":
+            if (
+              (this.finalDisciplineObj.Auspex === undefined ||
+                this.finalDisciplineObj.Auspex < 1) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
         }
       }
 

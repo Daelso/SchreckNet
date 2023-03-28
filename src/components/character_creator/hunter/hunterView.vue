@@ -865,7 +865,6 @@ export default defineComponent({
       });
 
       for (let i = 0; i < edgeLength; i++) {
-        console.log(edgeArr[i]);
         let edgeField = form.getTextField(edgeArr[i]);
         edgeField.setText(combinedEdges[i]);
       }

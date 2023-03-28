@@ -7,7 +7,9 @@
           Vampire: the Masquerade
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
-            <div>Clan: {{ clan }}</div>
+            <div>
+              Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
+            </div>
             <div>Sect: {{ sect }}</div>
             <div>Age: {{ age.label }}</div>
             <div>Generation: {{ generation.label }}</div>
@@ -566,6 +568,7 @@ export default {
       },
       attributesDone: false,
       attributeInfo,
+      altBane: false,
       skillInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
@@ -731,6 +734,7 @@ export default {
 
       let character = {
         name: this.charName,
+        altBane: this.altBane,
         clan: this.clan,
         concept: this.concept,
         ambition: this.ambition,
@@ -853,6 +857,7 @@ export default {
               xp: this.xp,
               disciplinesDone: this.disciplinesDone,
               merits: this.advantagesObj,
+              altBane: this.altBane,
             },
           },
         })
@@ -876,6 +881,7 @@ export default {
           this.advantagesObj = data.merits;
           this.thinAdvantages = data.thinAdvantages;
           this.thinFlaws = data.thinFlaws;
+          this.altBane = data.altBane;
         });
     },
     attributes() {

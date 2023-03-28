@@ -1776,6 +1776,7 @@ export default defineComponent({
     predatorPicked() {
       this.bonusDisc = "";
       this.bonusSpecs = "";
+
       switch (this.predatorType) {
         case "Alleycat":
           this.predBlurb = {
@@ -2046,6 +2047,16 @@ export default defineComponent({
             cost: 1,
             desc: "Mistrusted by Kindred society.",
             name: "Suspect",
+          });
+        }
+
+        if (this.altBane === true && this.clan === "Hecata") {
+          console.log("fire!");
+          this.merits.haven.flaws.push({
+            name: "Haven: Decaying",
+            desc: "Decaying from your clan bane",
+            cost: this.age.label === "Ancillae" ? 2 : 1,
+            maxCost: 3,
           });
         }
 

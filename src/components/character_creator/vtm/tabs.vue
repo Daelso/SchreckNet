@@ -839,6 +839,7 @@ import allBackgrounds from "../vtm/5eBackgrounds.json";
 import disciplinesList from "../vtm/5eDisciplines.json";
 import havenMerits from "../vtm/havens.json";
 import loresheets from "../vtm/loresheets.json";
+import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -861,6 +862,7 @@ export default defineComponent({
     "thinAdvantages",
     "thinFlaws",
     "disciplineSkills",
+    "xp",
   ],
   emits: [
     "update:specialtiePoints",
@@ -874,6 +876,7 @@ export default defineComponent({
     "update:thinAdvantages",
     "update:thinFlaws",
     "update:disciplineSkills",
+    "update:xp",
     "specialties",
     "convictions",
     "touchstones",
@@ -915,6 +918,7 @@ export default defineComponent({
       cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
+      nosImage,
       convictions: [],
       touchstones: [],
       disciplinesList,
@@ -985,6 +989,24 @@ export default defineComponent({
       if (name.includes("Thin-Blood")) {
         this.removeThinFlaw(event, name);
         return;
+      }
+      if (name === "Haven: Decaying") {
+        if (this.xp >= cost * 3) {
+          this.$q.notify({
+            color: "primary",
+            avatar: nosImage,
+            textColor: "white",
+            message: `${cost * 3} xp spent to remove this Bane flaw.`,
+          });
+          this.$emit("update:xp", this.xp - cost * 3);
+        } else {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "Not enough xp to remove this bane flaw.",
+          });
+          return;
+        }
       }
       let modifiedObj = { ...{}, ...this.advantagesObj };
       modifiedObj[category].flaws.splice(event, 1);

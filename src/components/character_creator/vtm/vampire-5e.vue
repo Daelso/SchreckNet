@@ -439,6 +439,7 @@
         v-model:clanBane="clanBane"
         v-model:thinAdvantages="thinAdvantages"
         v-model:thinFlaws="thinFlaws"
+        v-model:xp="this.xp"
         :discDone="this.disciplinesDone"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"

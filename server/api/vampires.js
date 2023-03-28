@@ -20,6 +20,7 @@ router.route("/new").post(async (req, res) => {
     }
     const newKindred = await Vampires.create({
       charName: req.body.name,
+      alt_bane: req.body.altBane,
       clan: req.body.clan,
       concept: req.body.concept,
       ambition: req.body.ambition,

@@ -556,7 +556,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
@@ -566,6 +566,7 @@ export default {
       },
       attributesDone: false,
       attributeInfo,
+      altBane: false,
       skillInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
@@ -731,6 +732,7 @@ export default {
 
       let character = {
         name: this.charName,
+        altBane: this.altBane,
         clan: this.clan,
         concept: this.concept,
         ambition: this.ambition,

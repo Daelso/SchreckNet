@@ -1666,7 +1666,7 @@ export default defineComponent({
           this.predBlurb = {
             desc: "Instead of hunting you secure your blood from the black market, robbery or a night shift at the blood bank. Ventrue cannot select this option.",
             choices: [
-              "Alleycats gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
+              "Baggers gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
               "Choose between one dot of blood sorcery (if Tremere or Banu Haqim) or obfuscate.",
               "Gain the Feeding Merit: Iron Gullet (•••)",
               "Gain the enemy flaw: (••) Someone believes you owe them or something else keeps you off the streets.",
@@ -1765,6 +1765,18 @@ export default defineComponent({
             ],
           };
           break;
+        case "Grim Reaper":
+          this.predBlurb = {
+            desc: "The dead, dying and sick are easy prey and even easier if you work within hospital wards or retirement homes. You use your knowledge of medical issues, and your ability to present yourself as a health worker to gain access to these people you can then easily feed upon, or draw copious amounts of blood from. Old Blood never tasted so sweet.",
+            choices: [
+              "Reapers gain a choice of the Awareness (death) or Larceny (forgery) specialty.",
+              "Choose between one dot of Auspex or Oblivion.",
+              "Gain one dot of humanity.",
+              "Gain the feeding flaw: healthy mortals.",
+              "Gain a dot of influence or allies in the medical field.",
+            ],
+          };
+          break;
         case "House Cat":
           this.predBlurb = {
             desc: "We live in the age of delivery apps, online shopping, dating apps and all night services. Getting someone to come to you has never been so easy. Why go hunt in the streets when you can have the food come to your haven? For the modern Anarch you never have to worry about going hungry!",
@@ -1776,6 +1788,17 @@ export default defineComponent({
             ],
           };
           break;
+        case "Montero":
+          this.predBlurb = {
+            desc: "In the old days, aristocratic Spaniards ran the monteria, a deer hunt in which beaters drove deer into the waiting nobles spears. Carrying on that tradition today, you instead use your retainers to funnel mortals into your waiting fangs.",
+            choices: [
+              "Reapers gain a choice of the Leadership (Hunting Pack) or Stealth (Stakeout) specialty.",
+              "Choose between one dot of Dominate or Obfuscate.",
+              "Lose one dot of humanity.",
+              "Gain two dots of retainers.",
+            ],
+          };
+          break;
         case "Osiris":
           this.predBlurb = {
             desc: "You are a cult-leader, celebrity or popular twitch streamer with a ready and willing group of fans or worshippers from which to harvest blood. While access to blood is easy, attention isn't always good.",
@@ -1784,6 +1807,18 @@ export default defineComponent({
               "Choose between one dot of Blood Sorcery (Tremere only) or Presence.",
               "Spend three dots between Fame and Herd.",
               "Spend two points between Enemies and Mythic flaws.",
+            ],
+          };
+          break;
+        case "Pursuer":
+          this.predBlurb = {
+            desc: "You carefully study your victims, following them for days and memorizing their routines. Then, you stalk and pursue your victim through the night. Tormenting them until your hunger has reached its pitch.",
+            choices: [
+              "Reapers gain a choice of the Investigation (Profiling) or Stealth (Shadowing) specialty.",
+              "Choose between one dot of Animalism or Auspex.",
+              "Lose one dot of humanity.",
+              "Gain the merit: Bloodhound",
+              "Gain a dot of contacts from among your hunting grounds.",
             ],
           };
           break;
@@ -1828,6 +1863,18 @@ export default defineComponent({
               "Choose between one dot of Fortitude or Presence.",
               "Gain the Looks (••) merit: Beautiful",
               "Gain the Enemy Flaw: (•) A spurned lover or jealous partner.",
+            ],
+          };
+          break;
+        case "Trapdoor":
+          this.predBlurb = {
+            desc: "You build your nest and lure prey into it like the trapdoor spider. When a mortal enters your domain, they surely will be drunk deep.",
+            choices: [
+              "Gain a choice of the Persuasion (Marketing) or Stealth (Ambushes) specialty.",
+              "Choose between one dot of Protean or Obfuscate.",
+              "Gain a (•) Haven",
+              "Gain one dot of either retainers or herd.",
+              "Gain the Haven Flaw: (•) Creepy or Haunted.",
             ],
           };
           break;
@@ -2010,6 +2057,23 @@ export default defineComponent({
               cost: 2,
             });
             break;
+          case "Grim Reaper":
+            this.humanity++;
+            this.merits.merits.flaws.push({
+              name: "Feeding Flaw: Healthy Mortals",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
+            this.advantages = this.advantages + 1;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional dot has been provided to be distributed to either Allies or Influence in the Medical Community.",
+            });
+            break;
           case "House Cat":
             this.advantages = this.advantages + 2;
             this.$q.notify({
@@ -2024,6 +2088,15 @@ export default defineComponent({
               name: "Stalker",
               desc: "A former retainer is obsessed with you, should you deal with one another emerges.",
               cost: 1,
+            });
+            break;
+          case "Montero":
+            this.humanity--;
+            this.merits.backgrounds.advantages.push({
+              name: "Retainer: ",
+              desc: "With each dot your retainer grows more capable. 1 dot = weak mortal, 2 dot = average ghoul, 3 dot = gifted ghoul",
+              cost: 2,
+              maxCost: 5,
             });
             break;
           case "Osiris":
@@ -2045,6 +2118,20 @@ export default defineComponent({
               timeout: 12000,
               message:
                 "An additional 2 flaw dots have been provided to be divided amongst Enemy and Mythic flaws.",
+            });
+            break;
+          case "Pursuer":
+            this.humanity--;
+            this.merits.backgrounds.advantages.push({
+              name: "Contact: ",
+              desc: "Someone who can help you with a specific task, be it a camarilla insider, police dispatcher or shady merchant. Each dot increases their level of usefulness.",
+              cost: 1,
+              maxCost: 5,
+            });
+            this.merits.merits.advantages.push({
+              cost: 1,
+              desc: "You can smell the resonance on your prey without tasting it.",
+              name: "Blood Hound",
             });
             break;
           case "Sandman":
@@ -2098,6 +2185,29 @@ export default defineComponent({
               cost: 2,
               desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
               name: "Enemy: Spurned Lover",
+            });
+            break;
+          case "Trapdoor":
+            this.merits.haven.advantages.push({
+              name: "Haven",
+              desc: "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
+              cost: 1,
+              maxCost: 3,
+            });
+            this.merits.haven.flaws.push({
+              name: "Haven: Creepy/Haunted",
+              desc: "Select between either on your sheet.",
+              cost: 1,
+              maxCost: 3,
+            });
+            this.advantages = this.advantages + 1;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional dot has been granted to distribute into a Retainer or Herd.",
             });
             break;
           case "Typhus":
@@ -2168,14 +2278,23 @@ export default defineComponent({
         case "Graverobber":
           arr = ["Fortitude", "Oblivion"];
           break;
+        case "Grim Reaper":
+          arr = ["Auspex", "Oblivion"];
+          break;
         case "House Cat":
           arr = ["Dominate", "Presence"];
+          break;
+        case "Montero":
+          arr = ["Dominate", "Obfuscate"];
           break;
         case "Osiris":
           arr = ["Presence"];
           if (this.clan === "Tremere") {
             arr.push("Blood Sorcery");
           }
+          break;
+        case "Pursuer":
+          arr = ["Animalism", "Auspex"];
           break;
         case "Sandman":
           arr = ["Auspex", "Obfuscate"];
@@ -2188,6 +2307,9 @@ export default defineComponent({
           break;
         case "Siren":
           arr = ["Fortitude", "Presence"];
+          break;
+        case "Trapdoor":
+          arr = ["Protean", "Obfuscate"];
           break;
         case "Typhus":
           arr = ["Auspex", "Fortitude"];
@@ -2260,16 +2382,34 @@ export default defineComponent({
             { skill: "Medicine", specialty: "Cadavers" },
           ];
           break;
+        case "Grim Reaper":
+          arr = [
+            { skill: "Awareness", specialty: "Death" },
+            { skill: "Larceny", specialty: "Forgery" },
+          ];
+          break;
         case "House Cat":
           arr = [
             { skill: "Technology", specialty: "Mobile Apps" },
             { skill: "Subterfuge", specialty: "Luring" },
           ];
           break;
+        case "Montero":
+          arr = [
+            { skill: "Leadership", specialty: "Hunting Pack" },
+            { skill: "Stealth", specialty: "Stakeout" },
+          ];
+          break;
         case "Osiris":
           arr = [
             { skill: "Occult", specialty: "Specific Tradition" },
             { skill: "Performance", specialty: "Specific entertainment" },
+          ];
+          break;
+        case "Pursuer":
+          arr = [
+            { skill: "Investigation", specialty: "Profiling" },
+            { skill: "Stealth", specialty: "Shadowing" },
           ];
           break;
         case "Sandman":
@@ -2295,6 +2435,12 @@ export default defineComponent({
           arr = [
             { skill: "Persuasion", specialty: "Seduction" },
             { skill: "Subterfuge", specialty: "Seduction" },
+          ];
+          break;
+        case "Trapdoor":
+          arr = [
+            { skill: "Persuasion", specialty: "Marketing" },
+            { skill: "Stealth", specialty: "Ambushes" },
           ];
           break;
         case "Typhus":

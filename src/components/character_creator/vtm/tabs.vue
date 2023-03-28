@@ -1059,6 +1059,9 @@ export default defineComponent({
           if (this.clan !== "Thin-Blood") {
             arr = arr.filter((x) => x !== "Thin-blood");
           }
+          if (this.clan !== "Caitiff") {
+            arr = arr.filter((x) => x !== "Caitiff");
+          }
           if (this.clan === "Thin-Blood") {
             arr = arr.filter((x) => x !== "Bonding");
           }

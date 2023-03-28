@@ -26,10 +26,22 @@
           "maxCost": 5
         },
         {
+          "name": "Haven: Business Establishment",
+          "desc": "You rent out your Haven from 9-5, maybe its a local coffee shop or popular salon. Adds to ones resources.",
+          "cost": 0,
+          "maxCost": 3
+        },
+        {
           "name": "Haven: Cell",
           "desc": "You have a jail within your haven to securely store prisoners. Each dot allows you to store twice as many prisoners.",
           "cost": 0,
           "maxCost": 5
+        },
+        {
+          "name": "Haven: Furcus",
+          "desc": "Your haven lies over a frayed spot in the veil. Your Haven is the home of magical energy. Each merit dot adds one to your ritual dice pool.",
+          "cost": 0,
+          "maxCost": 3
         },
         {
           "name": "Haven: Watchmen",
@@ -46,6 +58,12 @@
         {
           "name": "Haven: Library",
           "desc": "You have a library within your haven stocked with books on Cainite legends, history, vampire lore and the occult. Each dot Adds a die for academics, investigation or occult roles.",
+          "cost": 0,
+          "maxCost": 5
+        },
+        {
+          "name": "Haven: Machine Shop",
+          "desc": "Your Haven is stocked with state of the art machinery for fabrication. Each dot adds one die to craft/assembly/repair pools performed within the Haven.",
           "cost": 0,
           "maxCost": 5
         },
@@ -101,6 +119,12 @@
           "name": "Haven: Haunted",
           "desc": "You aren't the only supernatural being 'living' in your haven. Work out with your ST what exactly is haunting your home.",
           "cost": 1
+        },
+        {
+          "name": "Haven: Shared",
+          "desc": "You share this Haven with Kindred outside of your own coterie. One dot implies you share the property with an ST character, two implies you have a fellow Kindred landlord who owns the residence.",
+          "cost": 0,
+          "maxCost": 2
         }
       ]
     }

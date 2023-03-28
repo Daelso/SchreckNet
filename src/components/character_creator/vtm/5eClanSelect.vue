@@ -79,7 +79,22 @@
                 />
               </q-item>
               <q-separator />
-              Bane: {{ clanBane }}
+              <div
+                class="q-pa-md"
+                v-if="this.clan !== 'Caitiff' && this.clan !== 'Thin-Blood'"
+              >
+                <q-checkbox
+                  v-model="altBane"
+                  dark
+                  label="Use Alternative Bane"
+                />
+              </div>
+              Bane:
+              {{
+                this.altBane === false
+                  ? clanBane
+                  : this.clanBanes.altClans[this.clan]
+              }}
               <q-separator />
               <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
               <q-separator />
@@ -621,6 +636,7 @@ import disciplineSkills from "../vtm/5eDisciplines.json";
 import allPredatorTypes from "../vtm/predatorTypes.json";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 import meritJSON from "../vtm/5eMerits.json";
+import clanBanes from "../vtm/5eClanBanes.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -636,6 +652,7 @@ export default defineComponent({
       useDialogPluginComponent();
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
+    const altBane = ref(props.info.altBane);
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
@@ -721,6 +738,7 @@ export default defineComponent({
 
     return {
       age,
+      altBane,
       advantagesOrFlaws: ref(""),
       alchemyDiscipline: ref(""),
       thinDisc: ref(""),
@@ -732,6 +750,7 @@ export default defineComponent({
       allPredatorTypes,
       clan,
       clanBane,
+      clanBanes,
       clanDesc,
       clanDisciplines,
       compulsion,
@@ -828,6 +847,7 @@ export default defineComponent({
           merits: merits,
           thinAdvantages: clanThinAdvantages,
           thinFlaws: clanThinFlaws,
+          altBane: altBane,
         });
       },
 
@@ -874,8 +894,7 @@ export default defineComponent({
           this.clanDesc =
             "The “Assamite” viziers, sorcerers, and warriors recently admitted to the Camarilla seek to defend themselves from the judgement of Alamut.";
           this.clanBane =
-            "When one of the Judges tastes the Blood of another Cainite, they find it very hard to stop. Slaking at least one Hunger level with vampiric vitae provokes a Hunger Frenzy test at a Difficulty 2 + Bane Severity.[4] If the test is failed they attempt to gorge themselves on vampire Blood, sometimes until they diablerize their Kindred victim. " +
-            this.citation(2, 167);
+            this.clanBanes.clans["Banu Haqim"] + this.citation(2, 167);
           this.compulsion =
             "Judgment: Banu Haqim are compelled to punish anyone seen to transgress against their personal creed, taking their blood as just vengeance for the crime. For one scene the vampire must slake at least one Hunger level from anyone, friend or foe, who acts against a personal Conviction of theirs. Failure to do so results in a three-dice penalty to all rolls until the compulsion is satisfied or the scene ends. (If the one fed from is a vampire, it also triggers their Bane.) " +
             this.citation(2, 167);
@@ -893,7 +912,7 @@ export default defineComponent({
             "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)";
 
           this.clanBane =
-            "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)";
+            this.clanBanes.clans["Brujah"] + " (V5 Corebook p.67)";
           this.clanDisciplines = ["Celerity", "Potence", "Presence"];
           this.discExplained = [
             "Supernatural quickness and reflexes",
@@ -907,8 +926,7 @@ export default defineComponent({
           this.clanDesc =
             "The “Clanless” show no common traits, except to find themselves outcast by vampires of distinct lineage.";
           this.clanBane =
-            "Caitiff characters begin with the Suspect (•) Flaw and you may not purchase positive Status for them during character creation. The Storyteller may always impose a one or two dice penalty on Social tests against fellow Kindred who know they are Caitiff, regardless of their eventual Status. Further, to improve one of the Disciplines of a Caitiff costs six times the level purchased in experience points " +
-            this.citation(1, 107);
+            this.clanBanes.clans["Caitiff"] + this.citation(1, 107);
           this.compulsion = "Caitiff possess no clan compulsion.";
           this.clanDisciplines = [
             "Animalism",
@@ -940,8 +958,7 @@ export default defineComponent({
           break;
         case "Gangrel":
           this.clanDesc = "The feral “Outlanders” blend vampire and beast.";
-          this.clanBane =
-            "In frenzy, Gangrel gain one or more animal features: a physical trait, a smell, or a behavioral tic. These features last for one more night afterward, lingering like a hangover following debauchery. ";
+          this.clanBane = this.clanBanes.clans["Gangrel"];
           this.clanDisciplines = ["Animalism", "Fortitude", "Protean"];
           this.compulsion =
             "Feral Impulses: returning to an animalistic state, the vampire regresses to a point where speech is hard, clothes are uncomfortable, and arguments are best settled with teeth and claws. For one scene, the vampire gains a three-dice penalty to all rolls involving Manipulation and Intelligence. They can only speak in one-word sentences during this time. " +
@@ -956,8 +973,7 @@ export default defineComponent({
           this.clanDesc =
             "'The Clan of Death' is more an amalgamation of bloodlines that may have descended from a common progenitor whom the Giovanni destroyed.";
           this.clanBane =
-            "The Hecata's kiss is torture to their prey. The pain is unbearable and all encompassing. " +
-            this.citation(5, 203);
+            this.clanBanes.clans["Hecata"] + this.citation(5, 203);
           this.compulsion =
             "Morbidity: a sense of morbid curiosity. The Hecata's Blood urges them to study the individuals around them for signs of illness, frailty, or impending death. Until they have either predicted a death or solved the cause of a local one, the vampire suffers a three-dice penalty to other rolls. Their conclusions do not need to be absolutely correct, but should stay within the boundaries of the possible. " +
             this.citation(5, 202);
@@ -975,8 +991,7 @@ export default defineComponent({
             "Ruthlessness: To the Lasombra, failure is not an option. Their Blood urges them to increasingly ruthless measures when the Beast flares and they are faced with failure. The next action they fail after suffering this Compulsion causes all rolls to receive a penalty until a future attempt at the same action succeeds.  " +
             this.citation(6, "289-295");
           this.clanBane =
-            "Distorted Image: The broken souls of Lasombra vampires are halfway drawn into the Abyss. All reflections and recordings distort, flicker, or become transparent (though this does not conceal their identity with any certainty). Microphones have the same difficulty with the vampire's voice as cameras have with their image, touch technology becomes unresponsive at best, and their anomalous nature makes it harder to avoid electronic detection systems. " +
-            this.citation(6, "289-295");
+            this.clanBanes.clans["Lasombra"] + this.citation(6, "289-295");
           this.clanDisciplines = ["Dominate", "Oblivion", "Potence"];
           this.discExplained = [
             "Mind control practiced through one's piercing gaze",
@@ -988,8 +1003,7 @@ export default defineComponent({
           this.clanDesc =
             "The madness of the 'Lunatics' conceals and reveals truths.";
           this.compulsion =
-            "Delusion: Malkavian's extrasensory gifts running wild, the vampire experiences what might be truths or portents, but what others call figments of imagination, dredged up by Hunger. While still functional, the vampire's mind and perceptions are skewed. They receive a two-dice penalty to rolls involving Dexterity, Manipulation, Composure, and Wits as well as on rolls to resist terror frenzy, for one scene. " +
-            this.citation(1, 210);
+            this.clanBanes.clans["Malkavian"] + this.citation(1, 210);
           this.clanBane =
             "Derangement: When the Malkavian suffers a Bestial Failure or a Compulsion, their curse comes to the fore. Suffer a penalty equal to your character's Bane Severity to one category of dice pools (Physical, Social, or Mental) for the entire scene. This is in addition to any penalties incurred by Compulsions. " +
             this.citation(1, 79);
@@ -1007,8 +1021,7 @@ export default defineComponent({
             "Cryptophilia: vampires become consumed with a hunger for secrets, to know that which few or no one knows, almost as strong as that for blood. They also refuse to share secrets with others, except in strict trade for greater ones. " +
             this.citation(1, 210);
           this.clanBane =
-            "Repulsiveness: Hideous and vile, all Nosferatu count as having the Repulsive Flaw (-2) and can never increase their rating in the Looks Merit. In addition, any attempt to disguise themselves as non-deformed incurs a penalty to the dice pool equal to the character's Bane Severity (this includes the Obfuscate powers Mask of a Thousand Faces and Manifold Guise). However, most do not break the Masquerade by just being seen.  " +
-            this.citation(1, 85);
+            this.clanBanes.clans["Nosferatu"] + this.citation(1, 85);
           this.clanDisciplines = ["Animalism", "Obfuscate", "Potence"];
           this.discExplained = [
             "Supernatural affinity with and control of animals",
@@ -1023,8 +1036,7 @@ export default defineComponent({
             "Tempting Fate: The Ravnos vampire is driven by their Blood to court danger. Haunted as they are by righteous fire burning its way up their lineage, why not? The next time the vampire is faced with a problem to solve, any attempt at a solution short of the most daring or dangerous incurs a two-dice penalty. (Suitably flashy and risky attempts can even merit bonus dice for this occasion.) The Daredevil is free to convince any fellows to do things their way, but is just as likely to go at it alone. The Compulsion persists until the problem is solved or further attempts become impossible. " +
             this.citation(7, "6-10");
           this.clanBane =
-            "Doomed: A Ravnos' Bane is that the sun's fire that incinerated their founder rages through the Blood of the clan, erupting from their very flesh if they ever settle down for long. If they slumber in the same place more than once in seven nights, roll a number of dice equal to their Bane Severity. They receive aggravated damage equal to the number of 10’s (critical results) rolled as they are scorched from within. This happens every time they spend the day in a location they've already slumbered less than a week before. What constitutes a location in this regard depends on the scope of the chronicle, but unless otherwise stated, two resting places need to be at least a mile apart to avoid triggering the Bane. Furthermore, a mobile haven, such as a movers’ truck, is safe so long as the place where the truck is parked is at least a mile from the last location. " +
-            this.citation(7, "6-10");
+            this.clanBanes.clans["Ravnos"] + this.citation(7, "6-10");
           this.clanDisciplines = ["Animalism", "Obfuscate", "Presence"];
           this.discExplained = [
             "Supernatural affinity with and control of animals",
@@ -1039,8 +1051,7 @@ export default defineComponent({
             "Affective Empathy: When a Salubri suffers a Compulsion, the Kindred becomes overwhelmed with empathy for a personal problem that afflicts someone in the scene, seeking to further its resolution. The scale of the personal problem isn’t important; the Salubri understands that sometimes suffering is part of a cumulative situation and not an isolated stimulus. Any action not taken toward mitigating that personal tragedy incurs a two dice penalty. The Compulsion persists until the sufferer's burden is eased or a more immediate crisis supersedes it, or the end of the scene.  " +
             this.citation(7, "13-15");
           this.clanBane =
-            "Hunted: A Salubri's Bane is that the Kindred of other clans are especially appreciative of Salubri vitae. When a non-Salubri partakes of the blood of a Cyclops, they often find it difficult to pull themselves away. Consuming enough to abate at least one Hunger level requires a Hunger Frenzy test. If the test fails, they just keep consuming, to the point that they may have to be physically fought off. Additionally, the third eye that Saulot opened while on one of his many journeys passes down through the bloodline every time a Salubri Embraces. This third eye is not always recognizably human in origin, and rumors persist of vertical, serpentine pupils, or even wormlike eyespots. While this third eye can be physically covered, such as with a headscarf or hood, it is always present, and no supernatural power can obscure it. Any time a Salubri activates a Discipline power, the third eye weeps vitae, its intensity correlating to the level of the Discipline being used, from welling up to a torrential flow. The blood flow from the third eye triggers a Hunger Frenzy test from nearby vampires with Hunger 4 or more.  " +
-            this.citation(7, "13-15");
+            this.clanBanes.clans["Salubri"] + this.citation(7, "13-15");
           this.clanDisciplines = ["Auspex", "Dominate", "Fortitude"];
           this.discExplained = [
             "Extrasensory perception, awareness, and premonitions",
@@ -1055,8 +1066,7 @@ export default defineComponent({
             "Obsession: enraptured by beauty, the vampire becomes temporarily obsessed with a singular gorgeous thing, able to think of nothing else. Pick one feature, such as a person, a song, an artwork, blood spatter, or even a sunrise. Enraptured, the vampire can hardly take their attention from it, and if spoken to, they only talk about that subject. Any other actions receive a two-dice penalty. " +
             this.citation(1, 210);
           this.clanBane =
-            "Aesthetic Fixation: The Toreador exemplify the old saying that art in the blood takes strange forms. They desire beauty so intensely that they suffer in its absence. While your character finds themselves in less than beautiful surroundings, lose the equivalent of their Bane Severity in dice from dice pools to use Disciplines. " +
-            this.citation(1, 91);
+            this.clanBanes.clans["Toreador"] + this.citation(1, 91);
           this.clanDisciplines = ["Auspex", "Celerity", "Presence"];
           this.discExplained = [
             "Extrasensory perception, awareness, and premonitions",
@@ -1071,8 +1081,7 @@ export default defineComponent({
             "Perfectionism: nothing but the best satisfies the vampire. Anything less than exceptional performance instils a profound sense of failure, and they often repeat tasks obsessively to get them 'just right'. Until the vampire scores a critical win on a Skill roll or the scene ends, the vampire labours under a two-dice penalty to all dice pools. The penalty is reduced to one die for a repeated action and removed entirely on a second repeat. " +
             this.citation(1, 210);
           this.clanBane =
-            "Tremere vitae can no longer Blood Bond other Kindred, though they themselves can be Bound by Kindred from other clans. A Tremere can still bind mortals and ghouls, though the corrupted vitae must be drunk an additional number of times equal to the vampire’s Bane Severity for the bond to form. " +
-            this.citation(1, 97);
+            this.clanBanes.clans["Tremere"] + this.citation(1, 97);
           this.clanDisciplines = ["Auspex", "Blood Sorcery", "Dominate"];
           this.discExplained = [
             "Extrasensory perception, awareness, and premonitions",
@@ -1087,8 +1096,7 @@ export default defineComponent({
             "Covetousness: when a Tzimisce suffers a Compulsion, the Kindred becomes obsessed with possessing something in the scene, desiring to add it to their proverbial hoard. This can be anything from an object to a piece of property to an actual person. Any action not taken toward this purpose incurs a two-dice penalty. The Compulsion persists until ownership is established (the Storyteller decides what constitutes ownership in the case of a non-object) or the object of desire becomes unattainable.  " +
             this.citation(7, "16-23");
           this.clanBane =
-            "Grounded: Each Tzimisce must choose a specific charge — a physical domain, a group of people, an organization, or even something more esoteric — but clearly defined and limited. The Kindred must spend their daysleep surrounded by their chosen charge.  " +
-            this.citation(7, "16-23");
+            this.clanBanes.clans["Tzimisce"] + this.citation(7, "16-23");
           this.clanDisciplines = ["Animalism", "Dominate", "Protean"];
           this.discExplained = [
             "Supernatural affinity with and control of animals",
@@ -1103,8 +1111,7 @@ export default defineComponent({
             "Arrogance: the need to rule rears its head in the vampire. They stop at nothing to assume command of a situation. Someone must obey an order from the vampire. Any action not directly associated with leadership receives a two-dice penalty. This Compulsion lasts until an order has been obeyed, though the order must not be supernaturally enforced, such as through Dominate. " +
             this.citation(1, "210-211");
           this.clanBane =
-            "Rarefied Tastes: When a Ventrue drinks blood from any mortal outside their preference, a profound exertion of will is required or the blood taken surges back up as scarlet vomit. Ventrue can sense if a mortal possesses the blood they require. If Ventrue want to feed from anything but their preferred victim, they must spend Willpower points equal to the character's Bane Severity. " +
-            this.citation(1, "102");
+            this.clanBanes.clans["Ventrue"] + this.citation(1, "102");
           this.clanDisciplines = ["Dominate", "Fortitude", "Presence"];
           this.discExplained = [
             "Mind control practiced through one's piercing gaze",
@@ -1119,8 +1126,7 @@ export default defineComponent({
             "Transgression: Set teaches that everyone's mind and spirit are bound by invisible chains of their own making. Their Blood chafes at these bindings and the Minister suffers a burning need to break them. The vampire receives a two-dice penalty to all dice pools not relating to enticing someone (including themselves) to break a Chronicle Tenet or personal Conviction, causing at least one Stain and ending this Compulsion. " +
             this.citation(3, "210-211");
           this.clanBane =
-            "In 5th Edition, the Bane of the Ministry is that their Blood abhors the light. When exposed to direct illumination – whether natural or artificial – members of the clan recoil. Ministers receive a penalty equal to their Bane Severity to all dice pools when subjected to bright light directed straight at them. Also, they add their Bane Severity to aggravated damage taken from sunlight. " +
-            this.citation(3, "102");
+            this.clanBanes.clans["The Ministry"] + this.citation(3, "102");
           this.clanDisciplines = ["Obfuscate", "Presence", "Protean"];
           this.discExplained = [
             "The ability to remain obscure and unseen, even in crowds",
@@ -1364,7 +1370,7 @@ export default defineComponent({
           case "Ancestral Dominion":
             if (
               this.finalDisciplineObj["Blood Sorcery"] === undefined ||
-              this.finalDisciplineObj["Blood Sorcery"] < 3 ||
+              this.finalDisciplineObj["Blood Sorcery"] < 2 ||
               this.cult !== "Mithraic Mysteries"
             ) {
               mergedOptions.splice(i, 1);
@@ -1447,7 +1453,7 @@ export default defineComponent({
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 1 ||
               this.skillsSelected.some(
-                (e) => e.skill !== "Mask of a Thousand Faces"
+                (e) => e.skill === "Mask of a Thousand Faces"
               ) === false
             ) {
               mergedOptions.splice(i, 1);
@@ -1464,7 +1470,7 @@ export default defineComponent({
           case "Vanish":
             if (
               this.skillsSelected.some(
-                (e) => e.skill !== "Cloak of Shadows"
+                (e) => e.skill === "Cloak of Shadows"
               ) === false
             ) {
               mergedOptions.splice(i, 1);
@@ -1479,7 +1485,7 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
-          case "Fatal Precognition":
+          case "Fatal Prediction":
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 2
@@ -1556,7 +1562,7 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 2 ||
-              this.skillsSelected.some((e) => e.skill !== "Vicissitude") ===
+              this.skillsSelected.some((e) => e.skill === "Vicissitude") ===
                 false
             ) {
               mergedOptions.splice(i, 1);
@@ -1576,7 +1582,7 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 2 ||
-              this.skillsSelected.some((e) => e.skill !== "Vicissitude") ===
+              this.skillsSelected.some((e) => e.skill === "Vicissitude") ===
                 false
             ) {
               mergedOptions.splice(i, 1);
@@ -1585,8 +1591,128 @@ export default defineComponent({
 
           case "Metamorphosis":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Shapechange") ===
+              this.skillsSelected.some((e) => e.skill === "Shapechange") ===
               false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Animal Messenger":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Messenger's Command":
+            if (
+              this.skillsSelected.some(
+                (e) =>
+                  e.skill === "Animal Messenger" ||
+                  e.skill === "Compel" ||
+                  e.skill === "Mesmerize"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Panacea":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Fatal Flaw":
+            if (
+              this.finalDisciplineObj.Oblivion === undefined ||
+              this.finalDisciplineObj.Oblivion < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unburdening the Bestial Soul":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 3
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Weaving":
+            if (
+              this.skillsSelected.some((e) => e.skill === "Rapid Reflexes") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Unseen Strike":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 4 ||
+              this.skillsSelected.some((e) => e.skill === "Blink") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Implant Suggestion":
+            if (this.finalDisciplineObj.Presence === undefined) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Invigorating Vitae":
+            if (this.finalDisciplineObj.Auspex === undefined) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Mind Masque":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Wrecker":
+            if (
+              this.skillsSelected.some((e) => e.skill === "Prowess") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Crash Down":
+            if (
+              this.skillsSelected.some((e) => e.skill === "Soaring Leap") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Thrown Voice":
+            if (
+              (this.finalDisciplineObj.Auspex === undefined ||
+                this.finalDisciplineObj.Auspex < 1) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "One With the Land":
+            if (
+              (this.finalDisciplineObj.Animalism === undefined ||
+                this.finalDisciplineObj.Animalism < 2) === false ||
+              this.skillsSelected.some((e) => e.skill === "Earth Meld") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Shadow Servant":
+            if (
+              (this.finalDisciplineObj.Auspex === undefined ||
+                this.finalDisciplineObj.Auspex < 1) === false
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1666,7 +1792,7 @@ export default defineComponent({
           this.predBlurb = {
             desc: "Instead of hunting you secure your blood from the black market, robbery or a night shift at the blood bank. Ventrue cannot select this option.",
             choices: [
-              "Alleycats gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
+              "Baggers gain a choice of the Larceny (Lockpicking) or Streetwise (Black Market) specialty.",
               "Choose between one dot of blood sorcery (if Tremere or Banu Haqim) or obfuscate.",
               "Gain the Feeding Merit: Iron Gullet (•••)",
               "Gain the enemy flaw: (••) Someone believes you owe them or something else keeps you off the streets.",
@@ -1765,6 +1891,18 @@ export default defineComponent({
             ],
           };
           break;
+        case "Grim Reaper":
+          this.predBlurb = {
+            desc: "The dead, dying and sick are easy prey and even easier if you work within hospital wards or retirement homes. You use your knowledge of medical issues, and your ability to present yourself as a health worker to gain access to these people you can then easily feed upon, or draw copious amounts of blood from. Old Blood never tasted so sweet.",
+            choices: [
+              "Reapers gain a choice of the Awareness (death) or Larceny (forgery) specialty.",
+              "Choose between one dot of Auspex or Oblivion.",
+              "Gain one dot of humanity.",
+              "Gain the feeding flaw: healthy mortals.",
+              "Gain a dot of influence or allies in the medical field.",
+            ],
+          };
+          break;
         case "House Cat":
           this.predBlurb = {
             desc: "We live in the age of delivery apps, online shopping, dating apps and all night services. Getting someone to come to you has never been so easy. Why go hunt in the streets when you can have the food come to your haven? For the modern Anarch you never have to worry about going hungry!",
@@ -1776,6 +1914,17 @@ export default defineComponent({
             ],
           };
           break;
+        case "Montero":
+          this.predBlurb = {
+            desc: "In the old days, aristocratic Spaniards ran the monteria, a deer hunt in which beaters drove deer into the waiting nobles spears. Carrying on that tradition today, you instead use your retainers to funnel mortals into your waiting fangs.",
+            choices: [
+              "Reapers gain a choice of the Leadership (Hunting Pack) or Stealth (Stakeout) specialty.",
+              "Choose between one dot of Dominate or Obfuscate.",
+              "Lose one dot of humanity.",
+              "Gain two dots of retainers.",
+            ],
+          };
+          break;
         case "Osiris":
           this.predBlurb = {
             desc: "You are a cult-leader, celebrity or popular twitch streamer with a ready and willing group of fans or worshippers from which to harvest blood. While access to blood is easy, attention isn't always good.",
@@ -1784,6 +1933,18 @@ export default defineComponent({
               "Choose between one dot of Blood Sorcery (Tremere only) or Presence.",
               "Spend three dots between Fame and Herd.",
               "Spend two points between Enemies and Mythic flaws.",
+            ],
+          };
+          break;
+        case "Pursuer":
+          this.predBlurb = {
+            desc: "You carefully study your victims, following them for days and memorizing their routines. Then, you stalk and pursue your victim through the night. Tormenting them until your hunger has reached its pitch.",
+            choices: [
+              "Reapers gain a choice of the Investigation (Profiling) or Stealth (Shadowing) specialty.",
+              "Choose between one dot of Animalism or Auspex.",
+              "Lose one dot of humanity.",
+              "Gain the merit: Bloodhound",
+              "Gain a dot of contacts from among your hunting grounds.",
             ],
           };
           break;
@@ -1828,6 +1989,18 @@ export default defineComponent({
               "Choose between one dot of Fortitude or Presence.",
               "Gain the Looks (••) merit: Beautiful",
               "Gain the Enemy Flaw: (•) A spurned lover or jealous partner.",
+            ],
+          };
+          break;
+        case "Trapdoor":
+          this.predBlurb = {
+            desc: "You build your nest and lure prey into it like the trapdoor spider. When a mortal enters your domain, they surely will be drunk deep.",
+            choices: [
+              "Gain a choice of the Persuasion (Marketing) or Stealth (Ambushes) specialty.",
+              "Choose between one dot of Protean or Obfuscate.",
+              "Gain a (•) Haven",
+              "Gain one dot of either retainers or herd.",
+              "Gain the Haven Flaw: (•) Creepy or Haunted.",
             ],
           };
           break;
@@ -2010,6 +2183,23 @@ export default defineComponent({
               cost: 2,
             });
             break;
+          case "Grim Reaper":
+            this.humanity++;
+            this.merits.merits.flaws.push({
+              name: "Feeding Flaw: Healthy Mortals",
+              cost: 1,
+              desc: "You refuse to hunt a certain type of prey, be it women, addicts, homeless.",
+            });
+            this.advantages = this.advantages + 1;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional dot has been provided to be distributed to either Allies or Influence in the Medical Community.",
+            });
+            break;
           case "House Cat":
             this.advantages = this.advantages + 2;
             this.$q.notify({
@@ -2024,6 +2214,15 @@ export default defineComponent({
               name: "Stalker",
               desc: "A former retainer is obsessed with you, should you deal with one another emerges.",
               cost: 1,
+            });
+            break;
+          case "Montero":
+            this.humanity--;
+            this.merits.backgrounds.advantages.push({
+              name: "Retainer: ",
+              desc: "With each dot your retainer grows more capable. 1 dot = weak mortal, 2 dot = average ghoul, 3 dot = gifted ghoul",
+              cost: 2,
+              maxCost: 5,
             });
             break;
           case "Osiris":
@@ -2045,6 +2244,20 @@ export default defineComponent({
               timeout: 12000,
               message:
                 "An additional 2 flaw dots have been provided to be divided amongst Enemy and Mythic flaws.",
+            });
+            break;
+          case "Pursuer":
+            this.humanity--;
+            this.merits.backgrounds.advantages.push({
+              name: "Contact: ",
+              desc: "Someone who can help you with a specific task, be it a camarilla insider, police dispatcher or shady merchant. Each dot increases their level of usefulness.",
+              cost: 1,
+              maxCost: 5,
+            });
+            this.merits.merits.advantages.push({
+              cost: 1,
+              desc: "You can smell the resonance on your prey without tasting it.",
+              name: "Blood Hound",
             });
             break;
           case "Sandman":
@@ -2098,6 +2311,29 @@ export default defineComponent({
               cost: 2,
               desc: "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
               name: "Enemy: Spurned Lover",
+            });
+            break;
+          case "Trapdoor":
+            this.merits.haven.advantages.push({
+              name: "Haven",
+              desc: "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
+              cost: 1,
+              maxCost: 3,
+            });
+            this.merits.haven.flaws.push({
+              name: "Haven: Creepy/Haunted",
+              desc: "Select between either on your sheet.",
+              cost: 1,
+              maxCost: 3,
+            });
+            this.advantages = this.advantages + 1;
+            this.$q.notify({
+              color: "primary",
+              textColor: "white",
+              avatar: nosImage,
+              timeout: 12000,
+              message:
+                "An additional dot has been granted to distribute into a Retainer or Herd.",
             });
             break;
           case "Typhus":
@@ -2168,14 +2404,23 @@ export default defineComponent({
         case "Graverobber":
           arr = ["Fortitude", "Oblivion"];
           break;
+        case "Grim Reaper":
+          arr = ["Auspex", "Oblivion"];
+          break;
         case "House Cat":
           arr = ["Dominate", "Presence"];
+          break;
+        case "Montero":
+          arr = ["Dominate", "Obfuscate"];
           break;
         case "Osiris":
           arr = ["Presence"];
           if (this.clan === "Tremere") {
             arr.push("Blood Sorcery");
           }
+          break;
+        case "Pursuer":
+          arr = ["Animalism", "Auspex"];
           break;
         case "Sandman":
           arr = ["Auspex", "Obfuscate"];
@@ -2188,6 +2433,9 @@ export default defineComponent({
           break;
         case "Siren":
           arr = ["Fortitude", "Presence"];
+          break;
+        case "Trapdoor":
+          arr = ["Protean", "Obfuscate"];
           break;
         case "Typhus":
           arr = ["Auspex", "Fortitude"];
@@ -2260,16 +2508,34 @@ export default defineComponent({
             { skill: "Medicine", specialty: "Cadavers" },
           ];
           break;
+        case "Grim Reaper":
+          arr = [
+            { skill: "Awareness", specialty: "Death" },
+            { skill: "Larceny", specialty: "Forgery" },
+          ];
+          break;
         case "House Cat":
           arr = [
             { skill: "Technology", specialty: "Mobile Apps" },
             { skill: "Subterfuge", specialty: "Luring" },
           ];
           break;
+        case "Montero":
+          arr = [
+            { skill: "Leadership", specialty: "Hunting Pack" },
+            { skill: "Stealth", specialty: "Stakeout" },
+          ];
+          break;
         case "Osiris":
           arr = [
             { skill: "Occult", specialty: "Specific Tradition" },
             { skill: "Performance", specialty: "Specific entertainment" },
+          ];
+          break;
+        case "Pursuer":
+          arr = [
+            { skill: "Investigation", specialty: "Profiling" },
+            { skill: "Stealth", specialty: "Shadowing" },
           ];
           break;
         case "Sandman":
@@ -2295,6 +2561,12 @@ export default defineComponent({
           arr = [
             { skill: "Persuasion", specialty: "Seduction" },
             { skill: "Subterfuge", specialty: "Seduction" },
+          ];
+          break;
+        case "Trapdoor":
+          arr = [
+            { skill: "Persuasion", specialty: "Marketing" },
+            { skill: "Stealth", specialty: "Ambushes" },
           ];
           break;
         case "Typhus":
@@ -2394,7 +2666,60 @@ export default defineComponent({
 
           this.clearThinFields();
           break;
-
+        case "Thin-Blood: Abhorrent Blood":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Faith-Proof":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Lucid Dreamer":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Mortality's Mien":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Swift Feeder":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Low Appetite":
+          this.clanThinAdvantages++;
+          this.merits.merits.advantages.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
         case "Thin-Blood: Vampiric Resilience":
           this.clanThinAdvantages++;
           this.merits.merits.advantages.push({
@@ -2428,6 +2753,78 @@ export default defineComponent({
             name: this.thinBloodMerits.name,
           });
 
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Heliophobia":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Night Terrors":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Plague Bearer":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Sloppy Drinker":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Sun-Faded":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Supernatural Tell":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Twilight Presence":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
+          this.clearThinFields();
+          break;
+        case "Thin-Blood: Unending Hunger":
+          this.clanThinFlaws++;
+          this.merits.merits.flaws.push({
+            cost: 1,
+            desc: this.thinBloodMerits.desc,
+            name: this.thinBloodMerits.name,
+          });
           this.clearThinFields();
           break;
         case "Thin-Blood: Bestial Temper":

@@ -7,7 +7,9 @@
           Vampire: the Masquerade
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
-            <div>Clan: {{ clan }}</div>
+            <div>
+              Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
+            </div>
             <div>Sect: {{ sect }}</div>
             <div>Age: {{ age.label }}</div>
             <div>Generation: {{ generation.label }}</div>
@@ -556,7 +558,7 @@ export default {
   },
   data() {
     return {
-      debug: true,
+      debug: false,
       saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
@@ -880,7 +882,6 @@ export default {
           this.thinAdvantages = data.thinAdvantages;
           this.thinFlaws = data.thinFlaws;
           this.altBane = data.altBane;
-          console.log(this.altBane);
         });
     },
     attributes() {

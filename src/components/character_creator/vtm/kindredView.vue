@@ -14,7 +14,9 @@
         Vampire: The Masquerade
         <div class="info q-my-sm">
           <div>Name: {{ charName }}</div>
-          <div>Clan: {{ clan }}</div>
+          <div>
+            Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
+          </div>
           <div>Sect: {{ sect }}</div>
           <div>Age: {{ age }}</div>
           <div>Generation: {{ generation }}</div>
@@ -513,6 +515,7 @@ export default defineComponent({
       clanBanes,
       clanCompulsions,
       skillInfo,
+      altBane: kindred.alt_bane,
       charName: kindred.charName,
       clan: kindred.clan,
       advantagesObj: kindred.advantages,
@@ -1125,7 +1128,9 @@ export default defineComponent({
       }
     },
     setClanBane() {
-      this.clanBane = this.clanBanes.clans[this.clan];
+      this.clanBane = this.altBane
+        ? this.clanBanes.altClans[this.clan]
+        : this.clanBanes.clans[this.clan];
       if (this.clan === "Thin-Blood") {
         let meme = this.advantagesObj.merits.flaws.find((o) =>
           o.name.search("Clan Curse")

@@ -79,7 +79,22 @@
                 />
               </q-item>
               <q-separator />
-              Bane: {{ this.altBane === false ? clanBane : clanBane }}
+              <div
+                class="q-pa-md"
+                v-if="this.clan !== 'Caitiff' && this.clan !== 'Thin-Blood'"
+              >
+                <q-checkbox
+                  v-model="altBane"
+                  dark
+                  label="Use Alternative Bane"
+                />
+              </div>
+              Bane:
+              {{
+                this.altBane === false
+                  ? clanBane
+                  : this.clanBanes.altClans[this.clan]
+              }}
               <q-separator />
               <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
               <q-separator />
@@ -1438,7 +1453,7 @@ export default defineComponent({
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 1 ||
               this.skillsSelected.some(
-                (e) => e.skill !== "Mask of a Thousand Faces"
+                (e) => e.skill === "Mask of a Thousand Faces"
               ) === false
             ) {
               mergedOptions.splice(i, 1);
@@ -1455,7 +1470,7 @@ export default defineComponent({
           case "Vanish":
             if (
               this.skillsSelected.some(
-                (e) => e.skill !== "Cloak of Shadows"
+                (e) => e.skill === "Cloak of Shadows"
               ) === false
             ) {
               mergedOptions.splice(i, 1);
@@ -1547,7 +1562,7 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 2 ||
-              this.skillsSelected.some((e) => e.skill !== "Vicissitude") ===
+              this.skillsSelected.some((e) => e.skill === "Vicissitude") ===
                 false
             ) {
               mergedOptions.splice(i, 1);
@@ -1567,7 +1582,7 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Dominate === undefined ||
               this.finalDisciplineObj.Dominate < 2 ||
-              this.skillsSelected.some((e) => e.skill !== "Vicissitude") ===
+              this.skillsSelected.some((e) => e.skill === "Vicissitude") ===
                 false
             ) {
               mergedOptions.splice(i, 1);
@@ -1576,7 +1591,7 @@ export default defineComponent({
 
           case "Metamorphosis":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Shapechange") ===
+              this.skillsSelected.some((e) => e.skill === "Shapechange") ===
               false
             ) {
               mergedOptions.splice(i, 1);
@@ -1594,9 +1609,9 @@ export default defineComponent({
             if (
               this.skillsSelected.some(
                 (e) =>
-                  e.skill !== "Animal Messenger" ||
-                  e.skill !== "Compel" ||
-                  e.skill !== "Mesmerize"
+                  e.skill === "Animal Messenger" ||
+                  e.skill === "Compel" ||
+                  e.skill === "Mesmerize"
               ) === false
             ) {
               mergedOptions.splice(i, 1);
@@ -1628,7 +1643,7 @@ export default defineComponent({
             break;
           case "Weaving":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Rapid Reflexes") ===
+              this.skillsSelected.some((e) => e.skill === "Rapid Reflexes") ===
               false
             ) {
               mergedOptions.splice(i, 1);
@@ -1638,7 +1653,7 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Obfuscate === undefined ||
               this.finalDisciplineObj.Obfuscate < 4 ||
-              this.skillsSelected.some((e) => e.skill !== "Blink") === false
+              this.skillsSelected.some((e) => e.skill === "Blink") === false
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1663,14 +1678,14 @@ export default defineComponent({
             break;
           case "Wrecker":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Prowess") === false
+              this.skillsSelected.some((e) => e.skill === "Prowess") === false
             ) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "Crash Down":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Soaring Leap") ===
+              this.skillsSelected.some((e) => e.skill === "Soaring Leap") ===
               false
             ) {
               mergedOptions.splice(i, 1);
@@ -1688,7 +1703,7 @@ export default defineComponent({
             if (
               (this.finalDisciplineObj.Animalism === undefined ||
                 this.finalDisciplineObj.Animalism < 2) === false ||
-              this.skillsSelected.some((e) => e.skill !== "Earth Meld") ===
+              this.skillsSelected.some((e) => e.skill === "Earth Meld") ===
                 false
             ) {
               mergedOptions.splice(i, 1);

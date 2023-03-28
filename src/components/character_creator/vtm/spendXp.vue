@@ -984,11 +984,11 @@ export default defineComponent({
             break;
           case "Messenger's Command":
             if (
-              this.skillsSelected.some(
+              this.disciplineSkillsObj.some(
                 (e) =>
-                  e.skill !== "Animal Messenger" ||
-                  e.skill !== "Compel" ||
-                  e.skill !== "Mesmerize"
+                  e.skill === "Animal Messenger" ||
+                  e.skill === "Compel" ||
+                  e.skill === "Mesmerize"
               ) === false
             ) {
               mergedOptions.splice(i, 1);
@@ -1020,8 +1020,9 @@ export default defineComponent({
             break;
           case "Weaving":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Rapid Reflexes") ===
-              false
+              this.disciplineSkillsObj.some(
+                (e) => e.skill === "Rapid Reflexes"
+              ) === false
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1030,7 +1031,8 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Obfuscate === undefined ||
               this.finalDisciplineObj.Obfuscate < 4 ||
-              this.skillsSelected.some((e) => e.skill !== "Blink") === false
+              this.disciplineSkillsObj.some((e) => e.skill === "Blink") ===
+                false
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1055,15 +1057,17 @@ export default defineComponent({
             break;
           case "Wrecker":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Prowess") === false
+              this.disciplineSkillsObj.some((e) => e.skill === "Prowess") ===
+              false
             ) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "Crash Down":
             if (
-              this.skillsSelected.some((e) => e.skill !== "Soaring Leap") ===
-              false
+              this.disciplineSkillsObj.some(
+                (e) => e.skill === "Soaring Leap"
+              ) === false
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1080,7 +1084,7 @@ export default defineComponent({
             if (
               (this.finalDisciplineObj.Animalism === undefined ||
                 this.finalDisciplineObj.Animalism < 2) === false ||
-              this.skillsSelected.some((e) => e.skill !== "Earth Meld") ===
+              this.disciplineSkillsObj.some((e) => e.skill === "Earth Meld") ===
                 false
             ) {
               mergedOptions.splice(i, 1);

@@ -600,12 +600,7 @@ export default {
     return {
       debug: false,
       saving: false,
-      advantagesObj: {
-        merits: { advantages: [], flaws: [] },
-        backgrounds: { advantages: [], flaws: [] },
-        haven: { advantages: [], flaws: [] },
-        loresheets: { advantages: [], flaws: [] },
-      },
+      advantagesObj: this.kindred.advantages,
       attributesDone: true,
       attributeInfo,
       altBane: this.kindred.alt_bane,
@@ -644,7 +639,7 @@ export default {
       baseFlaws: 2,
       baseAdvantages: 7,
       flaws: this.kindred.flaws_remaining,
-      advantages: 7,
+      advantages: this.kindred.advantages_remaining,
       thinAdvantages: 0,
       thinFlaws: 0,
       chronicle: this.kindred.chronicle,
@@ -1046,13 +1041,7 @@ export default {
     },
 
     finalSpecialties() {
-      let specialties = [];
-      specialties = this.specialties.concat(
-        this.specialtiesFromPred,
-        this.specialtiesFromXp
-      );
-
-      return specialties;
+      return this.kindred.specialties;
     },
 
     saveGuard() {

@@ -70,6 +70,11 @@ const routes = [
         component: () => import("pages/character_creator/vtm/5eVampView.vue"),
       },
       {
+        name: "editVampire",
+        path: "vampire/5e/edit/:id",
+        component: () => import("pages/character_creator/vtm/editVamp.vue"),
+      },
+      {
         name: "hunter5eView",
         path: "hunter/5e/:id",
         component: () => import("pages/character_creator/hunter/hunter.vue"),

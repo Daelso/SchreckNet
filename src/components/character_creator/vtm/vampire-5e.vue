@@ -417,16 +417,16 @@
         </q-list>
       </q-card>
       <tabs
-        @charName="handleCharName($event)"
-        @concept="handleConcept($event)"
-        @ambition="handleAmbition($event)"
-        @desire="handleDesire($event)"
-        @convictions="handleConvictions($event)"
-        @touchstones="handleTouchstones($event)"
-        @archetype="handleArchetype($event)"
-        @sect="handleSect($event)"
-        @chronicle="handleChronicle($event)"
-        @specialties="handleSpecialties($event)"
+        v-model:charName="charName"
+        v-model:concept="concept"
+        v-model:ambition="ambition"
+        v-model:desire="desire"
+        v-model:convictions="convictions"
+        v-model:touchstones="touchstones"
+        v-model:archetype="archtypeModel"
+        v-model:sect="sect"
+        v-model:chronicle="chronicle"
+        v-model:specialties="this.specialties"
         v-model:specialtiePoints="totalSpecialty"
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
@@ -803,36 +803,6 @@ export default {
         );
       this.saving = false;
       this.$q.loading.hide();
-    },
-    handleCharName(data) {
-      this.charName = data;
-    },
-    handleConcept(data) {
-      this.concept = data;
-    },
-    handleAmbition(data) {
-      this.ambition = data;
-    },
-    handleDesire(data) {
-      this.desire = data;
-    },
-    handleConvictions(data) {
-      this.convictions = data;
-    },
-    handleTouchstones(data) {
-      this.touchstones = data;
-    },
-    handleArchetype(data) {
-      this.archtypeModel = data;
-    },
-    handleSect(data) {
-      this.sect = data;
-    },
-    handleChronicle(data) {
-      this.chronicle = data;
-    },
-    handleSpecialties(data) {
-      this.specialties = data;
     },
 
     clanSelected() {

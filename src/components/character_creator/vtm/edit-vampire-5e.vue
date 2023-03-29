@@ -842,34 +842,6 @@ export default {
       this.$q.loading.hide();
     },
 
-    handleConcept(data) {
-      this.concept = data;
-    },
-    handleAmbition(data) {
-      this.ambition = data;
-    },
-    handleDesire(data) {
-      this.desire = data;
-    },
-    handleConvictions(data) {
-      this.convictions = data;
-    },
-    handleTouchstones(data) {
-      this.touchstones = data;
-    },
-    handleArchetype(data) {
-      this.archtypeModel = data;
-    },
-    handleSect(data) {
-      this.sect = data;
-    },
-    handleChronicle(data) {
-      this.chronicle = data;
-    },
-    handleSpecialties(data) {
-      this.specialties = data;
-    },
-
     clanSelected() {
       this.$q
         .dialog({

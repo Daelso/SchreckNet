@@ -95,7 +95,7 @@ router.route("/card").get(async (req, res) => {
   }
 });
 
-router.route("/delete/:id").delete(async (req, res) => {
+router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
   try {
     let currentUser = lib.getCurrentUser(req, res);
 

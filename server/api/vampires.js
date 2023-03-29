@@ -95,7 +95,7 @@ router.route("/card").get(async (req, res) => {
   }
 });
 
-router.route("/vampire/edit/:id").put(async (req, res) => {
+router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
   try {
     const currentUser = lib.getCurrentUser(req, res);
 
@@ -149,7 +149,7 @@ router.route("/vampire/edit/:id").put(async (req, res) => {
   }
 });
 
-router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
+router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
   try {
     let currentUser = lib.getCurrentUser(req, res);
 

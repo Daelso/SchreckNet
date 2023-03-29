@@ -866,6 +866,7 @@ export default defineComponent({
     clanSelected() {
       this.advantagesOrFlaws = "";
       this.thinBloodMerits = "";
+      this.altBane = false;
       this.alchemyDiscipline = "";
       this.formula = "";
       this.thinDisc = "";
@@ -2051,7 +2052,6 @@ export default defineComponent({
         }
 
         if (this.altBane === true && this.clan === "Hecata") {
-          console.log("fire!");
           this.merits.haven.flaws.push({
             name: "Haven: Decaying",
             desc: "Decaying from your clan bane",

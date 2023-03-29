@@ -52,11 +52,11 @@
             filled
             class="select"
             bg-color="grey-3"
-            v-model="charName"
+            v-model="tabCharName"
             label="Your character's name *"
             lazy-rules
             label-color="primary"
-            @update:model-value="$emit('charName', this.charName)"
+            @update:model-value="$emit('update:charName', this.tabCharName)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -69,14 +69,14 @@
             filled
             bg-color="grey-3"
             class="select"
-            v-model="concept"
+            v-model="tabConcept"
             label="Character Concept *"
             autogrow
             hint="Who or what is this kindred?"
             hide-hint
             lazy-rules
             label-color="primary"
-            @update:model-value="$emit('concept', this.concept)"
+            @update:model-value="$emit('update:concept', this.tabConcept)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -88,7 +88,7 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="ambition"
+            v-model="tabAmbition"
             class="select"
             label="Ambition *"
             hint="Long term goals"
@@ -96,7 +96,7 @@
             autogrow
             lazy-rules
             label-color="primary"
-            @update:model-value="$emit('ambition', this.ambition)"
+            @update:model-value="$emit('update:ambition', this.tabAmbition)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -108,7 +108,7 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="desire"
+            v-model="tabDesire"
             class="select"
             label="Desire *"
             hint="Specific, short-term goal"
@@ -116,7 +116,7 @@
             autogrow
             label-color="primary"
             lazy-rules
-            @update:model-value="$emit('desire', this.desire)"
+            @update:model-value="$emit('update:desire', this.tabDesire)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -128,7 +128,7 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="archetype"
+            v-model="tabArchetype"
             label="Archetype *"
             hint="Regain willpower when you fulfill your purpose. Examples: Judge, Guru, Gambler, Masochist "
             hide-hint
@@ -136,7 +136,9 @@
             class="select"
             label-color="primary"
             lazy-rules
-            @update:model-value="this.$emit('archetype', this.archetype)"
+            @update:model-value="
+              this.$emit('update:archetype', this.tabArchetype)
+            "
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -146,14 +148,14 @@
             ]"
           />
           <q-select
-            v-model="sect"
+            v-model="tabSect"
             :options="sectOptions"
             label="Sect"
             label-color="primary"
             bg-color="grey-3"
             filled
             color="secondary"
-            @update:model-value="this.$emit('sect', this.sect)"
+            @update:model-value="this.$emit('update:sect', this.tabSect)"
             popup-content-style="background-color:#222831; color:white"
           />
           <q-select
@@ -180,12 +182,14 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="chronicle"
+            v-model="tabChronicle"
             label="Chronicle *"
             class="select q-mt-md"
             label-color="primary"
             lazy-rules
-            @update:model-value="this.$emit('chronicle', this.chronicle)"
+            @update:model-value="
+              this.$emit('update:chronicle', this.tabChronicle)
+            "
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -217,7 +221,8 @@
           </div>
           <div class="q-mb-sm" style="color: white">
             Convictions and touchstones are
-            <span v-if="this.convictions.length != this.touchstones.length"
+            <span
+              v-if="this.tabConvictions.length != this.tabTouchstones.length"
               >NOT</span
             >
             equal.
@@ -242,9 +247,8 @@
                   this.convicWarning();
                   return;
                 }
-                this.convictions.push(this.convictionInput);
+                this.tabConvictions.push(this.convictionInput);
                 this.convictionInput = '';
-                this.$emit('convictions', this.convictions);
               }
             "
             :rules="[
@@ -269,9 +273,8 @@
                 if (!this.touchStoneInput) {
                   return;
                 }
-                this.touchstones.push(this.touchStoneInput);
+                this.tabTouchstones.push(this.touchStoneInput);
                 this.touchStoneInput = '';
-                this.$emit('touchstones', this.touchstones);
               }
             "
             :rules="[
@@ -285,7 +288,7 @@
 
           <q-list bordered separator>
             <q-item
-              v-for="(conviction, key) in convictions"
+              v-for="(conviction, key) in tabConvictions"
               :key="key"
               clickable
               v-ripple
@@ -304,7 +307,7 @@
           <div class="text-h6" style="font-family: monospace">Touchstones</div>
           <q-list bordered separator>
             <q-item
-              v-for="(touchstone, key) in touchstones"
+              v-for="(touchstone, key) in tabTouchstones"
               :key="key"
               clickable
               v-ripple
@@ -350,7 +353,7 @@
               () => {
                 if (this.specialtyInput) {
                   this.addSpecialty();
-                  this.$emit('specialties', this.specialties);
+                  this.$emit('update:specialties', this.tabSpecialties);
                 }
               }
             "
@@ -845,7 +848,7 @@ export default defineComponent({
   name: "v5-tabs",
   props: [
     "specialtiePoints",
-    "specials",
+    "specialties",
     "fullSkills",
     "specialtiesFromPred",
     "advantagePoints",
@@ -863,6 +866,15 @@ export default defineComponent({
     "thinFlaws",
     "disciplineSkills",
     "xp",
+    "charName",
+    "concept",
+    "ambition",
+    "desire",
+    "convictions",
+    "touchstones",
+    "archetype",
+    "sect",
+    "chronicle",
   ],
   emits: [
     "update:specialtiePoints",
@@ -877,16 +889,16 @@ export default defineComponent({
     "update:thinFlaws",
     "update:disciplineSkills",
     "update:xp",
-    "specialties",
-    "convictions",
-    "touchstones",
-    "charName",
-    "concept",
-    "ambition",
-    "desire",
-    "archetype",
-    "sect",
-    "chronicle",
+    "update:specialties",
+    "update:convictions",
+    "update:touchstones",
+    "update:charName",
+    "update:concept",
+    "update:ambition",
+    "update:desire",
+    "update:archetype",
+    "update:sect",
+    "update:chronicle",
   ],
 
   setup(props) {
@@ -906,30 +918,30 @@ export default defineComponent({
       allCultMerits: allCultMerits.Cults,
       allBackgrounds: allBackgrounds.Backgrounds,
       advOrFlaw: "",
+      tabCharName: props.charName,
       advFlawChoice: "",
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
-      ambition: "",
-      archetype: "",
-      charName: "",
+      tabAmbition: props.ambition,
+      tabArchetype: props.archetype,
       thinClanBane: "",
       filteredOptions: [],
       cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
       nosImage,
-      convictions: [],
-      touchstones: [],
+      tabConvictions: props.convictions,
+      tabTouchstones: props.touchstones,
       disciplinesList,
       thinBonusDiscInput: "",
-      chronicle: "",
+      tabChronicle: props.chronicle,
       havenMerits,
-      desire: "",
-      concept: "",
+      tabDesire: props.desire,
+      tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
-      sect: "Camarilla",
+      tabSect: props.sect,
       sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
       advantageCategories: [
         "Merits",
@@ -940,7 +952,7 @@ export default defineComponent({
       ],
       specialtyInput: "",
       skillSelect: "",
-      specialties: props.specials,
+      tabSpecialties: props.specialties,
       sireInput: props.sire,
       thinFlawsTabs: props.thinFlaws,
       thinAdvantagesTabs: props.thinAdvantages,
@@ -966,13 +978,13 @@ export default defineComponent({
     },
 
     removeConviction(event) {
-      this.convictions.splice(event, 1);
+      this.tabConvictions.splice(event, 1);
     },
     removeTouchstone(event) {
-      this.touchstones.splice(event, 1);
+      this.tabTouchstones.splice(event, 1);
     },
     removeSpecialty(event) {
-      this.specialties.splice(event, 1);
+      this.tabSpecialties.splice(event, 1);
       this.handlePoints(false);
     },
     removeAdvantage(event, cost, name, category) {
@@ -1026,7 +1038,7 @@ export default defineComponent({
       if (this.handlePoints(true) === false) {
         return;
       }
-      this.specialties.push({
+      this.tabSpecialties.push({
         skill: this.skillSelect.toLowerCase(),
         specialty: this.specialtyInput,
       });

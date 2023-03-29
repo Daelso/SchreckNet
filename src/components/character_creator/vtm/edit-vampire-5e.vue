@@ -427,16 +427,15 @@
         </q-list>
       </q-card>
       <tabs
-        @charName="handleCharName($event)"
-        @concept="handleConcept($event)"
-        @ambition="handleAmbition($event)"
-        @desire="handleDesire($event)"
-        @convictions="handleConvictions($event)"
-        @touchstones="handleTouchstones($event)"
-        @archetype="handleArchetype($event)"
-        @sect="handleSect($event)"
-        @chronicle="handleChronicle($event)"
-        @specialties="handleSpecialties($event)"
+        v-model:charName="charName"
+        v-model:concept="concept"
+        v-model:ambition="ambition"
+        v-model:desire="desire"
+        v-model:convictions="convictions"
+        v-model:touchstones="touchstones"
+        v-model:archetype="archtypeModel"
+        v-model:sect="sect"
+        v-model:chronicle="chronicle"
         v-model:specialtiePoints="totalSpecialty"
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
@@ -450,8 +449,8 @@
         v-model:thinAdvantages="thinAdvantages"
         v-model:thinFlaws="thinFlaws"
         v-model:xp="this.xp"
+        v-model:specialties="this.specialties"
         :discDone="this.disciplinesDone"
-        :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
         :age="this.age"
@@ -713,7 +712,7 @@ export default {
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
       predatorType: this.kindred.predator_type,
-      specialties: [],
+      specialties: this.kindred.specialties,
       specialtiesFromPred: [],
       specialtiesFromXp: [],
       clan: this.kindred.clan,
@@ -749,7 +748,6 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log("UHHH");
       if (this.saving === true) {
         this.$q.notify({
           color: "red-5",
@@ -843,9 +841,7 @@ export default {
       this.saving = false;
       this.$q.loading.hide();
     },
-    handleCharName(data) {
-      this.charName = data;
-    },
+
     handleConcept(data) {
       this.concept = data;
     },

@@ -456,6 +456,7 @@
         :age="this.age"
         :clan="this.clan"
         :debug="this.debug"
+        :edit="this.edit"
       />
     </div>
   </q-form>
@@ -593,6 +594,7 @@ export default {
       pageFound,
       kindred: ref(kindred),
       currentUser: ref(currentUser),
+      edit: ref(true),
     };
   },
   data() {

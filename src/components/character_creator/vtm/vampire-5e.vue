@@ -447,6 +447,7 @@
         :age="this.age"
         :clan="this.clan"
         :debug="this.debug"
+        :edit="this.edit"
       />
     </div>
   </q-form>
@@ -555,6 +556,7 @@ export default {
     return {
       tab: ref("coreConcept"),
       layout: ref(false),
+      edit: ref(false),
     };
   },
   data() {

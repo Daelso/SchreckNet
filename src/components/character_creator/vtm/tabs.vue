@@ -390,7 +390,7 @@
             </q-item>
           </q-list>
           <q-separator />
-          <div class="text-h6" style="font-family: monospace">
+          <div v-if="!this.edit" class="text-h6" style="font-family: monospace">
             Specialties from Predator Type
           </div>
 
@@ -875,6 +875,7 @@ export default defineComponent({
     "archetype",
     "sect",
     "chronicle",
+    "edit",
   ],
   emits: [
     "update:specialtiePoints",

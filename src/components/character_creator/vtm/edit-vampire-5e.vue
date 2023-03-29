@@ -749,6 +749,7 @@ export default {
   },
   methods: {
     onSubmit() {
+      console.log("UHHH");
       if (this.saving === true) {
         this.$q.notify({
           color: "red-5",
@@ -816,7 +817,7 @@ export default {
       };
 
       axios
-        .put(baseUrl + "/vampires/new", character, {
+        .put(baseUrl + "/vampires/vampire/edit/" + this.kindred.id, character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -828,7 +829,7 @@ export default {
           });
           this.$router.push({
             name: "vampire5eView",
-            params: { id: res.data },
+            params: { id: this.kindred.id },
           });
         })
         .catch((err) =>

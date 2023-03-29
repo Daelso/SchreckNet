@@ -559,7 +559,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },

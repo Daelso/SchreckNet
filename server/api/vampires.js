@@ -95,6 +95,60 @@ router.route("/card").get(async (req, res) => {
   }
 });
 
+router.route("/vampire/edit/:id").put(async (req, res) => {
+  try {
+    const currentUser = lib.getCurrentUser(req, res);
+
+    const kindred = await Vampires.findByPk(req.params.id);
+
+    if (currentUser.id !== kindred.created_by) {
+      res.status(403).send("Access Denied");
+      return;
+    }
+
+    await kindred.update({
+      charName: req.body.name,
+      alt_bane: req.body.altBane,
+      clan: req.body.clan,
+      concept: req.body.concept,
+      ambition: req.body.ambition,
+      desire: req.body.desire,
+      archetype: req.body.archetype,
+      sect: req.body.sect,
+      chronicle: req.body.chronicle,
+      sireName: req.body.sireName,
+      convictions: req.body.convictions,
+      touchstones: req.body.touchstones,
+      attributes: req.body.attributes,
+      skills: req.body.skills,
+      age: req.body.age,
+      generation: req.body.generation,
+      predator_type: req.body.predatorType,
+      cult: req.body.cult,
+      health: req.body.health,
+      willpower: req.body.willpower,
+      remaining_specialties: req.body.remainingSpecialties,
+      potency: req.body.potency,
+      max_potency: req.body.maxPotency,
+      disciplines: req.body.disciplines,
+      discipline_skills: req.body.disciplineSkills,
+      xp: req.body.xp,
+      specialties: req.body.specialties,
+      advantages: req.body.advantages,
+      advantages_remaining: req.body.advantages_remaining,
+      flaws_remaining: req.body.flaws_remaining,
+      humanity: req.body.humanity,
+      created_by: kindred.created_by,
+      createdAt: kindred.createdAt,
+      updatedAt: Date.now(),
+    });
+
+    res.status(200).send("Kindred updated!");
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
   try {
     let currentUser = lib.getCurrentUser(req, res);

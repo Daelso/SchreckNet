@@ -303,13 +303,25 @@
         />
       </template>
     </q-banner>
-    <a
-      href="https://linktr.ee/nerdbert"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="charSheetBlurb"
-      >Sheets provided by Nerdbert, support him here.
-    </a>
+    <div class="charSheetBlurb">
+      <a
+        href="https://linktr.ee/nerdbert"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Sheets provided by Nerdbert, support him here.
+      </a>
+      <q-btn
+        v-if="
+          this.currentUser !== false &&
+          this.currentUser.username === this.creator
+        "
+        flat
+        label="Delete Character"
+        @click="deleteConfirm()"
+        type="submit"
+        color="red"
+      />
+    </div>
   </div>
 </template>
 
@@ -322,6 +334,8 @@
   color: white;
   font-style: italic;
   margin-top: 5px;
+  display: flex;
+  flex-direction: column;
 }
 .q-field__bottom {
   color: white;
@@ -465,6 +479,52 @@ export default defineComponent({
         return "blah";
       });
 
+    function deleteConfirm() {
+      this.$q
+        .dialog({
+          title: "Confirm Deletion",
+          dark: true,
+          color: "red",
+          message:
+            "Are you sure you wish to delete this character? This cannot be undone!",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async () => {
+          try {
+            let baseUrl = "";
+            if (window.location.href.includes("localhost")) {
+              baseUrl = "http://localhost:5000";
+            } else {
+              baseUrl = window.location.origin;
+            }
+
+            await this.$axios.delete(baseUrl + "/hunters/delete/" + hunter.id, {
+              withCredentials: true,
+            });
+          } catch (err) {
+            this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "Failed to delete! Try again later!",
+            });
+            console.log(err);
+            return;
+          }
+          this.$q.notify({
+            color: "green-5",
+            textColor: "white",
+            icon: "check",
+            message: "Character deleted!",
+          });
+          return;
+        })
+        .onCancel(() => {
+          return;
+        });
+    }
+
     return {
       currentUser,
       hunterId,
@@ -475,6 +535,7 @@ export default defineComponent({
       created_by: hunter.created_by,
       creator,
       pageFound,
+      deleteConfirm,
       charSheet,
       spentXp: 0,
       baneseverity: 0,

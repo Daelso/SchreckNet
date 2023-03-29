@@ -86,4 +86,20 @@ router.route("/card").get(async (req, res) => {
   }
 });
 
+router.route("/delete/:id").delete(async (req, res) => {
+  try {
+    let currentUser = lib.getCurrentUser(req, res);
+
+    const hunter = await Hunters.findByPk(req.params.id);
+
+    if (currentUser.id !== hunter.created_by) {
+      return;
+    }
+    hunter.destroy();
+    res.status(200).send("Deletion successful");
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 module.exports = router; //Exports our routes

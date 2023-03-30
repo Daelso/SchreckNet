@@ -42,11 +42,11 @@
             filled
             class="select"
             bg-color="grey-3"
-            v-model="charName"
+            v-model="tabCharName"
             label="Your character's name *"
             lazy-rules
             label-color="primary"
-            @update:model-value="$emit('charName', this.charName)"
+            @update:model-value="$emit('update:charName', this.tabCharName)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -76,14 +76,14 @@
             filled
             bg-color="grey-3"
             class="select"
-            v-model="concept"
+            v-model="tabConcept"
             label="Character Concept *"
             autogrow
             hint="Example: Monster-hunting soldier-of-fortune"
             hide-hint
             lazy-rules
             label-color="primary"
-            @update:model-value="$emit('concept', this.concept)"
+            @update:model-value="$emit('update:concept', this.tabConcept)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -95,7 +95,7 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="ambition"
+            v-model="tabAmbition"
             class="select"
             label="Ambition *"
             hint="Long term goals"
@@ -103,7 +103,7 @@
             autogrow
             lazy-rules
             label-color="primary"
-            @update:model-value="$emit('ambition', this.ambition)"
+            @update:model-value="$emit('update:ambition', this.tabAmbition)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -115,7 +115,7 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="desire"
+            v-model="tabDesire"
             class="select"
             label="Desire *"
             hint="Specific, short-term goal"
@@ -123,7 +123,7 @@
             autogrow
             label-color="primary"
             lazy-rules
-            @update:model-value="$emit('desire', this.desire)"
+            @update:model-value="$emit('update:desire', this.tabDesire)"
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -136,12 +136,14 @@
           <q-input
             filled
             bg-color="grey-3"
-            v-model="chronicle"
+            v-model="tabChronicle"
             label="Chronicle *"
             class="select"
             label-color="primary"
             lazy-rules
-            @update:model-value="this.$emit('chronicle', this.chronicle)"
+            @update:model-value="
+              this.$emit('update:chronicle', this.tabChronicle)
+            "
             :rules="[
               (val) =>
                 (typeof val === 'string' &&
@@ -216,7 +218,7 @@
         <q-tab-panel name="touchstones">
           <div class="q-mb-sm">Must have 1-3 touchtones.</div>
           <div class="q-mb-sm" style="color: white">
-            {{ this.touchstones.length }} touchstones
+            {{ this.tabTouchStones.length }} touchstones
           </div>
           <q-input
             filled
@@ -234,10 +236,10 @@
                 if (!this.touchStoneInput) {
                   return;
                 }
-                if (this.touchstones.length <= 2) {
-                  this.touchstones.push(this.touchStoneInput);
+                if (this.tabTouchStones.length <= 2) {
+                  this.tabTouchStones.push(this.touchStoneInput);
                   this.touchStoneInput = '';
-                  this.$emit('touchstones', this.touchstones);
+                  this.$emit('update:touchstones', this.tabTouchStones);
                 } else {
                   this.$q.notify({
                     message: 'You may have a max of 3 touchstones',
@@ -721,6 +723,12 @@ export default defineComponent({
     "redemption",
     "cell",
     "xp",
+    "charName",
+    "concept",
+    "ambition",
+    "desire",
+    "chronicle",
+    "touchstones",
   ],
   emits: [
     "update:specialtiePoints",
@@ -734,12 +742,12 @@ export default defineComponent({
     "update:xp",
     "specialties",
     "creeds",
-    "touchstones",
-    "charName",
-    "concept",
-    "ambition",
-    "desire",
-    "chronicle",
+    "update:touchstones",
+    "update:charName",
+    "update:concept",
+    "update:ambition",
+    "update:desire",
+    "update:chronicle",
   ],
 
   setup(props) {
@@ -770,8 +778,8 @@ export default defineComponent({
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
-      ambition: "",
-      charName: "",
+      tabAmbition: props.ambition,
+      tabCharName: props.charName,
       filteredOptions: [],
       creedInput: props.creed,
       driveInput: props.drive,
@@ -780,11 +788,11 @@ export default defineComponent({
       xpInput: props.xp,
       touchStoneInput: "",
       creeds: [],
-      touchstones: [],
-      chronicle: "",
+      tabTouchStones: props.touchstones,
+      tabChronicle: props.chronicle,
       safeHouseMerits,
-      desire: "",
-      concept: "",
+      tabDesire: props.desire,
+      tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
       advantageCategories: ["Merits", "Backgrounds", "Safe House"],
@@ -815,7 +823,7 @@ export default defineComponent({
       this.creeds.splice(event, 1);
     },
     removeTouchstone(event) {
-      this.touchstones.splice(event, 1);
+      this.tabTouchStones.splice(event, 1);
     },
     removeSpecialty(event) {
       this.specialties.splice(event, 1);

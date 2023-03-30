@@ -293,6 +293,17 @@
         <q-btn
           v-if="
             this.currentUser !== false &&
+            this.currentUser.username === this.creator
+          "
+          flat
+          label="Edit Character"
+          @click="goToEdit()"
+          type="submit"
+          color="white"
+        />
+        <q-btn
+          v-if="
+            this.currentUser !== false &&
             this.currentUser.username !== this.creator
           "
           flat
@@ -1008,6 +1019,13 @@ export default defineComponent({
       ) {
         const chunk = this.attributeInfo.Attributes.slice(i, i + chunkSize);
       }
+    },
+
+    goToEdit() {
+      this.$router.push({
+        name: "editHunter",
+        params: { id: this.hunterId },
+      });
     },
   },
 });

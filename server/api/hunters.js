@@ -86,6 +86,49 @@ router.route("/card").get(async (req, res) => {
   }
 });
 
+router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
+  try {
+    const currentUser = lib.getCurrentUser(req, res);
+
+    const hunter = await Hunters.findByPk(req.params.id);
+
+    if (currentUser.id !== hunter.created_by) {
+      res.status(403).send("Access Denied");
+      return;
+    }
+
+    await hunter.update({
+      charName: req.body.name,
+      cell: req.body.cell,
+      concept: req.body.concept,
+      ambition: req.body.ambition,
+      desire: req.body.desire,
+      creed: req.body.creed,
+      drive: req.body.drive,
+      redemption: req.body.redemption,
+      chronicle: req.body.chronicle,
+      touchstones: req.body.touchstones,
+      attributes: req.body.attributes,
+      skills: req.body.skills,
+      health: req.body.health,
+      willpower: req.body.willpower,
+      remaining_specialties: req.body.remainingSpecialties,
+      edges: req.body.edgeArr,
+      xp: req.body.xp,
+      spentXp: req.body.spentXp,
+      specialties: req.body.specialties,
+      advantages: req.body.advantages,
+      advantages_remaining: req.body.advantages_remaining,
+      flaws_remaining: req.body.flaws_remaining,
+      updatedAt: Date.now(),
+    });
+
+    res.status(200).send("Hunter updated!");
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
   try {
     let currentUser = lib.getCurrentUser(req, res);

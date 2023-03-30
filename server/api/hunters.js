@@ -123,7 +123,7 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.status(200).send("Kindred updated!");
+    res.status(200).send("Hunter updated!");
   } catch (err) {
     res.status(404).send(err);
   }

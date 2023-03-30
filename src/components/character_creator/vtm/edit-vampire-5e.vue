@@ -1,5 +1,14 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
+  <div
+    v-if="
+      !this.pageFound ||
+      !this.currentUser ||
+      this.currentUser.id !== this.kindred.created_by
+    "
+  >
+    <notFound />
+  </div>
   <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
@@ -10,6 +19,7 @@
             <div>
               Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
             </div>
+
             <div>Sect: {{ sect }}</div>
             <div>Age: {{ age.label }}</div>
             <div>Generation: {{ generation.label }}</div>
@@ -322,7 +332,7 @@
           <q-btn
             :disable="this.saveGuard()"
             flat
-            label="Save Character"
+            label="Update Character"
             type="submit"
             color="white"
           />
@@ -364,7 +374,7 @@
               (!this.skillsDone || !this.attributesDone) && this.debug !== true
             "
             clickable
-            @click="clanSelected"
+            @click="confirmClanSelect()"
           >
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
@@ -415,6 +425,11 @@
             </q-item-section>
           </q-item>
         </q-list>
+        <q-input color="red" dark type="number" v-model="xp" label="Set XP">
+          <template v-slot:prepend>
+            <q-icon name="app:ankh" />
+          </template>
+        </q-input>
       </q-card>
       <tabs
         v-model:charName="charName"
@@ -426,7 +441,6 @@
         v-model:archetype="archtypeModel"
         v-model:sect="sect"
         v-model:chronicle="chronicle"
-        v-model:specialties="this.specialties"
         v-model:specialtiePoints="totalSpecialty"
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
@@ -440,8 +454,8 @@
         v-model:thinAdvantages="thinAdvantages"
         v-model:thinFlaws="thinFlaws"
         v-model:xp="this.xp"
+        v-model:specialties="this.specialties"
         :discDone="this.disciplinesDone"
-        :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :specialtiesFromPred="this.specialtiesFromPred"
         :age="this.age"
@@ -513,15 +527,15 @@
 
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import clanSelect from "../vtm/5eClanSelect.vue";
-import tabs from "../vtm/tabs.vue";
-import spendXp from "../vtm/spendXp.vue";
-import attributes from "../vtm/5eAttributes.vue";
-import skills from "../vtm/5eSkills.vue";
+import clanSelect from "./5eClanSelect.vue";
+import tabs from "./tabs.vue";
+import spendXp from "./spendXp.vue";
+import attributes from "./5eAttributes.vue";
+import skills from "./5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
+import notFound from "../../../pages/ErrorNotFound.vue";
 
 const metaData = {
   title: "SchreckNet",
@@ -540,9 +554,9 @@ const metaData = {
 export default {
   components: {
     tabs,
+    notFound,
   },
-  setup() {
-    const router = useRouter();
+  async setup() {
     const axios = require("axios");
     useMeta(metaData);
 
@@ -553,123 +567,146 @@ export default {
       baseUrl = window.location.origin;
     }
 
+    let pageFound = ref(false);
+
+    const kindredId = ref(window.location.href.split("/")[6]);
+
+    const kindred = await axios
+      .get(baseUrl + "/vampires/vampire/" + kindredId.value, {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        pageFound.value = true;
+        return resp.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        return "blah";
+      });
+
+    const currentUser = await axios
+      .get(baseUrl + "/user/currentUser", {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        return resp.data;
+      });
+
     return {
       tab: ref("coreConcept"),
       layout: ref(false),
-      edit: ref(false),
+      pageFound,
+      kindred: ref(kindred),
+      currentUser: ref(currentUser),
+      edit: ref(true),
     };
   },
   data() {
     return {
       debug: false,
       saving: false,
-      advantagesObj: {
-        merits: { advantages: [], flaws: [] },
-        backgrounds: { advantages: [], flaws: [] },
-        haven: { advantages: [], flaws: [] },
-        loresheets: { advantages: [], flaws: [] },
-      },
-      attributesDone: false,
+      advantagesObj: this.kindred.advantages,
+      attributesDone: true,
       attributeInfo,
-      altBane: false,
+      altBane: this.kindred.alt_bane,
       skillInfo,
-      age: { label: "Childer", bonusXp: 0 },
-      archtypeModel: ref(null),
-      ambition: "",
-      attributePoints: 22,
-      skillPoints: 29,
-      charName: "",
-      cult: "None",
+      age: { label: this.kindred.age, bonusXp: 0 },
+      archtypeModel: this.kindred.archetype,
+      ambition: this.kindred.ambition,
+      attributePoints: 0,
+      skillPoints: 0,
+      charName: this.kindred.charName,
+      cult: this.kindred.cult,
       disableBlurb: "",
-      baseCharisma: 0,
-      baseComposure: 0,
-      baseDexterity: 0,
-      baseIntelligence: 0,
-      baseManipulation: 0,
-      baseResolve: 0,
-      baseStamina: 0,
-      baseStrength: 0,
-      baseWits: 0,
+      baseCharisma: this.kindred.attributes.charisma,
+      baseComposure: this.kindred.attributes.composure,
+      baseDexterity: this.kindred.attributes.dexterity,
+      baseIntelligence: this.kindred.attributes.intelligence,
+      baseManipulation: this.kindred.attributes.manipulation,
+      baseResolve: this.kindred.attributes.resolve,
+      baseStamina: this.kindred.attributes.stamina,
+      baseStrength: this.kindred.attributes.strength,
+      baseWits: this.kindred.attributes.wits,
       gainedPoints: 0,
       baseSpecialties: 1,
       gainedSpecialties: 0,
-      totalSpecialty: 1,
-      disciplinesDone: false,
-      charisma: 0,
-      composure: 0,
-      dexterity: 0,
-      intelligence: 0,
-      manipulation: 0,
-      resolve: 0,
-      stamina: 0,
-      strength: 0,
-      wits: 0,
+      totalSpecialty: this.kindred.remaining_specialties,
+      disciplinesDone: true,
+      charisma: this.kindred.attributes.charisma,
+      composure: this.kindred.attributes.composure,
+      dexterity: this.kindred.attributes.dexterity,
+      intelligence: this.kindred.attributes.intelligence,
+      manipulation: this.kindred.attributes.manipulation,
+      resolve: this.kindred.attributes.resolve,
+      stamina: this.kindred.attributes.stamina,
+      strength: this.kindred.attributes.strength,
+      wits: this.kindred.attributes.wits,
       baseFlaws: 2,
       baseAdvantages: 7,
-      flaws: 2,
-      advantages: 7,
+      flaws: this.kindred.flaws_remaining,
+      advantages: this.kindred.advantages_remaining,
       thinAdvantages: 0,
       thinFlaws: 0,
-      chronicle: "",
-      convictions: [],
-      disciplineSkills: [],
+      chronicle: this.kindred.chronicle,
+      convictions: this.kindred.convictions,
+      disciplineSkills: this.kindred.discipline_skills,
       baseSkills: {
-        athletics: 0,
-        brawl: 0,
-        craft: 0,
-        drive: 0,
-        firearms: 0,
-        melee: 0,
-        larceny: 0,
-        stealth: 0,
-        survival: 0,
-        animalken: 0,
-        etiquette: 0,
-        insight: 0,
-        intimidation: 0,
-        leadership: 0,
-        performance: 0,
-        persuasion: 0,
-        streetwise: 0,
-        subterfuge: 0,
-        academics: 0,
-        awareness: 0,
-        finance: 0,
-        investigation: 0,
-        medicine: 0,
-        occult: 0,
-        politics: 0,
-        science: 0,
-        technology: 0,
+        athletics: this.kindred.skills.athletics,
+        brawl: this.kindred.skills.brawl,
+        craft: this.kindred.skills.craft,
+        drive: this.kindred.skills.drive,
+        firearms: this.kindred.skills.firearms,
+        melee: this.kindred.skills.melee,
+        larceny: this.kindred.skills.larceny,
+        stealth: this.kindred.skills.stealth,
+        survival: this.kindred.skills.survival,
+        animalken: this.kindred.skills.animalken,
+        etiquette: this.kindred.skills.etiquette,
+        insight: this.kindred.skills.insight,
+        intimidation: this.kindred.skills.intimidation,
+        leadership: this.kindred.skills.leadership,
+        performance: this.kindred.skills.performance,
+        persuasion: this.kindred.skills.persuasion,
+        streetwise: this.kindred.skills.streetwise,
+        subterfuge: this.kindred.skills.subterfuge,
+        academics: this.kindred.skills.academics,
+        awareness: this.kindred.skills.awareness,
+        finance: this.kindred.skills.finance,
+        investigation: this.kindred.skills.investigation,
+        medicine: this.kindred.skills.medicine,
+        occult: this.kindred.skills.occult,
+        politics: this.kindred.skills.politics,
+        science: this.kindred.skills.science,
+        technology: this.kindred.skills.technology,
       },
       trueSkills: {
-        athletics: 0,
-        brawl: 0,
-        craft: 0,
-        drive: 0,
-        firearms: 0,
-        melee: 0,
-        larceny: 0,
-        stealth: 0,
-        survival: 0,
-        animalken: 0,
-        etiquette: 0,
-        insight: 0,
-        intimidation: 0,
-        leadership: 0,
-        performance: 0,
-        persuasion: 0,
-        streetwise: 0,
-        subterfuge: 0,
-        academics: 0,
-        awareness: 0,
-        finance: 0,
-        investigation: 0,
-        medicine: 0,
-        occult: 0,
-        politics: 0,
-        science: 0,
-        technology: 0,
+        athletics: this.kindred.skills.athletics,
+        brawl: this.kindred.skills.brawl,
+        craft: this.kindred.skills.craft,
+        drive: this.kindred.skills.drive,
+        firearms: this.kindred.skills.firearms,
+        melee: this.kindred.skills.melee,
+        larceny: this.kindred.skills.larceny,
+        stealth: this.kindred.skills.stealth,
+        survival: this.kindred.skills.survival,
+        animalken: this.kindred.skills.animalken,
+        etiquette: this.kindred.skills.etiquette,
+        insight: this.kindred.skills.insight,
+        intimidation: this.kindred.skills.intimidation,
+        leadership: this.kindred.skills.leadership,
+        performance: this.kindred.skills.performance,
+        persuasion: this.kindred.skills.persuasion,
+        streetwise: this.kindred.skills.streetwise,
+        subterfuge: this.kindred.skills.subterfuge,
+        academics: this.kindred.skills.academics,
+        awareness: this.kindred.skills.awareness,
+        finance: this.kindred.skills.finance,
+        investigation: this.kindred.skills.investigation,
+        medicine: this.kindred.skills.medicine,
+        occult: this.kindred.skills.occult,
+        politics: this.kindred.skills.politics,
+        science: this.kindred.skills.science,
+        technology: this.kindred.skills.technology,
       },
       skillDistribution: {
         label: "Jack-of-all-trades",
@@ -680,11 +717,11 @@ export default {
         ],
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
-      predatorType: "Alleycat",
-      specialties: [],
+      predatorType: this.kindred.predator_type,
+      specialties: this.kindred.specialties,
       specialtiesFromPred: [],
       specialtiesFromXp: [],
-      clan: ref("Brujah"),
+      clan: this.kindred.clan,
       clanBane: ref(
         "Violent Temper: Subtract dice equal to the Bane Severity of the Brujah from any roll to resist fury frenzy. This cannot take the pool below one die (V5 Corebook p.67)"
       ),
@@ -694,16 +731,20 @@ export default {
       clanCompulsion: ref(
         "Rebellion: the vampire takes a stand against whatever or whomever they see as the status quo in the situation, whether that is their leader, a viewpoint expressed by a potential vessel, or just the task they were supposed to do at the moment. Until they have gone against their orders or expectations, perceived or real, the vampire receives a two dice penalty to all rolls. This Compulsion ends once they have managed to either make someone change their minds (by force if necessary) or done the opposite of what was expected of them. (V5 Corebook p.210)"
       ),
-      desire: "",
-      disciplines: {},
-      humanity: 7,
-      sect: ref("Camarilla"),
-      sire: null,
-      concept: "",
-      generation: { label: "12th", potency: 1, maxPotency: 3 },
-      touchstones: [],
-      xp: 0,
-      skillsDone: false,
+      desire: this.kindred.desire,
+      disciplines: this.kindred.disciplines,
+      humanity: this.kindred.humanity,
+      sect: this.kindred.sect,
+      sire: this.kindred.sireName,
+      concept: this.kindred.concept,
+      generation: {
+        label: this.kindred.generation,
+        potency: this.kindred.potency,
+        maxPotency: this.kindred.max_potency,
+      },
+      touchstones: this.kindred.touchstones,
+      xp: this.kindred.xp,
+      skillsDone: true,
       tooltips: ref([
         "Supernatural quickness and reflexes",
         "The Discipline of physical vigor and strength",
@@ -780,7 +821,7 @@ export default {
       };
 
       axios
-        .post(baseUrl + "/vampires/new", character, {
+        .put(baseUrl + "/vampires/vampire/edit/" + this.kindred.id, character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -788,11 +829,11 @@ export default {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Kindred created!",
+            message: "Kindred updated!",
           });
           this.$router.push({
             name: "vampire5eView",
-            params: { id: res.data },
+            params: { id: this.kindred.id },
           });
         })
         .catch((err) =>
@@ -807,6 +848,37 @@ export default {
       this.$q.loading.hide();
     },
 
+    confirmClanSelect() {
+      this.$q
+        .dialog({
+          title: "Warning",
+          dark: true,
+          color: "red",
+          message:
+            "Opening this menu will reset your clan and discipline selections!",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async () => {
+          try {
+            this.clanSelected();
+          } catch (err) {
+            this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "Failed to open! Try again later!",
+            });
+            console.log(err);
+            return;
+          }
+
+          return;
+        })
+        .onCancel(() => {
+          return;
+        });
+    },
     clanSelected() {
       this.$q
         .dialog({
@@ -975,13 +1047,7 @@ export default {
     },
 
     finalSpecialties() {
-      let specialties = [];
-      specialties = this.specialties.concat(
-        this.specialtiesFromPred,
-        this.specialtiesFromXp
-      );
-
-      return specialties;
+      return this.kindred.specialties;
     },
 
     saveGuard() {

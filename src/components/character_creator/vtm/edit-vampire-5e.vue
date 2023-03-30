@@ -374,7 +374,7 @@
               (!this.skillsDone || !this.attributesDone) && this.debug !== true
             "
             clickable
-            @click="clanSelected"
+            @click="confirmClanSelect()"
           >
             <q-tooltip
               v-if="!this.skillsDone || !this.attributesDone"
@@ -425,6 +425,11 @@
             </q-item-section>
           </q-item>
         </q-list>
+        <q-input color="red" dark type="number" v-model="xp" label="Set XP">
+          <template v-slot:prepend>
+            <q-icon name="app:ankh" />
+          </template>
+        </q-input>
       </q-card>
       <tabs
         v-model:charName="charName"
@@ -579,7 +584,6 @@ export default {
         return "blah";
       });
 
-    console.log(kindred);
     const currentUser = await axios
       .get(baseUrl + "/user/currentUser", {
         withCredentials: true,
@@ -844,6 +848,37 @@ export default {
       this.$q.loading.hide();
     },
 
+    confirmClanSelect() {
+      this.$q
+        .dialog({
+          title: "Warning",
+          dark: true,
+          color: "red",
+          message:
+            "Opening this menu will reset your clan and discipline selections!",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async () => {
+          try {
+            this.clanSelected();
+          } catch (err) {
+            this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "Failed to open! Try again later!",
+            });
+            console.log(err);
+            return;
+          }
+
+          return;
+        })
+        .onCancel(() => {
+          return;
+        });
+    },
     clanSelected() {
       this.$q
         .dialog({

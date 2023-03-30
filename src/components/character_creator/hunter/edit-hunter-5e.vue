@@ -518,8 +518,6 @@ export default {
         return resp.data;
       });
 
-    console.log(hunter);
-
     return {
       tab: ref("coreConcept"),
       layout: ref(false),

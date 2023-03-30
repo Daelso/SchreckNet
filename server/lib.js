@@ -9,6 +9,12 @@ const limiter = rateLimit({
   message: "Rate limit exceeded, please wait 15 minutes and try again!",
 });
 
+const postLimiter = rateLimit({
+  windowMs: 300000, //15 min
+  max: 20, //login attempts
+  message: "Rate limit exceeded, please wait 15 minutes and try again!",
+});
+
 const authenticateToken = (req, res, next) => {
   let token = req.cookies.access;
 
@@ -98,4 +104,4 @@ const getCurrentUser = (req, res) => {
   return currentUser;
 };
 
-module.exports = { authenticateToken, getCurrentUser, limiter };
+module.exports = { authenticateToken, getCurrentUser, limiter, postLimiter };

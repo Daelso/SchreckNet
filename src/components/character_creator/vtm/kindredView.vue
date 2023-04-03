@@ -984,7 +984,7 @@ export default defineComponent({
             let rowField = form.getTextField(
               `Disc${curIndex}_Ability${index + 1}`
             );
-
+            rowField.updateAppearances(supportFont);
             rowField.setText(`${x.skill}`);
           }
         });

@@ -1011,6 +1011,7 @@ export default defineComponent({
           continue;
         }
         let advTextBox = form.getTextField(`Merit${i + 1}`);
+        advTextBox.updateAppearances(supportFont);
         advTextBox.setText(`${meritArr[i].name}`);
 
         for (let j = 1; j < meritArr[i].cost + 1; j++) {

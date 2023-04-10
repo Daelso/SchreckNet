@@ -761,8 +761,6 @@ export default defineComponent({
       sireField.updateAppearances(supportFont);
       nameField.updateAppearances(supportFont);
       chronicleField.updateAppearances(supportFont);
-      convictionField.updateAppearances(supportFont);
-      touchstoneField.updateAppearances(supportFont);
 
       conceptField.setFontSize(10);
 
@@ -774,6 +772,7 @@ export default defineComponent({
         convicStoneString += mergedString;
       }
       convictionField.setText(convicStoneString);
+      convictionField.updateAppearances(supportFont);
 
       let touchStoneString = "";
 
@@ -783,6 +782,7 @@ export default defineComponent({
       }
 
       touchstoneField.setText(touchStoneString);
+      touchstoneField.updateAppearances(supportFont);
 
       // health boxes
       for (let i = 1; i < this.attributes.stamina + 3 + 1; i++) {

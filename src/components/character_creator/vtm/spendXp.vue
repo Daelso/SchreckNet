@@ -976,8 +976,8 @@ export default defineComponent({
             break;
           case "Animal Messenger":
             if (
-              this.finalDisciplineObj.Auspex === undefined ||
-              this.finalDisciplineObj.Auspex < 1
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 1
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -996,24 +996,24 @@ export default defineComponent({
             break;
           case "Panacea":
             if (
-              this.finalDisciplineObj.Fortitude === undefined ||
-              this.finalDisciplineObj.Fortitude < 1
+              this.disciplines.Fortitude === undefined ||
+              this.disciplines.Fortitude < 1
             ) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "Fatal Flaw":
             if (
-              this.finalDisciplineObj.Oblivion === undefined ||
-              this.finalDisciplineObj.Oblivion < 1
+              this.disciplines.Oblivion === undefined ||
+              this.disciplines.Oblivion < 1
             ) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "Unburdening the Bestial Soul":
             if (
-              this.finalDisciplineObj.Dominate === undefined ||
-              this.finalDisciplineObj.Dominate < 3
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 3
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1029,8 +1029,8 @@ export default defineComponent({
             break;
           case "Unseen Strike":
             if (
-              this.finalDisciplineObj.Obfuscate === undefined ||
-              this.finalDisciplineObj.Obfuscate < 4 ||
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 4 ||
               this.disciplineSkillsObj.some((e) => e.skill === "Blink") ===
                 false
             ) {
@@ -1038,19 +1038,19 @@ export default defineComponent({
             }
             break;
           case "Implant Suggestion":
-            if (this.finalDisciplineObj.Presence === undefined) {
+            if (this.disciplines.Presence === undefined) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "Invigorating Vitae":
-            if (this.finalDisciplineObj.Auspex === undefined) {
+            if (this.disciplines.Auspex === undefined) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "Mind Masque":
             if (
-              this.finalDisciplineObj.Dominate === undefined ||
-              this.finalDisciplineObj.Dominate < 2
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 2
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1074,16 +1074,16 @@ export default defineComponent({
             break;
           case "Thrown Voice":
             if (
-              (this.finalDisciplineObj.Auspex === undefined ||
-                this.finalDisciplineObj.Auspex < 1) === false
+              (this.disciplines.Auspex === undefined ||
+                this.disciplines.Auspex < 1) === false
             ) {
               mergedOptions.splice(i, 1);
             }
             break;
           case "One With the Land":
             if (
-              (this.finalDisciplineObj.Animalism === undefined ||
-                this.finalDisciplineObj.Animalism < 2) === false ||
+              (this.disciplines.Animalism === undefined ||
+                this.disciplines.Animalism < 2) === false ||
               this.disciplineSkillsObj.some((e) => e.skill === "Earth Meld") ===
                 false
             ) {
@@ -1092,8 +1092,8 @@ export default defineComponent({
             break;
           case "Shadow Servant":
             if (
-              (this.finalDisciplineObj.Auspex === undefined ||
-                this.finalDisciplineObj.Auspex < 1) === false
+              (this.disciplines.Auspex === undefined ||
+                this.disciplines.Auspex < 1) === false
             ) {
               mergedOptions.splice(i, 1);
             }

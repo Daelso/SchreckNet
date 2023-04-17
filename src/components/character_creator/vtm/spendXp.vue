@@ -314,6 +314,7 @@ export default defineComponent({
       dotsInput: ref(1),
       localAttributes,
       specialtiesFromXp,
+      edit: ref(props.info.edit),
       attributeOptions: ref(props.info.attributes),
       clan: ref(props.info.clan),
       potency,

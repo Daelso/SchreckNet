@@ -748,6 +748,7 @@ export default defineComponent({
     "update:ambition",
     "update:desire",
     "update:chronicle",
+    "update:touchstones",
   ],
 
   setup(props) {

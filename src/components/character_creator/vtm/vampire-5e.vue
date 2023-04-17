@@ -940,6 +940,7 @@ export default {
               ],
               cult: this.cult,
               clan: this.clan,
+              edit: this.edit,
               disciplines: this.disciplines,
               disciplineSkills: this.disciplineSkills,
               skills: this.trueSkills,

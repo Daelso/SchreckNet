@@ -354,13 +354,12 @@
         </q-list>
       </q-card>
       <tabs
-        @charName="handleCharName($event)"
-        @concept="handleConcept($event)"
-        @ambition="handleAmbition($event)"
-        @desire="handleDesire($event)"
-        @touchstones="handleTouchstones($event)"
-        @chronicle="handleChronicle($event)"
         @specialties="handleSpecialties($event)"
+        v-model:charName="charName"
+        v-model:chronicle="chronicle"
+        v-model:desire="desire"
+        v-model:ambition="ambition"
+        v-model:concept="concept"
         v-model:specialtiePoints="totalSpecialty"
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
@@ -371,6 +370,7 @@
         v-model:cell="cell"
         v-model:tab="tab"
         v-model:xp="xp"
+        v-model:touchstones="touchstones"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
         :cell="this.cell"
@@ -695,25 +695,7 @@ export default {
       this.$q.loading.hide();
       this.saving = false;
     },
-    handleCharName(data) {
-      this.charName = data;
-    },
-    handleConcept(data) {
-      this.concept = data;
-    },
-    handleAmbition(data) {
-      this.ambition = data;
-    },
-    handleDesire(data) {
-      this.desire = data;
-    },
 
-    handleTouchstones(data) {
-      this.touchstones = data;
-    },
-    handleChronicle(data) {
-      this.chronicle = data;
-    },
     handleSpecialties(data) {
       this.specialties = data;
     },

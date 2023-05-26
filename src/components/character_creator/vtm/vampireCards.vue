@@ -16,7 +16,12 @@
       <q-item-section>
         <q-item-label>{{ vamp.charName }}</q-item-label>
         <q-item-label style="color: white" caption>
-          {{ vamp.clan }} ({{ vamp.sect }}) - {{ vamp.predator_type }}
+          {{
+            ["Giovanni", "Lamiae", "Nagaraja", "Samedi"].includes(vamp.clan)
+              ? vamp.clan + " [Hecata]"
+              : vamp.clan
+          }}
+          ({{ vamp.sect }}) - {{ vamp.predator_type }}
         </q-item-label>
         <q-item-label style="color: white" caption>
           Generation: {{ vamp.generation }} ({{ vamp.age }})

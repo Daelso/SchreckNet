@@ -15,7 +15,13 @@
         <div class="info q-my-sm">
           <div>Name: {{ charName }}</div>
           <div>
-            Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
+            Clan:
+            {{
+              ["Giovanni", "Lamiae", "Nagaraja", "Samedi"].includes(this.clan)
+                ? this.clan + " (Hecata)"
+                : this.clan
+            }}
+            {{ this.altBane ? "(Alternate Bane)" : "" }}
           </div>
           <div>Sect: {{ sect }}</div>
           <div>Age: {{ age }}</div>
@@ -741,7 +747,11 @@ export default defineComponent({
       predatorField.setText(this.predatorType);
       chronicleField.setText(this.chronicle);
       ambitionField.setText(this.ambition);
-      clanField.setText(this.clan);
+      clanField.setText(
+        ["Giovanni", "Lamiae", "Nagaraja", "Samedi"].includes(this.clan)
+          ? this.clan + " (Hecata)"
+          : this.clan
+      );
       sectField.setText(this.sect);
       sireField.setText(this.sire === null ? "Unknown" : this.sire);
       desireField.setText(this.desire);

@@ -1018,6 +1018,7 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               potency: this.generation.potency,
               xp: this.xp,
+              edit: this.edit,
             },
           },
         })

@@ -3,7 +3,7 @@
     {
       "Name": "1444 Chamber",
       "Type": "Other",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "You're personally trusted by one of the clan leaders",
       "Reference": "FR 88"
     },
@@ -81,7 +81,7 @@
     {
       "Name": "Bankers of Dunsirn",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "Fantastically wealthy cannibals",
       "Reference": "Cults 220"
     },
@@ -130,7 +130,7 @@
     {
       "Name": "Calling the Family Reunion",
       "Type": "Other",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The unification and rebranding of the Hecata",
       "Reference": "Cults 228"
     },
@@ -151,21 +151,21 @@
     {
       "Name": "Carna",
       "Type": "NPC",
-      "Prerequisite": "(Tremere?)",
+      "Prerequisite": ["Tremere"],
       "Description": "Rebel Tremere who broke her bonds and formed a new House",
       "Reference": "V5 385"
     },
     {
       "Name": "Child of the Angel Michael",
       "Type": "Cult",
-      "Prerequisite": "Toreador",
+      "Prerequisite": ["Toreador"],
       "Description": "The Nephilim, a cult of beauty-worshipping Toreador",
       "Reference": "Cults 229"
     },
     {
       "Name": "Children of Tenochtitlan",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Pisanob of Mesoamerica",
       "Reference": "Cults 221"
     },
@@ -179,14 +179,14 @@
     {
       "Name": "Cleopatras",
       "Type": "Cult",
-      "Prerequisite": "Nosferatu",
+      "Prerequisite": ["Nosferatu"],
       "Description": "Driven by shared dreams to defy their clan bane and stereotypes",
       "Reference": "Children 105"
     },
     {
       "Name": "Cobweb",
       "Type": "Other",
-      "Prerequisite": "Malkavian",
+      "Prerequisite": ["Malkavian"],
       "Description": "You're tuned in to the Madness Network",
       "Reference": "CbN 270"
     },
@@ -214,7 +214,7 @@
     {
       "Name": "Criminal Puttanesca",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Giovanni's organized crime division",
       "Reference": "Cults 226"
     },
@@ -236,84 +236,84 @@
     {
       "Name": "Descendant of de Camden",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "You are descended from an ancient Cappadocian necromancer",
       "Reference": "Trails 171"
     },
     {
       "Name": "Descendant of Hardestadt",
       "Type": "Bloodline",
-      "Prerequisite": "Ventrue",
+      "Prerequisite": ["Ventrue"],
       "Description": "You descend from the founder of the Camarilla",
       "Reference": "V5 390"
     },
     {
       "Name": "Descendant of Helena",
       "Type": "Bloodline",
-      "Prerequisite": "Toreador",
+      "Prerequisite": ["Toreador"],
       "Description": "You descend from the woman who launched a thousand ships",
       "Reference": "V5 391"
     },
     {
       "Name": "Descendant of Lodin",
       "Type": "Bloodline",
-      "Prerequisite": "Ventrue",
+      "Prerequisite": ["Ventrue"],
       "Description": "You descend from the former Prince of Chicago",
       "Reference": "CbN 273"
     },
     {
       "Name": "Descendant of Menele",
       "Type": "Bloodline",
-      "Prerequisite": "Brujah",
+      "Prerequisite": ["Brujah"],
       "Description": "You descend from an ancient philosopher-king",
       "Reference": "Folios 160"
     },
     {
       "Name": "Descendant of Montano",
       "Type": "Bloodline",
-      "Prerequisite": "Lasombra",
+      "Prerequisite": ["Lasombra"],
       "Description": "You descend from the founder of the Lasombra Antitribu",
       "Reference": "CbN 274"
     },
     {
       "Name": "Descendant of Schreckt",
       "Type": "Bloodline",
-      "Prerequisite": "Tremere",
+      "Prerequisite": ["Tremere"],
       "Description": "You descend from the ruler of the Pyramid",
       "Reference": "V5 405"
     },
     {
       "Name": "Descendant of Tyler",
       "Type": "Bloodline",
-      "Prerequisite": "Brujah",
+      "Prerequisite": ["Brujah"],
       "Description": "You descend from the founder of the Anarch Movement",
       "Reference": "V5 397, An 195"
     },
     {
       "Name": "Descendant of Vasantasena",
       "Type": "Bloodline",
-      "Prerequisite": "Malkavian",
+      "Prerequisite": ["Malkavian"],
       "Description": "You descend from an ex-Sabbat anarchist and liberator",
       "Reference": "V5 399"
     },
     {
       "Name": "Descendant of Xaviar",
       "Type": "Bloodline",
-      "Prerequisite": "Gangrel",
+      "Prerequisite": ["Gangrel"],
       "Description": "You descend from the Gangrel who broke away from the Camarilla",
       "Reference": "V5 406, An 194"
     },
     {
       "Name": "Descendant of Zelios",
       "Type": "Bloodline",
-      "Prerequisite": "Nosferatu",
+      "Prerequisite": ["Nosferatu"],
       "Description": "You descend from a masterful architect and occult geometer",
       "Reference": "V5 398"
     },
     {
       "Name": "Nasyon San An",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Samedi, who work with the dead to gain power",
       "Reference": "Cults 222"
     },
@@ -362,7 +362,7 @@
     {
       "Name": "Flesh-Eaters",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Nagaraja, strange outsiders only tentatively accepted",
       "Reference": "Cults 223"
     },
@@ -390,21 +390,21 @@
     {
       "Name": "Gorgons",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Lamiae, ancient defenders of the Cappadocians",
       "Reference": "Cults 227"
     },
     {
       "Name": "Grudge Masters",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Milliners, spiteful American financiers",
       "Reference": "Children 102"
     },
     {
       "Name": "Harbingers of Ashur",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "Remnants of the Cappadocians who survived the purge",
       "Reference": "Cults 224"
     },
@@ -488,7 +488,7 @@
     {
       "Name": "La Famiglia Giovanni",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "An extended family of Italian necromancers",
       "Reference": "Cults 225"
     },
@@ -502,14 +502,14 @@
     {
       "Name": "Little Siblings",
       "Type": "Bloodline",
-      "Prerequisite": "Hecata",
+      "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "The Rossellini, forceful necromantic legbreakers",
       "Reference": "Children 101"
     },
     {
       "Name": "London Under London",
       "Type": "Other",
-      "Prerequisite": "Nosferatu",
+      "Prerequisite": ["Nosferatu"],
       "Description": "You have access to the extensive tunnels under London",
       "Reference": "FoL 234"
     },
@@ -537,7 +537,7 @@
     {
       "Name": "Malkavian Family",
       "Type": "Other",
-      "Prerequisite": "Malkavian",
+      "Prerequisite": ["Malkavian"],
       "Description": "You are closely connected to others of your clan",
       "Reference": "Folios 165"
     },
@@ -593,14 +593,14 @@
     {
       "Name": "Nictuku",
       "Type": "Other",
-      "Prerequisite": "Nosferatu",
+      "Prerequisite": ["Nosferatu"],
       "Description": "Ancient monstrosities who hunt the Nosferatu",
       "Reference": "Teeth 3"
     },
     {
       "Name": "Occult Artifacts",
       "Type": "Other",
-      "Prerequisite": "Tremere or BH",
+      "Prerequisite": ["Tremere", "Banu Haqim"],
       "Description": "You have access to powerful magical items",
       "Reference": "Folios 166"
     },
@@ -649,7 +649,7 @@
     {
       "Name": "Praepositor",
       "Type": "Cult",
-      "Prerequisite": "Tremere",
+      "Prerequisite": ["Tremere"],
       "Description": "The Praesidium, dedicated to restoring the Pyramid",
       "Reference": "FR 92"
     },
@@ -663,7 +663,7 @@
     {
       "Name": "Pure Ventrue Lineage",
       "Type": "Bloodline",
-      "Prerequisite": "Ventrue",
+      "Prerequisite": ["Ventrue"],
       "Description": "You have a legendary and pure lineage recognized by the Ventrue",
       "Reference": "Cam 187"
     },
@@ -677,7 +677,7 @@
     {
       "Name": "Revenant Family: Ducheski",
       "Type": "Other",
-      "Prerequisite": "Tremere",
+      "Prerequisite": ["Tremere"],
       "Description": "You have access to specially-bred revenant ghouls",
       "Reference": "CbN 283"
     },
@@ -747,7 +747,7 @@
     {
       "Name": "Spear of Orthia",
       "Type": "Bloodline",
-      "Prerequisite": "Ventrue",
+      "Prerequisite": ["Ventrue"],
       "Description": "Militant Ventrue descended from Artemis Orthia",
       "Reference": "FR 93"
     },
@@ -761,7 +761,7 @@
     {
       "Name": "Starfall Ranch",
       "Type": "Cult",
-      "Prerequisite": "Malkavian",
+      "Prerequisite": ["Malkavian"],
       "Description": "Malkavians who believe their clan is actually a single person",
       "Reference": "Children 108"
     },
@@ -810,7 +810,7 @@
     {
       "Name": "The Pyramid",
       "Type": "Cult",
-      "Prerequisite": "Tremere",
+      "Prerequisite": ["Tremere"],
       "Description": "You are faithful to the ancient Pyramid of House Tremere",
       "Reference": "Cam 189"
     },

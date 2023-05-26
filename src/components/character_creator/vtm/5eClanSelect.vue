@@ -801,11 +801,15 @@ export default defineComponent({
         "Caitiff",
         "Gangrel",
         "Hecata",
+        "Giovanni",
+        "Lamiae",
         "Lasombra",
         "Malkavian",
+        "Nagaraja",
         "Nosferatu",
         "Ravnos",
         "Salubri",
+        "Samedi",
         "Toreador",
         "Tremere",
         "Tzimisce",
@@ -970,6 +974,21 @@ export default defineComponent({
             "Shape-changing, from growing claws to melding with the earth",
           ];
           break;
+        case "Giovanni":
+          this.clanDesc =
+            "Descended from a long line of necromancers, they possess an unparalleled mastery over death and the restless spirits. While the world of vampires is defined by power struggles and political intrigue, the Giovanni embrace their unique connection to the afterlife, utilizing it to manipulate and control the spirits of the deceased. (Bloodline of Clan Hecata - Cults of the Blood Gods, pg. 202)";
+          this.clanBane =
+            this.clanBanes.clans["Giovanni"] + this.citation(5, 203);
+          this.compulsion =
+            "Morbidity: a sense of morbid curiosity. The Giovanni's Blood urges them to study the individuals around them for signs of illness, frailty, or impending death. Until they have either predicted a death or solved the cause of a local one, the vampire suffers a three-dice penalty to other rolls. Their conclusions do not need to be absolutely correct, but should stay within the boundaries of the possible. " +
+            this.citation(5, 202);
+          this.clanDisciplines = ["Dominate", "Fortitude", "Oblivion"];
+          this.discExplained = [
+            "Mind control practiced through one's piercing gaze",
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
+            "Control over shadows and spirits",
+          ];
+          break;
         case "Hecata":
           this.clanDesc =
             "'The Clan of Death' is more an amalgamation of bloodlines that may have descended from a common progenitor whom the Giovanni destroyed.";
@@ -983,6 +1002,21 @@ export default defineComponent({
             "Extrasensory perception, awareness, and premonitions",
             "Unearthly toughness, even to the point of resisting fire and sunlight",
             "Control over shadows and spirits",
+          ];
+          break;
+        case "Lamiae":
+          this.clanDesc =
+            "Tracing their origins back to ancient Greece, they possess a bewitching beauty that enraptures mortals and Kindred alike. Renowned for their grace and charm, the Lamiae are skilled in the art of manipulation and persuasion, using their hypnotic allure to bend others to their will. However, behind their captivating facade lies a darker secret—the Lamiae thirst not only for blood but also for the life essence of their victims. (Bloodline of Clan Hecata - Cults of the Blood Gods, pg. 202)";
+          this.clanBane =
+            this.clanBanes.clans["Lamiae"] + this.citation(5, 203);
+          this.compulsion =
+            "Morbidity: a sense of morbid curiosity. Lamiae blood urges them to study the individuals around them for signs of illness, frailty, or impending death. Until they have either predicted a death or solved the cause of a local one, the vampire suffers a three-dice penalty to other rolls. Their conclusions do not need to be absolutely correct, but should stay within the boundaries of the possible. " +
+            this.citation(5, 202);
+          this.clanDisciplines = ["Fortitude", "Oblivion", "Potence"];
+          this.discExplained = [
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
+            "Control over shadows and spirits",
+            "The Discipline of physical vigor and strength",
           ];
           break;
         case "Lasombra":
@@ -1013,6 +1047,21 @@ export default defineComponent({
             "Extrasensory perception, awareness, and premonitions",
             "Mind control practiced through one's piercing gaze",
             "The ability to remain obscure and unseen, even in crowds",
+          ];
+          break;
+        case "Nagaraja":
+          this.clanDesc =
+            "Originating from ancient India, they are deeply connected to the macabre realm of death and the occult. Possessing an insatiable hunger for necromantic knowledge and power, the Nagaraja delve into forbidden rituals and dark arts, communing with the spirits of the dead. Haunted by their own mortality and the specters of the afterlife, the Nagaraja navigate a treacherous path, delving deeper into the secrets of death while trying to maintain their existence in the shadows of Kindred society. (Bloodline of Clan Hecata - Cults of the Blood Gods, pg. 202)";
+          this.clanBane =
+            this.clanBanes.clans["Nagaraja"] + this.citation(5, 203);
+          this.compulsion =
+            "Morbidity: a sense of morbid curiosity. Nagaraja blood urges them to study the individuals around them for signs of illness, frailty, or impending death. Until they have either predicted a death or solved the cause of a local one, the vampire suffers a three-dice penalty to other rolls. Their conclusions do not need to be absolutely correct, but should stay within the boundaries of the possible. " +
+            this.citation(5, 202);
+          this.clanDisciplines = ["Auspex", "Dominate", "Oblivion"];
+          this.discExplained = [
+            "Extrasensory perception, awareness, and premonitions",
+            "Mind control practiced through one's piercing gaze",
+            "Control over shadows and spirits",
           ];
           break;
         case "Nosferatu":
@@ -1058,6 +1107,21 @@ export default defineComponent({
             "Extrasensory perception, awareness, and premonitions",
             "Mind control practiced through one's piercing gaze",
             "Unearthly toughness, even to the point of resisting fire and sunlight",
+          ];
+          break;
+        case "Samedi":
+          this.clanDesc =
+            "Descended from a cursed lineage steeped in African folklore and voodoo, they bear the physical and spiritual marks of the undead. Embracing their morbid nature, the Samedi possess a unique connection to death and decay, using their mastery over necromancy to commune with the spirits of the deceased. Isolated and shunned by other Kindred, they dwell in the shadows, blending into the macabre world they embrace, as they seek to unravel the secrets of life, death, and the dark forces that bind them. (Bloodline of Clan Hecata - Cults of the Blood Gods, pg. 202)";
+          this.clanBane =
+            this.clanBanes.clans["Samedi"] + this.citation(5, 203);
+          this.compulsion =
+            "Morbidity: a sense of morbid curiosity. The Samedi's Blood urges them to study the individuals around them for signs of illness, frailty, or impending death. Until they have either predicted a death or solved the cause of a local one, the vampire suffers a three-dice penalty to other rolls. Their conclusions do not need to be absolutely correct, but should stay within the boundaries of the possible. " +
+            this.citation(5, 202);
+          this.clanDisciplines = ["Fortitude", "Obfuscate", "Oblivion"];
+          this.discExplained = [
+            "Unearthly toughness, even to the point of resisting fire and sunlight",
+            "The ability to remain obscure and unseen, even in crowds",
+            "Control over shadows and spirits",
           ];
           break;
         case "Toreador":

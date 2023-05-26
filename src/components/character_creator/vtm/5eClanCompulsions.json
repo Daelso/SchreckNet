@@ -16,9 +16,17 @@
       "name": "Feral Impulses",
       "desc": "Unleash the animal hidden in their Blood. This urges the Gangrel to regress into an animalistic state where speech becomes difficult, clothes become too constrictive and arguments and best settled with claws and teeth. For one scene the Gangrel suffers a -3 dice penalty to all rolls involving Manipulation and Intelligence as they are only able to speak one word sentences during this Compulsion."
     },
+    "Giovanni": {
+      "name": "Morbidity",
+      "desc": "The Giovanni becomes obsessed with returning something to life or giving it to death. Any actions not dedicated to this cause suffer a two-die penalty to all actions. The compulsion extends past just living things and to abstract concepts like an idea or conversation."
+    },
     "Hecata": {
       "name": "Morbidity",
       "desc": "The Hecata becomes obsessed with returning something to life or giving it to death. Any actions not dedicated to this cause suffer a two-die penalty to all actions. The compulsion extends past just living things and to abstract concepts like an idea or conversation."
+    },
+    "Lamiae": {
+      "name": "Morbidity",
+      "desc": "The Lamiae becomes obsessed with returning something to life or giving it to death. Any actions not dedicated to this cause suffer a two-die penalty to all actions. The compulsion extends past just living things and to abstract concepts like an idea or conversation."
     },
     "Lasombra": {
       "name": "Ruthlessness",
@@ -27,6 +35,10 @@
     "Malkavian": {
       "name": "Delusion",
       "desc": "Whether it's figments of their imagination or extrasensory perception of the truths. For one scene, the Malkavian suffers a 2 dice penalty to rolls involving Dexterity, Manipulation, Composure, or Wits. As well as rolls to resist terror Frenzy."
+    },
+    "Nagaraja": {
+      "name": "Morbidity",
+      "desc": "The Nagaraja becomes obsessed with returning something to life or giving it to death. Any actions not dedicated to this cause suffer a two-die penalty to all actions. The compulsion extends past just living things and to abstract concepts like an idea or conversation."
     },
     "Nosferatu": {
       "name": "Cryptophilia",
@@ -39,6 +51,10 @@
     "Salubri": {
       "name": "Affective Empathy",
       "desc": "Overwhelmed with empathy for a personal problem of someone else, any action not taken to help the person mitigate the suffering they take a two-dice penalty. This Compulsion continues until the sufferer's burden is eased, a more critical problem arises or the scene ends."
+    },
+    "Samedi": {
+      "name": "Morbidity",
+      "desc": "The Samedi becomes obsessed with returning something to life or giving it to death. Any actions not dedicated to this cause suffer a two-die penalty to all actions. The compulsion extends past just living things and to abstract concepts like an idea or conversation."
     },
     "Toreador": {
       "name": "Obsession",

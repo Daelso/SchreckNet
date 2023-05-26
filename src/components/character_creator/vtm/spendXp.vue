@@ -1207,7 +1207,11 @@ export default defineComponent({
               this.disciplineSkillsObj.some(
                 (e) => e.skill !== "Where the Shroud Thins"
               ) === false &&
-              this.clan !== "Hecata"
+              this.clan !== "Hecata" &&
+              this.clan !== "Giovanni" &&
+              this.clan !== "Lamiae" &&
+              this.clan !== "Samedi" &&
+              this.clan !== "Nagaraja"
             ) {
               arr.splice(i, 1);
             }

@@ -49,7 +49,8 @@
         ],
         ["Extinguish Vitae", "Scour Secrets"],
         ["Blood of Potency", "Scorpion's Touch", "Transitive Bond"],
-        ["Blood Aegis", "Theft of Vitae"]
+        ["Blood Aegis", "Theft of Vitae"],
+        ["Baal's Caress", "Cauldron of Blood", "Reclamation of Vitae"]
       ]
     },
     "Celerity": {
@@ -65,7 +66,8 @@
           "Unerring Aim",
           "Blurred Momentum",
           "Unseen Strike"
-        ]
+        ],
+        ["Lightning Strike", "Split Second"]
       ]
     },
     "Dominate": {
@@ -81,7 +83,8 @@
           "Rationalize",
           "Tabula Rasa",
           "Implant Suggestion"
-        ]
+        ],
+        ["Mass Manipulation", "Terminal Decree "]
       ]
     },
     "Fortitude": {
@@ -103,7 +106,8 @@
           "Seal the Beast's Maw",
           "Valeren"
         ],
-        ["Draught of Endurance", "Shatter", "Gorgon's Scales"]
+        ["Draught of Endurance", "Shatter", "Gorgon's Scales"],
+        ["Flesh of Marble", "Prowess from Pain"]
       ]
     },
     "Obfuscate": {
@@ -127,7 +131,8 @@
           "Mental Maze",
           "Mind Masque"
         ],
-        ["Conceal", "Vanish"]
+        ["Conceal", "Vanish"],
+        ["Cloak the Gathering", "Imposter's Guise"]
       ]
     },
     "Oblivion": {
@@ -154,7 +159,12 @@
           "Touch of Oblivion"
         ],
         ["Necrotic Plague", "Stygian Shroud", "Umbrous Clutch"],
-        ["Shadow Step", "Skuld Fulfilled", "Tenebrous Avatar"]
+        [
+          "Shadow Step",
+          "Skuld Fulfilled",
+          "Tenebrous Avatar",
+          "Withering Spirit "
+        ]
       ]
     },
     "Potence": {
@@ -166,7 +176,7 @@
         ["Prowess", "Relentless Grasp"],
         ["Brutal Feed", "Spark of Rage", "Uncanny Grip", "Wrecker"],
         ["Draught of Might", "Crash Down"],
-        ["Subtle Hammer"]
+        ["Subtle Hammer", "Fist of Caine", "Earth Shock "]
       ]
     },
     "Presence": {
@@ -183,7 +193,8 @@
           "Thrown Voice",
           "True Love's Face"
         ],
-        ["Irresistible Voice", "Magnum Opus", "Summon", "Suffuse the Edifice"]
+        ["Irresistible Voice", "Magnum Opus", "Summon", "Suffuse the Edifice"],
+        ["Majesty", "Star Magnetism"]
       ]
     },
     "Protean": {
@@ -195,7 +206,12 @@
         ["Feral Weapons", "Vicissitude"],
         ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
         ["Horrid Form", "Metamorphosis"],
-        ["One With the Land"]
+        [
+          "One With the Land",
+          "Mist Form",
+          "The Heart of Darkness",
+          "The Unfettered Heart"
+        ]
       ]
     },
 

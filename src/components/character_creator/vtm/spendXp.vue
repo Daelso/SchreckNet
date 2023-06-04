@@ -1091,6 +1091,15 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "The Heart of Darkness":
+            if (
+              (this.disciplines.Fortitude === undefined ||
+                this.disciplines.Fortitude < 2) === false ||
+              this.cult !== "Church of Set"
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Shadow Servant":
             if (
               (this.disciplines.Auspex === undefined ||

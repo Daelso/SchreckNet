@@ -943,7 +943,14 @@ export default defineComponent({
       meritCategory: "",
       cultCategory: "",
       tabSect: props.sect,
-      sectOptions: ["Anarch", "Camarilla", "Independent", "Sabbat", "Clanless"],
+      sectOptions: [
+        "Anarch",
+        "Camarilla",
+        "Independent",
+        "Sabbat",
+        "Clanless",
+        "Autarkis",
+      ],
       advantageCategories: [
         "Merits",
         "Backgrounds",

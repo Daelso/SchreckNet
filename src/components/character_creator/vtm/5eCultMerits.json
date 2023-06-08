@@ -22,6 +22,7 @@
         {
           "name": "Cult: Excommunicated",
           "cost": 0,
+          "maxCost": 5,
           "desc": "You have been cast out of your cult and shunned by your peers. You have lost all access to cult support and resources."
         },
         {

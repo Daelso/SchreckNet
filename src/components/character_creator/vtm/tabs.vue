@@ -1133,7 +1133,7 @@ export default defineComponent({
           )) {
             if (
               value.Prerequisite !== null &&
-              value.Prerequisite.includes(this.clan)
+              !value.Prerequisite.includes(this.clan)
             ) {
               continue;
             }

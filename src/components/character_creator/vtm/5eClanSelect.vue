@@ -515,7 +515,9 @@
                   color="primary"
                   label="Confirm Predator Selection"
                   :disable="
-                    (!bonusSpecs || !bonusDisc) && this.clan !== 'Thin-Blood'
+                    (!bonusSpecs || !bonusDisc) &&
+                    this.clan !== 'Thin-Blood' &&
+                    this.age.label !== 'Fledgling'
                   "
                 >
                   <q-tooltip

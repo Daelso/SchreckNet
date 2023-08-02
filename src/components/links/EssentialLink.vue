@@ -5,17 +5,29 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Vampire: the Masquerade (Beta)</q-item-label>
+      <q-item-label>Vampire: The Masquerade </q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>
+
+  <q-item style="color: red" clickable :to="{ name: 'garou5e' }">
+    <q-item-section avatar>
+      <q-icon color="secondary" name="app:claws" style="scale: 145%" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>Werewolf: The Apocalypse (Beta)</q-item-label>
+      <q-item-label caption style="color: white">5e</q-item-label>
+    </q-item-section>
+  </q-item>
+
   <q-item style="color: red" clickable :to="{ name: 'hunter5e' }">
     <q-item-section avatar>
       <q-icon color="secondary" name="app:hunter" style="scale: 145%" />
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Hunter: the Reckoning</q-item-label>
+      <q-item-label>Hunter: The Reckoning</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>

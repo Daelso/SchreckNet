@@ -105,6 +105,12 @@ const routes = [
         path: "/search",
         component: () => import("pages/search/baseSearch.vue"),
       },
+      {
+        name: "garou5e",
+        path: "werewolf/5e",
+        component: () =>
+          import("pages/character_creator/werewolf/werewolf.vue"),
+      },
     ],
   },
 

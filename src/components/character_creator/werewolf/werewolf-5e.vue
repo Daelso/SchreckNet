@@ -11,9 +11,9 @@
             <div>Concept: {{ !concept ? "None" : concept }}</div>
           </div>
           <div class="concept q-mt-md">
-            <div>Tribe: {{ !drive ? "None" : drive.name }}</div>
-            <div>Auspice: {{ !redemption ? "None" : redemption }}</div>
-            <div>Patron: {{ !redemption ? "None" : redemption }}</div>
+            <div>Tribe: {{ !tribe ? "None" : tribe }}</div>
+            <div>Auspice: {{ !auspice ? "None" : auspice }}</div>
+            <div>Patron: {{ !patron ? "None" : patron }}</div>
           </div>
 
           <q-separator class="q-my-md" />
@@ -117,7 +117,7 @@
               dark
             >
               <q-card>
-                <q-card-section class="backgroundDefault">
+                <!-- <q-card-section class="backgroundDefault">
                   Edges:
                   <div v-if="this.edgeArr.edges.length === 0">
                     Not yet selected
@@ -134,7 +134,7 @@
                   <div v-for="(perk, key) in this.edgeArr.perks" :key="key">
                     {{ perk.category }} - {{ perk.perk }}
                   </div>
-                </q-card-section>
+                </q-card-section> -->
               </q-card>
             </q-expansion-item>
           </q-list>
@@ -442,7 +442,7 @@ import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
-import edgeComponent from "../hunter/edges.vue";
+import tribeComponent from "../werewolf/tribes.vue";
 
 const metaData = {
   title: "SchreckNet",
@@ -514,7 +514,6 @@ export default {
       baseAdvantages: 7,
       flaws: 2,
       advantages: 7,
-      edgeArr: { edges: [], perks: [] },
       baseSkills: {
         athletics: 0,
         brawl: 0,
@@ -591,6 +590,9 @@ export default {
       skillsDone: false,
       tribesDone: false,
       saving: false,
+      tribe: null,
+      patron: null,
+      auspice: null,
     };
   },
   methods: {
@@ -621,7 +623,6 @@ export default {
         concept: this.concept,
         chronicle: this.chronicle,
         health: this.stamina + 3,
-        edgeArr: this.edgeArr,
         willpower: this.composure + this.resolve,
         xp: this.xp,
         spentXp: this.spentXp,
@@ -742,19 +743,21 @@ export default {
     tribes() {
       this.$q
         .dialog({
-          component: edgeComponent,
+          component: tribeComponent,
           persistent: true,
           componentProps: {
             info: {
-              edgeArr: this.edgeArr,
-              edgeDist: this.edgeDist,
+              tribe: this.tribe,
+              patron: this.patron,
+              auspice: this.auspice,
               tribesDone: this.tribesDone,
             },
           },
         })
         .onOk((data) => {
-          this.edgeArr = data.edgeArr;
-          this.edgeDist = data.edgeDist;
+          this.tribe = data.tribe;
+          this.patron = data.patron;
+          this.auspice = data.auspice;
           this.tribesDone = data.tribesDone;
         });
     },
@@ -780,7 +783,6 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
               spentXp: this.spentXp,
-              edgeArr: this.edgeArr,
             },
           },
         })
@@ -793,7 +795,6 @@ export default {
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
-          this.edgeArr = data.edgeArr;
         });
     },
 

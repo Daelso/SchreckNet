@@ -11,9 +11,9 @@
             <div>Concept: {{ !concept ? "None" : concept }}</div>
           </div>
           <div class="concept q-mt-md">
-            <div>Tribe: {{ !tribe ? "None" : tribe }}</div>
+            <div>Tribe: {{ !tribe ? "None" : tribe.tribe_name }}</div>
             <div>Auspice: {{ !auspice ? "None" : auspice }}</div>
-            <div>Patron: {{ !patron ? "None" : patron }}</div>
+            <div>Patron: {{ !tribe ? "None" : tribe.patron }}</div>
           </div>
 
           <q-separator class="q-my-md" />
@@ -591,7 +591,6 @@ export default {
       tribesDone: false,
       saving: false,
       tribe: null,
-      patron: null,
       auspice: null,
     };
   },
@@ -748,7 +747,6 @@ export default {
           componentProps: {
             info: {
               tribe: this.tribe,
-              patron: this.patron,
               auspice: this.auspice,
               tribesDone: this.tribesDone,
             },
@@ -756,7 +754,6 @@ export default {
         })
         .onOk((data) => {
           this.tribe = data.tribe;
-          this.patron = data.patron;
           this.auspice = data.auspice;
           this.tribesDone = data.tribesDone;
         });

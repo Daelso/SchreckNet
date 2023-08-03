@@ -47,6 +47,8 @@ const favoriteRoutes = require("./server/api/favorites");
 app.use("/favorites", favoriteRoutes);
 const searchRoutes = require("./server/api/search");
 app.use("/search", searchRoutes);
+const garouRoutes = require("./server/api/garou");
+app.use("/garou", garouRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

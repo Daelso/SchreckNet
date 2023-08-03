@@ -125,24 +125,45 @@
               dark
             >
               <q-card>
-                <!-- <q-card-section class="backgroundDefault">
-                  Edges:
-                  <div v-if="this.edgeArr.edges.length === 0">
-                    Not yet selected
+                <q-card-section class="backgroundDefault">
+                  <!-- Display gifts in three columns -->
+                  <div>
+                    <h5>Native Gifts:</h5>
+                    <div v-if="combineGifts.native.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.native"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
                   </div>
-                  <div v-for="(edge, key) in this.edgeArr.edges" :key="key">
-                    <div>{{ edge.category }} - {{ edge.edge }}</div>
+                  <div>
+                    <h5>Tribe Gifts:</h5>
+                    <div v-if="combineGifts.tribe.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.tribe"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
                   </div>
-                  <br />
-                  Perks:
-                  <div v-if="this.edgeArr.perks.length === 0">
-                    Not yet selected
+                  <div>
+                    <h5>Auspice Gifts:</h5>
+                    <div v-if="combineGifts.auspice.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.auspice"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
                   </div>
-
-                  <div v-for="(perk, key) in this.edgeArr.perks" :key="key">
-                    {{ perk.category }} - {{ perk.perk }}
-                  </div>
-                </q-card-section> -->
+                </q-card-section>
               </q-card>
             </q-expansion-item>
           </q-list>
@@ -602,6 +623,12 @@ export default {
       saving: false,
       tribe: null,
       auspice: null,
+      tribe_gifts: {
+        native: null,
+        auspice: null,
+        tribe: null,
+      },
+      bonus_renown: null,
     };
   },
   methods: {
@@ -760,7 +787,9 @@ export default {
               auspice: this.auspice,
               tribesDone: this.tribesDone,
               renown: this.tribe_renown,
+              tribe_gifts: this.tribe_gifts,
               renown_sum: this.renownSum,
+              bonus_renown: this.bonus_renown,
             },
           },
         })
@@ -769,6 +798,8 @@ export default {
           this.auspice = data.auspice;
           this.tribesDone = data.tribesDone;
           this.tribe_renown = data.renown;
+          this.tribe_gifts = data.tribe_gifts;
+          this.bonus_renown = data.bonus_renown;
         });
     },
     spendXp() {
@@ -881,6 +912,18 @@ export default {
       );
 
       return sum;
+    },
+
+    combineGifts() {
+      let gifts = { native: [], tribe: [], auspice: [] };
+
+      for (let key in this.tribe_gifts) {
+        if (this.tribe_gifts[key] !== null) {
+          gifts[key].push(this.tribe_gifts[key]);
+        }
+      }
+
+      return gifts;
     },
   },
 };

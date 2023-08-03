@@ -180,6 +180,39 @@
                   </div>
                 </div>
 
+                <div class="native_gift">
+                  <q-select
+                    filled
+                    v-model="this.tribe_gifts.rite"
+                    color="secondary"
+                    bg-color="grey-3"
+                    class="inputs"
+                    :options="this.riteOptions"
+                    label="Select a Rite"
+                    map-options
+                    use-input
+                    input-debounce="0"
+                    @filter="ritesFilter"
+                    popup-content-style="background-color:#222831; color:white"
+                    option-label="rite_name"
+                    option-value="rite_id"
+                  />
+                  <div class="tribe-info" v-if="this.tribe_gifts.rite">
+                    <div class="tribe">
+                      Gift Description:
+                      {{ this.tribe_gifts.rite.rite_description }}
+                    </div>
+                    <div class="tribe">
+                      Pool:
+                      {{ this.tribe_gifts.rite.pool }}
+                    </div>
+                    <div class="tribe">
+                      Social Rite:
+                      {{ this.tribe_gifts.rite.social === 0 ? "Yes" : "No" }}
+                    </div>
+                  </div>
+                </div>
+
                 <q-stepper-navigation>
                   <q-btn color="primary" label="Finish" />
                   <q-btn
@@ -291,18 +324,22 @@ export default defineComponent({
         auspicesResponse,
         nativeResponse,
         renown_types_response,
+        rites_response,
       ] = await Promise.all([
         this.$axios.get(this.baseUrl + "/garou/tribes"),
         this.$axios.get(this.baseUrl + "/garou/auspices"),
         this.$axios.get(this.baseUrl + "/garou/native_gifts"),
         this.$axios.get(this.baseUrl + "/garou/renown_types"),
+        this.$axios.get(this.baseUrl + "/garou/rites"),
       ]);
 
       this.tribeOptions = tribesResponse.data;
       this.auspiceOptions = auspicesResponse.data;
       this.nativeOptions = nativeResponse.data;
       this.renownTypeOptions = renown_types_response.data;
-      console.log(this.nativeOptions);
+      this.riteOptions = rites_response.data;
+      this.clonedRiteOptions = structuredClone(rites_response.data);
+      console.log(this.riteOptions);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -319,6 +356,8 @@ export default defineComponent({
       auspiceOptions: [],
       nativeOptions: [],
       renownTypeOptions: [],
+      riteOptions: [],
+      clonedRiteOptions: [],
     };
   },
   methods: {
@@ -332,6 +371,23 @@ export default defineComponent({
         // tribesDone: this.edgesDone(),
       });
     },
+
+    ritesFilter(val, update) {
+      if (val === "") {
+        update(() => {
+          this.riteOptions = this.clonedRiteOptions;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.riteOptions = this.clonedRiteOptions.filter(
+          (v) => v.rite_name.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+
     applyTribeRenown() {
       this.clearRenown();
 

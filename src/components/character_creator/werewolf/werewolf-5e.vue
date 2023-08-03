@@ -12,7 +12,7 @@
           </div>
           <div class="concept q-mt-md">
             <div>Tribe: {{ !tribe ? "None" : tribe.tribe_name }}</div>
-            <div>Auspice: {{ !auspice ? "None" : auspice }}</div>
+            <div>Auspice: {{ !auspice ? "None" : auspice.auspice_name }}</div>
             <div>Patron: {{ !tribe ? "None" : tribe.patron }}</div>
           </div>
 

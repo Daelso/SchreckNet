@@ -17,7 +17,13 @@
       <q-page-container>
         <q-page padding class="bg-dark">
           <div class="q-pa-md">
-            <q-stepper v-model="step" vertical class="stepper" animated>
+            <q-stepper
+              v-model="step"
+              color="red"
+              vertical
+              class="stepper"
+              animated
+            >
               <q-step
                 :name="1"
                 title="Select a Tribe"
@@ -59,7 +65,16 @@
                   </div>
                 </div>
                 <q-stepper-navigation>
-                  <q-btn @click="step = 2" color="primary" label="Continue" />
+                  <q-btn
+                    :disable="!tribe"
+                    @click="step = 2"
+                    color="primary"
+                    label="Continue"
+                  >
+                    <q-tooltip v-if="!tribe"
+                      >Please select a tribe first!</q-tooltip
+                    >
+                  </q-btn>
                 </q-stepper-navigation>
               </q-step>
 
@@ -70,11 +85,36 @@
                 icon="brightness_3"
                 :done="step > 2"
               >
-                An ad group contains one or more ads which target a shared set
-                of keywords.
+                <q-select
+                  filled
+                  v-model="auspice"
+                  color="secondary"
+                  bg-color="grey-3"
+                  class="inputs"
+                  :options="this.auspiceOptions"
+                  label="Select an Auspice"
+                  map-options
+                  option-label="auspice_name"
+                  option-value="auspice_id"
+                />
+                <div class="tribe-info" v-if="auspice">
+                  <div class="tribe">
+                    Auspice Description:
+                    {{ auspice.description }}
+                  </div>
+                </div>
 
                 <q-stepper-navigation>
-                  <q-btn @click="step = 3" color="primary" label="Continue" />
+                  <q-btn
+                    :disable="!auspice"
+                    @click="step = 3"
+                    color="primary"
+                    label="Continue"
+                  >
+                    <q-tooltip v-if="!auspice"
+                      >Please select an auspice first!</q-tooltip
+                    >
+                  </q-btn>
                   <q-btn
                     flat
                     @click="step = 1"
@@ -139,6 +179,14 @@
   padding: 0.5em;
 }
 
+.q-stepper__title {
+  color: white;
+}
+
+.q-stepper__caption {
+  color: white;
+}
+
 @media only screen and (max-width: 600px) {
   .stepper {
     font-size: medium;
@@ -188,16 +236,27 @@ export default defineComponent({
     };
   },
 
-  async mounted() {
-    const tribes = await this.$axios.get(this.baseUrl + "/garou/tribes");
-    this.tribeOptions = tribes.data;
-    console.log(this.tribeOptions);
+  async created() {
+    try {
+      const [tribesResponse, auspicesResponse] = await Promise.all([
+        this.$axios.get(this.baseUrl + "/garou/tribes"),
+        this.$axios.get(this.baseUrl + "/garou/auspices"),
+      ]);
+
+      this.tribeOptions = tribesResponse.data;
+      this.auspiceOptions = auspicesResponse.data;
+      console.log(this.auspiceOptions);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
   },
+
   data(props) {
     return {
       tribe: props.info.tribe,
       auspice: props.info.auspice,
       tribeOptions: [],
+      auspiceOptions: [],
     };
   },
   methods: {

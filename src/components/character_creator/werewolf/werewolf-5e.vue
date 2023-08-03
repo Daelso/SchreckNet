@@ -15,6 +15,14 @@
             <div>Auspice: {{ !auspice ? "None" : auspice.auspice_name }}</div>
             <div>Patron: {{ !tribe ? "None" : tribe.patron }}</div>
           </div>
+          <div class="concept q-mt-md">
+            <div>Glory: {{ renownTotal.glory }}</div>
+            <div>Honor: {{ renownTotal.honor }}</div>
+            <div>Wisdom: {{ renownTotal.wisdom }}</div>
+          </div>
+          <div class="concept q-mt-md">
+            <div>Total Renown: {{ this.renownSum }}</div>
+          </div>
 
           <q-separator class="q-my-md" />
           <div class="stats q-my-sm">
@@ -491,6 +499,8 @@ export default {
       attributesDone: false,
       attributeInfo,
       skillInfo,
+      tribe_renown: { glory: 0, honor: 0, wisdom: 0 },
+      renown: { glory: 0, honor: 0, wisdom: 0 },
       chronicle: "",
       edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
       attributePoints: 22,
@@ -749,6 +759,8 @@ export default {
               tribe: this.tribe,
               auspice: this.auspice,
               tribesDone: this.tribesDone,
+              renown: this.tribe_renown,
+              renown_sum: this.renownSum,
             },
           },
         })
@@ -756,6 +768,7 @@ export default {
           this.tribe = data.tribe;
           this.auspice = data.auspice;
           this.tribesDone = data.tribesDone;
+          this.tribe_renown = data.renown;
         });
     },
     spendXp() {
@@ -848,6 +861,26 @@ export default {
           check = true;
       })(navigator.userAgent || navigator.vendor || window.opera);
       return check;
+    },
+  },
+  computed: {
+    renownTotal() {
+      let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
+      trueRenown.glory = this.tribe_renown.glory;
+      trueRenown.honor = this.tribe_renown.honor;
+      trueRenown.wisdom = this.tribe_renown.wisdom;
+
+      return trueRenown;
+    },
+
+    renownSum() {
+      const totalRenown = this.renownTotal;
+      const sum = Object.values(totalRenown).reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      return sum;
     },
   },
 };

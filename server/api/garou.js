@@ -11,12 +11,20 @@ const Tribes = require("../models/Tribes.js");
 const Auspices = require("../models/Auspices.js");
 
 const lib = require("../lib");
+const RenownTypes = require("../models/RenownTypes.js");
 
 //Route is base/garou/
 
 router.route("/tribes").get(lib.getLimiter, async (req, res) => {
   try {
-    const tribes = await Tribes.findAll();
+    const tribes = await Tribes.findAll({
+      include: [
+        {
+          model: RenownTypes,
+          as: "renownTypeId",
+        },
+      ],
+    });
     res.json(tribes);
   } catch (err) {
     res.status(404).send(err);

@@ -47,6 +47,7 @@
                   map-options
                   option-label="tribe_name"
                   option-value="tribe_id"
+                  @update:model-value="applyTribeRenown()"
                 />
                 <div class="tribe-info" v-if="tribe">
                   <div class="tribe">
@@ -54,6 +55,10 @@
                     {{ tribe.description }}
                   </div>
                   <div class="tribe">Patron: {{ tribe.patron }}</div>
+
+                  <div class="tribe">
+                    Renown Type: {{ tribe.renownTypeId.renown_name }}
+                  </div>
 
                   <div class="tribe">
                     Favor:
@@ -245,7 +250,7 @@ export default defineComponent({
 
       this.tribeOptions = tribesResponse.data;
       this.auspiceOptions = auspicesResponse.data;
-      console.log(this.auspiceOptions);
+      console.log(this.tribeOptions);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -255,6 +260,7 @@ export default defineComponent({
     return {
       tribe: props.info.tribe,
       auspice: props.info.auspice,
+      renown: props.info.renown,
       tribeOptions: [],
       auspiceOptions: [],
     };
@@ -264,8 +270,19 @@ export default defineComponent({
       this.onDialogOK({
         tribe: this.tribe,
         auspice: this.auspice,
+        renown: this.renown,
         // tribesDone: this.edgesDone(),
       });
+    },
+    applyTribeRenown() {
+      console.log(this.tribe.renownTypeId.renown_name);
+      this.clearRenown();
+
+      this.renown[this.tribe.renownTypeId.renown_name.toLowerCase()] = 2;
+    },
+
+    clearRenown() {
+      this.renown = { glory: 0, honor: 0, wisdom: 0 };
     },
     changeDist() {
       if (this.edgeArr.edges.length > 0 || this.edgeArr.perks.length > 0) {

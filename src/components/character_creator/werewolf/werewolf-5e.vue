@@ -172,7 +172,7 @@
                       v-for="(gift, index) in combineGifts.rite"
                       :key="index"
                     >
-                      {{ gift.gift_name }}
+                      {{ gift.rite_name }}
                     </div>
                   </div>
                 </q-card-section>

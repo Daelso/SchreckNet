@@ -14,6 +14,7 @@ const Auspices = require("../models/Auspices.js");
 const lib = require("../lib");
 const RenownTypes = require("../models/RenownTypes.js");
 const NativeGifts = require("../models/NativeGifts.js");
+const Rites = require("../models/Rites.js");
 
 //Route is base/garou/
 
@@ -61,6 +62,15 @@ router.route("/native_gifts").get(lib.getLimiter, async (req, res) => {
       },
     });
     res.json(native_gifts);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+router.route("/rites").get(lib.getLimiter, async (req, res) => {
+  try {
+    const rites = await Rites.findAll();
+    res.json(rites);
   } catch (err) {
     res.status(404).send(err);
   }

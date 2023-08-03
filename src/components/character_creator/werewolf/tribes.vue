@@ -36,10 +36,28 @@
                   color="secondary"
                   bg-color="grey-3"
                   class="inputs"
-                  :options="tribeOptions"
+                  :options="this.tribeOptions"
                   label="Select a Tribe"
+                  map-options
+                  option-label="tribe_name"
+                  option-value="tribe_id"
                 />
+                <div class="tribe-info" v-if="tribe">
+                  <div class="tribe">
+                    Tribe Description:
+                    {{ tribe.description }}
+                  </div>
+                  <div class="tribe">Patron: {{ tribe.patron }}</div>
 
+                  <div class="tribe">
+                    Favor:
+                    {{ tribe.favor }}
+                  </div>
+                  <div class="tribe">
+                    Ban:
+                    {{ tribe.ban }}
+                  </div>
+                </div>
                 <q-stepper-navigation>
                   <q-btn @click="step = 2" color="primary" label="Continue" />
                 </q-stepper-navigation>
@@ -109,9 +127,24 @@
   padding: 15px;
 }
 
+.tribe_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tribe {
+  font-size: 1em;
+  padding: 0.5em;
+}
+
 @media only screen and (max-width: 600px) {
   .stepper {
     font-size: medium;
+  }
+  .inputs {
+    max-width: 80%;
   }
 }
 </style>
@@ -132,9 +165,17 @@ export default defineComponent({
 
     const tribesDoneLocal = ref(props.info.tribesDone);
 
+    let baseUrl = "";
+    if (window.location.href.includes("localhost")) {
+      baseUrl = "http://localhost:5000";
+    } else {
+      baseUrl = window.location.origin;
+    }
+
     return {
       step: ref(1),
       dialogRef,
+      baseUrl: ref(baseUrl),
 
       nosImage,
       onDialogHide,
@@ -146,17 +187,22 @@ export default defineComponent({
       onCancelClick: onDialogCancel,
     };
   },
+
+  async mounted() {
+    const tribes = await this.$axios.get(this.baseUrl + "/garou/tribes");
+    this.tribeOptions = tribes.data;
+    console.log(this.tribeOptions);
+  },
   data(props) {
     return {
       tribe: props.info.tribe,
-      patron: props.info.patron,
       auspice: props.info.auspice,
+      tribeOptions: [],
     };
   },
   methods: {
     onOKClick() {
       this.onDialogOK({
-        patron: this.patron,
         tribe: this.tribe,
         auspice: this.auspice,
         // tribesDone: this.edgesDone(),

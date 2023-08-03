@@ -125,10 +125,10 @@
               dark
             >
               <q-card>
-                <q-card-section class="backgroundDefault">
+                <q-card-section class="backgroundDefault gifts">
                   <!-- Display gifts in three columns -->
                   <div>
-                    <h5>Native Gifts:</h5>
+                    <div>Native Gifts:</div>
                     <div v-if="combineGifts.native.length === 0">
                       Not yet selected
                     </div>
@@ -140,7 +140,7 @@
                     </div>
                   </div>
                   <div>
-                    <h5>Tribe Gifts:</h5>
+                    <div>Tribe Gifts:</div>
                     <div v-if="combineGifts.tribe.length === 0">
                       Not yet selected
                     </div>
@@ -152,12 +152,24 @@
                     </div>
                   </div>
                   <div>
-                    <h5>Auspice Gifts:</h5>
+                    <div>Auspice Gifts:</div>
                     <div v-if="combineGifts.auspice.length === 0">
                       Not yet selected
                     </div>
                     <div
                       v-for="(gift, index) in combineGifts.auspice"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
+                  </div>
+                  <div>
+                    <div>Rites:</div>
+                    <div v-if="combineGifts.rite.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.rite"
                       :key="index"
                     >
                       {{ gift.gift_name }}
@@ -429,7 +441,7 @@
     display: grid;
     grid-row-gap: 20px;
     width: 100%;
-    font-size: 3vw;
+    font-size: 0.95em;
     width: 365px;
   }
 }
@@ -458,6 +470,14 @@
   flex-direction: row;
   justify-content: center;
   gap: 45px;
+}
+
+.gifts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
 }
 </style>
 
@@ -627,6 +647,7 @@ export default {
         native: null,
         auspice: null,
         tribe: null,
+        rite: null,
       },
       bonus_renown: null,
     };
@@ -915,7 +936,7 @@ export default {
     },
 
     combineGifts() {
-      let gifts = { native: [], tribe: [], auspice: [] };
+      let gifts = { native: [], tribe: [], auspice: [], rite: [] };
 
       for (let key in this.tribe_gifts) {
         if (this.tribe_gifts[key] !== null) {

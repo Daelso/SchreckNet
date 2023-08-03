@@ -1,6 +1,8 @@
 const Sequelize = require("sequelize");
 const db = require("../database");
 
+const RenownTypes = require("./RenownTypes");
+
 const Tribes = db.sequelize.define(
   "tribes",
   {
@@ -30,8 +32,17 @@ const Tribes = db.sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    renown_type: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   },
   { timestamps: false }
 );
+
+Tribes.belongsTo(RenownTypes, {
+  foreignKey: "renown_type",
+  as: "renownTypeId",
+});
 
 module.exports = Tribes;

@@ -44,6 +44,7 @@
                   class="inputs"
                   :options="this.tribeOptions"
                   label="Select a Tribe"
+                  popup-content-style="background-color:#222831; color:white"
                   map-options
                   option-label="tribe_name"
                   option-value="tribe_id"
@@ -68,10 +69,27 @@
                     Ban:
                     {{ tribe.ban }}
                   </div>
+
+                  <div class="tribe">
+                    <q-select
+                      filled
+                      v-model="bonus_renown"
+                      color="secondary"
+                      bg-color="grey-3"
+                      class="inputs"
+                      :options="this.filterRenownOptions"
+                      label="Select Bonus Renown"
+                      map-options
+                      option-label="renown_name"
+                      option-value="renown_id"
+                      popup-content-style="background-color:#222831; color:white"
+                      @update:model-value="applyTribeRenown()"
+                    />
+                  </div>
                 </div>
                 <q-stepper-navigation>
                   <q-btn
-                    :disable="!tribe"
+                    :disable="!tribe || !bonus_renown"
                     @click="step = 2"
                     color="primary"
                     label="Continue"
@@ -99,6 +117,7 @@
                   :options="this.auspiceOptions"
                   label="Select an Auspice"
                   map-options
+                  popup-content-style="background-color:#222831; color:white"
                   option-label="auspice_name"
                   option-value="auspice_id"
                 />
@@ -131,11 +150,35 @@
               </q-step>
 
               <q-step :name="3" title="Select your Gifts" icon="app:whiteClaws">
-                Try out different ad text to see what brings in the most
-                customers, and learn how to enhance your ads using features like
-                ad extensions. If you run into any problems with your ads, find
-                out how to tell if they're running and how to resolve approval
-                issues.
+                <div class="native_gift">
+                  <q-select
+                    filled
+                    v-model="this.tribe_gifts.native"
+                    color="secondary"
+                    bg-color="grey-3"
+                    class="inputs"
+                    :options="this.nativeOptions"
+                    label="Select a Native Gift"
+                    map-options
+                    popup-content-style="background-color:#222831; color:white"
+                    option-label="gift_name"
+                    option-value="gift_id"
+                  />
+                  <div class="tribe-info" v-if="this.tribe_gifts.native">
+                    <div class="tribe">
+                      Gift Description:
+                      {{ this.tribe_gifts.native.gift_description }}
+                    </div>
+                    <div class="tribe">
+                      Cost:
+                      {{ this.tribe_gifts.native.cost }}
+                    </div>
+                    <div class="tribe">
+                      Pool:
+                      {{ this.tribe_gifts.native.pool }}
+                    </div>
+                  </div>
+                </div>
 
                 <q-stepper-navigation>
                   <q-btn color="primary" label="Finish" />
@@ -243,14 +286,23 @@ export default defineComponent({
 
   async created() {
     try {
-      const [tribesResponse, auspicesResponse] = await Promise.all([
+      const [
+        tribesResponse,
+        auspicesResponse,
+        nativeResponse,
+        renown_types_response,
+      ] = await Promise.all([
         this.$axios.get(this.baseUrl + "/garou/tribes"),
         this.$axios.get(this.baseUrl + "/garou/auspices"),
+        this.$axios.get(this.baseUrl + "/garou/native_gifts"),
+        this.$axios.get(this.baseUrl + "/garou/renown_types"),
       ]);
 
       this.tribeOptions = tribesResponse.data;
       this.auspiceOptions = auspicesResponse.data;
-      console.log(this.tribeOptions);
+      this.nativeOptions = nativeResponse.data;
+      this.renownTypeOptions = renown_types_response.data;
+      console.log(this.nativeOptions);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -261,8 +313,12 @@ export default defineComponent({
       tribe: props.info.tribe,
       auspice: props.info.auspice,
       renown: props.info.renown,
+      tribe_gifts: props.info.tribe_gifts,
+      bonus_renown: props.info.bonus_renown,
       tribeOptions: [],
       auspiceOptions: [],
+      nativeOptions: [],
+      renownTypeOptions: [],
     };
   },
   methods: {
@@ -271,14 +327,19 @@ export default defineComponent({
         tribe: this.tribe,
         auspice: this.auspice,
         renown: this.renown,
+        tribe_gifts: this.tribe_gifts,
+        bonus_renown: this.bonus_renown,
         // tribesDone: this.edgesDone(),
       });
     },
     applyTribeRenown() {
-      console.log(this.tribe.renownTypeId.renown_name);
       this.clearRenown();
 
       this.renown[this.tribe.renownTypeId.renown_name.toLowerCase()] = 2;
+
+      if (this.bonus_renown) {
+        this.renown[this.bonus_renown.renown_name.toLowerCase()] = 1;
+      }
     },
 
     clearRenown() {
@@ -297,6 +358,14 @@ export default defineComponent({
     },
   },
 
-  computed: {},
+  computed: {
+    filterRenownOptions() {
+      const options = this.renownTypeOptions.filter(
+        (renown) => renown.renown_id !== this.tribe.renownTypeId.renown_id
+      );
+
+      return options;
+    },
+  },
 });
 </script>

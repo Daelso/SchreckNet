@@ -36,7 +36,43 @@
               popup-content-style="background-color:#222831; color:white"
             />
 
+            <!-- Gift Purchasing -->
+            <q-select
+              v-if="
+                this.categoryInput === 'Native Gift' ||
+                this.categoryInput === 'Tribe Gift' ||
+                this.categoryInput === 'Auspice Gift'
+              "
+              v-model="giftSelection"
+              :options="giftOptions()"
+              label="Which gift would you like to purchase?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              color="secondary"
+              class="q-my-sm"
+              option-label="gift_name"
+              map-options
+              option-value="gift_id"
+              popup-content-style="background-color:#222831; color:white"
+            />
+
             <q-separator class="q-my-sm" />
+
+            <div class="tribe-info" v-if="this.giftSelection">
+              <div class="tribe">
+                Gift Description:
+                {{ this.giftSelection.gift_description }}
+              </div>
+              <div class="tribe">
+                Cost:
+                {{ this.giftSelection.cost }}
+              </div>
+              <div class="tribe">
+                Pool:
+                {{ this.giftSelection.pool }}
+              </div>
+            </div>
 
             <!-- Renown -->
             <q-select
@@ -97,7 +133,10 @@
                 this.categoryInput !== 'Attributes' &&
                 this.categoryInput !== 'Specialty' &&
                 this.categoryInput !== 'Skills' &&
-                this.categoryInput !== 'Renown'
+                this.categoryInput !== 'Renown' &&
+                this.categoryInput !== 'Native Gift' &&
+                this.categoryInput !== 'Tribe Gift' &&
+                this.categoryInput !== 'Auspice Gift'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -148,6 +187,21 @@
   </q-dialog>
 </template>
 
+<style>
+.tribe_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tribe {
+  font-size: 1em;
+  padding: 0.5em;
+  color: white;
+}
+</style>
+
 <script>
 import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
@@ -174,6 +228,14 @@ export default defineComponent({
     let purchased_renown = ref(props.info.purchased_renown);
     let tribe_renown = ref(props.info.tribe_renown);
 
+    const tribe = ref(props.info.tribe);
+    const auspice = ref(props.info.auspice);
+    let purchased_gifts = ref(props.info.purchased_gifts);
+
+    let gift_total = ref(props.info.gift_count);
+
+    console.log(gift_total.value);
+
     if (window.location.href.includes("localhost")) {
       baseUrl = "http://localhost:5000";
     } else {
@@ -182,11 +244,14 @@ export default defineComponent({
 
     return {
       dialogRef,
+      tribe,
+      auspice,
+      gift_total: ref(gift_total.value),
       onDialogHide,
       baseUrl: ref(baseUrl),
       purchased_renown,
       tribe_renown,
-
+      purchased_gifts,
       onOKClick() {
         onDialogOK({
           advantages: advantagePoints,
@@ -198,6 +263,7 @@ export default defineComponent({
 
           purchased_renown: purchased_renown,
           tribe_renown: tribe_renown,
+          purchased_gifts: purchased_gifts,
         });
       },
       range,
@@ -213,6 +279,7 @@ export default defineComponent({
       canBuy: ref(true),
       attributeInput: ref(""),
       categoryInput: ref(""),
+      giftSelection: ref(""),
 
       specialtyInput: ref(""),
       specialtyDefinition: ref(""),
@@ -224,6 +291,9 @@ export default defineComponent({
       renownCategory: ref(""),
       skills,
       skillCategory: ref(""),
+      nativeGiftOptions: ref([]),
+      tribeGiftOptions: ref([]),
+      auspiceGiftOptions: ref([]),
     };
   },
   methods: {
@@ -233,6 +303,44 @@ export default defineComponent({
           this.baseUrl + "/garou/renown_types"
         );
         this.renownOpts = renownResponse.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    giftOptions() {
+      switch (this.categoryInput) {
+        case "Native Gift":
+          return this.nativeGiftOptions;
+        case "Tribe Gift":
+          return this.tribeGiftOptions;
+        case "Auspice Gift":
+          return this.auspiceGiftOptions;
+        default:
+          return this.nativeGiftOptions;
+      }
+    },
+
+    async generateGifts() {
+      try {
+        const max_renown = this.renownSum;
+
+        const [nativeGiftResponse, auspiceGiftResponse, tribeGiftResponse] =
+          await Promise.all([
+            this.$axios.get(this.baseUrl + `/garou/native_gifts/${max_renown}`),
+            this.$axios.get(
+              this.baseUrl +
+                `/garou/auspice_gifts/${max_renown}/${this.auspice.auspice_id}`
+            ),
+            this.$axios.get(
+              this.baseUrl +
+                `/garou/tribe_gifts/${max_renown}/${this.tribe.tribe_id}`
+            ),
+          ]);
+
+        this.nativeGiftOptions = nativeGiftResponse.data;
+        this.auspiceGiftOptions = auspiceGiftResponse.data;
+        this.tribeGiftOptions = tribeGiftResponse.data;
       } catch (err) {
         console.log(err);
       }
@@ -249,6 +357,15 @@ export default defineComponent({
             this.cost = "Attribute is maxxed!";
             this.canBuy = false;
           }
+          break;
+        case "Auspice Gift":
+          this.cost = (this.gift_total + 1) * 2;
+
+          break;
+        case "Native Gift":
+          console.log(this.gift_total);
+          this.cost = (this.gift_total + 1) * 2;
+
           break;
 
         case "Renown":
@@ -282,6 +399,10 @@ export default defineComponent({
         case "Specialty":
           this.cost = 3;
           break;
+        case "Tribe Gift":
+          this.cost = (this.gift_total + 1) * 2;
+
+          break;
       }
 
       return this.cost;
@@ -296,6 +417,7 @@ export default defineComponent({
       this.specialtyDefinition = "";
       this.skillCategory = "";
       this.renownCategory = "";
+      this.giftSelection = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -306,6 +428,7 @@ export default defineComponent({
       this.specialtyDefinition = "";
       this.skillCategory = "";
       this.renownCategory = "";
+      this.giftSelection = "";
     },
 
     purchaseMade() {
@@ -336,11 +459,21 @@ export default defineComponent({
           this.attributeInput.points++;
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
+        case "Auspice Gift":
+          this.purchased_gifts.auspice.push(this.giftSelection);
+          this.gift_total++;
+          break;
+
+        case "Native Gift":
+          this.purchased_gifts.native.push(this.giftSelection);
+          this.gift_total++;
+          break;
 
         case "Renown":
           this.purchased_renown[
             this.renownCategory.renown_name.toLowerCase()
           ]++;
+          this.generateGifts();
           break;
 
         case "Skills":
@@ -352,6 +485,10 @@ export default defineComponent({
             specialty: this.specialtyDefinition,
           });
           break;
+        case "Tribe Gift":
+          this.purchased_gifts.tribe.push(this.giftSelection);
+          this.gift_total++;
+          break;
       }
       this.localXP = this.localXP - this.cost;
       this.localSpentXp = this.localSpentXp + this.cost;
@@ -361,11 +498,21 @@ export default defineComponent({
 
   async mounted() {
     await this.generateRenownOpts();
+    await this.generateGifts();
   },
 
   computed: {
     categoryOptions() {
-      let arr = ["Advantage", "Attributes", "Renown", "Skills", "Specialty"];
+      const arr = [
+        "Advantage",
+        "Attributes",
+        "Auspice Gift",
+        "Native Gift",
+        "Renown",
+        "Skills",
+        "Specialty",
+        "Tribe Gift",
+      ];
 
       return arr;
     },
@@ -413,6 +560,16 @@ export default defineComponent({
         this.tribe_renown.wisdom + this.purchased_renown.wisdom;
 
       return trueRenown;
+    },
+
+    renownSum() {
+      const totalRenown = this.renownTotal;
+      const sum = Object.values(totalRenown).reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      return sum;
     },
   },
 });

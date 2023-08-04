@@ -649,6 +649,12 @@ export default {
         tribe: null,
         rite: null,
       },
+      purchased_gifts: {
+        native: [],
+        auspice: [],
+        tribe: [],
+        rite: [],
+      },
       bonus_renown: null,
     };
   },
@@ -847,6 +853,10 @@ export default {
               spentXp: this.spentXp,
               tribe_renown: this.tribe_renown,
               purchased_renown: this.purchased_renown,
+              tribe: this.tribe,
+              auspice: this.auspice,
+              gift_count: this.getGiftAmount,
+              purchased_gifts: this.purchased_gifts,
             },
           },
         })
@@ -858,6 +868,7 @@ export default {
           this.trueSkills = data.skills;
           this.purchased_renown = data.purchased_renown;
           this.tribe_renown = data.tribe_renown;
+          this.purchased_gifts = data.purchased_gifts;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
@@ -949,7 +960,21 @@ export default {
         }
       }
 
+      for (let key in this.purchased_gifts) {
+        if (this.purchased_gifts[key].length > 0) {
+          gifts[key] = [...gifts[key], ...this.purchased_gifts[key]];
+        }
+      }
+
       return gifts;
+    },
+
+    getGiftAmount() {
+      const gifts = this.combineGifts;
+
+      return Object.keys(gifts)
+        .filter((key) => key !== "rite") // Filter out the "rite" key
+        .reduce((sum, key) => sum + gifts[key].length, 0);
     },
   },
 };

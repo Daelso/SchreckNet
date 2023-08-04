@@ -530,7 +530,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
@@ -541,7 +541,7 @@ export default {
       attributeInfo,
       skillInfo,
       tribe_renown: { glory: 0, honor: 0, wisdom: 0 },
-      renown: { glory: 0, honor: 0, wisdom: 0 },
+      purchased_renown: { glory: 0, honor: 0, wisdom: 0 },
       chronicle: "",
       edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
       attributePoints: 22,
@@ -636,7 +636,7 @@ export default {
       specialtiesFromXp: [],
       concept: "",
       touchstones: [],
-      xp: 0,
+      xp: 250,
       spentXp: 0,
       skillsDone: false,
       tribesDone: false,
@@ -845,6 +845,8 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
               spentXp: this.spentXp,
+              tribe_renown: this.tribe_renown,
+              purchased_renown: this.purchased_renown,
             },
           },
         })
@@ -854,6 +856,8 @@ export default {
           this.advantages = this.advantages + data.advantages.value;
           this.specialtiesFromXp = data.specialtiesFromXp;
           this.trueSkills = data.skills;
+          this.purchased_renown = data.purchased_renown;
+          this.tribe_renown = data.tribe_renown;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
@@ -918,9 +922,10 @@ export default {
   computed: {
     renownTotal() {
       let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
-      trueRenown.glory = this.tribe_renown.glory;
-      trueRenown.honor = this.tribe_renown.honor;
-      trueRenown.wisdom = this.tribe_renown.wisdom;
+      trueRenown.glory = this.tribe_renown.glory + this.purchased_renown.glory;
+      trueRenown.honor = this.tribe_renown.honor + this.purchased_renown.honor;
+      trueRenown.wisdom =
+        this.tribe_renown.wisdom + this.purchased_renown.wisdom;
 
       return trueRenown;
     },

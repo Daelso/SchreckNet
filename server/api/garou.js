@@ -135,8 +135,7 @@ router
         },
       });
 
-      console.log(gifts);
-      res.json(gifts);
+      res.status(200).json(gifts);
     } catch (err) {
       res.status(404).send(err);
     }

@@ -504,7 +504,6 @@ export default defineComponent({
           this.baseUrl + `/garou/tribe_gifts/${3}/${this.tribe.tribe_id}`
         );
         this.tribeGiftOptions = tribeGiftResponse.data;
-        console.log(this.tribeGiftOptions);
       } catch (err) {
         console.log(err);
       }

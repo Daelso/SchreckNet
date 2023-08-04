@@ -17,6 +17,12 @@
           "cost": 0,
           "maxCost": 3,
           "specNeeded": true
+        },
+        {
+          "name": "Stalker",
+          "desc": "A mortal, group or organization who is aware of you and actively working against you. Each point taken increases their fervor and capability. Enemies are rated two dots lower than allies. A 1 dot enemy is equivalent to a 3 dot ally.",
+          "cost": 1,
+          "specNeeded": false
         }
       ]
     },
@@ -45,21 +51,20 @@
         {
           "name": "Infamy: ",
           "desc": "You are infamous for some wicked deed. Add each dot of this flaw to the difficulty of your reaction role. A severe flaw may lead to pursuit from authorities.",
-          "cost": 0,
-          "maxCost": 5,
+          "cost": 2,
           "specNeeded": true
         },
         {
           "name": "Dark Secret: ",
           "desc": "A milder version of infamy, you have a terrible secret that would harm your reputation if it got out.",
-          "cost": 0,
-          "maxCost": 2,
+          "cost": 1,
           "specNeeded": true
         },
         {
           "name": "Infamous Partner",
           "desc": "Your spouse, lover, or some other significant individual to you has Infamy",
-          "cost": 1
+          "cost": 1,
+          "specNeeded": false
         }
       ]
     },
@@ -154,44 +159,34 @@
         }
       ]
     },
-    "Retainers": {
+    "Spirit Pact": {
       "advantages": [
         {
-          "name": "Retainer: ",
-          "desc": "Range: 1-3 dots. With each dot your retainer grows more capable. 1 dot = weak mortal, 2 dot = average side-kick, 3 dot = gifted mortal",
+          "name": "Spirit Pact",
+          "desc": "Range: 1-5 dots. With every dot the power and influence of the spirit is increased.",
           "cost": 0,
-          "maxCost": 3,
-          "specNeeded": true
-        }
-      ],
-      "flaws": [
-        {
-          "name": "Stalker: ",
-          "desc": "A former retainer is obsessed with you, should you deal with one another emerges.",
-          "cost": 1,
-          "specNeeded": true
-        }
-      ]
-    },
-    "Status": {
-      "advantages": [
-        {
-          "name": "Status",
-          "desc": "Range: 1-5 dots. With every dot your level of respect and privilege amongst your peers grows.",
-          "cost": 0,
-          "maxCost": 5
-        }
-      ],
-      "flaws": [
-        {
-          "name": "Shunned",
-          "desc": "You are hated by your local sect. You wronged them and they will do what they can to work against you.",
-          "cost": 2
+          "maxCost": 5,
+          "specNeeded": false
         },
         {
-          "name": "Suspect",
-          "desc": "You're disliked by your local sect. Suffer a two-die penalty to social tests with your faction.",
-          "cost": 1
+          "name": "Companion",
+          "desc": "The spirit can accompany you wherever you go, barring any spiritual wards.",
+          "cost": 2,
+          "specNeeded": false
+        },
+        {
+          "name": "Host",
+          "desc": "The spirit has a physical host, allowing it to interact with you in the real world.",
+          "cost": 1,
+          "specNeeded": false
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Pact Condition",
+          "desc": "You are hated by your local sect. You wronged them and they will do what they can to work against you.",
+          "cost": 1,
+          "specNeeded": false
         }
       ]
     }

@@ -1,38 +1,33 @@
 const Sequelize = require("sequelize");
-const db = require("../database");
+const db = require("../../database");
 
-const RenownTypes = require("./RenownTypes");
-
-const Tribes = db.sequelize.define(
-  "tribes",
+const NativeGifts = db.sequelize.define(
+  "native_gifts",
   {
-    tribe_id: {
+    gift_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    tribe_name: {
+    gift_name: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    patron: {
+
+    gift_description: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    description: {
+    pool: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    favor: {
+    cost: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    ban: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    renown_type: {
+    renown_level: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
@@ -40,9 +35,4 @@ const Tribes = db.sequelize.define(
   { timestamps: false }
 );
 
-Tribes.belongsTo(RenownTypes, {
-  foreignKey: "renown_type",
-  as: "renownTypeId",
-});
-
-module.exports = Tribes;
+module.exports = NativeGifts;

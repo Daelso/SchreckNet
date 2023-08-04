@@ -1,34 +1,26 @@
 const Sequelize = require("sequelize");
-const db = require("../database");
+const db = require("../../database");
 
-const Rites = db.sequelize.define(
-  "rites",
+const Auspices = db.sequelize.define(
+  "auspices",
   {
-    rite_id: {
+    auspice_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    rite_name: {
+    auspice_name: {
       type: Sequelize.STRING,
       allowNull: false,
     },
 
-    rite_description: {
+    description: {
       type: Sequelize.STRING,
-      allowNull: false,
-    },
-    pool: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    social: {
-      type: Sequelize.TINYINT,
       allowNull: false,
     },
   },
   { timestamps: false }
 );
 
-module.exports = Rites;
+module.exports = Auspices;

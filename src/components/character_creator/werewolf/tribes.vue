@@ -120,6 +120,7 @@
                   popup-content-style="background-color:#222831; color:white"
                   option-label="auspice_name"
                   option-value="auspice_id"
+                  @update:model-value="generateAuspiceGifts()"
                 />
                 <div class="tribe-info" v-if="auspice">
                   <div class="tribe">
@@ -150,6 +151,7 @@
               </q-step>
 
               <q-step :name="3" title="Select your Gifts" icon="app:whiteClaws">
+                <!-- Native Gift -->
                 <div class="native_gift">
                   <q-select
                     filled
@@ -179,7 +181,40 @@
                     </div>
                   </div>
                 </div>
+                <q-separator />
 
+                <!-- Native Gift -->
+                <div class="native_gift">
+                  <q-select
+                    filled
+                    v-model="this.tribe_gifts.auspice"
+                    color="secondary"
+                    bg-color="grey-3"
+                    class="inputs"
+                    :options="this.auspiceGiftOptions"
+                    label="Select an Auspice Gift"
+                    map-options
+                    popup-content-style="background-color:#222831; color:white"
+                    option-label="gift_name"
+                    option-value="gift_id"
+                  />
+                  <div class="tribe-info" v-if="this.tribe_gifts.auspice">
+                    <div class="tribe">
+                      Gift Description:
+                      {{ this.tribe_gifts.auspice.gift_description }}
+                    </div>
+                    <div class="tribe">
+                      Cost:
+                      {{ this.tribe_gifts.auspice.cost }}
+                    </div>
+                    <div class="tribe">
+                      Pool:
+                      {{ this.tribe_gifts.auspice.pool }}
+                    </div>
+                  </div>
+                </div>
+                <q-separator />
+                <!-- Rites -->
                 <div class="native_gift">
                   <q-select
                     filled
@@ -328,7 +363,7 @@ export default defineComponent({
       ] = await Promise.all([
         this.$axios.get(this.baseUrl + "/garou/tribes"),
         this.$axios.get(this.baseUrl + "/garou/auspices"),
-        this.$axios.get(this.baseUrl + "/garou/native_gifts"),
+        this.$axios.get(this.baseUrl + `/garou/native_gifts/${2}`),
         this.$axios.get(this.baseUrl + "/garou/renown_types"),
         this.$axios.get(this.baseUrl + "/garou/rites"),
       ]);
@@ -358,6 +393,7 @@ export default defineComponent({
       renownTypeOptions: [],
       riteOptions: [],
       clonedRiteOptions: [],
+      auspiceGiftOptions: [],
     };
   },
   methods: {
@@ -410,6 +446,18 @@ export default defineComponent({
           timeout: 14000,
           message: "Distribution changed, edges and perks cleared.",
         });
+      }
+    },
+
+    async generateAuspiceGifts() {
+      try {
+        const ausGiftResponse = await this.$axios.get(
+          this.baseUrl + `/garou/auspice_gifts/${2}/${this.auspice.auspice_id}`
+        );
+        this.auspiceGiftOptions = ausGiftResponse.data;
+        console.log(this.auspiceGiftOptions);
+      } catch (err) {
+        console.log(err);
       }
     },
   },

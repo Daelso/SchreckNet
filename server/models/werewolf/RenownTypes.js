@@ -1,21 +1,16 @@
 const Sequelize = require("sequelize");
-const db = require("../database");
+const db = require("../../database");
 
-const Auspices = db.sequelize.define(
-  "auspices",
+const RenownTypes = db.sequelize.define(
+  "renown_types",
   {
-    auspice_id: {
+    renown_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    auspice_name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-
-    description: {
+    renown_name: {
       type: Sequelize.STRING,
       allowNull: false,
     },
@@ -23,4 +18,4 @@ const Auspices = db.sequelize.define(
   { timestamps: false }
 );
 
-module.exports = Auspices;
+module.exports = RenownTypes;

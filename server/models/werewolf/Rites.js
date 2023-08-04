@@ -1,21 +1,21 @@
 const Sequelize = require("sequelize");
-const db = require("../database");
+const db = require("../../database");
 
-const NativeGifts = db.sequelize.define(
-  "native_gifts",
+const Rites = db.sequelize.define(
+  "rites",
   {
-    gift_id: {
+    rite_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    gift_name: {
+    rite_name: {
       type: Sequelize.STRING,
       allowNull: false,
     },
 
-    gift_description: {
+    rite_description: {
       type: Sequelize.STRING,
       allowNull: false,
     },
@@ -23,16 +23,12 @@ const NativeGifts = db.sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
-    cost: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    renown_level: {
-      type: Sequelize.INTEGER,
+    social: {
+      type: Sequelize.TINYINT,
       allowNull: false,
     },
   },
   { timestamps: false }
 );
 
-module.exports = NativeGifts;
+module.exports = Rites;

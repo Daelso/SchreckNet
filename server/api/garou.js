@@ -60,7 +60,7 @@ router
     try {
       const maxLevel = parseInt(req.params.max_level);
 
-      if (isNaN(maxLevel) || maxLevel < 1) {
+      if (isNaN(maxLevel) || maxLevel < 0) {
         return res.status(400).json({ error: "Invalid max_level." });
       }
 
@@ -87,7 +87,7 @@ router
       if (
         isNaN(maxLevel) ||
         isNaN(auspiceId) ||
-        maxLevel < 1 ||
+        maxLevel < 0 ||
         auspiceId < 1
       ) {
         return res
@@ -118,7 +118,7 @@ router
       const maxLevel = parseInt(req.params.max_level);
       const tribeId = parseInt(req.params.tribe_id);
 
-      if (isNaN(maxLevel) || isNaN(tribeId) || maxLevel < 1 || tribeId < 1) {
+      if (isNaN(maxLevel) || isNaN(tribeId) || maxLevel < 0 || tribeId < 1) {
         return res
           .status(400)
           .json({ error: "Invalid max_level or tribe_id." });

@@ -512,8 +512,8 @@
           <!-- Safe House -->
           <div
             v-if="
-              this.advantagesObj.haven.advantages.length > 0 ||
-              this.advantagesObj.haven.flaws.length > 0
+              this.advantagesObj.safehouse.advantages.length > 0 ||
+              this.advantagesObj.safehouse.flaws.length > 0
             "
           >
             <span class="text-h6">Safe House</span>
@@ -522,7 +522,7 @@
 
             <q-list bordered>
               <q-item
-                v-for="(advantage, key) in advantagesObj.haven.advantages"
+                v-for="(advantage, key) in advantagesObj.safehouse.advantages"
                 :key="key"
                 clickable
                 v-ripple
@@ -550,7 +550,7 @@
 
             <q-list bordered>
               <q-item
-                v-for="(flaw, key) in advantagesObj.haven.flaws"
+                v-for="(flaw, key) in advantagesObj.safehouse.flaws"
                 :key="key"
                 clickable
                 v-ripple
@@ -869,9 +869,9 @@ export default defineComponent({
           break;
         case "Safe House":
           if (advOrFlaw === true) {
-            modifiedObj.haven.advantages.push(choiceObj);
+            modifiedObj.safehouse.advantages.push(choiceObj);
           } else {
-            modifiedObj.haven.flaws.push(choiceObj);
+            modifiedObj.safehouse.flaws.push(choiceObj);
           }
           break;
       }

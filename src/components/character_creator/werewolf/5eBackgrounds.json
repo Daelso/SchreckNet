@@ -68,28 +68,6 @@
         }
       ]
     },
-    "Influence": {
-      "advantages": [
-        {
-          "name": "Influence",
-          "desc": "You have pull with the mortals of your domain. How much respect and reach you have grow with every dot of influence.",
-          "cost": 0,
-          "maxCost": 5
-        }
-      ],
-      "flaws": [
-        {
-          "name": "Despised",
-          "desc": "A group in your city lives solely to hinder you in any way possible. Subtract 2 die from any rolls to convince neutral parties to support you.",
-          "cost": 2
-        },
-        {
-          "name": "Disliked ",
-          "desc": "A group in your city lives solely to hinder you in any way possible. Subtract 1 die from any rolls to convince neutral parties to support you. (Does not effect contacts or allies)",
-          "cost": 1
-        }
-      ]
-    },
     "Mask": {
       "advantages": [
         {

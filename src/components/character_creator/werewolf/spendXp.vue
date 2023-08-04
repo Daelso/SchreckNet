@@ -91,6 +91,43 @@
               popup-content-style="background-color:#222831; color:white"
             />
 
+            <!-- Rite Purchasing -->
+            <q-select
+              v-if="this.categoryInput === 'Rite'"
+              v-model="riteSelection"
+              :options="this.riteOptions"
+              label="Which Rite Would you like to Purchase?"
+              label-color="primary"
+              bg-color="grey-3"
+              filled
+              color="secondary"
+              class="q-my-sm"
+              option-label="rite_name"
+              map-options
+              use-input
+              @filter="ritesFilter"
+              input-debounce="0"
+              option-value="rite_id"
+              popup-content-style="background-color:#222831; color:white"
+            />
+
+            <q-separator class="q-my-sm" />
+
+            <div class="tribe-info" v-if="this.riteSelection">
+              <div class="tribe">
+                Gift Description:
+                {{ this.riteSelection.rite_description }}
+              </div>
+              <div class="tribe">
+                Social:
+                {{ this.riteSelection.social === 1 ? "Yes" : "No" }}
+              </div>
+              <div class="tribe">
+                Pool:
+                {{ this.riteSelection.pool }}
+              </div>
+            </div>
+
             <!-- Specialty -->
             <q-select
               v-if="this.categoryInput === 'Specialty'"
@@ -136,7 +173,8 @@
                 this.categoryInput !== 'Renown' &&
                 this.categoryInput !== 'Native Gift' &&
                 this.categoryInput !== 'Tribe Gift' &&
-                this.categoryInput !== 'Auspice Gift'
+                this.categoryInput !== 'Auspice Gift' &&
+                this.categoryInput !== 'Rite'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -280,6 +318,7 @@ export default defineComponent({
       attributeInput: ref(""),
       categoryInput: ref(""),
       giftSelection: ref(""),
+      riteSelection: ref(""),
 
       specialtyInput: ref(""),
       specialtyDefinition: ref(""),
@@ -294,9 +333,27 @@ export default defineComponent({
       nativeGiftOptions: ref([]),
       tribeGiftOptions: ref([]),
       auspiceGiftOptions: ref([]),
+      riteOptions: ref([]),
+      clonedRiteOptions: ref([]),
     };
   },
   methods: {
+    ritesFilter(val, update) {
+      if (val === "") {
+        update(() => {
+          this.riteOptions = this.clonedRiteOptions;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.riteOptions = this.clonedRiteOptions.filter(
+          (v) => v.rite_name.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+
     async generateRenownOpts() {
       try {
         const renownResponse = await this.$axios.get(
@@ -346,6 +403,19 @@ export default defineComponent({
       }
     },
 
+    async generateRites() {
+      try {
+        const ritesResponse = await this.$axios.get(
+          this.baseUrl + "/garou/rites"
+        );
+
+        this.riteOptions = ritesResponse.data;
+        this.clonedRiteOptions = structuredClone(ritesResponse.data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
     calculateUpgrade() {
       switch (this.categoryInput) {
         case "Advantage":
@@ -363,8 +433,12 @@ export default defineComponent({
 
           break;
         case "Native Gift":
-          console.log(this.gift_total);
           this.cost = (this.gift_total + 1) * 2;
+
+          break;
+
+        case "Rite":
+          this.cost = 5;
 
           break;
 
@@ -476,6 +550,10 @@ export default defineComponent({
           this.generateGifts();
           break;
 
+        case "Rite":
+          this.purchased_gifts.rite.push(this.riteSelection);
+          break;
+
         case "Skills":
           this.skills[this.skillCategory.toLowerCase()]++;
           break;
@@ -499,6 +577,7 @@ export default defineComponent({
   async mounted() {
     await this.generateRenownOpts();
     await this.generateGifts();
+    await this.generateRites();
   },
 
   computed: {
@@ -509,6 +588,7 @@ export default defineComponent({
         "Auspice Gift",
         "Native Gift",
         "Renown",
+        "Rite",
         "Skills",
         "Specialty",
         "Tribe Gift",

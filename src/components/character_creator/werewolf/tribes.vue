@@ -48,7 +48,12 @@
                   map-options
                   option-label="tribe_name"
                   option-value="tribe_id"
-                  @update:model-value="applyTribeRenown()"
+                  @update:model-value="
+                    async () => {
+                      applyTribeRenown();
+                      await generateTribeGifts();
+                    }
+                  "
                 />
                 <div class="tribe-info" v-if="tribe">
                   <div class="tribe">
@@ -183,7 +188,39 @@
                 </div>
                 <q-separator />
 
-                <!-- Native Gift -->
+                <!-- Tribe Gift -->
+                <div class="native_gift">
+                  <q-select
+                    filled
+                    v-model="this.tribe_gifts.tribe"
+                    color="secondary"
+                    bg-color="grey-3"
+                    class="inputs"
+                    :options="this.tribeGiftOptions"
+                    label="Select a Tribe Gift"
+                    map-options
+                    popup-content-style="background-color:#222831; color:white"
+                    option-label="gift_name"
+                    option-value="gift_id"
+                  />
+                  <div class="tribe-info" v-if="this.tribe_gifts.tribe">
+                    <div class="tribe">
+                      Gift Description:
+                      {{ this.tribe_gifts.tribe.gift_description }}
+                    </div>
+                    <div class="tribe">
+                      Cost:
+                      {{ this.tribe_gifts.tribe.cost }}
+                    </div>
+                    <div class="tribe">
+                      Pool:
+                      {{ this.tribe_gifts.tribe.pool }}
+                    </div>
+                  </div>
+                </div>
+                <q-separator />
+
+                <!-- Auspice Gift -->
                 <div class="native_gift">
                   <q-select
                     filled
@@ -394,6 +431,7 @@ export default defineComponent({
       riteOptions: [],
       clonedRiteOptions: [],
       auspiceGiftOptions: [],
+      tribeGiftOptions: [],
     };
   },
   methods: {
@@ -455,7 +493,18 @@ export default defineComponent({
           this.baseUrl + `/garou/auspice_gifts/${2}/${this.auspice.auspice_id}`
         );
         this.auspiceGiftOptions = ausGiftResponse.data;
-        console.log(this.auspiceGiftOptions);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    async generateTribeGifts() {
+      try {
+        const tribeGiftResponse = await this.$axios.get(
+          this.baseUrl + `/garou/tribe_gifts/${3}/${this.tribe.tribe_id}`
+        );
+        this.tribeGiftOptions = tribeGiftResponse.data;
+        console.log(this.tribeGiftOptions);
       } catch (err) {
         console.log(err);
       }

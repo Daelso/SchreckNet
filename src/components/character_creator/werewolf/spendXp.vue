@@ -36,52 +36,25 @@
               popup-content-style="background-color:#222831; color:white"
             />
 
-            <!-- Edges -->
             <q-separator class="q-my-sm" />
+
+            <!-- Renown -->
             <q-select
-              v-if="this.categoryInput === 'Edge'"
+              v-if="this.categoryInput === 'Renown'"
+              v-model="renownCategory"
+              :options="renownOpts"
+              label="Which renown would you like to purchase?"
+              label-color="primary"
               bg-color="grey-3"
               filled
+              map-options
+              option-label="renown_name"
+              option-value="renown_id"
               color="secondary"
-              label-color="primary"
-              v-model="edgeCat"
-              :options="Object.keys(edgesList)"
-              label="Edge Category"
-              option-label="dist"
+              class="q-my-sm"
               popup-content-style="background-color:#222831; color:white"
             />
-            <q-separator class="q-my-sm" />
-            <q-select
-              v-if="this.edgeCat"
-              bg-color="grey-3"
-              filled
-              color="secondary"
-              label-color="primary"
-              v-model="edge"
-              :options="Object.keys(edgesList[this.edgeCat].edges)"
-              :label="this.edgeCat + ': ' + 'Edges'"
-              option-label="dist"
-              popup-content-style="background-color:#222831; color:white"
-            />
-            <div v-if="this.edge" class="edgeDesc q-my-sm">
-              {{ this.edgesList[edgeCat].edges[this.edge].desc }}
-            </div>
-            <!-- Perks -->
-            <q-select
-              v-if="this.categoryInput === 'Perk'"
-              bg-color="grey-3"
-              filled
-              color="secondary"
-              :options="perkOptions"
-              label-color="primary"
-              v-model="perk"
-              label="Select your perks"
-              option-label="name"
-              popup-content-style="background-color:#222831; color:white"
-            />
-            <div v-if="this.perk" class="edgeDesc q-my-sm">
-              {{ this.perk.parent }} - {{ this.perk.desc }}
-            </div>
+
             <!-- Specialty -->
             <q-select
               v-if="this.categoryInput === 'Specialty'"
@@ -124,8 +97,7 @@
                 this.categoryInput !== 'Attributes' &&
                 this.categoryInput !== 'Specialty' &&
                 this.categoryInput !== 'Skills' &&
-                this.categoryInput !== 'Edge' &&
-                this.categoryInput !== 'Perk'
+                this.categoryInput !== 'Renown'
               "
               v-model="dotsInput"
               :options="dotOptions"
@@ -146,6 +118,15 @@
               <q-badge v-if="this.skillCategory"
                 >Current {{ this.skillCategory }} Level:
                 {{ this.skills[this.skillCategory.toLowerCase()] }}</q-badge
+              >
+
+              <q-badge v-if="this.renownCategory"
+                >Current {{ this.renownCategory.renown_name }} Level:
+                {{
+                  this.renownTotal[
+                    this.renownCategory.renown_name.toLowerCase()
+                  ]
+                }}</q-badge
               >
 
               <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
@@ -170,7 +151,6 @@
 <script>
 import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
-import edgesList from "../hunter/edgesAndPerks.json";
 
 export default defineComponent({
   name: "spendXP",
@@ -190,10 +170,23 @@ export default defineComponent({
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     let localSpentXp = ref(props.info.spentXp);
-    let localEdgeArr = ref(props.info.edgeArr);
+    let baseUrl = "";
+    let purchased_renown = ref(props.info.purchased_renown);
+    let tribe_renown = ref(props.info.tribe_renown);
+
+    if (window.location.href.includes("localhost")) {
+      baseUrl = "http://localhost:5000";
+    } else {
+      baseUrl = window.location.origin;
+    }
+
     return {
       dialogRef,
       onDialogHide,
+      baseUrl: ref(baseUrl),
+      purchased_renown,
+      tribe_renown,
+
       onOKClick() {
         onDialogOK({
           advantages: advantagePoints,
@@ -202,7 +195,9 @@ export default defineComponent({
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
           spentXp: localSpentXp,
-          edgeArr: localEdgeArr,
+
+          purchased_renown: purchased_renown,
+          tribe_renown: tribe_renown,
         });
       },
       range,
@@ -215,11 +210,6 @@ export default defineComponent({
       cost: ref(0),
       localXP,
       localSpentXp,
-      edgeCat: ref(""),
-      edge: ref(""),
-      perk: ref(""),
-      edgesList,
-      localEdgeArr,
       canBuy: ref(true),
       attributeInput: ref(""),
       categoryInput: ref(""),
@@ -230,12 +220,24 @@ export default defineComponent({
       localAttributes,
       specialtiesFromXp,
       attributeOptions: ref(props.info.attributes),
-
+      renownOpts: ref([]),
+      renownCategory: ref(""),
       skills,
       skillCategory: ref(""),
     };
   },
   methods: {
+    async generateRenownOpts() {
+      try {
+        const renownResponse = await this.$axios.get(
+          this.baseUrl + "/garou/renown_types"
+        );
+        this.renownOpts = renownResponse.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
     calculateUpgrade() {
       switch (this.categoryInput) {
         case "Advantage":
@@ -248,12 +250,24 @@ export default defineComponent({
             this.canBuy = false;
           }
           break;
-        case "Edge":
-          this.cost = 7;
+
+        case "Renown":
+          if (!this.renownCategory) return;
+
+          this.cost =
+            (this.renownTotal[this.renownCategory.renown_name.toLowerCase()] +
+              1) *
+            5;
+          if (
+            this.renownTotal[this.renownCategory.renown_name.toLowerCase()] +
+              1 >
+            5
+          ) {
+            this.cost = "Renown is maxxed!";
+            this.canBuy = false;
+          }
           break;
-        case "Perk":
-          this.cost = 3;
-          break;
+
         case "Skills":
           if (this.skills[this.skillCategory.toLowerCase()] === 0) {
             this.cost = 3;
@@ -281,9 +295,7 @@ export default defineComponent({
       this.specialtyInput = "";
       this.specialtyDefinition = "";
       this.skillCategory = "";
-      this.edgeCat = "";
-      this.edge = "";
-      this.perk = "";
+      this.renownCategory = "";
     },
     clearBelowCat() {
       this.attributeInput = "";
@@ -293,9 +305,7 @@ export default defineComponent({
       this.specialtyInput = "";
       this.specialtyDefinition = "";
       this.skillCategory = "";
-      this.edgeCat = "";
-      this.edge = "";
-      this.perk = "";
+      this.renownCategory = "";
     },
 
     purchaseMade() {
@@ -326,18 +336,13 @@ export default defineComponent({
           this.attributeInput.points++;
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
-        case "Edge":
-          this.localEdgeArr.edges.push({
-            category: this.edgeCat,
-            edge: this.edge,
-          });
+
+        case "Renown":
+          this.purchased_renown[
+            this.renownCategory.renown_name.toLowerCase()
+          ]++;
           break;
-        case "Perk":
-          this.localEdgeArr.perks.push({
-            category: this.perk.parent,
-            perk: this.perk.name,
-          });
-          break;
+
         case "Skills":
           this.skills[this.skillCategory.toLowerCase()]++;
           break;
@@ -354,16 +359,13 @@ export default defineComponent({
     },
   },
 
+  async mounted() {
+    await this.generateRenownOpts();
+  },
+
   computed: {
     categoryOptions() {
-      let arr = [
-        "Advantage",
-        "Attributes",
-        "Edge",
-        "Perk",
-        "Skills",
-        "Specialty",
-      ];
+      let arr = ["Advantage", "Attributes", "Renown", "Skills", "Specialty"];
 
       return arr;
     },
@@ -402,14 +404,15 @@ export default defineComponent({
       }
       return optionsArr.sort();
     },
+    renownTotal() {
+      let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
+      console.log(this.tribe_renown);
+      trueRenown.glory = this.tribe_renown.glory + this.purchased_renown.glory;
+      trueRenown.honor = this.tribe_renown.honor + this.purchased_renown.honor;
+      trueRenown.wisdom =
+        this.tribe_renown.wisdom + this.purchased_renown.wisdom;
 
-    perkOptions() {
-      let arr = [];
-      this.localEdgeArr.edges.forEach((edge) => {
-        arr = arr.concat(this.edgesList[edge.category].edges[edge.edge].perks);
-      });
-
-      return arr;
+      return trueRenown;
     },
   },
 });

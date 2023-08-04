@@ -285,28 +285,15 @@
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.safehouse.advantages.length === 0"
+                      v-if="advantagesObj.loresheets.advantages.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.safehouse.advantages"
+                      v-for="advantage in advantagesObj.loresheets.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                    </div>
-                    Flaws:
-                    <div
-                      class="q-my-sm"
-                      v-if="advantagesObj.safehouse.flaws.length === 0"
-                    >
-                      Not yet selected
-                    </div>
-                    <div
-                      v-for="flaw in advantagesObj.safehouse.flaws"
-                      :key="flaw.name"
-                    >
-                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
                   </div>
                 </q-card-section>
@@ -317,28 +304,15 @@
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.safehouse.advantages.length === 0"
+                      v-if="advantagesObj.talismans.advantages.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.safehouse.advantages"
+                      v-for="advantage in advantagesObj.talismans.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                    </div>
-                    Flaws:
-                    <div
-                      class="q-my-sm"
-                      v-if="advantagesObj.safehouse.flaws.length === 0"
-                    >
-                      Not yet selected
-                    </div>
-                    <div
-                      v-for="flaw in advantagesObj.safehouse.flaws"
-                      :key="flaw.name"
-                    >
-                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
                   </div>
                 </q-card-section>
@@ -622,8 +596,8 @@ export default {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
         safehouse: { advantages: [], flaws: [] },
-        loresheets: { advantages: [], flaws: [] },
-        talismans: { advantages: [], flaws: [] },
+        loresheets: { advantages: [] },
+        talismans: { advantages: [] },
       },
       attributesDone: false,
       attributeInfo,

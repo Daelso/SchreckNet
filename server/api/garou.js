@@ -16,6 +16,7 @@ const RenownTypes = require("../models/werewolf/RenownTypes.js");
 const NativeGifts = require("../models/werewolf/NativeGifts.js");
 const AuspiceGifts = require("../models/werewolf/AuspiceGifts.js");
 const Rites = require("../models/werewolf/Rites.js");
+const TribeGifts = require("../models/werewolf/TribeGifts.js");
 
 //Route is base/garou/
 
@@ -104,6 +105,37 @@ router
           },
         },
       });
+      res.json(gifts);
+    } catch (err) {
+      res.status(404).send(err);
+    }
+  });
+
+router
+  .route("/tribe_gifts/:max_level/:tribe_id")
+  .get(lib.getLimiter, async (req, res) => {
+    try {
+      const maxLevel = parseInt(req.params.max_level);
+      const tribeId = parseInt(req.params.tribe_id);
+
+      if (isNaN(maxLevel) || isNaN(tribeId) || maxLevel < 1 || tribeId < 1) {
+        return res
+          .status(400)
+          .json({ error: "Invalid max_level or tribe_id." });
+      }
+
+      const gifts = await TribeGifts.findAll({
+        where: {
+          renown_level: {
+            [Op.lte]: maxLevel,
+          },
+          tribe_id: {
+            [Op.eq]: tribeId,
+          },
+        },
+      });
+
+      console.log(gifts);
       res.json(gifts);
     } catch (err) {
       res.status(404).send(err);

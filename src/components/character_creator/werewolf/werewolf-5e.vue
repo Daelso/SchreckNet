@@ -250,17 +250,17 @@
                   </div>
 
                   <div class="grid-column">
-                    <div class="merit-header">Safe House:</div>
+                    <div class="merit-header">Caern:</div>
 
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.safehouse.advantages.length === 0"
+                      v-if="advantagesObj.caern.advantages.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.safehouse.advantages"
+                      v-for="advantage in advantagesObj.caern.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
@@ -268,12 +268,12 @@
                     Flaws:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.safehouse.flaws.length === 0"
+                      v-if="advantagesObj.caern.flaws.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="flaw in advantagesObj.safehouse.flaws"
+                      v-for="flaw in advantagesObj.caern.flaws"
                       :key="flaw.name"
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
@@ -595,7 +595,7 @@ export default {
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
-        safehouse: { advantages: [], flaws: [] },
+        caern: { advantages: [], flaws: [] },
         loresheets: { advantages: [] },
         talismans: { advantages: [] },
       },

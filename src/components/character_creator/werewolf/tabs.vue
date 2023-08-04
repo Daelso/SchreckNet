@@ -269,7 +269,7 @@
             v-if="
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Safe House'
+              this.advantageCategory == 'Caern'
             "
           >
             <q-select
@@ -332,11 +332,7 @@
             />
           </div>
 
-          <div
-            v-if="
-              this.advFlawChoice.specNeeded === true && this.howManyDots >= 1
-            "
-          >
+          <div v-if="this.advFlawChoice.specNeeded === true">
             <q-input
               autogrow
               hint="Briefly elaborate on what this merit is"
@@ -509,20 +505,20 @@
             </q-list>
           </div>
           <br />
-          <!-- Safe House -->
+          <!-- Caern -->
           <div
             v-if="
-              this.advantagesObj.safehouse.advantages.length > 0 ||
-              this.advantagesObj.safehouse.flaws.length > 0
+              this.advantagesObj.caern.advantages.length > 0 ||
+              this.advantagesObj.caern.flaws.length > 0
             "
           >
-            <span class="text-h6">Safe House</span>
+            <span class="text-h6">Caern</span>
             <q-separator />
             <div class="q-my-sm" style="font-family: monospace">Advantages</div>
 
             <q-list bordered>
               <q-item
-                v-for="(advantage, key) in advantagesObj.safehouse.advantages"
+                v-for="(advantage, key) in advantagesObj.caern.advantages"
                 :key="key"
                 clickable
                 v-ripple
@@ -550,7 +546,7 @@
 
             <q-list bordered>
               <q-item
-                v-for="(flaw, key) in advantagesObj.safehouse.flaws"
+                v-for="(flaw, key) in advantagesObj.caern.flaws"
                 :key="key"
                 clickable
                 v-ripple
@@ -598,8 +594,8 @@
 <script>
 import { defineComponent } from "vue";
 import { ref } from "vue";
-import allMerits from "../hunter/5eMerits.json";
-import allBackgrounds from "../hunter/5eBackgrounds.json";
+import allMerits from "../werewolf/5eMerits.json";
+import allBackgrounds from "../werewolf/5eBackgrounds.json";
 import safeHouseMerits from "../hunter/safeHouses.json";
 
 export default defineComponent({
@@ -672,7 +668,7 @@ export default defineComponent({
       tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
-      advantageCategories: ["Merits", "Backgrounds", "Safe House"],
+      advantageCategories: ["Merits", "Backgrounds", "Caern"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
@@ -767,8 +763,8 @@ export default defineComponent({
         case "Backgrounds":
           arr = Object.keys(allBackgrounds.Backgrounds);
           break;
-        case "Safe House":
-          arr = Object.keys(safeHouseMerits["Safe House"]);
+        case "Caern":
+          arr = Object.keys(safeHouseMerits["Caern"]);
           break;
       }
 
@@ -785,8 +781,8 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
             break;
-          case "Safe House":
-            arr = safeHouseMerits["Safe House"][this.meritCategory].advantages;
+          case "Caern":
+            arr = safeHouseMerits["Caern"][this.meritCategory].advantages;
             break;
         }
       }
@@ -799,8 +795,8 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
             break;
-          case "Safe House":
-            arr = safeHouseMerits["Safe House"][this.meritCategory].flaws;
+          case "Caern":
+            arr = safeHouseMerits["Caern"][this.meritCategory].flaws;
             break;
         }
       }
@@ -867,11 +863,11 @@ export default defineComponent({
             modifiedObj.backgrounds.flaws.push(choiceObj);
           }
           break;
-        case "Safe House":
+        case "Caern":
           if (advOrFlaw === true) {
-            modifiedObj.safehouse.advantages.push(choiceObj);
+            modifiedObj.caern.advantages.push(choiceObj);
           } else {
-            modifiedObj.safehouse.flaws.push(choiceObj);
+            modifiedObj.caern.flaws.push(choiceObj);
           }
           break;
       }

@@ -128,7 +128,9 @@
       </div>
     </div>
     <q-separator />
-    <q-card-actions>
+    <q-card-actions
+      style="display: flex; justify-content: center; align-items: center"
+    >
       <q-btn
         flat
         color="white"
@@ -161,8 +163,8 @@
   background-color: #222831;
   align-items: flex-start;
   justify-content: center;
-  min-height: 27em;
-  max-height: 27em;
+  min-height: 35em;
+  max-height: 35em;
 }
 
 .backgroundDefault {

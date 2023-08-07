@@ -140,6 +140,7 @@
   background-color: #222831;
   align-items: flex-start;
   justify-content: center;
+  min-height: 27em;
 }
 .backgroundDefault {
   background-color: #171a1e;

@@ -71,6 +71,19 @@ router.route("/garou/:id").get(lib.getLimiter, async (req, res) => {
   }
 });
 
+router.route("/myGarou/:id").get(async (req, res) => {
+  try {
+    const garou = await Garou.findAll({
+      where: {
+        created_by: req.params.id,
+      },
+    });
+    res.status(200).send(garou);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/tribes").get(lib.getLimiter, async (req, res) => {
   try {
     const tribes = await Tribes.findAll({

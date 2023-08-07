@@ -1,0 +1,103 @@
+{
+  "Caern": {
+    "Bawn Traits": ["Abundance", "Security", "Well-Hidden"],
+    "Spiritual Power Traits": {
+      "Bawn Traits": [
+        "Permissive Gauntlet",
+        "Rite Focus",
+        "Spiritual Attunement",
+        "Spirit Guardian"
+      ]
+    },
+    "Harmony Flute": {
+      "advantages": [
+        {
+          "name": "Harmony Flute",
+          "desc": "An ornate flute bearing the image of Luna and Helios dancing, can pull a Garou back from their frenzied rage.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Klaive": {
+      "advantages": [
+        {
+          "name": "Talen Klaive",
+          "desc": "The signature weapon of Garou society, +2 silver-based agg damage. Cannot be used in Crinos form.",
+          "cost": 1,
+          "single_use": true
+        },
+        {
+          "name": "Klaive",
+          "desc": "The signature weapon of Garou society, +2 silver-based agg damage. Cannot be used in Crinos form.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Partridge Wing": {
+      "advantages": [
+        {
+          "name": "Partridge Wing",
+          "desc": "Prevents a single mortal from suffering from the effects of delerium.",
+          "cost": 2,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Shadowshard": {
+      "advantages": [
+        {
+          "name": "Single Sized Shadowshard",
+          "desc": "A physical piece of the Umbra often appearing as a piece of glass. Upon breaking it allows the user to instantly enter the umbra when the gauntlet is below 3 dif. Only works on Garou.",
+          "cost": 1,
+          "single_use": true
+        },
+        {
+          "name": "Pack Sized Shadowshard",
+          "desc": "A physical piece of the Umbra often appearing as a piece of glass. Upon breaking it allows the user and their pack to instantly enter the umbra when the gauntlet is below 3 dif. Only works on Garou.",
+          "cost": 1,
+          "single_use": true
+        }
+      ],
+      "flaws": []
+    },
+    "Spirit Catcher": {
+      "advantages": [
+        {
+          "name": "Talen Spirit Catcher",
+          "desc": "A generalized spirit catcher than is capable of containing a single spirit. Cannot specify which spirit if there are multiple.",
+          "cost": 1,
+          "single_use": true
+        },
+        {
+          "name": "Spirit Catcher",
+          "desc": "A specialized spirit catcher that can better attract a single-type of spirit during a scene.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Wind Whistle": {
+      "advantages": [
+        {
+          "name": "Talen Wind Whistle",
+          "desc": "When blown, the spirits cause a large gust of wind covering the tracks of the pack with snow, debris or dust making it far harder to track them.",
+          "cost": 1,
+          "single_use": true
+        },
+        {
+          "name": "Wind Whistle",
+          "desc": "When blown, the spirits cause a large gust of wind covering the tracks of the pack with snow, debris or dust making it far harder to track them.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    }
+  }
+}

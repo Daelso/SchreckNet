@@ -36,6 +36,24 @@
       >
     </q-item-section>
   </q-item>
+  <q-item
+    clickable
+    style="color: red"
+    href="https://ko-fi.com/welard"
+    target="_blank"
+    rel="noreferrer noopener"
+  >
+    <q-item-section avatar>
+      <q-icon color="secondary" name="favorite" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>Support SchreckNet</q-item-label>
+      <q-item-label caption style="color: white"
+        >Helps fund hosting and server costs</q-item-label
+      >
+    </q-item-section>
+  </q-item>
 </template>
 
 <script>

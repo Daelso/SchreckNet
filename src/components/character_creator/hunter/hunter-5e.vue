@@ -619,6 +619,7 @@ export default {
           icon: "warning",
           message: "Saving...",
         });
+        return;
       }
       this.saving = true;
       this.$q.loading.show({

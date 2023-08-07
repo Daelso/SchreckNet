@@ -114,6 +114,8 @@ import socialLinks from "components/links/socialLinks.vue";
 import ankh from "../assets/images/ankh.png";
 import whiteAnkh from "../assets/images/ankhWhite.png";
 import claws from "../assets/images/claws.png";
+import whiteClaws from "../assets/images/whiteClaws.png";
+
 import mage from "../assets/images/mage.png";
 import hunter from "../assets/images/hunter.png";
 import whiteHunter from "../assets/images/whiteHunter.png";
@@ -138,6 +140,7 @@ export default defineComponent({
       "app:ankh": `img:${ankh}`,
       "app:whiteankh": `img:${whiteAnkh}`,
       "app:claws": `img:${claws}`,
+      "app:whiteClaws": `img:${whiteClaws}`,
       "app:mage": `img:${mage}`,
       "app:hunter": `img:${hunter}`,
       "app:whiteHunter": `img:${whiteHunter}`,

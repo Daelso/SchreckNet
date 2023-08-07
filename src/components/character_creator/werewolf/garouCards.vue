@@ -1,33 +1,16 @@
 <template>
-  <q-card
-    v-for="vamp in this.kindred"
-    :key="vamp"
-    class="my-card"
-    flat
-    bordered
-  >
+  <q-card v-for="wolf in this.garou" :key="wolf" class="my-card" flat bordered>
     <q-item>
       <q-item-section avatar>
         <q-avatar>
-          <q-icon color="secondary" name="app:ankh" style="scale: 180%" />
+          <q-icon color="secondary" name="app:claws" style="scale: 170%" />
         </q-avatar>
       </q-item-section>
 
       <q-item-section>
-        <q-item-label>{{ vamp.charName }}</q-item-label>
+        <q-item-label>{{ wolf.charName }}</q-item-label>
         <q-item-label style="color: white" caption>
-          {{
-            ["Giovanni", "Lamiae", "Nagaraja", "Samedi"].includes(vamp.clan)
-              ? vamp.clan + " [Hecata]"
-              : vamp.clan
-          }}
-          ({{ vamp.sect }}) - {{ vamp.predator_type }}
-        </q-item-label>
-        <q-item-label style="color: white" caption>
-          Generation: {{ vamp.generation }} ({{ vamp.age }})
-        </q-item-label>
-        <q-item-label style="color: white" caption>
-          Cult: {{ vamp.cult }}
+          {{ wolf.tribe.tribe_name }} ({{ wolf.auspice.auspice_name }})
         </q-item-label>
       </q-item-section>
     </q-item>
@@ -43,13 +26,13 @@
                   <q-card>
                     <q-card-section
                       v-for="(attribute, key) in Object.keys(
-                        vamp.attributes
+                        wolf.attributes
                       ).sort()"
                       :key="key"
                       class="backgroundDefault"
                     >
                       <div class="attribute">
-                        {{ attribute }} - {{ vamp.attributes[attribute] }}
+                        {{ attribute }} - {{ wolf.attributes[attribute] }}
                       </div>
                     </q-card-section>
                   </q-card>
@@ -58,14 +41,26 @@
             </q-item>
             <q-item>
               <q-item-section>
-                <q-expansion-item expand-separator label="Disciplines" dark>
+                <q-expansion-item expand-separator label="Gifts/Rites" dark>
                   <q-card>
-                    <q-card-section
-                      v-for="(discipline, key) in vamp.disciplines"
-                      :key="key"
-                      class="backgroundDefault"
-                    >
-                      {{ key }} - {{ discipline }} dots
+                    <q-card-section class="backgroundDefault">
+                      Gifts:
+                      <div
+                        v-for="(gift, key) in this.combineGifts(wolf)"
+                        :key="key"
+                      >
+                        <div>
+                          {{ gift.gift_name ? gift.gift_name : "" }}
+                        </div>
+                      </div>
+                      <br />
+                      Rites:
+                      <div
+                        v-for="(gift, key) in this.combineGifts(wolf)"
+                        :key="key"
+                      >
+                        {{ gift.rite_name ? gift.rite_name : "" }}
+                      </div>
                     </q-card-section>
                   </q-card>
                 </q-expansion-item></q-item-section
@@ -73,14 +68,14 @@
             </q-item>
             <q-item>
               <q-item-section>
-                <q-expansion-item expand-separator label="Convictions" dark>
+                <q-expansion-item expand-separator label="Touchstones" dark>
                   <q-card>
                     <q-card-section
-                      v-for="(conviction, key) in vamp.convictions"
+                      v-for="(touchstone, key) in wolf.touchstones"
                       :key="key"
                       class="backgroundDefault"
                     >
-                      {{ conviction }}
+                      {{ touchstone }}
                     </q-card-section>
                   </q-card>
                 </q-expansion-item></q-item-section
@@ -95,34 +90,37 @@
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline>Concept</q-item-label>
-              <q-item-label>{{ truncate(vamp.concept, 50) }}</q-item-label>
+              <q-item-label>{{ truncate(wolf.concept, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
           <q-item>
             <q-item-section>
+              <q-item-label style="color: white" overline>Patron</q-item-label>
+              <q-item-label>{{ wolf.tribe.patron }}</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
               <q-item-label style="color: white" overline
-                >Archetype
+                >Total Renown
               </q-item-label>
-              <q-item-label>{{ truncate(vamp.archetype, 50) }}</q-item-label>
+              <q-item-label>{{ this.renownSum(wolf) }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-separator />
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline
-                >Ambition</q-item-label
-              >
-              <q-item-label>{{ truncate(vamp.ambition, 50) }}</q-item-label>
+                >Loresheet
+              </q-item-label>
+              <q-item-label>{{
+                wolf.advantages.loresheets.advantages.length > 0
+                  ? wolf.advantages.loresheets.advantages[0].name
+                  : "None"
+              }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item>
-            <q-item-section>
-              <q-item-label style="color: white" overline>Desire</q-item-label>
-              <q-item-label>{{ truncate(vamp.desire, 50) }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-separator />
+
           <q-separator />
         </q-list>
       </div>
@@ -130,20 +128,21 @@
     <q-separator />
     <q-card-actions>
       <q-btn
+        style="margin: auto"
         flat
         color="white"
         @click="
-          this.router.push({ name: 'vampire5eView', params: { id: vamp.id } })
+          this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
         "
       >
         View Full Character
       </q-btn>
       <q-btn
-        @click="this.favoriteChar(vamp.id, vamp.charName)"
+        @click="this.favoriteChar(wolf.id, wolf.charName)"
         style="margin: auto"
         flat
         v-if="
-          this.currentUser !== false && vamp.created_by !== this.currentUser.id
+          this.currentUser !== false && wolf.created_by !== this.currentUser.id
         "
         >Favorite</q-btn
       >
@@ -161,15 +160,16 @@
   background-color: #222831;
   align-items: flex-start;
   justify-content: center;
+  min-height: 27em;
+  flex: 1;
 }
-
 .backgroundDefault {
   background-color: #171a1e;
 }
 .base-info {
   display: flex;
   justify-content: center;
-  align-content: flex-start;
+  align-content: center;
   margin: auto;
 }
 
@@ -205,20 +205,19 @@ export default {
       baseUrl = window.location.origin;
     }
 
-    let kindred = await axios
-      .get(baseUrl + "/vampires/card", {
+    let garou = await axios
+      .get(baseUrl + "/garou/card", {
         withCredentials: true,
       })
       .then((resp) => {
         return resp.data;
       })
       .catch((err) => {
-        console.log(err);
         return "Not found!";
       });
 
     return {
-      kindred,
+      garou,
       router,
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
@@ -242,7 +241,7 @@ export default {
         baseUrl = window.location.origin;
       }
       const payload = {
-        game_id: 1,
+        game_id: 3,
         sheet_id: sheet_id,
       };
       this.$axios
@@ -273,6 +272,52 @@ export default {
             message: err.message,
           });
         });
+    },
+    renownTotal(wolf) {
+      const trueRenown = { glory: 0, honor: 0, wisdom: 0 };
+
+      for (const key in trueRenown) {
+        if (Object.prototype.hasOwnProperty.call(trueRenown, key)) {
+          trueRenown[key] = wolf.tribe_renown[key] + wolf.purchased_renown[key];
+        }
+      }
+
+      return trueRenown;
+    },
+
+    renownSum(wolf) {
+      const totalRenown = this.renownTotal(wolf);
+      const sum = Object.values(totalRenown).reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      return sum;
+    },
+
+    combineGifts(wolf) {
+      let gifts = [];
+
+      for (let key in wolf.tribe_gifts) {
+        if (wolf.tribe_gifts[key] !== null) {
+          gifts.push(wolf.tribe_gifts[key]);
+        }
+      }
+
+      for (let key in wolf.purchased_gifts) {
+        if (wolf.purchased_gifts[key].length > 0) {
+          gifts = [...gifts, ...wolf.purchased_gifts[key]];
+        }
+      }
+      return gifts;
+    },
+
+    getGiftAmount(wolf) {
+      const gifts = this.combineGifts(wolf);
+
+      return Object.keys(gifts)
+        .filter((key) => key !== "rite") // Filter out the "rite" key
+        .reduce((sum, key) => sum + gifts[key].length, 0);
     },
   },
 };

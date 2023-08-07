@@ -54,4 +54,26 @@ router.route("/hunters").post(async (req, res) => {
   }
 });
 
+router.route("/garou").post(async (req, res) => {
+  try {
+    const params = req.body.searchParams;
+    let baseQuery = "SELECT * FROM ey140u9j4rs9xcib.garou WHERE 1=1";
+    if (params.user) {
+      baseQuery += ` AND created_by = ${params.user}`;
+    }
+    if (params.tribe) {
+      baseQuery += ` AND tribe->"$.tribe_id" = "${params.tribe.tribe_id}"`;
+    }
+    if (params.auspice) {
+      baseQuery += ` AND auspice->"$.auspice_id" = "${params.auspice.auspice_id}"`;
+    }
+
+    const [results, metadata] = await sequelize.sequelize.query(baseQuery);
+
+    res.status(200).send(results);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 module.exports = router; //Exports our routes

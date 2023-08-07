@@ -161,7 +161,7 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 27em;
-  max-height: 27em;
+
   flex: 1;
 }
 .backgroundDefault {

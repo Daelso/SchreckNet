@@ -141,7 +141,6 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 27em;
-  max-height: 27em;
 }
 .backgroundDefault {
   background-color: #171a1e;

@@ -164,7 +164,6 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 35em;
-  max-height: 35em;
 }
 
 .backgroundDefault {

@@ -1020,23 +1020,27 @@ export default defineComponent({
         }
       });
 
-      // let edgeLength =
-      //   this.garou.edges.edges.length + this.garou.edges.perks.length;
+      const gifts = this.justGifts;
+      console.log(gifts);
 
-      // let combinedEdges = [];
+      // Gifts/Rites
+      for (let i = 0; i < gifts.length; i++) {
+        let giftName = form.getTextField(`Gift_Name-1.${i}.0`);
+        let giftPool = form.getTextField(`Gift_Name-1.${i}.1`);
+        let giftCost = form.getTextField(`Gift_Name-1.${i}.2`);
+        let giftNotes = form.getTextField(`Gift_Name-1.${i}.3`);
 
-      // this.garou.edges.edges.forEach((edge) => {
-      //   combinedEdges.push("Edge: " + edge.edge);
-      // });
-
-      // this.garou.edges.perks.forEach((perk) => {
-      //   combinedEdges.push("Perk: " + perk.perk);
-      // });
-
-      // for (let i = 0; i < edgeLength; i++) {
-      //   let edgeField = form.getTextField(edgeArr[i]);
-      //   edgeField.setText(combinedEdges[i]);
-      // }
+        giftName.setText(
+          gifts[i].gift_name ? gifts[i].gift_name : gifts[i].rite_name
+        );
+        giftPool.setText(gifts[i].pool);
+        giftCost.setText(gifts[i].cost ? gifts[i].cost : "Free");
+        giftNotes.setText(
+          gifts[i].gift_description
+            ? gifts[i].gift_description
+            : gifts[i].rite_description
+        );
+      }
 
       // Advantages/flaws
       let meritArr = [];
@@ -1154,6 +1158,24 @@ export default defineComponent({
       for (let key in this.garou.purchased_gifts) {
         if (this.garou.purchased_gifts[key].length > 0) {
           gifts[key] = [...gifts[key], ...this.garou.purchased_gifts[key]];
+        }
+      }
+
+      return gifts;
+    },
+
+    justGifts() {
+      let gifts = [];
+
+      for (let key in this.garou.tribe_gifts) {
+        if (this.garou.tribe_gifts[key] !== null) {
+          gifts.push(this.garou.tribe_gifts[key]);
+        }
+      }
+
+      for (let key in this.garou.purchased_gifts) {
+        if (this.garou.purchased_gifts[key].length > 0) {
+          gifts = [...gifts[key], ...this.garou.purchased_gifts[key]];
         }
       }
 

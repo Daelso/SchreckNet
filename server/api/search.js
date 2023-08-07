@@ -65,7 +65,7 @@ router.route("/garou").post(async (req, res) => {
       baseQuery += ` AND tribe->"$.tribe_id" = "${params.tribe.tribe_id}"`;
     }
     if (params.auspice) {
-      baseQuery += ` AND creed->"$.auspice_id" = "${params.auspice.auspice_id}"`;
+      baseQuery += ` AND auspice->"$.auspice_id" = "${params.auspice.auspice_id}"`;
     }
 
     const [results, metadata] = await sequelize.sequelize.query(baseQuery);

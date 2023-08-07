@@ -120,7 +120,7 @@
           <q-list bordered class="rounded-borders">
             <q-expansion-item
               icon="app:whiteClaws"
-              label="Gifts"
+              label="Gifts & Rites"
               caption="View your gifts"
               dark
             >

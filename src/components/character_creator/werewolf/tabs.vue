@@ -750,6 +750,11 @@ export default defineComponent({
     },
     advorFlawOptions() {
       let arr = ["Advantages", "Flaws"];
+      const meritCat = allMerits.Merits[this.meritCategory];
+
+      if (meritCat.flaws.length === 0) {
+        arr = ["Advantages"];
+      }
 
       return arr;
     },

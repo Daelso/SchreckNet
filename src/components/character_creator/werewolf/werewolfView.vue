@@ -562,7 +562,6 @@ export default defineComponent({
         withCredentials: true,
       })
       .then((resp) => {
-        console.log(resp.data);
         if (resp.data === null) {
           pageFound.value = false;
         } else {
@@ -571,7 +570,6 @@ export default defineComponent({
         return resp.data;
       })
       .catch((err) => {
-        console.log(err);
         return "blah";
       });
 
@@ -605,7 +603,6 @@ export default defineComponent({
               icon: "warning",
               message: "Failed to delete! Try again later!",
             });
-            console.log(err);
             return;
           }
           this.$q.notify({
@@ -655,9 +652,7 @@ export default defineComponent({
         this.creator = resp.data.username;
         return resp.data;
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
 
     return {};
   },
@@ -692,9 +687,9 @@ export default defineComponent({
   },
   methods: {
     async modifyPdf() {
-      // this.$q.loading.show({
-      //   delay: 400, // ms
-      // });
+      this.$q.loading.show({
+        delay: 400, // ms
+      });
 
       const pdfDoc = await PDFDocument.load(this.charSheet);
 
@@ -707,13 +702,13 @@ export default defineComponent({
       pdfDoc.registerFontkit(fontkit);
       const supportFont = await pdfDoc.embedFont(ubuntuFontBytes);
 
-      const fields = form.getFields();
+      // const fields = form.getFields();
 
-      fields.forEach((field) => {
-        const type = field.constructor.name;
-        const name = field.getName();
-        console.log(`${type}: ${name}`);
-      });
+      // fields.forEach((field) => {
+      //   const type = field.constructor.name;
+      //   const name = field.getName();
+      //   // console.log(`${type}: ${name}`);
+      // });
 
       const nameField = form.getTextField("Name");
       const tribeField = form.getTextField("Tribe");
@@ -1026,7 +1021,6 @@ export default defineComponent({
       });
 
       const gifts = this.justGifts;
-      console.log(gifts);
 
       // Gifts/Rites
       for (let i = 0; i < gifts.length; i++) {

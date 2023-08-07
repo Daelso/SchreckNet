@@ -555,11 +555,14 @@ export default {
     return {
       tab: ref("coreConcept"),
       layout: ref(false),
+      baseUrl: ref(baseUrl),
     };
   },
+
   data() {
     return {
       debug: false,
+      garou: null,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
@@ -705,13 +708,6 @@ export default {
       });
       const axios = require("axios");
 
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
-
       let character = {
         name: this.charName,
         concept: this.concept,
@@ -748,7 +744,7 @@ export default {
       };
 
       axios
-        .post(baseUrl + "/garou/new", character, {
+        .post(this.baseUrl + "/garou/new", character, {
           withCredentials: true,
         })
         .then((res) => {

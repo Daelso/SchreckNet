@@ -1,33 +1,29 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
-  <div
-    v-if="
-      !this.pageFound ||
-      !this.currentUser ||
-      this.currentUser.id !== this.hunter.created_by
-    "
-  >
-    <notFound />
-  </div>
   <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Hunter: the Reckoning
+          Werewolf: The Apocalypse
           <div class="info q-my-sm">
             <div>Name: {{ charName ? charName : "Unknown" }}</div>
-            <div>Creed: {{ creed.name ? creed.name : "Unknown" }}</div>
-            <div>Cell: {{ cell ? cell : "Unknown" }}</div>
+            <div>Chronicle: {{ chronicle ? chronicle : "Unknown" }}</div>
+            <div>Concept: {{ !concept ? "None" : concept }}</div>
           </div>
           <div class="concept q-mt-md">
-            <div>Concept: {{ !concept ? "None" : concept }}</div>
-            <div>Ambition: {{ !ambition ? "None" : ambition }}</div>
-            <div>Desire: {{ !desire ? "None" : desire }}</div>
+            <div>Tribe: {{ !tribe ? "None" : tribe.tribe_name }}</div>
+            <div>Auspice: {{ !auspice ? "None" : auspice.auspice_name }}</div>
+            <div>Patron: {{ !tribe ? "None" : tribe.patron }}</div>
           </div>
-          <div class="q-mt-md">
-            <div>Drive: {{ !drive ? "None" : drive.name }}</div>
-            <div>Redemption: {{ !redemption ? "None" : redemption }}</div>
+          <div class="concept q-mt-md">
+            <div>Glory: {{ renownTotal.glory }}</div>
+            <div>Honor: {{ renownTotal.honor }}</div>
+            <div>Wisdom: {{ renownTotal.wisdom }}</div>
           </div>
+          <div class="concept q-mt-md">
+            <div>Total Renown: {{ this.renownSum }}</div>
+          </div>
+
           <q-separator class="q-my-md" />
           <div class="stats q-my-sm">
             <div>Health: {{ stamina + 3 }}</div>
@@ -123,28 +119,61 @@
           </q-list>
           <q-list bordered class="rounded-borders">
             <q-expansion-item
-              icon="app:whiteHunter"
-              label="Edges & Perks"
-              caption="View edges and perks"
+              icon="app:whiteClaws"
+              label="Gifts & Rites"
+              caption="View your gifts"
               dark
             >
               <q-card>
-                <q-card-section class="backgroundDefault">
-                  Edges:
-                  <div v-if="this.edgeArr.edges.length === 0">
-                    Not yet selected
+                <q-card-section class="backgroundDefault gifts">
+                  <!-- Display gifts in three columns -->
+                  <div>
+                    <div>Native Gifts:</div>
+                    <div v-if="combineGifts.native.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.native"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
                   </div>
-                  <div v-for="(edge, key) in this.edgeArr.edges" :key="key">
-                    <div>{{ edge.category }} - {{ edge.edge }}</div>
+                  <div>
+                    <div>Tribe Gifts:</div>
+                    <div v-if="combineGifts.tribe.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.tribe"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
                   </div>
-                  <br />
-                  Perks:
-                  <div v-if="this.edgeArr.perks.length === 0">
-                    Not yet selected
+                  <div>
+                    <div>Auspice Gifts:</div>
+                    <div v-if="combineGifts.auspice.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.auspice"
+                      :key="index"
+                    >
+                      {{ gift.gift_name }}
+                    </div>
                   </div>
-
-                  <div v-for="(perk, key) in this.edgeArr.perks" :key="key">
-                    {{ perk.category }} - {{ perk.perk }}
+                  <div>
+                    <div>Rites:</div>
+                    <div v-if="combineGifts.rite.length === 0">
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="(gift, index) in combineGifts.rite"
+                      :key="index"
+                    >
+                      {{ gift.rite_name }}
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -158,10 +187,10 @@
               dark
             >
               <q-card>
-                <q-card-section class="backgroundDefault advantages">
-                  <div>
-                    <div style="font-size: larger">Merits:</div>
-                    <br />
+                <q-card-section class="backgroundDefault merits_container">
+                  <div class="grid-column">
+                    <div class="merit-header">Merits:</div>
+
                     Advantages:
                     <div
                       class="q-my-sm"
@@ -188,51 +217,19 @@
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
-                    <br />
-                    <div>
-                      <div style="font-size: larger">Backgrounds:</div>
-                      <br />
-                      Advantages:
-                      <div
-                        class="q-my-sm"
-                        v-if="advantagesObj.backgrounds.advantages.length === 0"
-                      >
-                        Not yet selected
-                      </div>
-                      <div
-                        v-for="advantage in advantagesObj.backgrounds
-                          .advantages"
-                        :key="advantage.name"
-                      >
-                        <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                      </div>
-                      Flaws:
-                      <div
-                        class="q-my-sm"
-                        v-if="advantagesObj.backgrounds.flaws.length === 0"
-                      >
-                        Not yet selected
-                      </div>
-                      <div
-                        v-for="flaw in advantagesObj.backgrounds.flaws"
-                        :key="flaw.name"
-                      >
-                        <div>{{ flaw.name }} - {{ flaw.cost }}</div>
-                      </div>
-                    </div>
                   </div>
-                  <div>
-                    <div style="font-size: larger">Safe House:</div>
-                    <br />
+                  <div class="grid-column">
+                    <div class="merit-header">Backgrounds:</div>
+
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.haven.advantages.length === 0"
+                      v-if="advantagesObj.backgrounds.advantages.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.haven.advantages"
+                      v-for="advantage in advantagesObj.backgrounds.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
@@ -240,17 +237,51 @@
                     Flaws:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.haven.flaws.length === 0"
+                      v-if="advantagesObj.backgrounds.flaws.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="flaw in advantagesObj.haven.flaws"
+                      v-for="flaw in advantagesObj.backgrounds.flaws"
                       :key="flaw.name"
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
-                    <br />
+                  </div>
+
+                  <div class="grid-column">
+                    <div class="merit-header">Talismans:</div>
+
+                    Advantages:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.talismans.advantages.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="advantage in advantagesObj.talismans.advantages"
+                      :key="advantage.name"
+                    >
+                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                    </div>
+                  </div>
+                  <div class="grid-column">
+                    <div class="merit-header">Loresheets:</div>
+
+                    Advantages:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.loresheets.advantages.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="advantage in advantagesObj.loresheets.advantages"
+                      :key="advantage.name"
+                    >
+                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>
@@ -280,7 +311,7 @@
           <q-btn
             :disable="this.saveGuard()"
             flat
-            label="Update Character"
+            label="Save Character"
             type="submit"
             color="white"
           />
@@ -317,15 +348,15 @@
               >
             </q-item-section>
           </q-item>
-          <q-item clickable @click="edges">
+          <q-item clickable @click="tribes">
             <q-item-section avatar>
-              <q-icon color="secondary" name="app:hunter" />
+              <q-icon color="secondary" name="app:claws" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>Edges & Perks</q-item-label>
+              <q-item-label>Tribes, Auspice & Gifts</q-item-label>
               <q-item-label caption class="text-white"
-                >Select your Edges & Perks</q-item-label
+                >Select your Tribe, Auspice & Gifts</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -333,7 +364,7 @@
             clickable
             @click="spendXp"
             :disable="
-              (!this.skillsDone || !this.attributesDone || !this.edgeDone) &&
+              (!this.skillsDone || !this.attributesDone || !this.tribesDone) &&
               this.debug !== true
             "
           >
@@ -341,12 +372,13 @@
               v-if="
                 !this.skillsDone ||
                 !this.attributesDone ||
-                !this.edgeDone ||
+                !this.tribesDone ||
                 this.xp === 0
               "
               class="bg-dark text-body2"
-              >Please set valid base attributes, skills, complete your
-              edges/perks section and have xp remaining to spend.</q-tooltip
+              >Please set valid base attributes, skills, complete your tribe,
+              auspice and gift section and have xp remaining to
+              spend.</q-tooltip
             >
             <q-item-section avatar>
               <q-icon color="secondary" name="upgrade" />
@@ -363,26 +395,19 @@
         </q-list>
       </q-card>
       <tabs
-        v-model:charName="charName"
-        v-model:concept="concept"
-        v-model:ambition="ambition"
-        v-model:desire="desire"
-        v-model:touchstones="touchstones"
-        v-model:chronicle="chronicle"
         @specialties="handleSpecialties($event)"
+        v-model:charName="charName"
+        v-model:chronicle="chronicle"
+        v-model:concept="concept"
         v-model:specialtiePoints="totalSpecialty"
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
         v-model:advantagesObj="advantagesObj"
-        v-model:creed="creed"
-        v-model:drive="drive"
-        v-model:redemption="redemption"
-        v-model:cell="cell"
         v-model:tab="tab"
         v-model:xp="xp"
+        v-model:touchstones="touchstones"
         :specials="this.specialties"
         :fullSkills="this.trueSkills"
-        :cell="this.cell"
         :debug="this.debug"
       />
     </div>
@@ -390,6 +415,33 @@
 </template>
 
 <style>
+.merits_container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-items: center;
+}
+
+.grid-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px;
+}
+
+.centered-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.merit-header {
+  padding: 1em;
+  font-size: 1.2em;
+}
+
 .select {
   width: 800px;
 }
@@ -418,7 +470,7 @@
     display: grid;
     grid-row-gap: 20px;
     width: 100%;
-    font-size: 3vw;
+    font-size: 0.95em;
     width: 365px;
   }
 }
@@ -448,31 +500,38 @@
   justify-content: center;
   gap: 45px;
 }
+
+.gifts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
 </style>
 
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import tabs from "./tabs.vue";
-import spendXp from "./spendXp.vue";
-import attributes from "./5eAttributes.vue";
+import tabs from "../werewolf/tabs.vue";
+import spendXp from "../werewolf/spendXp.vue";
+import attributes from "../werewolf/5eAttributes.vue";
 import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
-import edgeComponent from "./edges.vue";
-import notFound from "../../../pages/ErrorNotFound.vue";
+import tribeComponent from "../werewolf/tribes.vue";
 
 const metaData = {
   title: "SchreckNet",
-  titleTemplate: (title) => `${title} - Hunter 5e Editor`,
+  titleTemplate: (title) => `${title} - Werewolf: The Apocalypse Creator`,
 
   // meta tags
   meta: {
     keywords: {
       name: "keywords",
       content:
-        "hunter, character creator, h5, hunter the reckoning, h5e, schrecknet, WoD, world of darkness",
+        "werewolf, character creator, wta, wta5, werewolf the apocalypse, w5e, schrecknet, WoD, world of darkness",
     },
   },
 };
@@ -480,7 +539,6 @@ const metaData = {
 export default {
   components: {
     tabs,
-    notFound,
   },
   async setup() {
     const router = useRouter();
@@ -493,131 +551,120 @@ export default {
     } else {
       baseUrl = window.location.origin;
     }
-    let pageFound = ref(false);
 
-    const hunterId = ref(window.location.href.split("/")[6]);
-
-    const hunter = await axios
-      .get(baseUrl + "/hunters/hunter/" + hunterId.value, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        pageFound.value = true;
-        return resp.data;
-      })
-      .catch((err) => {
-        console.log(err);
-        return "blah";
-      });
-
-    const currentUser = await axios
-      .get(baseUrl + "/user/currentUser", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      });
+    const url = window.location.href;
+    const regex = /\/edit\/(\d+)$/; // Match "/edit/" followed by one or more digits at the end of the string
+    const match = url.match(regex);
+    let garou = null;
+    if (match) {
+      try {
+        const capturedNumber = match[1];
+        const garouResponse = await axios.get(
+          baseUrl + `/garou/garou/${capturedNumber}`
+        );
+        garou = garouResponse.data;
+      } catch (err) {
+        garou = null;
+      }
+    }
 
     return {
       tab: ref("coreConcept"),
       layout: ref(false),
-      pageFound,
-      currentUser: ref(currentUser),
-      hunter: ref(hunter),
+      baseUrl: ref(baseUrl),
+      garou: ref(garou),
     };
   },
+
   data() {
     return {
       debug: false,
-      advantagesObj: this.hunter.advantages,
+      garou_id: this.garou.id,
+      advantagesObj: this.garou.advantages,
       attributesDone: true,
       attributeInfo,
       skillInfo,
-      creed: this.hunter.creed,
-      ambition: this.hunter.ambition,
-      drive: this.hunter.drive,
-      redemption: this.hunter.redemption,
-      edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
-      attributePoints: 0,
-      skillPoints: 0,
-      charName: this.hunter.charName,
+      tribe_renown: { ...this.garou.tribe_renown },
+      purchased_renown: { ...this.garou.purchased_renown },
+      chronicle: this.garou.chronicle,
+      attributePoints: 22,
+      skillPoints: 29,
+      charName: this.garou.charName,
       disableBlurb: "",
       gainedPoints: 0,
       baseSpecialties: 1,
       gainedSpecialties: 0,
-      totalSpecialty: 1,
-      charisma: this.hunter.attributes.charisma,
-      composure: this.hunter.attributes.composure,
-      dexterity: this.hunter.attributes.dexterity,
-      intelligence: this.hunter.attributes.intelligence,
-      manipulation: this.hunter.attributes.manipulation,
-      resolve: this.hunter.attributes.resolve,
-      stamina: this.hunter.attributes.stamina,
-      strength: this.hunter.attributes.strength,
-      wits: this.hunter.attributes.wits,
+      totalSpecialty: this.garou.remaining_specialties,
+      charisma: this.garou.attributes.charisma,
+      composure: this.garou.attributes.composure,
+      dexterity: this.garou.attributes.dexterity,
+      intelligence: this.garou.attributes.intelligence,
+      manipulation: this.garou.attributes.manipulation,
+      resolve: this.garou.attributes.resolve,
+      stamina: this.garou.attributes.stamina,
+      strength: this.garou.attributes.strength,
+      wits: this.garou.attributes.wits,
       baseFlaws: 2,
       baseAdvantages: 7,
-      flaws: 2,
-      advantages: this.hunter.advantages_remaining,
-      chronicle: this.hunter.chronicle,
-      edgeArr: this.hunter.edges,
+      flaws: this.garou.flaws_remaining,
+      advantages: this.garou.advantages_remaining,
       baseSkills: {
-        athletics: this.hunter.skills.athletics,
-        brawl: this.hunter.skills.brawl,
-        craft: this.hunter.skills.craft,
-        drive: this.hunter.skills.drive,
-        firearms: this.hunter.skills.firearms,
-        melee: this.hunter.skills.melee,
-        larceny: this.hunter.skills.larceny,
-        stealth: this.hunter.skills.stealth,
-        survival: this.hunter.skills.survival,
-        animalken: this.hunter.skills.animalken,
-        etiquette: this.hunter.skills.etiquette,
-        insight: this.hunter.skills.insight,
-        intimidation: this.hunter.skills.intimidation,
-        leadership: this.hunter.skills.leadership,
-        performance: this.hunter.skills.performance,
-        persuasion: this.hunter.skills.persuasion,
-        streetwise: this.hunter.skills.streetwise,
-        subterfuge: this.hunter.skills.subterfuge,
-        academics: this.hunter.skills.academics,
-        awareness: this.hunter.skills.awareness,
-        finance: this.hunter.skills.finance,
-        investigation: this.hunter.skills.investigation,
-        medicine: this.hunter.skills.medicine,
-        occult: this.hunter.skills.occult,
-        politics: this.hunter.skills.politics,
-        science: this.hunter.skills.science,
-        technology: this.hunter.skills.technology,
+        athletics: this.garou.skills.athletics,
+        brawl: this.garou.skills.brawl,
+        craft: this.garou.skills.craft,
+        drive: this.garou.skills.drive,
+        firearms: this.garou.skills.firearms,
+        melee: this.garou.skills.melee,
+        larceny: this.garou.skills.larceny,
+        stealth: this.garou.skills.stealth,
+        survival: this.garou.skills.survival,
+        animalken: this.garou.skills.animalken,
+        etiquette: this.garou.skills.etiquette,
+        insight: this.garou.skills.insight,
+        intimidation: this.garou.skills.intimidation,
+        leadership: this.garou.skills.leadership,
+        performance: this.garou.skills.performance,
+        persuasion: this.garou.skills.persuasion,
+        streetwise: this.garou.skills.streetwise,
+        subterfuge: this.garou.skills.subterfuge,
+        academics: this.garou.skills.academics,
+        awareness: this.garou.skills.awareness,
+        finance: this.garou.skills.finance,
+        investigation: this.garou.skills.investigation,
+        medicine: this.garou.skills.medicine,
+        occult: this.garou.skills.occult,
+        politics: this.garou.skills.politics,
+        science: this.garou.skills.science,
+        technology: this.garou.skills.technology,
       },
       trueSkills: {
-        athletics: this.hunter.skills.athletics,
-        brawl: this.hunter.skills.brawl,
-        craft: this.hunter.skills.craft,
-        drive: this.hunter.skills.drive,
-        firearms: this.hunter.skills.firearms,
-        melee: this.hunter.skills.melee,
-        larceny: this.hunter.skills.larceny,
-        stealth: this.hunter.skills.stealth,
-        survival: this.hunter.skills.survival,
-        animalken: this.hunter.skills.animalken,
-        etiquette: this.hunter.skills.etiquette,
-        insight: this.hunter.skills.insight,
-        intimidation: this.hunter.skills.intimidation,
-        leadership: this.hunter.skills.leadership,
-        performance: this.hunter.skills.performance,
-        persuasion: this.hunter.skills.persuasion,
-        streetwise: this.hunter.skills.streetwise,
-        subterfuge: this.hunter.skills.subterfuge,
-        academics: this.hunter.skills.academics,
-        awareness: this.hunter.skills.awareness,
-        finance: this.hunter.skills.finance,
-        investigation: this.hunter.skills.investigation,
-        medicine: this.hunter.skills.medicine,
-        occult: this.hunter.skills.occult,
-        politics: this.hunter.skills.politics,
-        science: this.hunter.skills.science,
-        technology: this.hunter.skills.technology,
+        athletics: this.garou.skills.athletics,
+        brawl: this.garou.skills.brawl,
+        craft: this.garou.skills.craft,
+        drive: this.garou.skills.drive,
+        firearms: this.garou.skills.firearms,
+        melee: this.garou.skills.melee,
+        larceny: this.garou.skills.larceny,
+        stealth: this.garou.skills.stealth,
+        survival: this.garou.skills.survival,
+        animalken: this.garou.skills.animalken,
+        etiquette: this.garou.skills.etiquette,
+        insight: this.garou.skills.insight,
+        intimidation: this.garou.skills.intimidation,
+        leadership: this.garou.skills.leadership,
+        performance: this.garou.skills.performance,
+        persuasion: this.garou.skills.persuasion,
+        streetwise: this.garou.skills.streetwise,
+        subterfuge: this.garou.skills.subterfuge,
+        academics: this.garou.skills.academics,
+        awareness: this.garou.skills.awareness,
+        finance: this.garou.skills.finance,
+        investigation: this.garou.skills.investigation,
+        medicine: this.garou.skills.medicine,
+        occult: this.garou.skills.occult,
+        politics: this.garou.skills.politics,
+        science: this.garou.skills.science,
+        technology: this.garou.skills.technology,
       },
       skillDistribution: {
         label: "Jack-of-all-trades",
@@ -628,17 +675,20 @@ export default {
         ],
         distributionDesc: "One Skill at 3; eight Skills at 2; ten Skills at 1",
       },
-      specialties: this.hunter.specialties,
+      specialties: this.garou.specialties,
       specialtiesFromXp: [],
-      cell: this.hunter.cell,
-      desire: this.hunter.desire,
-      concept: this.hunter.concept,
-      touchstones: this.hunter.touchstones,
-      xp: this.hunter.xp,
-      spentXp: 0,
+      concept: this.garou.concept,
+      touchstones: this.garou.touchstones,
+      xp: this.garou.xp,
+      spentXp: this.garou.spent_xp,
       skillsDone: true,
-      edgeDone: true,
+      tribesDone: true,
       saving: false,
+      tribe: this.garou.tribe,
+      auspice: this.garou.auspice,
+      tribe_gifts: this.garou.tribe_gifts,
+      purchased_gifts: this.garou.purchased_gifts,
+      bonus_renown: { ...this.garou.bonus_renown },
     };
   },
   methods: {
@@ -650,6 +700,7 @@ export default {
           icon: "warning",
           message: "Saving...",
         });
+        return;
       }
       this.saving = true;
       this.$q.loading.show({
@@ -657,28 +708,14 @@ export default {
       });
       const axios = require("axios");
 
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
-
       let character = {
         name: this.charName,
-        cell: this.cell,
         concept: this.concept,
-        ambition: this.ambition,
-        desire: this.desire,
         chronicle: this.chronicle,
         health: this.stamina + 3,
-        edgeArr: this.edgeArr,
         willpower: this.composure + this.resolve,
         xp: this.xp,
-        spentXp: this.spentXp,
-        drive: this.drive,
-        redemption: this.redemption,
-        creed: this.creed,
+        spent_xp: this.spentXp,
         touchstones: this.touchstones,
         remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,
@@ -694,13 +731,20 @@ export default {
           wits: this.wits,
         },
         specialties: this.finalSpecialties(),
+        tribe: this.tribe,
+        auspice: this.auspice,
         advantages: this.advantagesObj,
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
+        tribe_gifts: this.tribe_gifts,
+        purchased_gifts: this.purchased_gifts,
+        tribe_renown: this.tribe_renown,
+        purchased_renown: this.purchased_renown,
+        bonus_renown: this.bonus_renown,
       };
 
       axios
-        .put(baseUrl + "/hunters/hunter/edit/" + this.hunter.id, character, {
+        .post(this.baseUrl + `/garou/edit/${this.garou_id}`, character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -708,11 +752,11 @@ export default {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Hunter updated!",
+            message: `${this.charName} updated!`,
           });
           this.$router.push({
-            name: "hunter5eView",
-            params: { id: this.hunter.id },
+            name: "garou5eView",
+            params: { id: this.garou_id },
           });
         })
         .catch((err) =>
@@ -726,6 +770,7 @@ export default {
       this.$q.loading.hide();
       this.saving = false;
     },
+
     handleSpecialties(data) {
       this.specialties = data;
     },
@@ -792,23 +837,30 @@ export default {
           this.specialties = data.specialties;
         });
     },
-    edges() {
+    tribes() {
       this.$q
         .dialog({
-          component: edgeComponent,
+          component: tribeComponent,
           persistent: true,
           componentProps: {
             info: {
-              edgeArr: this.edgeArr,
-              edgeDist: this.edgeDist,
-              edgeDone: this.edgeDone,
+              tribe: this.tribe,
+              auspice: this.auspice,
+              tribesDone: this.tribesDone,
+              renown: this.tribe_renown,
+              tribe_gifts: this.tribe_gifts,
+              renown_sum: this.renownSum,
+              bonus_renown: this.bonus_renown,
             },
           },
         })
         .onOk((data) => {
-          this.edgeArr = data.edgeArr;
-          this.edgeDist = data.edgeDist;
-          this.edgeDone = data.edgeDone;
+          this.tribe = data.tribe;
+          this.auspice = data.auspice;
+          this.tribesDone = data.tribesDone;
+          this.tribe_renown = data.renown;
+          this.tribe_gifts = data.tribe_gifts;
+          this.bonus_renown = data.bonus_renown;
         });
     },
     spendXp() {
@@ -833,7 +885,12 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
               spentXp: this.spentXp,
-              edgeArr: this.edgeArr,
+              tribe_renown: this.tribe_renown,
+              purchased_renown: this.purchased_renown,
+              tribe: this.tribe,
+              auspice: this.auspice,
+              gift_count: this.getGiftAmount,
+              purchased_gifts: this.purchased_gifts,
             },
           },
         })
@@ -843,10 +900,12 @@ export default {
           this.advantages = this.advantages + data.advantages.value;
           this.specialtiesFromXp = data.specialtiesFromXp;
           this.trueSkills = data.skills;
+          this.purchased_renown = data.purchased_renown;
+          this.tribe_renown = data.tribe_renown;
+          this.purchased_gifts = data.purchased_gifts;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
-          this.edgeArr = data.edgeArr;
         });
     },
 
@@ -859,9 +918,9 @@ export default {
 
     saveGuard() {
       //primary sections
-      if (!this.skillsDone || !this.attributesDone || !this.edgeDone) {
+      if (!this.skillsDone || !this.attributesDone || !this.tribesDone) {
         this.disableBlurb =
-          "Please complete the base attributes, skills sections and edges/perks.";
+          "Please complete the base attributes, skills sections and select your tribe, auspice and gifts.";
         return true;
       }
       //Touchstones
@@ -870,16 +929,7 @@ export default {
         return true;
       }
       //Core Concept
-      if (
-        !this.charName ||
-        !this.concept ||
-        !this.ambition ||
-        !this.desire ||
-        !this.cell ||
-        !this.chronicle ||
-        !this.drive ||
-        !this.creed
-      ) {
+      if (!this.charName || !this.concept || !this.chronicle) {
         this.disableBlurb =
           "Please complete all * fields in the core concept tab.";
         return true;
@@ -912,6 +962,56 @@ export default {
           check = true;
       })(navigator.userAgent || navigator.vendor || window.opera);
       return check;
+    },
+  },
+  computed: {
+    renownTotal() {
+      console.log(this.tribe_renown);
+      console.log(this.purchased_renown);
+
+      let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
+      trueRenown.glory = this.tribe_renown.glory + this.purchased_renown.glory;
+      trueRenown.honor = this.tribe_renown.honor + this.purchased_renown.honor;
+      trueRenown.wisdom =
+        this.tribe_renown.wisdom + this.purchased_renown.wisdom;
+
+      return trueRenown;
+    },
+
+    renownSum() {
+      const totalRenown = this.renownTotal;
+      const sum = Object.values(totalRenown).reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      return sum;
+    },
+
+    combineGifts() {
+      let gifts = { native: [], tribe: [], auspice: [], rite: [] };
+
+      for (let key in this.tribe_gifts) {
+        if (this.tribe_gifts[key] !== null) {
+          gifts[key].push(this.tribe_gifts[key]);
+        }
+      }
+
+      for (let key in this.purchased_gifts) {
+        if (this.purchased_gifts[key].length > 0) {
+          gifts[key] = [...gifts[key], ...this.purchased_gifts[key]];
+        }
+      }
+
+      return gifts;
+    },
+
+    getGiftAmount() {
+      const gifts = this.combineGifts;
+
+      return Object.keys(gifts)
+        .filter((key) => key !== "rite") // Filter out the "rite" key
+        .reduce((sum, key) => sum + gifts[key].length, 0);
     },
   },
 };

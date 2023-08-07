@@ -425,7 +425,7 @@
 .grid-column {
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   padding: 10px;
 }
@@ -433,7 +433,7 @@
 .centered-column {
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -559,7 +559,7 @@ export default {
   },
   data() {
     return {
-      debug: true,
+      debug: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },

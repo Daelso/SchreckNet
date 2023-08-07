@@ -686,362 +686,384 @@ export default defineComponent({
       });
   },
   methods: {
-    // async modifyPdf() {
-    //   this.$q.loading.show({
-    //     delay: 400, // ms
-    //   });
+    async modifyPdf() {
+      // this.$q.loading.show({
+      //   delay: 400, // ms
+      // });
 
-    //   const pdfDoc = await PDFDocument.load(this.charSheet);
+      const pdfDoc = await PDFDocument.load(this.charSheet);
 
-    //   const form = await pdfDoc.getForm();
+      const form = await pdfDoc.getForm();
 
-    //   const ubuntuFontBytes = await fetch(ubuntuFont).then((res) =>
-    //     res.arrayBuffer()
-    //   );
+      const ubuntuFontBytes = await fetch(ubuntuFont).then((res) =>
+        res.arrayBuffer()
+      );
 
-    //   pdfDoc.registerFontkit(fontkit);
-    //   const supportFont = await pdfDoc.embedFont(ubuntuFontBytes);
+      pdfDoc.registerFontkit(fontkit);
+      const supportFont = await pdfDoc.embedFont(ubuntuFontBytes);
 
-    //   const fields = form.getFields();
+      const fields = form.getFields();
 
-    //   let edgeArr = [];
-    //   fields.forEach((field) => {
-    //     const type = field.constructor.name;
-    //     const name = field.getName();
-    //     // console.log(`${type}: ${name}`);
-    //     if (name.includes("Edge")) {
-    //       edgeArr.push(name);
-    //     }
-    //   });
+      fields.forEach((field) => {
+        const type = field.constructor.name;
+        const name = field.getName();
+        console.log(`${type}: ${name}`);
+      });
 
-    //   const nameField = form.getTextField("Name");
-    //   const conceptField = form.getTextField("pcConcept");
-    //   const chronicleField = form.getTextField("Chronicle");
-    //   const ambitionField = form.getTextField("Ambition");
-    //   const creedField = form.getTextField("Creed");
-    //   const creedDescField = form.getTextField("Convictions");
-    //   const desireField = form.getTextField("Desire");
-    //   const driveField = form.getTextField("Drive");
-    //   const cellField = form.getTextField("Cell");
-    //   const redemptionField = form.getTextField("Redemption");
-    //   const touchstoneField = form.getTextField("touchstoneNotes");
-    //   const totalXpField = form.getTextField("tEXP");
-    //   const spentXpField = form.getTextField("cEXP");
+      const nameField = form.getTextField("Name");
+      const tribeField = form.getTextField("Tribe");
+      const patronField = form.getTextField("Patron");
+      const auspiceField = form.getTextField("Auspice");
 
-    //   nameField.setText(this.garou.charName);
-    //   conceptField.setText(this.garou.concept);
-    //   chronicleField.setText(this.garou.chronicle);
-    //   ambitionField.setText(this.garou.ambition);
-    //   creedField.setText(this.garou.creed.name);
-    //   creedDescField.setText(this.garou.creed.desc);
+      const conceptField = form.getTextField("pcConcept");
+      const chronicleField = form.getTextField("Chronicle");
 
-    //   desireField.setText(this.garou.desire);
-    //   driveField.setText(this.garou.drive.name);
-    //   totalXpField.setText(`${this.garou.xp}`);
-    //   spentXpField.setText(`${this.garou.spentXp}`);
-    //   cellField.setText(this.garou.cell);
-    //   redemptionField.setText(this.garou.redemption);
+      const touchstoneField = form.getTextField("Convictions");
+      const favorAndBans = form.getTextField("touchstoneNotes");
 
-    //   nameField.updateAppearances(supportFont);
-    //   chronicleField.updateAppearances(supportFont);
+      const totalXpField = form.getTextField("tEXP");
+      const spentXpField = form.getTextField("cEXP");
 
-    //   conceptField.setFontSize(10);
+      nameField.setText(this.garou.charName);
+      conceptField.setText(this.garou.concept);
+      chronicleField.setText(this.garou.chronicle);
 
-    //   // text fields above, dots and loops required go below
-    //   // touchstones
-    //   let touchstones = "";
+      totalXpField.setText(`${this.garou.xp}`);
+      spentXpField.setText(`${this.garou.spent_xp}`);
+      auspiceField.setText(this.garou.auspice.auspice_name);
+      tribeField.setText(this.garou.tribe.tribe_name);
+      patronField.setText(this.garou.tribe.patron);
 
-    //   for (let i = 0; i < this.garou.touchstones.length; i++) {
-    //     let mergedString = this.garou.touchstones[i] + "\n";
-    //     touchstones += mergedString;
-    //   }
-    //   touchstoneField.setText(touchstones);
+      nameField.updateAppearances(supportFont);
+      chronicleField.updateAppearances(supportFont);
+      conceptField.updateAppearances(supportFont);
+      touchstoneField.updateAppearances(supportFont);
 
-    //   // health boxes
-    //   for (let i = 1; i < this.garou.attributes.stamina + 3 + 1; i++) {
-    //     let healthBox = form.getCheckBox(`Health-${i}`);
-    //     healthBox.check();
-    //   }
+      conceptField.setFontSize(10);
 
-    //   //wp boxes
-    //   for (
-    //     let i = 1;
-    //     i < this.garou.attributes.composure + this.garou.attributes.resolve + 1;
-    //     i++
-    //   ) {
-    //     let wpBox = form.getCheckBox(`WP-${i}`);
-    //     wpBox.check();
-    //   }
+      // text fields above, dots and loops required go below
+      // touchstones
+      let touchstones = "";
 
-    //   const checkAtts = (attribute) => {
-    //     let attributeBox = form.getCheckBox(attribute);
-    //     attributeBox.check();
-    //   };
-    //   // attribute checkbox
-    //   for (const attribute in this.garou.attributes) {
-    //     for (let i = 1; i < this.garou.attributes[attribute] + 1; i++) {
-    //       switch (attribute) {
-    //         case "strength":
-    //           checkAtts(`Str-${i}`);
-    //           break;
-    //         case "dexterity":
-    //           checkAtts(`Dex-${i}`);
-    //           break;
-    //         case "stamina":
-    //           checkAtts(`Sta-${i}`);
-    //           break;
-    //         case "charisma":
-    //           checkAtts(`Cha-${i}`);
-    //           break;
-    //         case "manipulation":
-    //           checkAtts(`Man-${i}`);
-    //           break;
-    //         case "composure":
-    //           checkAtts(`Com-${i}`);
-    //           break;
-    //         case "intelligence":
-    //           checkAtts(`Int-${i}`);
-    //           break;
-    //         case "wits":
-    //           checkAtts(`Wit-${i}`);
-    //           break;
-    //         case "resolve":
-    //           checkAtts(`Res-${i}`);
-    //           break;
-    //       }
-    //     }
-    //   }
+      for (let i = 0; i < this.garou.touchstones.length; i++) {
+        let mergedString = this.garou.touchstones[i] + "\n";
+        touchstones += mergedString;
+      }
+      touchstoneField.setText(touchstones);
 
-    //   const checkSkills = (skill) => {
-    //     let skillBox = form.getCheckBox(skill);
-    //     skillBox.check();
-    //   };
+      let mergedFavorString = "Favor: " + this.garou.tribe.favor + "\n" + "\n";
+      mergedFavorString += "Ban: " + this.garou.tribe.ban;
+      favorAndBans.setText(mergedFavorString);
 
-    //   // skill checkbox
-    //   for (const skill in this.garou.skills) {
-    //     for (let i = 1; i < this.garou.skills[skill] + 1; i++) {
-    //       switch (skill) {
-    //         case "athletics":
-    //           checkSkills(`Ath-${i}`);
-    //           break;
-    //         case "animalken":
-    //           checkSkills(`AniKen-${i}`);
-    //           break;
-    //         case "academics":
-    //           checkSkills(`Acad-${i}`);
-    //           break;
-    //         case "brawl":
-    //           checkSkills(`Bra-${i}`);
-    //           break;
-    //         case "etiquette":
-    //           checkSkills(`Etiq-${i}`);
-    //           break;
-    //         case "awareness":
-    //           checkSkills(`Awar-${i}`);
-    //           break;
-    //         case "craft":
-    //           checkSkills(`Cra-${i}`);
-    //           break;
-    //         case "insight":
-    //           checkSkills(`Insi-${i}`);
-    //           break;
-    //         case "finance":
-    //           checkSkills(`Fina-${i}`);
-    //           break;
-    //         case "drive":
-    //           checkSkills(`Dri-${i}`);
-    //           break;
-    //         case "intimidation":
-    //           checkSkills(`Inti-${i}`);
-    //           break;
-    //         case "investigation":
-    //           checkSkills(`Inve-${i}`);
-    //           break;
-    //         case "firearms":
-    //           checkSkills(`Fri-${i}`);
-    //           break;
-    //         case "leadership":
-    //           checkSkills(`Lead-${i}`);
-    //           break;
-    //         case "medicine":
-    //           checkSkills(`Medi-${i}`);
-    //           break;
-    //         case "larceny":
-    //           checkSkills(`Lar-${i}`);
-    //           break;
-    //         case "performance":
-    //           checkSkills(`Perf-${i}`);
-    //           break;
-    //         case "occult":
-    //           checkSkills(`Occu-${i}`);
-    //           break;
-    //         case "melee":
-    //           checkSkills(`Mel-${i}`);
-    //           break;
-    //         case "persuasion":
-    //           checkSkills(`Pers-${i}`);
-    //           break;
-    //         case "politics":
-    //           checkSkills(`Poli-${i}`);
-    //           break;
-    //         case "stealth":
-    //           checkSkills(`Ste-${i}`);
-    //           break;
-    //         case "streetwise":
-    //           checkSkills(`Stre-${i}`);
-    //           break;
-    //         case "science":
-    //           checkSkills(`Scie-${i}`);
-    //           break;
-    //         case "survival":
-    //           checkSkills(`Sur-${i}`);
-    //           break;
-    //         case "subterfuge":
-    //           checkSkills(`Subt-${i}`);
-    //           break;
-    //         case "technology":
-    //           checkSkills(`Tech-${i}`);
-    //           break;
-    //       }
-    //     }
-    //   }
+      // health boxes
+      for (let i = 1; i < this.garou.attributes.stamina + 3 + 1; i++) {
+        let healthBox = form.getCheckBox(`Health-${i}`);
+        healthBox.check();
+      }
 
-    //   //Specs
-    //   const fillSpecs = (skill, spec) => {
-    //     let specField = form.getTextField(skill);
-    //     specField.setText(spec);
-    //   };
+      //wp boxes
+      for (
+        let i = 1;
+        i < this.garou.attributes.composure + this.garou.attributes.resolve + 1;
+        i++
+      ) {
+        let wpBox = form.getCheckBox(`WP-${i}`);
+        wpBox.check();
+      }
 
-    //   this.garou.specialties.forEach((spec) => {
-    //     switch (spec.skill.toLowerCase()) {
-    //       case "athletics":
-    //         fillSpecs("specAth", spec.specialty);
-    //         break;
-    //       case "animalken":
-    //         fillSpecs("specAniKen", spec.specialty);
-    //         break;
-    //       case "academics":
-    //         fillSpecs("specAcad", spec.specialty);
-    //         break;
-    //       case "brawl":
-    //         fillSpecs("specBra", spec.specialty);
-    //         break;
-    //       case "etiquette":
-    //         fillSpecs("specEtiq", spec.specialty);
-    //         break;
-    //       case "awareness":
-    //         fillSpecs("specAwar", spec.specialty);
-    //         break;
-    //       case "craft":
-    //         fillSpecs("specCra", spec.specialty);
-    //         break;
-    //       case "insight":
-    //         fillSpecs("specInsi", spec.specialty);
-    //         break;
-    //       case "finance":
-    //         fillSpecs("specFina", spec.specialty);
-    //         break;
-    //       case "drive":
-    //         fillSpecs("specDri", spec.specialty);
-    //         break;
-    //       case "intimidation":
-    //         fillSpecs("specInti", spec.specialty);
-    //         break;
-    //       case "investigation":
-    //         fillSpecs("specInve", spec.specialty);
-    //         break;
-    //       case "firearms":
-    //         fillSpecs("specFir", spec.specialty);
-    //         break;
-    //       case "leadership":
-    //         fillSpecs("specLea", spec.specialty);
-    //         break;
-    //       case "medicine":
-    //         fillSpecs("specMedi", spec.specialty);
-    //         break;
-    //       case "larceny":
-    //         fillSpecs("specLar", spec.specialty);
-    //         break;
-    //       case "performance":
-    //         fillSpecs("specPerf", spec.specialty);
-    //         break;
-    //       case "occult":
-    //         fillSpecs("specOccu", spec.specialty);
-    //         break;
-    //       case "melee":
-    //         fillSpecs("specMel", spec.specialty);
-    //         break;
-    //       case "persuasion":
-    //         fillSpecs("specPers", spec.specialty);
-    //         break;
-    //       case "politics":
-    //         fillSpecs("specPoli", spec.specialty);
-    //         break;
-    //       case "stealth":
-    //         fillSpecs("specStea", spec.specialty);
-    //         break;
-    //       case "streetwise":
-    //         fillSpecs("specStree", spec.specialty);
-    //         break;
-    //       case "science":
-    //         fillSpecs("specScie", spec.specialty);
-    //         break;
-    //       case "survival":
-    //         fillSpecs("specSur", spec.specialty);
-    //         break;
-    //       case "subterfuge":
-    //         fillSpecs("specSubt", spec.specialty);
-    //         break;
-    //       case "technology":
-    //         fillSpecs("specTech", spec.specialty);
-    //         break;
-    //     }
-    //   });
+      // rage boxes
+      for (let i = 1; i < 3; i++) {
+        let rageBox = form.getCheckBox(`Rage-${i}`);
+        rageBox.check();
+      }
 
-    //   let edgeLength =
-    //     this.garou.edges.edges.length + this.garou.edges.perks.length;
+      // glory boxes
+      for (let i = 1; i < this.renownTotal.glory + 1; i++) {
+        let gloryBox = form.getCheckBox(`Glory-${i}`);
+        gloryBox.check();
+      }
 
-    //   let combinedEdges = [];
+      // honor boxes
+      for (let i = 1; i < this.renownTotal.honor + 1; i++) {
+        let honorBox = form.getCheckBox(`Honor-${i}`);
+        honorBox.check();
+      }
 
-    //   this.garou.edges.edges.forEach((edge) => {
-    //     combinedEdges.push("Edge: " + edge.edge);
-    //   });
+      // wisdom
+      for (let i = 1; i < this.renownTotal.wisdom + 1; i++) {
+        let wisdomBox = form.getCheckBox(`Wisdom-${i}`);
+        wisdomBox.check();
+      }
 
-    //   this.garou.edges.perks.forEach((perk) => {
-    //     combinedEdges.push("Perk: " + perk.perk);
-    //   });
+      const checkAtts = (attribute) => {
+        let attributeBox = form.getCheckBox(attribute);
+        attributeBox.check();
+      };
+      // attribute checkbox
+      for (const attribute in this.garou.attributes) {
+        for (let i = 1; i < this.garou.attributes[attribute] + 1; i++) {
+          switch (attribute) {
+            case "strength":
+              checkAtts(`Str-${i}`);
+              break;
+            case "dexterity":
+              checkAtts(`Dex-${i}`);
+              break;
+            case "stamina":
+              checkAtts(`Sta-${i}`);
+              break;
+            case "charisma":
+              checkAtts(`Cha-${i}`);
+              break;
+            case "manipulation":
+              checkAtts(`Man-${i}`);
+              break;
+            case "composure":
+              checkAtts(`Com-${i}`);
+              break;
+            case "intelligence":
+              checkAtts(`Int-${i}`);
+              break;
+            case "wits":
+              checkAtts(`Wit-${i}`);
+              break;
+            case "resolve":
+              checkAtts(`Res-${i}`);
+              break;
+          }
+        }
+      }
 
-    //   for (let i = 0; i < edgeLength; i++) {
-    //     let edgeField = form.getTextField(edgeArr[i]);
-    //     edgeField.setText(combinedEdges[i]);
-    //   }
+      const checkSkills = (skill) => {
+        let skillBox = form.getCheckBox(skill);
+        skillBox.check();
+      };
 
-    //   // Advantages/flaws
-    //   let meritArr = [];
-    //   for (const attribute in this.garou.advantages) {
-    //     for (const flaw in this.garou.advantages[attribute]) {
-    //       meritArr = meritArr.concat(this.garou.advantages[attribute][flaw]);
-    //     }
-    //   }
+      // skill checkbox
+      for (const skill in this.garou.skills) {
+        for (let i = 1; i < this.garou.skills[skill] + 1; i++) {
+          switch (skill) {
+            case "athletics":
+              checkSkills(`Ath-${i}`);
+              break;
+            case "animalken":
+              checkSkills(`AniKen-${i}`);
+              break;
+            case "academics":
+              checkSkills(`Acad-${i}`);
+              break;
+            case "brawl":
+              checkSkills(`Bra-${i}`);
+              break;
+            case "etiquette":
+              checkSkills(`Etiq-${i}`);
+              break;
+            case "awareness":
+              checkSkills(`Awar-${i}`);
+              break;
+            case "craft":
+              checkSkills(`Cra-${i}`);
+              break;
+            case "insight":
+              checkSkills(`Insi-${i}`);
+              break;
+            case "finance":
+              checkSkills(`Fina-${i}`);
+              break;
+            case "drive":
+              checkSkills(`Dri-${i}`);
+              break;
+            case "intimidation":
+              checkSkills(`Inti-${i}`);
+              break;
+            case "investigation":
+              checkSkills(`Inve-${i}`);
+              break;
+            case "firearms":
+              checkSkills(`Fri-${i}`);
+              break;
+            case "leadership":
+              checkSkills(`Lead-${i}`);
+              break;
+            case "medicine":
+              checkSkills(`Medi-${i}`);
+              break;
+            case "larceny":
+              checkSkills(`Lar-${i}`);
+              break;
+            case "performance":
+              checkSkills(`Perf-${i}`);
+              break;
+            case "occult":
+              checkSkills(`Occu-${i}`);
+              break;
+            case "melee":
+              checkSkills(`Mel-${i}`);
+              break;
+            case "persuasion":
+              checkSkills(`Pers-${i}`);
+              break;
+            case "politics":
+              checkSkills(`Poli-${i}`);
+              break;
+            case "stealth":
+              checkSkills(`Ste-${i}`);
+              break;
+            case "streetwise":
+              checkSkills(`Stre-${i}`);
+              break;
+            case "science":
+              checkSkills(`Scie-${i}`);
+              break;
+            case "survival":
+              checkSkills(`Sur-${i}`);
+              break;
+            case "subterfuge":
+              checkSkills(`Subt-${i}`);
+              break;
+            case "technology":
+              checkSkills(`Tech-${i}`);
+              break;
+          }
+        }
+      }
 
-    //   for (let i = 0; i < meritArr.length; i++) {
-    //     let advTextBox = form.getTextField(`Merit${i + 1}`);
-    //     advTextBox.setText(`${meritArr[i].name}`);
+      //Specs
+      const fillSpecs = (skill, spec) => {
+        let specField = form.getTextField(skill);
+        specField.setText(spec);
+      };
 
-    //     for (let j = 1; j < meritArr[i].cost + 1; j++) {
-    //       let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);
-    //       advCheckBox.check();
-    //     }
-    //   }
+      this.garou.specialties.forEach((spec) => {
+        switch (spec.skill.toLowerCase()) {
+          case "athletics":
+            fillSpecs("specAth", spec.specialty);
+            break;
+          case "animalken":
+            fillSpecs("specAniKen", spec.specialty);
+            break;
+          case "academics":
+            fillSpecs("specAcad", spec.specialty);
+            break;
+          case "brawl":
+            fillSpecs("specBra", spec.specialty);
+            break;
+          case "etiquette":
+            fillSpecs("specEtiq", spec.specialty);
+            break;
+          case "awareness":
+            fillSpecs("specAwar", spec.specialty);
+            break;
+          case "craft":
+            fillSpecs("specCra", spec.specialty);
+            break;
+          case "insight":
+            fillSpecs("specInsi", spec.specialty);
+            break;
+          case "finance":
+            fillSpecs("specFina", spec.specialty);
+            break;
+          case "drive":
+            fillSpecs("specDri", spec.specialty);
+            break;
+          case "intimidation":
+            fillSpecs("specInti", spec.specialty);
+            break;
+          case "investigation":
+            fillSpecs("specInve", spec.specialty);
+            break;
+          case "firearms":
+            fillSpecs("specFir", spec.specialty);
+            break;
+          case "leadership":
+            fillSpecs("specLea", spec.specialty);
+            break;
+          case "medicine":
+            fillSpecs("specMedi", spec.specialty);
+            break;
+          case "larceny":
+            fillSpecs("specLar", spec.specialty);
+            break;
+          case "performance":
+            fillSpecs("specPerf", spec.specialty);
+            break;
+          case "occult":
+            fillSpecs("specOccu", spec.specialty);
+            break;
+          case "melee":
+            fillSpecs("specMel", spec.specialty);
+            break;
+          case "persuasion":
+            fillSpecs("specPers", spec.specialty);
+            break;
+          case "politics":
+            fillSpecs("specPoli", spec.specialty);
+            break;
+          case "stealth":
+            fillSpecs("specStea", spec.specialty);
+            break;
+          case "streetwise":
+            fillSpecs("specStree", spec.specialty);
+            break;
+          case "science":
+            fillSpecs("specScie", spec.specialty);
+            break;
+          case "survival":
+            fillSpecs("specSur", spec.specialty);
+            break;
+          case "subterfuge":
+            fillSpecs("specSubt", spec.specialty);
+            break;
+          case "technology":
+            fillSpecs("specTech", spec.specialty);
+            break;
+        }
+      });
 
-    //   const pdfBytes = await pdfDoc.save();
-    //   download(
-    //     pdfBytes,
-    //     `schrecknet_htr5e_${this.garou.charName}.pdf`,
-    //     "application/pdf"
-    //   );
-    //   this.$q.loading.hide();
-    // },
+      // let edgeLength =
+      //   this.garou.edges.edges.length + this.garou.edges.perks.length;
+
+      // let combinedEdges = [];
+
+      // this.garou.edges.edges.forEach((edge) => {
+      //   combinedEdges.push("Edge: " + edge.edge);
+      // });
+
+      // this.garou.edges.perks.forEach((perk) => {
+      //   combinedEdges.push("Perk: " + perk.perk);
+      // });
+
+      // for (let i = 0; i < edgeLength; i++) {
+      //   let edgeField = form.getTextField(edgeArr[i]);
+      //   edgeField.setText(combinedEdges[i]);
+      // }
+
+      // Advantages/flaws
+      let meritArr = [];
+      for (const attribute in this.garou.advantages) {
+        for (const flaw in this.garou.advantages[attribute]) {
+          meritArr = meritArr.concat(this.garou.advantages[attribute][flaw]);
+        }
+      }
+
+      for (let i = 0; i < meritArr.length; i++) {
+        let advTextBox = form.getTextField(`Merit${i + 1}`);
+        advTextBox.setText(`${meritArr[i].name}`);
+
+        for (let j = 1; j < meritArr[i].cost + 1; j++) {
+          let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);
+          advCheckBox.check();
+        }
+      }
+
+      const pdfBytes = await pdfDoc.save();
+      download(
+        pdfBytes,
+        `schrecknet_wta5_${this.garou.charName}.pdf`,
+        "application/pdf"
+      );
+      this.$q.loading.hide();
+    },
 
     favoriteChar(sheet_id, charName) {
       const payload = {

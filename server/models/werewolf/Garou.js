@@ -82,6 +82,10 @@ const Garou = db.sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    spent_xp: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     specialties: {
       type: Sequelize.JSON,
       allowNull: false,

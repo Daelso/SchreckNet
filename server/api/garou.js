@@ -62,6 +62,15 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
   }
 });
 
+router.route("/:id").get(lib.getLimiter, async (req, res) => {
+  try {
+    const garou = await Garou.findByPk(req.params.id);
+    res.json(garou);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/tribes").get(lib.getLimiter, async (req, res) => {
   try {
     const tribes = await Tribes.findAll({
@@ -187,6 +196,22 @@ router.route("/rites").get(lib.getLimiter, async (req, res) => {
   try {
     const rites = await Rites.findAll();
     res.json(rites);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
+  try {
+    let currentUser = lib.getCurrentUser(req, res);
+
+    const garou = await Garou.findByPk(req.params.id);
+
+    if (currentUser.id !== garou.created_by) {
+      return;
+    }
+    garou.destroy();
+    res.status(200).send("Deletion successful");
   } catch (err) {
     res.status(404).send(err);
   }

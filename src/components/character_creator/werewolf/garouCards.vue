@@ -160,6 +160,8 @@
   background-color: #222831;
   align-items: flex-start;
   justify-content: center;
+  min-height: 27em;
+  flex: 1;
 }
 .backgroundDefault {
   background-color: #171a1e;
@@ -307,7 +309,6 @@ export default {
           gifts = [...gifts, ...wolf.purchased_gifts[key]];
         }
       }
-      console.log(gifts);
       return gifts;
     },
 

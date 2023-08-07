@@ -471,6 +471,13 @@ export default defineComponent({
 
       this.renown[this.tribe.renownTypeId.renown_name.toLowerCase()] = 2;
       this.bonus_renown = "";
+      this.$q.notify({
+        color: "primary",
+        textColor: "white",
+        avatar: nosImage,
+        timeout: 14000,
+        message: "Please select a new Bonus Renown!",
+      });
     },
 
     applyBonusRenown() {

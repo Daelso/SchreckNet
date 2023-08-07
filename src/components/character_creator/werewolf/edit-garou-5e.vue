@@ -744,7 +744,7 @@ export default {
       };
 
       axios
-        .post(this.baseUrl + `/garou/edit/${this.garou_id}`, character, {
+        .put(this.baseUrl + `/garou/edit/${this.garou_id}`, character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -966,9 +966,6 @@ export default {
   },
   computed: {
     renownTotal() {
-      console.log(this.tribe_renown);
-      console.log(this.purchased_renown);
-
       let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
       trueRenown.glory = this.tribe_renown.glory + this.purchased_renown.glory;
       trueRenown.honor = this.tribe_renown.honor + this.purchased_renown.honor;

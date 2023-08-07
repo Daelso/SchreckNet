@@ -751,7 +751,7 @@ export default defineComponent({
       }
       touchstoneField.setText(touchstones);
 
-      let mergedFavorString = "Favor: " + this.garou.tribe.favor + "\n" + "\n";
+      let mergedFavorString = "Favor: " + this.garou.tribe.favor + "\n\n";
       mergedFavorString += "Ban: " + this.garou.tribe.ban;
       favorAndBans.setText(mergedFavorString);
 

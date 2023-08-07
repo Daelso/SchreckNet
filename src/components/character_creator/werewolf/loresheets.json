@@ -1,0 +1,40 @@
+{
+  "loresheets": [
+    {
+      "Name": "Monkeywrenchers",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You run with a large, decentralized global pack that is dedicated to fucking up Pentex Group. Through information sharing you've learned how to really hurt Pentex.",
+      "Reference": "WtA 295"
+    },
+    {
+      "Name": "Renunciate of Fenris",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You refused to follow your pack-mates down the path of hauglosk. You broke your pact with Wolf and have found a home in another tribe under another Patron.",
+      "Reference": "WtA 298"
+    },
+    {
+      "Name": "Project Twilight",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "You've worked with the government run kill-team Project Twilight. Your contacts within the organization may provide valuable information or tip you off to hunter movements.",
+      "Reference": "WtA 296"
+    },
+    {
+      "Name": "The Black Spiral",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "You have an interest in the Black Spiral and are able to understand some of it's many mysteries. You may also have contacts within the Black Spiral Dancer's. Perhaps, you may even be able to pull a Garou from the madness of the Wyrm.",
+      "Reference": "WtA 299"
+    },
+
+    {
+      "Name": "Umbral Traveler",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You have a particular interest and expertise in exploring the Umbra, a tiny fraction of it's infinite mysteries are better understood to you.",
+      "Reference": "WtA 295"
+    }
+  ]
+}

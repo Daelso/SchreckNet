@@ -17,8 +17,50 @@ const NativeGifts = require("../models/werewolf/NativeGifts.js");
 const AuspiceGifts = require("../models/werewolf/AuspiceGifts.js");
 const Rites = require("../models/werewolf/Rites.js");
 const TribeGifts = require("../models/werewolf/TribeGifts.js");
+const Garou = require("../models/werewolf/Garou.js");
 
 //Route is base/garou/
+
+router.route("/new").post(lib.postLimiter, async (req, res) => {
+  try {
+    let currentUser = lib.getCurrentUser(req, res);
+
+    if (currentUser !== null) {
+      currentUser = currentUser.id;
+    }
+
+    const newGarou = await Garou.create({
+      charName: req.body.name,
+      tribe: req.body.tribe,
+      concept: req.body.concept,
+      auspice: req.body.auspice,
+      chronicle: req.body.chronicle,
+      touchstones: req.body.touchstones,
+      attributes: req.body.attributes,
+      skills: req.body.skills,
+      bonus_renown: req.body.bonus_renown,
+      health: req.body.health,
+      willpower: req.body.willpower,
+      remaining_specialties: req.body.remainingSpecialties,
+      xp: req.body.xp,
+      specialties: req.body.specialties,
+      advantages: req.body.advantages,
+      advantages_remaining: req.body.advantages_remaining,
+      flaws_remaining: req.body.flaws_remaining,
+      tribe_gifts: req.body.tribe_gifts,
+      purchased_gifts: req.body.purchased_gifts,
+      tribe_renown: req.body.tribe_renown,
+      purchased_renown: req.body.purchased_renown,
+      created_by: currentUser,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    res.status(200).json(newGarou.id);
+  } catch (err) {
+    res.status(403).send(err);
+  }
+});
 
 router.route("/tribes").get(lib.getLimiter, async (req, res) => {
   try {

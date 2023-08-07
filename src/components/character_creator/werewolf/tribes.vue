@@ -286,7 +286,11 @@
                 </div>
 
                 <q-stepper-navigation>
-                  <q-btn color="primary" label="Finish" />
+                  <q-btn
+                    color="primary"
+                    label="Finish"
+                    @click="this.onOKClick()"
+                  />
                   <q-btn
                     flat
                     @click="step = 2"
@@ -442,7 +446,7 @@ export default defineComponent({
         renown: this.renown,
         tribe_gifts: this.tribe_gifts,
         bonus_renown: this.bonus_renown,
-        // tribesDone: this.edgesDone(),
+        tribesDone: this.tribesDone,
       });
     },
 
@@ -475,17 +479,17 @@ export default defineComponent({
     clearRenown() {
       this.renown = { glory: 0, honor: 0, wisdom: 0 };
     },
-    changeDist() {
-      if (this.edgeArr.edges.length > 0 || this.edgeArr.perks.length > 0) {
-        this.$q.notify({
-          color: "primary",
-          textColor: "white",
-          avatar: nosImage,
-          timeout: 14000,
-          message: "Distribution changed, edges and perks cleared.",
-        });
-      }
-    },
+    // changeDist() {
+    //   if (this.edgeArr.edges.length > 0 || this.edgeArr.perks.length > 0) {
+    //     this.$q.notify({
+    //       color: "primary",
+    //       textColor: "white",
+    //       avatar: nosImage,
+    //       timeout: 14000,
+    //       message: "Distribution changed, edges and perks cleared.",
+    //     });
+    //   }
+    // },
 
     async generateAuspiceGifts() {
       try {
@@ -517,6 +521,20 @@ export default defineComponent({
       );
 
       return options;
+    },
+    tribesDone() {
+      if (
+        !this.tribe ||
+        !this.auspice ||
+        !this.bonus_renown ||
+        !this.tribe_gifts.native ||
+        !this.tribe_gifts.tribe ||
+        !this.tribe_gifts.auspice
+      ) {
+        return false;
+      }
+
+      return true;
     },
   },
 });

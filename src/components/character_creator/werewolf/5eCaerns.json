@@ -1,32 +1,13 @@
 {
   "Caern": {
-    "Apeskin": {
-      "advantages": [
-        {
-          "name": "Talen Apeskin",
-          "desc": "Human or ape skin worn over one's skin that makes the user immune to silver in glabro or hispo form. Makes regeneration impossible for a full day after wearing.",
-          "cost": 2,
-          "single_use": true
-        },
-        {
-          "name": "Apeskin",
-          "desc": "Human or ape skin worn over one's skin that makes the user immune to silver in glabro or hispo form. Makes regeneration impossible for a full day after wearing.",
-          "cost": 4,
-          "single_use": false
-        }
-      ],
-      "flaws": []
-    },
-    "Gaia's Tear": {
-      "advantages": [
-        {
-          "name": "Gaia's Tear",
-          "desc": "An incredibly rare umbral fossil that when meditated upon can remove a dot of harano or hauglosk. Discuss with your ST if it appropriate to start with this item. It has no set cost.",
-          "cost": 0,
-          "single_use": true
-        }
-      ],
-      "flaws": []
+    "Bawn Traits": ["Abundance", "Security", "Well-Hidden"],
+    "Spiritual Power Traits": {
+      "Bawn Traits": [
+        "Permissive Gauntlet",
+        "Rite Focus",
+        "Spiritual Attunement",
+        "Spirit Guardian"
+      ]
     },
     "Harmony Flute": {
       "advantages": [

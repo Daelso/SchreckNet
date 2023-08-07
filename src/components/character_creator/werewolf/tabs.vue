@@ -250,6 +250,15 @@
             Remaining dots of advantages: {{ advantagePoints }}
           </div>
           <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
+          <div
+            v-if="this.advantageCategory == 'Loresheets'"
+            class="q-my-sm"
+            style="color: red; font-weight: bold"
+          >
+            Loresheets are too varied and too numerous to handle automatically,
+            the sheet will track the dots you take, but please assign any
+            additional bonuses on your sheet manually after.
+          </div>
 
           <q-separator />
 
@@ -270,7 +279,8 @@
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Backgrounds' ||
               this.advantageCategory == 'Caern' ||
-              this.advantageCategory == 'Talismans'
+              this.advantageCategory == 'Talismans' ||
+              this.advantageCategory == 'Loresheets'
             "
           >
             <q-select
@@ -290,7 +300,9 @@
             />
           </div>
           <q-separator />
-          <div v-if="this.meritCategory">
+          <div
+            v-if="this.meritCategory && this.advantageCategory !== 'Loresheets'"
+          >
             <q-select
               v-model="advOrFlaw"
               :options="advorFlawOptions()"
@@ -318,7 +330,12 @@
               @update:model-value="clearDotField()"
             />
           </div>
-          <div v-if="this.advFlawChoice.maxCost">
+          <div
+            v-if="
+              this.advFlawChoice.maxCost ||
+              (this.advantageCategory === 'Loresheets' && this.meritCategory)
+            "
+          >
             <q-select
               v-model="howManyDots"
               :options="dotOptions()"
@@ -363,6 +380,9 @@
             Description: {{ this.advFlawChoice.desc }}
             <br />
             Dot Cost: {{ this.advFlawChoice.cost }} <br />
+            <div v-if="this.advantageCategory === 'Talismans'">
+              Single Use: {{ this.advFlawChoice.single_use ? "Yes" : "No" }}
+            </div>
           </div>
           <div
             class="q-mt-sm"
@@ -375,10 +395,9 @@
             "
           >
             <q-btn
-              flat
               label="Select Merit"
               @click="meritPicked()"
-              color="white"
+              color="primary"
             />
           </div>
 
@@ -598,6 +617,8 @@ import { ref } from "vue";
 import allMerits from "../werewolf/5eMerits.json";
 import allBackgrounds from "../werewolf/5eBackgrounds.json";
 import talismans from "../werewolf/5eTalismans.json";
+import loresheets from "../werewolf/loresheets.json";
+import caernMerits from "../werewolf/5eCaerns.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -653,7 +674,7 @@ export default defineComponent({
       allBackgrounds: allBackgrounds.Backgrounds,
       advOrFlaw: "",
       advFlawChoice: "",
-
+      caernMerits,
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
@@ -669,10 +690,17 @@ export default defineComponent({
       tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
-      advantageCategories: ["Merits", "Backgrounds", "Talismans", "Caern"],
+      advantageCategories: [
+        "Merits",
+        "Backgrounds",
+        "Talismans",
+        "Caern",
+        "Loresheets",
+      ],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
+      loresheets,
     };
   },
   methods: {
@@ -765,11 +793,14 @@ export default defineComponent({
 
           break;
         case "Caern":
-          meritCat = safeHouseMerits["Caern"][this.meritCategory];
+          meritCat = caernMerits["Caern"][this.meritCategory];
           break;
       }
 
-      if (meritCat.flaws.length === 0) {
+      if (
+        this.advantageCategory === "Loresheets" ||
+        meritCat.flaws.length === 0
+      ) {
         arr = ["Advantages"];
         this.advOrFlaw = "Advantages";
       }
@@ -790,7 +821,21 @@ export default defineComponent({
           arr = Object.keys(talismans["Talismans"]);
           break;
         case "Caern":
-          arr = Object.keys(safeHouseMerits["Caern"]);
+          arr = Object.keys(caernMerits["Caern"]);
+          break;
+        case "Loresheets":
+          for (const [key, value] of Object.entries(
+            this.loresheets.loresheets
+          )) {
+            if (
+              value.Prerequisite !== null &&
+              !value.Prerequisite.includes(this.clan)
+            ) {
+              continue;
+            }
+            arr.push(value.Name);
+          }
+
           break;
       }
 
@@ -808,7 +853,7 @@ export default defineComponent({
             arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
             break;
           case "Caern":
-            arr = safeHouseMerits["Caern"][this.meritCategory].advantages;
+            arr = caernMerits["Caern"][this.meritCategory].advantages;
             break;
           case "Talismans":
             arr = talismans["Talismans"][this.meritCategory].advantages;
@@ -825,10 +870,10 @@ export default defineComponent({
             arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
             break;
           case "Caern":
-            arr = safeHouseMerits["Caern"][this.meritCategory].flaws;
+            arr = caernMerits["Caern"][this.meritCategory].flaws;
             break;
           case "Talismans":
-            arr = safeHouseMerits["Talismans"][this.meritCategory].flaws;
+            arr = talismans["Talismans"][this.meritCategory].flaws;
             break;
         }
       }
@@ -838,12 +883,29 @@ export default defineComponent({
     dotOptions() {
       let arr = [];
 
+      if (this.advantageCategory === "Loresheets") {
+        return this.range(5, 1);
+      }
+
       arr = this.range(this.advFlawChoice.maxCost, 1);
 
       return arr;
     },
     costAdjustment() {
-      this.advFlawChoice.cost = this.howManyDots;
+      if (this.howManyDots && this.advantageCategory === "Loresheets") {
+        let loresheet = this.loresheets.loresheets.find(
+          (x) => x.Name === this.meritCategory
+        );
+        this.advFlawChoice = {
+          name: loresheet.Name,
+          desc: loresheet.Description,
+          cost: this.howManyDots,
+        };
+      }
+
+      if (this.howManyDots && this.advantageCategory !== "Loresheets") {
+        this.advFlawChoice.cost = this.howManyDots;
+      }
     },
     clearDotField() {
       this.howManyDots = "";
@@ -907,6 +969,13 @@ export default defineComponent({
             modifiedObj.talismans.advantages.push(choiceObj);
           } else {
             modifiedObj.talismans.flaws.push(choiceObj);
+          }
+          break;
+        case "Loresheets":
+          if (advOrFlaw === true) {
+            modifiedObj.loresheets.advantages.push(choiceObj);
+          } else {
+            modifiedObj.loresheets.flaws.push(choiceObj);
           }
           break;
       }
@@ -973,6 +1042,13 @@ export default defineComponent({
 
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
+
+      if (this.advantageCategory === "Loresheets") {
+        if (this.canPurchase(true) === true) {
+          this.sortAdvantageChoice(this.advFlawChoice, true);
+          this.clearFields();
+        }
+      }
 
       if (this.advOrFlaw.toLowerCase() === "advantages") {
         //true represents an advantage, false a flaw

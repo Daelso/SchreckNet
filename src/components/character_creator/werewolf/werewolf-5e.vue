@@ -280,7 +280,7 @@
                     </div>
                   </div>
                   <div class="grid-column">
-                    <div class="merit-header">Loresheets</div>
+                    <div class="merit-header">Loresheets:</div>
 
                     Advantages:
                     <div
@@ -457,7 +457,7 @@
 .grid-column {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   padding: 10px;
 }
@@ -465,7 +465,7 @@
 .centered-column {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
 }
 

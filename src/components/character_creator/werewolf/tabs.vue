@@ -278,7 +278,6 @@
             v-if="
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Caern' ||
               this.advantageCategory == 'Talismans' ||
               this.advantageCategory == 'Loresheets'
             "
@@ -385,7 +384,7 @@
             </div>
           </div>
           <div
-            class="q-mt-sm"
+            class="q-pa-lg"
             v-if="
               (this.advFlawChoice && !this.advFlawChoice.maxCost) ||
               (this.howManyDots && !this.advFlawChoice.specNeeded) ||
@@ -525,20 +524,15 @@
             </q-list>
           </div>
           <br />
-          <!-- Caern -->
-          <div
-            v-if="
-              this.advantagesObj.caern.advantages.length > 0 ||
-              this.advantagesObj.caern.flaws.length > 0
-            "
-          >
-            <span class="text-h6">Caern</span>
+          <!-- Talismans -->
+          <div v-if="this.advantagesObj.talismans.advantages.length > 0">
+            <span class="text-h6">Talismans</span>
             <q-separator />
             <div class="q-my-sm" style="font-family: monospace">Advantages</div>
 
             <q-list bordered>
               <q-item
-                v-for="(advantage, key) in advantagesObj.caern.advantages"
+                v-for="(advantage, key) in advantagesObj.talismans.advantages"
                 :key="key"
                 clickable
                 v-ripple
@@ -547,7 +541,7 @@
                     $event.target.id,
                     advantage.cost,
                     advantage.name,
-                    'haven'
+                    'talismans'
                   )
                 "
               >
@@ -561,22 +555,33 @@
                 </q-item-section>
               </q-item>
             </q-list>
-
-            <div class="q-my-sm" style="font-family: monospace">Flaws</div>
+          </div>
+          <br />
+          <!-- Loresheets -->
+          <div v-if="this.advantagesObj.loresheets.advantages.length > 0">
+            <span class="text-h6">Loresheets</span>
+            <q-separator />
+            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
 
             <q-list bordered>
               <q-item
-                v-for="(flaw, key) in advantagesObj.caern.flaws"
+                v-for="(advantage, key) in advantagesObj.loresheets.advantages"
                 :key="key"
                 clickable
                 v-ripple
                 @click="
-                  removeFlaw($event.target.id, flaw.cost, flaw.name, 'haven')
+                  removeAdvantage(
+                    $event.target.id,
+                    advantage.cost,
+                    advantage.name,
+                    'loresheets'
+                  )
                 "
               >
-                <q-item-section :id="key">
-                  {{ flaw.name }}
-                  - {{ flaw.cost }} dots
+                <q-item-section :id="key"
+                  >Advantage:
+                  {{ advantage.name }}
+                  - {{ advantage.cost }} dots
                   <q-tooltip class="bg-dark text-body2"
                     >Click to delete</q-tooltip
                   >
@@ -584,6 +589,7 @@
               </q-item>
             </q-list>
           </div>
+          <br />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -618,7 +624,6 @@ import allMerits from "../werewolf/5eMerits.json";
 import allBackgrounds from "../werewolf/5eBackgrounds.json";
 import talismans from "../werewolf/5eTalismans.json";
 import loresheets from "../werewolf/loresheets.json";
-import caernMerits from "../werewolf/5eCaerns.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -674,7 +679,7 @@ export default defineComponent({
       allBackgrounds: allBackgrounds.Backgrounds,
       advOrFlaw: "",
       advFlawChoice: "",
-      caernMerits,
+
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
@@ -690,13 +695,7 @@ export default defineComponent({
       tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
-      advantageCategories: [
-        "Merits",
-        "Backgrounds",
-        "Talismans",
-        "Caern",
-        "Loresheets",
-      ],
+      advantageCategories: ["Merits", "Backgrounds", "Talismans", "Loresheets"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
@@ -792,9 +791,6 @@ export default defineComponent({
           meritCat = talismans["Talismans"][this.meritCategory];
 
           break;
-        case "Caern":
-          meritCat = caernMerits["Caern"][this.meritCategory];
-          break;
       }
 
       if (
@@ -820,9 +816,7 @@ export default defineComponent({
         case "Talismans":
           arr = Object.keys(talismans["Talismans"]);
           break;
-        case "Caern":
-          arr = Object.keys(caernMerits["Caern"]);
-          break;
+
         case "Loresheets":
           for (const [key, value] of Object.entries(
             this.loresheets.loresheets
@@ -852,9 +846,6 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
             break;
-          case "Caern":
-            arr = caernMerits["Caern"][this.meritCategory].advantages;
-            break;
           case "Talismans":
             arr = talismans["Talismans"][this.meritCategory].advantages;
             break;
@@ -869,9 +860,7 @@ export default defineComponent({
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
             break;
-          case "Caern":
-            arr = caernMerits["Caern"][this.meritCategory].flaws;
-            break;
+
           case "Talismans":
             arr = talismans["Talismans"][this.meritCategory].flaws;
             break;
@@ -957,13 +946,7 @@ export default defineComponent({
             modifiedObj.backgrounds.flaws.push(choiceObj);
           }
           break;
-        case "Caern":
-          if (advOrFlaw === true) {
-            modifiedObj.caern.advantages.push(choiceObj);
-          } else {
-            modifiedObj.caern.flaws.push(choiceObj);
-          }
-          break;
+
         case "Talismans":
           if (advOrFlaw === true) {
             modifiedObj.talismans.advantages.push(choiceObj);

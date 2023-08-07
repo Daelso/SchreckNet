@@ -976,7 +976,7 @@ export default defineComponent({
         baseUrl = window.location.origin;
       }
       const payload = {
-        game_id: 1,
+        game_id: 2,
         sheet_id: sheet_id,
       };
       this.$axios

@@ -80,6 +80,12 @@ const routes = [
         component: () => import("pages/character_creator/hunter/hunter.vue"),
       },
       {
+        name: "garou5eView",
+        path: "werewolf/5e/:id",
+        component: () =>
+          import("pages/character_creator/werewolf/5eWerewolfView.vue"),
+      },
+      {
         name: "editHunter",
         path: "hunter/5e/edit/:id",
         component: () =>

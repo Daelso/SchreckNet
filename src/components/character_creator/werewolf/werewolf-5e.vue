@@ -758,10 +758,10 @@ export default {
             icon: "cloud_done",
             message: "Garou created!",
           });
-          // this.$router.push({
-          //   name: "hunter5eView",
-          //   params: { id: res.data },
-          // });
+          this.$router.push({
+            name: "garou5eView",
+            params: { id: res.data },
+          });
         })
         .catch((err) =>
           this.$q.notify({

@@ -80,6 +80,12 @@ const routes = [
         component: () => import("pages/character_creator/hunter/hunter.vue"),
       },
       {
+        name: "garou5eView",
+        path: "werewolf/5e/:id",
+        component: () =>
+          import("pages/character_creator/werewolf/5eWerewolfView.vue"),
+      },
+      {
         name: "editHunter",
         path: "hunter/5e/edit/:id",
         component: () =>
@@ -96,6 +102,11 @@ const routes = [
         component: () => import("pages/character_creator/hunter/myChars.vue"),
       },
       {
+        name: "myGarou",
+        path: "garou/5e/profile/:id",
+        component: () => import("pages/character_creator/werewolf/myChars.vue"),
+      },
+      {
         name: "myFavs",
         path: "/myFavorites",
         component: () => import("pages/myFavs.vue"),
@@ -104,6 +115,18 @@ const routes = [
         name: "baseSearch",
         path: "/search",
         component: () => import("pages/search/baseSearch.vue"),
+      },
+      {
+        name: "garou5e",
+        path: "werewolf/5e",
+        component: () =>
+          import("pages/character_creator/werewolf/werewolf.vue"),
+      },
+      {
+        name: "editGarou",
+        path: "werewolf/5e/edit/:id",
+        component: () =>
+          import("pages/character_creator/werewolf/editGarou.vue"),
       },
     ],
   },

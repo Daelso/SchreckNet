@@ -1,0 +1,158 @@
+{
+  "Merits": {
+    "Caern": {
+      "advantages": [
+        {
+          "name": "Caern Access",
+          "cost": 1,
+          "desc": "You have access to another sept's caern."
+        },
+        {
+          "name": "Awakened Caern",
+          "cost": 5,
+          "desc": "Your sept is warding an awakened caern or one on the verge of awakening. +1 to your caern value, does not stack! (Players can pool dots)"
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Caern Pariah",
+          "cost": 1,
+          "desc": "You are barred from accessing any caerns near your home. (Doesn't apply to a caern your sept owns)."
+        }
+      ]
+    },
+    "Day Job": {
+      "advantages": [
+        {
+          "name": "Day Job",
+          "cost": 1,
+          "desc": "You have a day job. + 1 to subterfuge or persuasion when concealing your Garou nature."
+        },
+        {
+          "name": "Corroborated Day Job",
+          "cost": 2,
+          "desc": "Similar to day job, but your co-workers reaffirm your employment. +2 to subterfuge or persuasion when concealing your Garou nature."
+        }
+      ],
+      "flaws": []
+    },
+    "Linguistics": {
+      "advantages": [
+        {
+          "name": "Language fluency",
+          "cost": 1,
+          "desc": "You speak, read and write another language fluently."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Illiterate",
+          "cost": 2,
+          "desc": "You cannot read or write. Academics and Science are capped at 1."
+        }
+      ]
+    },
+    "Looks": {
+      "advantages": [
+        {
+          "name": "Clement Lupus",
+          "cost": 1,
+          "desc": "Your lupus form appears more like a domesticated dog, no mortals would view you as a wolf."
+        },
+        {
+          "name": "Beautiful",
+          "cost": 2,
+          "desc": "You are considered beautiful."
+        },
+        {
+          "name": "Stunning",
+          "cost": 4,
+          "desc": "You are considered exceptionally good-looking, you turn heads everywhere you go."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Repulsive",
+          "cost": 2,
+          "desc": "Your appearance is exceptionally horrifying."
+        },
+        {
+          "name": "Ugly",
+          "cost": 1,
+          "desc": "You aren't very good-looking."
+        }
+      ]
+    },
+    "Safe House": {
+      "advantages": [
+        {
+          "name": "Obscure Safe House",
+          "cost": 2,
+          "desc": "Efforts to seek out anyone within your safe house suffer a 2 die penalty."
+        },
+        {
+          "name": "Secure Safe House",
+          "cost": 2,
+          "desc": "Add 2 die to any relevant pools when trying to prevent entry into your safe house."
+        }
+      ],
+      "flaws": []
+    },
+    "Substance Use": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Hopeless Addiction",
+          "cost": 2,
+          "desc": "Lose 2 die from all pools if you do not indulge in your substance of choice during the last scene."
+        },
+        {
+          "name": "Addiction",
+          "cost": 1,
+          "desc": "Lose 1 die from all pools if you do not indulge in your substance of choice during the last scene."
+        }
+      ]
+    },
+    "Supernatural Situations": {
+      "advantages": [
+        {
+          "name": "Moon-Quickened",
+          "cost": 1,
+          "desc": "Howl at the moon once per night to restore a point of superficial willpower."
+        },
+        {
+          "name": "Moon-Riled",
+          "cost": 3,
+          "desc": "Howl at the moon once per night to gain a dot of rage."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Folkloric Bane",
+          "cost": 1,
+          "desc": "You take aggravated damage from a folkloric weapon such as holy water, wolfsbane or the weapon of a true believer. Decide with your ST."
+        },
+        {
+          "name": "Folkloric Block",
+          "cost": 1,
+          "desc": "A folkloric block such as wolfsbane, a cross or the presence of a virgin can prevent your entry. Must spend 1 WP to push past it."
+        },
+        {
+          "name": "Folkloric Tell",
+          "cost": 1,
+          "desc": "You bear some sort of physical indication of being Garou that unsettles mortals."
+        },
+        {
+          "name": "Crone's Curse",
+          "cost": 2,
+          "desc": "Either some curse causes rapid aging or you experienced the first change late in life. -1 HP."
+        },
+        {
+          "name": "Moon-Thrall",
+          "cost": 2,
+          "desc": "Upon seeing the moon for the first time each night, you immediately change form to glabro or hispo. (Must still perform rage checks!)"
+        }
+      ]
+    }
+  }
+}

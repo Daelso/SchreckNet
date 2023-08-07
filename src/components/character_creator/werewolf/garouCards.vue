@@ -115,7 +115,7 @@
               </q-item-label>
               <q-item-label>{{
                 wolf.advantages.loresheets.advantages.length > 0
-                  ? wolf.advantages.loresheets.advantages[0]
+                  ? wolf.advantages.loresheets.advantages[0].name
                   : "None"
               }}</q-item-label>
             </q-item-section>

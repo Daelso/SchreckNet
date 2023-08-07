@@ -2,13 +2,14 @@
   <div v-if="!this.pageFound">
     <notfound />
   </div>
-  {{ updateMetaTags() }}
-  {{ chunkArrays() }}
+
   <div
     v-if="this.pageFound"
     class="q-pa-md column justify-center text-center"
     style="max-width: 900px"
   >
+    {{ updateMetaTags(this.garou) }}
+    {{ chunkArrays() }}
     <div class="q-pa-md column text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
@@ -534,8 +535,8 @@ export default defineComponent({
       };
     });
 
-    function updateMetaTags() {
-      siteTitle.value = "SchreckNet - " + this.garou.charName; // will automatically trigger a Meta update due to the binding
+    function updateMetaTags(garou) {
+      siteTitle.value = "SchreckNet - " + garou.charName; // will automatically trigger a Meta update due to the binding
       meta.description.content =
         this.garou.tribe.tribe_name +
         `(${garou.auspice.auspice_name})` +
@@ -562,7 +563,11 @@ export default defineComponent({
       })
       .then((resp) => {
         console.log(resp.data);
-        pageFound.value = true;
+        if (resp.data === null) {
+          pageFound.value = false;
+        } else {
+          pageFound.value = true;
+        }
         return resp.data;
       })
       .catch((err) => {
@@ -624,7 +629,7 @@ export default defineComponent({
       attributeInfo,
 
       skillInfo,
-      created_by: garou.created_by,
+      created_by: garou !== null ? garou.created_by : "Anonymous",
       creator,
       pageFound,
       deleteConfirm,

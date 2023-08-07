@@ -63,7 +63,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
   }
 });
 
-router.route("/garou/edit/:id").put(lib.postLimiter, async (req, res) => {
+router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
   try {
     const currentUser = lib.getCurrentUser(req, res);
 

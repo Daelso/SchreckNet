@@ -250,33 +250,20 @@
                   </div>
 
                   <div class="grid-column">
-                    <div class="merit-header">Caern:</div>
+                    <div class="merit-header">Talismans:</div>
 
                     Advantages:
                     <div
                       class="q-my-sm"
-                      v-if="advantagesObj.caern.advantages.length === 0"
+                      v-if="advantagesObj.talismans.advantages.length === 0"
                     >
                       Not yet selected
                     </div>
                     <div
-                      v-for="advantage in advantagesObj.caern.advantages"
+                      v-for="advantage in advantagesObj.talismans.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                    </div>
-                    Flaws:
-                    <div
-                      class="q-my-sm"
-                      v-if="advantagesObj.caern.flaws.length === 0"
-                    >
-                      Not yet selected
-                    </div>
-                    <div
-                      v-for="flaw in advantagesObj.caern.flaws"
-                      :key="flaw.name"
-                    >
-                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
                   </div>
                   <div class="grid-column">
@@ -291,25 +278,6 @@
                     </div>
                     <div
                       v-for="advantage in advantagesObj.loresheets.advantages"
-                      :key="advantage.name"
-                    >
-                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
-                    </div>
-                  </div>
-                </q-card-section>
-                <q-card-section class="backgroundDefault">
-                  <div class="centered-column">
-                    <div class="merit-header">Talismans:</div>
-
-                    Advantages:
-                    <div
-                      class="q-my-sm"
-                      v-if="advantagesObj.talismans.advantages.length === 0"
-                    >
-                      Not yet selected
-                    </div>
-                    <div
-                      v-for="advantage in advantagesObj.talismans.advantages"
                       :key="advantage.name"
                     >
                       <div>{{ advantage.name }} - {{ advantage.cost }}</div>
@@ -698,7 +666,7 @@ export default {
       specialtiesFromXp: [],
       concept: "",
       touchstones: [],
-      xp: 250,
+      xp: 0,
       spentXp: 0,
       skillsDone: false,
       tribesDone: false,
@@ -729,6 +697,7 @@ export default {
           icon: "warning",
           message: "Saving...",
         });
+        return;
       }
       this.saving = true;
       this.$q.loading.show({
@@ -766,13 +735,20 @@ export default {
           wits: this.wits,
         },
         specialties: this.finalSpecialties(),
+        tribe: this.tribe,
+        auspice: this.auspice,
         advantages: this.advantagesObj,
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
+        tribe_gifts: this.tribe_gifts,
+        purchased_gifts: this.purchased_gifts,
+        tribe_renown: this.tribe_renown,
+        purchased_renown: this.purchased_renown,
+        bonus_renown: this.bonus_renown,
       };
 
       axios
-        .post(baseUrl + "/hunters/new", character, {
+        .post(baseUrl + "/garou/new", character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -780,12 +756,12 @@ export default {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Hunter created!",
+            message: "Garou created!",
           });
-          this.$router.push({
-            name: "hunter5eView",
-            params: { id: res.data },
-          });
+          // this.$router.push({
+          //   name: "hunter5eView",
+          //   params: { id: res.data },
+          // });
         })
         .catch((err) =>
           this.$q.notify({

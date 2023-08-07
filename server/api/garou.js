@@ -63,6 +63,50 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
   }
 });
 
+router.route("/garou/edit/:id").put(lib.postLimiter, async (req, res) => {
+  try {
+    const currentUser = lib.getCurrentUser(req, res);
+
+    const garou = await Garou.findByPk(req.params.id);
+
+    if (currentUser.id !== garou.created_by) {
+      res.status(403).send("Access Denied");
+      return;
+    }
+
+    await garou.update({
+      charName: req.body.name,
+      tribe: req.body.tribe,
+      concept: req.body.concept,
+      auspice: req.body.auspice,
+      chronicle: req.body.chronicle,
+      touchstones: req.body.touchstones,
+      attributes: req.body.attributes,
+      skills: req.body.skills,
+      bonus_renown: req.body.bonus_renown,
+      health: req.body.health,
+      willpower: req.body.willpower,
+      remaining_specialties: req.body.remainingSpecialties,
+      xp: req.body.xp,
+      spent_xp: req.body.spent_xp,
+      specialties: req.body.specialties,
+      advantages: req.body.advantages,
+      advantages_remaining: req.body.advantages_remaining,
+      flaws_remaining: req.body.flaws_remaining,
+      tribe_gifts: req.body.tribe_gifts,
+      purchased_gifts: req.body.purchased_gifts,
+      tribe_renown: req.body.tribe_renown,
+      purchased_renown: req.body.purchased_renown,
+      updatedAt: Date.now(),
+      updatedBy: currentUser,
+    });
+
+    res.status(200).send("Garou updated!");
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
 router.route("/garou/:id").get(lib.getLimiter, async (req, res) => {
   try {
     const garou = await Garou.findByPk(req.params.id);

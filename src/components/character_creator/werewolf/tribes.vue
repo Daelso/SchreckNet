@@ -88,7 +88,7 @@
                       option-label="renown_name"
                       option-value="renown_id"
                       popup-content-style="background-color:#222831; color:white"
-                      @update:model-value="applyTribeRenown()"
+                      @update:model-value="applyBonusRenown()"
                     />
                   </div>
                 </div>
@@ -470,7 +470,10 @@ export default defineComponent({
       this.clearRenown();
 
       this.renown[this.tribe.renownTypeId.renown_name.toLowerCase()] = 2;
+      this.bonus_renown = "";
+    },
 
+    applyBonusRenown() {
       if (this.bonus_renown) {
         this.renown[this.bonus_renown.renown_name.toLowerCase()] = 1;
       }
@@ -479,17 +482,6 @@ export default defineComponent({
     clearRenown() {
       this.renown = { glory: 0, honor: 0, wisdom: 0 };
     },
-    // changeDist() {
-    //   if (this.edgeArr.edges.length > 0 || this.edgeArr.perks.length > 0) {
-    //     this.$q.notify({
-    //       color: "primary",
-    //       textColor: "white",
-    //       avatar: nosImage,
-    //       timeout: 14000,
-    //       message: "Distribution changed, edges and perks cleared.",
-    //     });
-    //   }
-    // },
 
     async generateAuspiceGifts() {
       try {

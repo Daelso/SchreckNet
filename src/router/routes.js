@@ -122,6 +122,12 @@ const routes = [
         component: () =>
           import("pages/character_creator/werewolf/werewolf.vue"),
       },
+      {
+        name: "editGarou",
+        path: "werewolf/5e/edit/:id",
+        component: () =>
+          import("pages/character_creator/werewolf/werewolf.vue"),
+      },
     ],
   },
 

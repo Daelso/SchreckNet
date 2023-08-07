@@ -43,6 +43,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
       willpower: req.body.willpower,
       remaining_specialties: req.body.remainingSpecialties,
       xp: req.body.xp,
+      spent_xp: req.body.spent_xp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
       advantages_remaining: req.body.advantages_remaining,

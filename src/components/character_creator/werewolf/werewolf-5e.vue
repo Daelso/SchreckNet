@@ -719,7 +719,7 @@ export default {
         health: this.stamina + 3,
         willpower: this.composure + this.resolve,
         xp: this.xp,
-        spentXp: this.spentXp,
+        spent_xp: this.spentXp,
         touchstones: this.touchstones,
         remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,

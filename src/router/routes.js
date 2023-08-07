@@ -102,6 +102,11 @@ const routes = [
         component: () => import("pages/character_creator/hunter/myChars.vue"),
       },
       {
+        name: "myGarou",
+        path: "garou/5e/profile/:id",
+        component: () => import("pages/character_creator/werewolf/myChars.vue"),
+      },
+      {
         name: "myFavs",
         path: "/myFavorites",
         component: () => import("pages/myFavs.vue"),

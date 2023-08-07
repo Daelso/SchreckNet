@@ -557,7 +557,7 @@ export default defineComponent({
     let garouId = ref(window.location.href.split("/")[5]);
 
     const garou = await axios
-      .get(baseUrl + "/garou/" + garouId.value, {
+      .get(baseUrl + "/garou/garou/" + garouId.value, {
         withCredentials: true,
       })
       .then((resp) => {

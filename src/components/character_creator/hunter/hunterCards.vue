@@ -138,7 +138,7 @@
   flex-flow: row wrap;
   color: white;
   background-color: #222831;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 .backgroundDefault {
@@ -147,7 +147,7 @@
 .base-info {
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-content: flex-start;
   margin: auto;
 }
 

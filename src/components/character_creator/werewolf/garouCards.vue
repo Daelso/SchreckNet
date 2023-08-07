@@ -1,16 +1,16 @@
 <template>
-  <q-card v-for="hunt in this.hunter" :key="hunt" class="my-card" flat bordered>
+  <q-card v-for="wolf in this.garou" :key="wolf" class="my-card" flat bordered>
     <q-item>
       <q-item-section avatar>
         <q-avatar>
-          <q-icon color="secondary" name="app:hunter" style="scale: 170%" />
+          <q-icon color="secondary" name="app:claws" style="scale: 170%" />
         </q-avatar>
       </q-item-section>
 
       <q-item-section>
-        <q-item-label>{{ hunt.charName }}</q-item-label>
+        <q-item-label>{{ wolf.charName }}</q-item-label>
         <q-item-label style="color: white" caption>
-          {{ hunt.creed.name }} ({{ hunt.drive.name }}) - {{ hunt.cell }}
+          {{ wolf.tribe.tribe_name }} ({{ wolf.auspice.auspice_name }})
         </q-item-label>
       </q-item-section>
     </q-item>
@@ -26,13 +26,13 @@
                   <q-card>
                     <q-card-section
                       v-for="(attribute, key) in Object.keys(
-                        hunt.attributes
+                        wolf.attributes
                       ).sort()"
                       :key="key"
                       class="backgroundDefault"
                     >
                       <div class="attribute">
-                        {{ attribute }} - {{ hunt.attributes[attribute] }}
+                        {{ attribute }} - {{ wolf.attributes[attribute] }}
                       </div>
                     </q-card-section>
                   </q-card>
@@ -41,17 +41,25 @@
             </q-item>
             <q-item>
               <q-item-section>
-                <q-expansion-item expand-separator label="Edges/Perks" dark>
+                <q-expansion-item expand-separator label="Gifts/Rites" dark>
                   <q-card>
                     <q-card-section class="backgroundDefault">
-                      Edges:
-                      <div v-for="(edge, key) in hunt.edges.edges" :key="key">
-                        <div>{{ edge.category }} - {{ edge.edge }}</div>
+                      Gifts:
+                      <div
+                        v-for="(gift, key) in this.combineGifts(wolf)"
+                        :key="key"
+                      >
+                        <div>
+                          {{ gift.gift_name ? gift.gift_name : "" }}
+                        </div>
                       </div>
                       <br />
-                      Perks:
-                      <div v-for="(perk, key) in hunt.edges.perks" :key="key">
-                        {{ perk.category }} - {{ perk.perk }}
+                      Rites:
+                      <div
+                        v-for="(gift, key) in this.combineGifts(wolf)"
+                        :key="key"
+                      >
+                        {{ gift.rite_name ? gift.rite_name : "" }}
                       </div>
                     </q-card-section>
                   </q-card>
@@ -63,7 +71,7 @@
                 <q-expansion-item expand-separator label="Touchstones" dark>
                   <q-card>
                     <q-card-section
-                      v-for="(touchstone, key) in hunt.touchstones"
+                      v-for="(touchstone, key) in wolf.touchstones"
                       :key="key"
                       class="backgroundDefault"
                     >
@@ -82,25 +90,37 @@
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline>Concept</q-item-label>
-              <q-item-label>{{ truncate(hunt.concept, 50) }}</q-item-label>
+              <q-item-label>{{ truncate(wolf.concept, 50) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-separator />
+          <q-item>
+            <q-item-section>
+              <q-item-label style="color: white" overline>Patron</q-item-label>
+              <q-item-label>{{ wolf.tribe.patron }}</q-item-label>
+            </q-item-section>
+          </q-item>
           <q-item>
             <q-item-section>
               <q-item-label style="color: white" overline
-                >Ambition</q-item-label
-              >
-              <q-item-label>{{ truncate(hunt.ambition, 50) }}</q-item-label>
+                >Total Renown
+              </q-item-label>
+              <q-item-label>{{ this.renownSum(wolf) }}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
             <q-item-section>
-              <q-item-label style="color: white" overline>Desire</q-item-label>
-              <q-item-label>{{ truncate(hunt.desire, 50) }}</q-item-label>
+              <q-item-label style="color: white" overline
+                >Loresheet
+              </q-item-label>
+              <q-item-label>{{
+                wolf.advantages.loresheets.advantages.length > 0
+                  ? wolf.advantages.loresheets.advantages[0]
+                  : "None"
+              }}</q-item-label>
             </q-item-section>
           </q-item>
-          <q-separator />
+
           <q-separator />
         </q-list>
       </div>
@@ -112,17 +132,17 @@
         flat
         color="white"
         @click="
-          this.router.push({ name: 'hunter5eView', params: { id: hunt.id } })
+          this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
         "
       >
         View Full Character
       </q-btn>
       <q-btn
-        @click="this.favoriteChar(hunt.id, hunt.charName)"
+        @click="this.favoriteChar(wolf.id, wolf.charName)"
         style="margin: auto"
         flat
         v-if="
-          this.currentUser !== false && hunt.created_by !== this.currentUser.id
+          this.currentUser !== false && wolf.created_by !== this.currentUser.id
         "
         >Favorite</q-btn
       >
@@ -138,7 +158,7 @@
   flex-flow: row wrap;
   color: white;
   background-color: #222831;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 .backgroundDefault {
@@ -183,11 +203,12 @@ export default {
       baseUrl = window.location.origin;
     }
 
-    let hunter = await axios
-      .get(baseUrl + "/hunters/card", {
+    let garou = await axios
+      .get(baseUrl + "/garou/card", {
         withCredentials: true,
       })
       .then((resp) => {
+        console.log(resp.data);
         return resp.data;
       })
       .catch((err) => {
@@ -196,7 +217,7 @@ export default {
       });
 
     return {
-      hunter,
+      garou,
       router,
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
@@ -220,7 +241,7 @@ export default {
         baseUrl = window.location.origin;
       }
       const payload = {
-        game_id: 2,
+        game_id: 3,
         sheet_id: sheet_id,
       };
       this.$axios
@@ -251,6 +272,53 @@ export default {
             message: err.message,
           });
         });
+    },
+    renownTotal(wolf) {
+      const trueRenown = { glory: 0, honor: 0, wisdom: 0 };
+
+      for (const key in trueRenown) {
+        if (Object.prototype.hasOwnProperty.call(trueRenown, key)) {
+          trueRenown[key] = wolf.tribe_renown[key] + wolf.purchased_renown[key];
+        }
+      }
+
+      return trueRenown;
+    },
+
+    renownSum(wolf) {
+      const totalRenown = this.renownTotal(wolf);
+      const sum = Object.values(totalRenown).reduce(
+        (acc, value) => acc + value,
+        0
+      );
+
+      return sum;
+    },
+
+    combineGifts(wolf) {
+      let gifts = [];
+
+      for (let key in wolf.tribe_gifts) {
+        if (wolf.tribe_gifts[key] !== null) {
+          gifts.push(wolf.tribe_gifts[key]);
+        }
+      }
+
+      for (let key in wolf.purchased_gifts) {
+        if (wolf.purchased_gifts[key].length > 0) {
+          gifts = [...gifts, ...wolf.purchased_gifts[key]];
+        }
+      }
+      console.log(gifts);
+      return gifts;
+    },
+
+    getGiftAmount(wolf) {
+      const gifts = this.combineGifts(wolf);
+
+      return Object.keys(gifts)
+        .filter((key) => key !== "rite") // Filter out the "rite" key
+        .reduce((sum, key) => sum + gifts[key].length, 0);
     },
   },
 };

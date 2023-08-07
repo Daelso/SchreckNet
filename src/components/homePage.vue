@@ -7,6 +7,14 @@
         <vampCards :currentUser="this.currentUser" />
       </div>
     </Suspense>
+
+    <div class="banner q-my-md">Recent Lupine Sightings</div>
+    <Suspense>
+      <div class="vamps">
+        <garouCards :currentUser="this.currentUser" />
+      </div>
+    </Suspense>
+
     <div class="banner q-my-md">Beware these Hunters</div>
     <Suspense>
       <div class="vamps">
@@ -20,21 +28,23 @@
 .banner {
   display: flex;
   justify-content: center;
-  margin-bottom: 25px;
+  margin-bottom: 1em;
   font-family: TMUnicorn;
   text-shadow: 3px 2px 3px black;
-  font-size: 35px;
+  font-size: 2.8em;
 }
 .vamps {
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 @media (max-width: 800px) {
   .vamps {
     flex-direction: column;
   }
   .banner {
-    font-size: 20px;
+    font-size: 1.5em;
   }
 }
 </style>
@@ -45,6 +55,7 @@ import { ref } from "vue";
 import nosImage from "../assets/images/Nosfer_logo.png";
 import vampCards from "./character_creator/vtm/vampireCards.vue";
 import huntCards from "./character_creator/hunter/hunterCards.vue";
+import garouCards from "./character_creator/werewolf/garouCards.vue";
 
 import { useMeta } from "quasar";
 
@@ -57,13 +68,13 @@ const metaData = {
     keywords: {
       name: "keywords",
       content:
-        "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse",
+        "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse, hunter the reckoning, htr",
     },
   },
 };
 
 export default {
-  components: { vampCards, huntCards },
+  components: { vampCards, huntCards, garouCards },
   setup() {
     useMeta(metaData);
 

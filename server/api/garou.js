@@ -62,7 +62,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
   }
 });
 
-router.route("/:id").get(lib.getLimiter, async (req, res) => {
+router.route("/garou/:id").get(lib.getLimiter, async (req, res) => {
   try {
     const garou = await Garou.findByPk(req.params.id);
     res.json(garou);
@@ -196,6 +196,18 @@ router.route("/rites").get(lib.getLimiter, async (req, res) => {
   try {
     const rites = await Rites.findAll();
     res.json(rites);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+router.route("/card").get(async (req, res) => {
+  try {
+    const garou = await Garou.findAll({
+      limit: 3,
+      order: [["createdAt", "DESC"]],
+    });
+    res.json(garou);
   } catch (err) {
     res.status(404).send(err);
   }

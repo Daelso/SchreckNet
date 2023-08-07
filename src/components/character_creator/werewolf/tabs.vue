@@ -269,7 +269,8 @@
             v-if="
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Caern'
+              this.advantageCategory == 'Caern' ||
+              this.advantageCategory == 'Talismans'
             "
           >
             <q-select
@@ -596,7 +597,7 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import allMerits from "../werewolf/5eMerits.json";
 import allBackgrounds from "../werewolf/5eBackgrounds.json";
-import safeHouseMerits from "../hunter/safeHouses.json";
+import talismans from "../werewolf/5eTalismans.json";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -664,11 +665,11 @@ export default defineComponent({
       touchStoneInput: "",
       tabTouchStones: props.touchstones,
       tabChronicle: props.chronicle,
-      safeHouseMerits,
+      talismans,
       tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
-      advantageCategories: ["Merits", "Backgrounds", "Caern"],
+      advantageCategories: ["Merits", "Backgrounds", "Talismans", "Caern"],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
@@ -750,10 +751,27 @@ export default defineComponent({
     },
     advorFlawOptions() {
       let arr = ["Advantages", "Flaws"];
-      const meritCat = allMerits.Merits[this.meritCategory];
+      let meritCat = "Merits";
+      switch (this.advantageCategory) {
+        case "Merits":
+          meritCat = allMerits.Merits[this.meritCategory];
+          break;
+
+        case "Backgrounds":
+          meritCat = allBackgrounds.Backgrounds[this.meritCategory];
+          break;
+        case "Talismans":
+          meritCat = talismans["Talismans"][this.meritCategory];
+
+          break;
+        case "Caern":
+          meritCat = safeHouseMerits["Caern"][this.meritCategory];
+          break;
+      }
 
       if (meritCat.flaws.length === 0) {
         arr = ["Advantages"];
+        this.advOrFlaw = "Advantages";
       }
 
       return arr;
@@ -767,6 +785,9 @@ export default defineComponent({
 
         case "Backgrounds":
           arr = Object.keys(allBackgrounds.Backgrounds);
+          break;
+        case "Talismans":
+          arr = Object.keys(talismans["Talismans"]);
           break;
         case "Caern":
           arr = Object.keys(safeHouseMerits["Caern"]);
@@ -789,6 +810,9 @@ export default defineComponent({
           case "Caern":
             arr = safeHouseMerits["Caern"][this.meritCategory].advantages;
             break;
+          case "Talismans":
+            arr = talismans["Talismans"][this.meritCategory].advantages;
+            break;
         }
       }
       if (this.advOrFlaw.toLowerCase() === "flaws") {
@@ -802,6 +826,9 @@ export default defineComponent({
             break;
           case "Caern":
             arr = safeHouseMerits["Caern"][this.meritCategory].flaws;
+            break;
+          case "Talismans":
+            arr = safeHouseMerits["Talismans"][this.meritCategory].flaws;
             break;
         }
       }
@@ -873,6 +900,13 @@ export default defineComponent({
             modifiedObj.caern.advantages.push(choiceObj);
           } else {
             modifiedObj.caern.flaws.push(choiceObj);
+          }
+          break;
+        case "Talismans":
+          if (advOrFlaw === true) {
+            modifiedObj.talismans.advantages.push(choiceObj);
+          } else {
+            modifiedObj.talismans.flaws.push(choiceObj);
           }
           break;
       }

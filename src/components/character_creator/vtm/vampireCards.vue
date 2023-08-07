@@ -161,6 +161,7 @@
   background-color: #222831;
   align-items: flex-start;
   justify-content: center;
+  min-height: 27em;
 }
 
 .backgroundDefault {

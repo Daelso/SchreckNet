@@ -336,7 +336,6 @@ export default {
           gifts = [...gifts, ...wolf.purchased_gifts[key]];
         }
       }
-      console.log(gifts);
       return gifts;
     },
 

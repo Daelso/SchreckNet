@@ -77,6 +77,38 @@
         popup-content-style="background-color:#222831; color:white"
       />
 
+      <!-- WtA Only -->
+      <q-select
+        v-if="this.splatPick === 'Werewolf: the Apocalypse'"
+        class="select"
+        filled
+        clearable
+        color="secondary"
+        bg-color="grey-3"
+        v-model="tribePick"
+        @update:model-value="this.$emit('update:tribe', this.tribePick)"
+        :options="tribeOptions"
+        option-label="tribe_name"
+        option-value="tribe_id"
+        label="Search by Tribe"
+        popup-content-style="background-color:#222831; color:white"
+      />
+      <q-select
+        v-if="this.splatPick === 'Werewolf: the Apocalypse'"
+        class="select"
+        filled
+        clearable
+        color="secondary"
+        bg-color="grey-3"
+        v-model="auspicePick"
+        @update:model-value="this.$emit('update:auspice', this.auspicePick)"
+        :options="auspiceOptions"
+        label="Search by Auspice"
+        option-label="auspice_name"
+        option-value="auspice_id"
+        popup-content-style="background-color:#222831; color:white"
+      />
+
       <!-- User search -->
       <q-select
         class="select"
@@ -158,6 +190,9 @@ export default defineComponent({
     "drive",
     "hunter",
     "creed",
+    "garou",
+    "tribe",
+    "auspice",
   ],
   emits: [
     "update:splat",
@@ -168,6 +203,9 @@ export default defineComponent({
     "update:hunter",
     "update:drive",
     "update:creed",
+    "update:garou",
+    "update:tribe",
+    "update:auspice",
   ],
   async setup() {
     let baseUrl = "";
@@ -188,12 +226,23 @@ export default defineComponent({
     const splatOptions = ref([
       "Vampire: the Masquerade",
       "Hunter: the Reckoning",
+      "Werewolf: the Apocalypse",
     ]);
+
+    const [tribesResponse, auspicesResponse] = await Promise.all([
+      axios.get(baseUrl + "/garou/tribes"),
+      axios.get(baseUrl + "/garou/auspices"),
+    ]);
+
+    const tribeOptions = tribesResponse.data;
+    const auspiceOptions = auspicesResponse.data;
 
     const userList = ref(stringOptions);
 
     return {
       splatOptions,
+      tribeOptions,
+      auspiceOptions,
       userOptions: userList,
       filterFn(val, update) {
         if (val === "") {
@@ -218,12 +267,14 @@ export default defineComponent({
       splatPick: props.splat,
       pickedUser: props.user,
       clanPick: props.clan,
+      tribePick: props.tribe,
+      auspicePick: props.auspice,
       predatorPick: props.predator,
       drivePick: props.drive,
       creedPick: props.creed,
       vampires: [],
       hunters: [],
-      wolves: [],
+      garous: [],
       loading: false,
       clanOptions: Object.keys(clans.clans),
       predatorOptions: predatorTypes.predator,
@@ -237,7 +288,7 @@ export default defineComponent({
       this.loading = true;
       this.vampires = [];
       this.hunters = [];
-      this.wolves = [];
+      this.garous = [];
       let baseUrl = "";
       if (window.location.href.includes("localhost")) {
         baseUrl = "http://localhost:5000";
@@ -265,6 +316,7 @@ export default defineComponent({
         );
         this.$emit("update:kindred", this.vampires.data);
         this.$emit("update:hunter", []);
+        this.$emit("update:garou", []);
       }
 
       if (this.splatPick === "Hunter: the Reckoning") {
@@ -287,6 +339,30 @@ export default defineComponent({
         );
         this.$emit("update:kindred", []);
         this.$emit("update:hunter", this.hunters.data);
+        this.$emit("update:garou", []);
+      }
+
+      if (this.splatPick === "Werewolf: the Apocalypse") {
+        let searchParams = {
+          game: this.splatPick,
+          tribe: this.tribePick,
+          auspice: this.auspicePick,
+        };
+
+        if (this.pickedUser !== null) {
+          searchParams.user = this.pickedUser.user_id;
+        }
+
+        this.garous = await this.$axios.post(
+          baseUrl + "/search/garou",
+          { searchParams },
+          {
+            withCredentials: true,
+          }
+        );
+        this.$emit("update:kindred", []);
+        this.$emit("update:hunter", []);
+        this.$emit("update:garou", this.garous.data);
       }
       this.loading = false;
     },

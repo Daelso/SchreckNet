@@ -48,6 +48,7 @@
                   map-options
                   option-label="tribe_name"
                   option-value="tribe_id"
+                  :loading="tribeLoad"
                   @update:model-value="
                     async () => {
                       applyTribeRenown();
@@ -122,6 +123,7 @@
                   :options="this.auspiceOptions"
                   label="Select an Auspice"
                   map-options
+                  :loading="tribeLoad"
                   popup-content-style="background-color:#222831; color:white"
                   option-label="auspice_name"
                   option-value="auspice_id"
@@ -167,6 +169,7 @@
                     :options="this.nativeOptions"
                     label="Select a Native Gift"
                     map-options
+                    :loading="tribeLoad"
                     popup-content-style="background-color:#222831; color:white"
                     option-label="gift_name"
                     option-value="gift_id"
@@ -199,6 +202,7 @@
                     :options="this.tribeGiftOptions"
                     label="Select a Tribe Gift"
                     map-options
+                    :loading="tribeLoad"
                     popup-content-style="background-color:#222831; color:white"
                     option-label="gift_name"
                     option-value="gift_id"
@@ -231,6 +235,7 @@
                     :options="this.auspiceGiftOptions"
                     label="Select an Auspice Gift"
                     map-options
+                    :loading="tribeLoad"
                     popup-content-style="background-color:#222831; color:white"
                     option-label="gift_name"
                     option-value="gift_id"
@@ -263,6 +268,7 @@
                     label="Select a Rite"
                     map-options
                     use-input
+                    :loading="tribeLoad"
                     input-debounce="0"
                     @filter="ritesFilter"
                     popup-content-style="background-color:#222831; color:white"
@@ -415,7 +421,7 @@ export default defineComponent({
       this.renownTypeOptions = renown_types_response.data;
       this.riteOptions = rites_response.data;
       this.clonedRiteOptions = structuredClone(rites_response.data);
-      console.log(this.riteOptions);
+      this.tribeLoad = false;
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -423,6 +429,7 @@ export default defineComponent({
 
   data(props) {
     return {
+      tribeLoad: true,
       tribe: props.info.tribe,
       auspice: props.info.auspice,
       renown: props.info.renown,

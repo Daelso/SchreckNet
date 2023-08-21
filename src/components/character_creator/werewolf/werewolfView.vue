@@ -1021,6 +1021,7 @@ export default defineComponent({
       });
 
       const gifts = this.justGifts;
+      console.log(gifts);
 
       // Gifts/Rites
       for (let i = 0; i < gifts.length; i++) {
@@ -1174,7 +1175,7 @@ export default defineComponent({
 
       for (let key in this.garou.purchased_gifts) {
         if (this.garou.purchased_gifts[key].length > 0) {
-          gifts = [...gifts[key], ...this.garou.purchased_gifts[key]];
+          gifts = [...gifts, ...this.garou.purchased_gifts[key]];
         }
       }
 

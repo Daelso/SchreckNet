@@ -2,154 +2,183 @@
   <div v-if="this.garou === null || this.garou.length === 0" class="banner">
     No characters created yet!
   </div>
-  <q-card v-for="wolf in this.garou" :key="wolf" class="my-card" flat bordered>
-    <q-item>
-      <q-item-section avatar>
-        <q-avatar>
-          <q-icon color="secondary" name="app:claws" style="scale: 170%" />
-        </q-avatar>
-      </q-item-section>
+  <div class="card-container">
+    <q-card
+      v-for="wolf in this.garou"
+      :key="wolf"
+      class="my-card"
+      flat
+      bordered
+    >
+      <q-item>
+        <q-item-section avatar>
+          <q-avatar>
+            <q-icon color="secondary" name="app:claws" style="scale: 170%" />
+          </q-avatar>
+        </q-item-section>
 
-      <q-item-section>
-        <q-item-label>{{ wolf.charName }}</q-item-label>
-        <q-item-label style="color: white" caption>
-          {{ wolf.tribe.tribe_name }} ({{ wolf.auspice.auspice_name }})
-        </q-item-label>
-      </q-item-section>
-    </q-item>
+        <q-item-section>
+          <q-item-label>{{ wolf.charName }}</q-item-label>
+          <q-item-label style="color: white" caption>
+            {{ wolf.tribe.tribe_name }} ({{ wolf.auspice.auspice_name }})
+          </q-item-label>
+        </q-item-section>
+      </q-item>
 
-    <q-separator />
-    <div class="row">
-      <q-card-section horizontal class="col">
-        <q-card-section class="base-info">
-          <q-list bordered separator>
-            <q-item>
-              <q-item-section>
-                <q-expansion-item expand-separator label="Attributes" dark>
-                  <q-card>
-                    <q-card-section
-                      v-for="(attribute, key) in Object.keys(
-                        wolf.attributes
-                      ).sort()"
-                      :key="key"
-                      class="backgroundDefault"
-                    >
-                      <div class="attribute">
-                        {{ attribute }} - {{ wolf.attributes[attribute] }}
-                      </div>
-                    </q-card-section>
-                  </q-card>
-                </q-expansion-item></q-item-section
-              >
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-expansion-item expand-separator label="Gifts/Rites" dark>
-                  <q-card>
-                    <q-card-section class="backgroundDefault">
-                      Gifts:
-                      <div
-                        v-for="(gift, key) in this.combineGifts(wolf)"
+      <q-separator />
+      <div class="row">
+        <q-card-section horizontal class="col">
+          <q-card-section class="base-info">
+            <q-list bordered separator>
+              <q-item>
+                <q-item-section>
+                  <q-expansion-item expand-separator label="Attributes" dark>
+                    <q-card>
+                      <q-card-section
+                        v-for="(attribute, key) in Object.keys(
+                          wolf.attributes
+                        ).sort()"
                         :key="key"
+                        class="backgroundDefault"
                       >
-                        <div>
-                          {{ gift.gift_name ? gift.gift_name : "" }}
+                        <div class="attribute">
+                          {{ attribute }} - {{ wolf.attributes[attribute] }}
                         </div>
-                      </div>
-                      <br />
-                      Rites:
-                      <div
-                        v-for="(gift, key) in this.combineGifts(wolf)"
+                      </q-card-section>
+                    </q-card>
+                  </q-expansion-item></q-item-section
+                >
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  <q-expansion-item expand-separator label="Gifts/Rites" dark>
+                    <q-card>
+                      <q-card-section class="backgroundDefault">
+                        Gifts:
+                        <div
+                          v-for="(gift, key) in this.combineGifts(wolf)"
+                          :key="key"
+                        >
+                          <div>
+                            {{ gift.gift_name ? gift.gift_name : "" }}
+                          </div>
+                        </div>
+                        <br />
+                        Rites:
+                        <div
+                          v-for="(gift, key) in this.combineGifts(wolf)"
+                          :key="key"
+                        >
+                          {{ gift.rite_name ? gift.rite_name : "" }}
+                        </div>
+                      </q-card-section>
+                    </q-card>
+                  </q-expansion-item></q-item-section
+                >
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  <q-expansion-item expand-separator label="Touchstones" dark>
+                    <q-card>
+                      <q-card-section
+                        v-for="(touchstone, key) in wolf.touchstones"
                         :key="key"
+                        class="backgroundDefault"
                       >
-                        {{ gift.rite_name ? gift.rite_name : "" }}
-                      </div>
-                    </q-card-section>
-                  </q-card>
-                </q-expansion-item></q-item-section
-              >
+                        {{ touchstone }}
+                      </q-card-section>
+                    </q-card>
+                  </q-expansion-item></q-item-section
+                >
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card-section>
+        <!-- Right side of card -->
+        <div class="right-side">
+          <q-list separator>
+            <q-item>
+              <q-item-section>
+                <q-item-label style="color: white" overline
+                  >Concept</q-item-label
+                >
+                <q-item-label>{{ truncate(wolf.concept, 50) }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item>
+              <q-item-section>
+                <q-item-label style="color: white" overline
+                  >Patron</q-item-label
+                >
+                <q-item-label>{{ wolf.tribe.patron }}</q-item-label>
+              </q-item-section>
             </q-item>
             <q-item>
               <q-item-section>
-                <q-expansion-item expand-separator label="Touchstones" dark>
-                  <q-card>
-                    <q-card-section
-                      v-for="(touchstone, key) in wolf.touchstones"
-                      :key="key"
-                      class="backgroundDefault"
-                    >
-                      {{ touchstone }}
-                    </q-card-section>
-                  </q-card>
-                </q-expansion-item></q-item-section
-              >
+                <q-item-label style="color: white" overline
+                  >Total Renown
+                </q-item-label>
+                <q-item-label>{{ this.renownSum(wolf) }}</q-item-label>
+              </q-item-section>
             </q-item>
-          </q-list>
-        </q-card-section>
-      </q-card-section>
-      <!-- Right side of card -->
-      <div class="right-side">
-        <q-list separator>
-          <q-item>
-            <q-item-section>
-              <q-item-label style="color: white" overline>Concept</q-item-label>
-              <q-item-label>{{ truncate(wolf.concept, 50) }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-separator />
-          <q-item>
-            <q-item-section>
-              <q-item-label style="color: white" overline>Patron</q-item-label>
-              <q-item-label>{{ wolf.tribe.patron }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section>
-              <q-item-label style="color: white" overline
-                >Total Renown
-              </q-item-label>
-              <q-item-label>{{ this.renownSum(wolf) }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section>
-              <q-item-label style="color: white" overline
-                >Loresheet
-              </q-item-label>
-              <q-item-label>{{
-                wolf.advantages.loresheets.advantages.length > 0
-                  ? wolf.advantages.loresheets.advantages[0]
-                  : "None"
-              }}</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label style="color: white" overline
+                  >Loresheet
+                </q-item-label>
+                <q-item-label>{{
+                  wolf.advantages.loresheets.advantages.length > 0
+                    ? wolf.advantages.loresheets.advantages[0].name
+                    : "None"
+                }}</q-item-label>
+              </q-item-section>
+            </q-item>
 
-          <q-separator />
-        </q-list>
+            <q-separator />
+          </q-list>
+        </div>
       </div>
-    </div>
-    <q-separator />
-    <q-card-actions>
-      <q-btn
-        style="margin: auto"
-        flat
-        color="white"
-        @click="
-          this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
-        "
-      >
-        View Full Character
-      </q-btn>
-    </q-card-actions>
-  </q-card>
+      <q-separator />
+      <q-card-actions>
+        <q-btn
+          style="margin: auto"
+          flat
+          color="white"
+          @click="
+            this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
+          "
+        >
+          View Full Character
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </div>
 </template>
 <style scoped>
+.card-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  padding: 10px;
+}
 .my-card {
   width: 100%;
   max-width: 450px;
   margin-right: 15px;
   color: white;
   background-color: #222831;
+  height: auto;
+}
+
+.banner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  font-size: 35px;
 }
 .backgroundDefault {
   background-color: #171a1e;
@@ -167,20 +196,16 @@
   color: white;
 }
 
-.banner {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 25px;
-  font-family: TMUnicorn;
-  text-shadow: 3px 2px 3px black;
-  font-size: 35px;
-}
-
 .attribute::first-letter {
   text-transform: capitalize;
 }
 
 @media (max-width: 800px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+    max-width: 375px;
+  }
   .my-card {
     margin-bottom: 15px;
   }

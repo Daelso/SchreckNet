@@ -16,7 +16,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>Werewolf: The Apocalypse (Beta)</q-item-label>
+      <q-item-label>Werewolf: The Apocalypse</q-item-label>
       <q-item-label caption style="color: white">5e</q-item-label>
     </q-item-section>
   </q-item>

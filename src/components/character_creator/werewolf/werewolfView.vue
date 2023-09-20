@@ -1029,17 +1029,15 @@ export default defineComponent({
         let giftPool = form.getTextField(`Gift_Name-1.${i}.1`);
         let giftCost = form.getTextField(`Gift_Name-1.${i}.2`);
         let giftNotes = form.getTextField(`Gift_Name-1.${i}.3`);
+        let giftPage = form.getTextField(`Gift_Name-1.${i}.4`);
 
         giftName.setText(
           gifts[i].gift_name ? gifts[i].gift_name : gifts[i].rite_name
         );
         giftPool.setText(gifts[i].pool);
         giftCost.setText(gifts[i].cost ? gifts[i].cost : "Free");
-        giftNotes.setText(
-          gifts[i].gift_description
-            ? gifts[i].gift_description
-            : gifts[i].rite_description
-        );
+        giftNotes.setText(gifts[i].short_desc);
+        giftPage.setText(gifts[i].page);
       }
 
       // Advantages/flaws

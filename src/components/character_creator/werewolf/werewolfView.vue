@@ -1043,7 +1043,7 @@ export default defineComponent({
           giftNotes.setText(gifts[i].rite_description);
         }
 
-        giftPage.setText(gifts[i].page);
+        giftPage.setText(gifts[i].page.toString());
       }
 
       // Advantages/flaws

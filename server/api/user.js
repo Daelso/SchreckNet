@@ -153,7 +153,6 @@ router.route("/token").post(async (req, res) => {
 router.route("/logout").post((req, res) => {
   res.clearCookie("refresh");
   res.clearCookie("access");
-  console.log("cookies cleared");
   res.sendStatus(204);
 });
 

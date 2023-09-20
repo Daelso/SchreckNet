@@ -1021,7 +1021,6 @@ export default defineComponent({
       });
 
       const gifts = this.justGifts;
-      console.log(gifts);
 
       // Gifts/Rites
       for (let i = 0; i < gifts.length; i++) {

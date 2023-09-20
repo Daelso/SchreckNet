@@ -272,8 +272,6 @@ export default defineComponent({
 
     let gift_total = ref(props.info.gift_count);
 
-    console.log(gift_total.value);
-
     if (window.location.href.includes("localhost")) {
       baseUrl = "http://localhost:5000";
     } else {
@@ -633,7 +631,6 @@ export default defineComponent({
     },
     renownTotal() {
       let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
-      console.log(this.tribe_renown);
       trueRenown.glory = this.tribe_renown.glory + this.purchased_renown.glory;
       trueRenown.honor = this.tribe_renown.honor + this.purchased_renown.honor;
       trueRenown.wisdom =

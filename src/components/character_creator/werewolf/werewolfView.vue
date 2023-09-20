@@ -1036,7 +1036,14 @@ export default defineComponent({
         );
         giftPool.setText(gifts[i].pool);
         giftCost.setText(gifts[i].cost ? gifts[i].cost : "Free");
-        giftNotes.setText(gifts[i].short_desc);
+        if (gifts[i].short_desc) {
+          giftNotes.setText(gifts[i].short_desc);
+        } else if (!gifts[i].short_desc && gifts[i].gift_description) {
+          giftNotes.setText(gifts[i].gift_description);
+        } else {
+          giftNotes.setText(gifts[i].rite_description);
+        }
+
         giftPage.setText(gifts[i].page);
       }
 

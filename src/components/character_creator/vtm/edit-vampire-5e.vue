@@ -9,7 +9,7 @@
   >
     <notFound />
   </div>
-  <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
+  <div class="q-gutter-md" style="max-width: 880px">
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
@@ -330,11 +330,12 @@
 
         <template v-slot:action>
           <q-btn
-            :disable="this.saveGuard()"
             flat
             label="Update Character"
             type="submit"
             color="white"
+            :disable="this.saveGuard()"
+            @click="onSubmit()"
           />
           <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">{{
             this.disableBlurb
@@ -464,7 +465,7 @@
         :edit="this.edit"
       />
     </div>
-  </q-form>
+  </div>
 </template>
 
 <style>
@@ -768,14 +769,12 @@ export default {
         delay: 50, // ms
       });
       const axios = require("axios");
-
       let baseUrl = "";
       if (window.location.href.includes("localhost")) {
         baseUrl = "http://localhost:5000";
       } else {
         baseUrl = window.location.origin;
       }
-
       let character = {
         name: this.charName,
         altBane: this.altBane,
@@ -819,7 +818,6 @@ export default {
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
       };
-
       axios
         .put(baseUrl + "/vampires/vampire/edit/" + this.kindred.id, character, {
           withCredentials: true,

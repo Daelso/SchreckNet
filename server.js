@@ -28,7 +28,10 @@ if (process.env.ENV !== "prod") {
   app.use(cors(corsOptions));
 } else {
   let corsOptions = {
-    origin: ["https://schrecknet-live.herokuapp.com/"],
+    origin: [
+      "https://schrecknet-live.herokuapp.com/",
+      "https://daelso.github.io/RavenStats",
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
   };
@@ -49,6 +52,8 @@ const searchRoutes = require("./server/api/search");
 app.use("/search", searchRoutes);
 const garouRoutes = require("./server/api/garou");
 app.use("/garou", garouRoutes);
+const ladRoutes = require("./server/api/showlads");
+app.use("/showlads", ladRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

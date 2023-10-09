@@ -22,7 +22,7 @@ const lib = require("./server/lib"); //This is all custom functions
 const allowedOriginsDev = ["http://localhost:8080"];
 const allowedOriginsProd = [
   "https://schrecknet-live.herokuapp.com",
-  "https://daelso.github.io/RavenStats",
+  "https://daelso.github.io",
 ];
 
 if (process.env.ENV !== "prod") {

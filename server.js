@@ -19,23 +19,28 @@ app.use(express.urlencoded({ extended: true }));
 const bodyParser = require("body-parser");
 const lib = require("./server/lib"); //This is all custom functions
 //for dev use only, very insecure in a prod env, this is just to prevent CORS errors. Origin is your vue clients port
+const allowedOriginsDev = ["http://localhost:8080"];
+const allowedOriginsProd = [
+  "https://schrecknet-live.herokuapp.com",
+  "https://daelso.github.io/RavenStats",
+];
+
 if (process.env.ENV !== "prod") {
-  let corsOptions = {
-    origin: ["http://localhost:8080"],
-    credentials: true,
-    optionsSuccessStatus: 200,
-  };
-  app.use(cors(corsOptions));
+  app.use(
+    cors({
+      origin: allowedOriginsDev,
+      credentials: true,
+      optionsSuccessStatus: 200,
+    })
+  );
 } else {
-  let corsOptions = {
-    origin: [
-      "https://schrecknet-live.herokuapp.com/",
-      "https://daelso.github.io/RavenStats",
-    ],
-    credentials: true,
-    optionsSuccessStatus: 200,
-  };
-  app.use(cors(corsOptions));
+  app.use(
+    cors({
+      origin: allowedOriginsProd,
+      credentials: true,
+      optionsSuccessStatus: 200,
+    })
+  );
 }
 
 //Above is library imports, below begin route imports

@@ -77,4 +77,38 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
   }
 });
 
+router.get(
+  "/find_static/:ckey/:character_name",
+  lib.getLimiter,
+  async (req, res) => {
+    try {
+      const [results, metadata] = await sequelize.sequelize.query(
+        `SELECT count(character_name) as played_count FROM showlads WHERE ckey = '${req.params.ckey}' AND character_name = '${req.params.character_name}'`
+      );
+
+      res.status(200).send(results);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
+router.get(
+  "/find_role_played/:ckey/:role",
+  lib.getLimiter,
+  async (req, res) => {
+    try {
+      const [results, metadata] = await sequelize.sequelize.query(
+        `SELECT count(role) as played_count FROM showlads WHERE ckey = '${req.params.ckey}' AND role = '${req.params.role}'`
+      );
+
+      res.status(200).send(results);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
 module.exports = router; //Exports our routes

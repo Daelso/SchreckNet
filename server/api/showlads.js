@@ -84,7 +84,7 @@ router.route("/ckey_fun_facts/:ckey").get(lib.getLimiter, async (req, res) => {
         `SELECT count(*) as role_count, role FROM showlads WHERE ckey = '${req.params.ckey}' AND role != 'Unknown' GROUP BY role ORDER BY COUNT(*) DESC LIMIT 1`
       ),
       sequelize.sequelize.query(
-        `SELECT COUNT(character_name) AS static_count, character_name FROM showlads WHERE ckey = '${req.params.ckey}' GROUP BY character_name ORDER BY static_count DESC LIMIT 1;`
+        `SELECT COUNT(character_name) AS static_count, SUBSTRING_INDEX(character_name, ' ', 1) AS first_name FROM showlads WHERE ckey = '${req.params.ckey}' GROUP BY first_name ORDER BY static_count DESC LIMIT 1;`
       ),
     ]);
 

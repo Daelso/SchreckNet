@@ -77,6 +77,25 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
   }
 });
 
+router.route("/ckey_fun_facts/:ckey").get(lib.getLimiter, async (req, res) => {
+  try {
+    const [result1, result2] = await Promise.all([
+      sequelize.sequelize.query(
+        `SELECT count(*) as role_count, role FROM showlads WHERE ckey = '${req.params.ckey}' GROUP BY role ORDER BY COUNT(*) DESC LIMIT 1`
+      ),
+      sequelize.sequelize.query(
+        `SELECT COUNT(character_name) AS static_count, character_name FROM showlads WHERE ckey = '${req.params.ckey}' GROUP BY character_name ORDER BY static_count DESC LIMIT 1;`
+      ),
+    ]);
+
+    //idk why tf these are getting duplicated some dumb node stuff
+    res.status(200).json([result1[0][0], result2[0][0]]);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.get(
   "/find_static/:ckey/:character_name",
   lib.getLimiter,
@@ -110,5 +129,18 @@ router.get(
     }
   }
 );
+
+router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
+  try {
+    const [results, metadata] = await sequelize.sequelize.query(
+      `SELECT SUM(premium_role = 1) as premium_role_count, SUM(nobility_role = 1) as nobility_role_count, SUM(migrant_role = 1) as migrant_role_count, SUM(os13_role = 1) as os13_role_count, SUM(combat_role = 1) as combat_role_count, SUM(support_role = 1) as support_role_count, SUM(church_role = 1) as church_role_count, SUM(lateparty_role = 1) as lateparty_role_count, SUM(bandit_role = 1) as bandit_role_count FROM showlads as showlad INNER JOIN lifeweb_roles lfwb ON showlad.role = lfwb.role WHERE ckey = '${req.params.ckey}'`
+    );
+
+    res.status(200).send(results);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 module.exports = router; //Exports our routes

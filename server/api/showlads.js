@@ -145,7 +145,7 @@ router.get(
 router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
   try {
     const [results, metadata] = await sequelize.sequelize.query(
-      `SELECT SUM(premium_role = 1) as premium_role_count, SUM(nobility_role = 1) as nobility_role_count, SUM(migrant_role = 1) as migrant_role_count, SUM(os13_role = 1) as os13_role_count, SUM(combat_role = 1) as combat_role_count, SUM(support_role = 1) as support_role_count, SUM(church_role = 1) as church_role_count, SUM(lateparty_role = 1) as lateparty_role_count, SUM(bandit_role = 1) as bandit_role_count FROM showlads as showlad INNER JOIN lifeweb_roles lfwb ON showlad.role = lfwb.role WHERE ckey = '${req.params.ckey}'`
+      `SELECT SUM(premium_role = 1) as premium_role_count, SUM(nobility_role = 1) as nobility_role_count, SUM(migrant_role = 1) as migrant_role_count, SUM(os13_role = 1) as os13_role_count, SUM(combat_role = 1) as combat_role_count, SUM(support_role = 1) as support_role_count, SUM(church_role = 1) as church_role_count, SUM(lateparty_role = 1) as lateparty_role_count, SUM(bandit_role = 1) as bandit_role_count, SUM(business_role = 1) as business_role_count, SUM(medical_role = 1) as medical_role_count, SUM(special_roles = 1) as special_role_count FROM showlads as showlad INNER JOIN lifeweb_roles lfwb ON showlad.role = lfwb.role WHERE ckey = '${req.params.ckey}'`
     );
 
     res.status(200).send(results);

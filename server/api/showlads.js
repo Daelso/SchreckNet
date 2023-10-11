@@ -12,6 +12,8 @@ app.use(express.urlencoded({ extended: true }));
 const Showlads = require("../models/lifeweb/Showlads.js");
 const lib = require("../lib");
 
+const { QueryTypes } = require("sequelize");
+
 //Route is base/showlads/
 
 router.get("/ckeys", lib.getLimiter, async (req, res) => {
@@ -118,9 +120,19 @@ router.get(
   lib.getLimiter,
   async (req, res) => {
     try {
-      const [results, metadata] = await sequelize.sequelize.query(
-        `SELECT count(role) as played_count FROM showlads WHERE ckey = '${req.params.ckey}' AND role = '${req.params.role}'`
-      );
+      const ckey = req.params.ckey;
+      const role = req.params.role;
+
+      const query = `
+        SELECT COUNT(role) as played_count
+        FROM showlads
+        WHERE ckey = :ckey AND role = :role
+      `;
+
+      const [results, metadata] = await sequelize.sequelize.query(query, {
+        replacements: { ckey: ckey, role: role },
+        type: QueryTypes.SELECT,
+      });
 
       res.status(200).send(results);
     } catch (error) {

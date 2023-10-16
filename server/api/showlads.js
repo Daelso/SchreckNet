@@ -73,7 +73,7 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
         "SELECT character_name, COUNT(*) AS played_count FROM showlads GROUP BY character_name ORDER BY COUNT(*) DESC LIMIT 1;"
       ),
       sequelize.sequelize.query(
-        "SELECT showlads.role, COUNT(*) AS count_played FROM lifeweb_roles AS roles INNER JOIN showlads ON showlads.role = roles.role WHERE roles.migrant_role = 1 GROUP BY showlads.role ORDER BY count_played DESC LIMIT 1; "
+        "SELECT showlads.role, COUNT(*) AS count_played FROM lifeweb_roles AS roles INNER JOIN showlads ON showlads.role = roles.role_name WHERE roles.role_category = 9 GROUP BY showlads.role ORDER BY count_played DESC LIMIT 1; "
       ),
     ]);
 
@@ -186,7 +186,7 @@ router.get(
 router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
   try {
     const [results, metadata] = await sequelize.sequelize.query(
-      `SELECT SUM(premium_role = 1) as premium_role_count, SUM(nobility_role = 1) as nobility_role_count, SUM(migrant_role = 1) as migrant_role_count, SUM(os13_role = 1) as os13_role_count, SUM(combat_role = 1) as combat_role_count, SUM(support_role = 1) as support_role_count, SUM(church_role = 1) as church_role_count, SUM(lateparty_role = 1) as lateparty_role_count, SUM(bandit_role = 1) as bandit_role_count, SUM(business_role = 1) as business_role_count, SUM(medical_role = 1) as medical_role_count, SUM(special_roles = 1) as special_role_count FROM showlads as showlad INNER JOIN lifeweb_roles lfwb ON showlad.role = lfwb.role WHERE ckey = '${req.params.ckey}'`
+      `SELECT COUNT(showlads.role) AS play_count, rc.category_name FROM role_categories rc LEFT JOIN lifeweb_roles lr ON rc.category_id = lr.role_category LEFT JOIN showlads ON lr.role_name = showlads.role AND showlads.ckey = '${req.params.ckey}' GROUP BY rc.category_name ORDER BY category_name asc;`
     );
 
     res.status(200).send(results);
@@ -229,5 +229,22 @@ router
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+
+router.get(
+  "/pie_chart_character/:character_name",
+  lib.getLimiter,
+  async (req, res) => {
+    try {
+      const [results, metadata] = await sequelize.sequelize.query(
+        `SELECT COUNT(showlads.role) AS play_count, rc.category_name FROM role_categories rc LEFT JOIN lifeweb_roles lr ON rc.category_id = lr.role_category LEFT JOIN showlads ON lr.role_name = showlads.role AND showlads.character_name = '${req.params.character_name}' GROUP BY rc.category_name ORDER BY category_name asc;`
+      );
+
+      res.status(200).send(results);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
 
 module.exports = router; //Exports our routes

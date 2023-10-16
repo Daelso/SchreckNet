@@ -209,4 +209,25 @@ router.route("/char_name").get(lib.getLimiter, async (req, res) => {
   }
 });
 
+router
+  .route("/character_name_fun_facts/:character_name")
+  .get(lib.getLimiter, async (req, res) => {
+    try {
+      const [result1, result2] = await Promise.all([
+        sequelize.sequelize.query(
+          `SELECT count(*) as role_count, role FROM showlads WHERE character_name = '${req.params.character_name}' AND role != 'Unknown' GROUP BY role ORDER BY COUNT(*) DESC LIMIT 1`
+        ),
+        sequelize.sequelize.query(
+          `SELECT COUNT(ckey) AS static_count, ckey FROM showlads WHERE character_name = '${req.params.character_name}' GROUP BY ckey ORDER BY static_count DESC LIMIT 1;`
+        ),
+      ]);
+
+      //idk why tf these are getting duplicated some dumb node stuff
+      res.status(200).json([result1[0][0], result2[0][0]]);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
 module.exports = router; //Exports our routes

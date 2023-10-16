@@ -30,6 +30,20 @@ router.get("/ckeys", lib.getLimiter, async (req, res) => {
   }
 });
 
+router.get("/characters", lib.getLimiter, async (req, res) => {
+  try {
+    const result = await sequelize.sequelize.query(
+      "SELECT DISTINCT character_name FROM showlads ORDER by character_name asc"
+    );
+    const characters = result[0].map((item) => item.character_name);
+
+    res.status(200).json(characters);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.route("/ckey/:ckey").get(lib.getLimiter, async (req, res) => {
   try {
     const ckey_stats = await Showlads.findAll({
@@ -59,7 +73,7 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
         "SELECT character_name, COUNT(*) AS played_count FROM showlads GROUP BY character_name ORDER BY COUNT(*) DESC LIMIT 1;"
       ),
       sequelize.sequelize.query(
-        "SELECT showlads.role, COUNT(*) AS count_played FROM lifeweb_roles AS roles INNER JOIN showlads ON showlads.role = roles.role WHERE roles.migrant_role = 1 GROUP BY showlads.role ORDER BY count_played DESC LIMIT 1; "
+        "SELECT showlads.role, COUNT(*) AS count_played FROM lifeweb_roles AS roles INNER JOIN showlads ON showlads.role = roles.role_name WHERE roles.role_category = 9 GROUP BY showlads.role ORDER BY count_played DESC LIMIT 1; "
       ),
     ]);
 
@@ -142,10 +156,37 @@ router.get(
   }
 );
 
+router.get(
+  "/find_role_played_by_char/:character_name/:role",
+  lib.getLimiter,
+  async (req, res) => {
+    try {
+      const character_name = req.params.character_name;
+      const role = req.params.role;
+
+      const query = `
+        SELECT COUNT(role) as played_count
+        FROM showlads
+        WHERE character_name = :character_name AND role = :role
+      `;
+
+      const [results, metadata] = await sequelize.sequelize.query(query, {
+        replacements: { character_name: character_name, role: role },
+        type: QueryTypes.SELECT,
+      });
+
+      res.status(200).send(results);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
 router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
   try {
     const [results, metadata] = await sequelize.sequelize.query(
-      `SELECT SUM(premium_role = 1) as premium_role_count, SUM(nobility_role = 1) as nobility_role_count, SUM(migrant_role = 1) as migrant_role_count, SUM(os13_role = 1) as os13_role_count, SUM(combat_role = 1) as combat_role_count, SUM(support_role = 1) as support_role_count, SUM(church_role = 1) as church_role_count, SUM(lateparty_role = 1) as lateparty_role_count, SUM(bandit_role = 1) as bandit_role_count, SUM(business_role = 1) as business_role_count, SUM(medical_role = 1) as medical_role_count, SUM(special_roles = 1) as special_role_count FROM showlads as showlad INNER JOIN lifeweb_roles lfwb ON showlad.role = lfwb.role WHERE ckey = '${req.params.ckey}'`
+      `SELECT COUNT(showlads.role) AS play_count, rc.category_name FROM role_categories rc LEFT JOIN lifeweb_roles lr ON rc.category_id = lr.role_category LEFT JOIN showlads ON lr.role_name = showlads.role AND showlads.ckey = '${req.params.ckey}' GROUP BY rc.category_name ORDER BY category_name asc;`
     );
 
     res.status(200).send(results);
@@ -154,5 +195,56 @@ router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+router.route("/char_name").get(lib.getLimiter, async (req, res) => {
+  try {
+    const char_stats = await Showlads.findAll({
+      where: {
+        character_name: decodeURIComponent(req.query.character_name.trim()),
+      },
+    });
+    res.send(char_stats);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+router
+  .route("/character_name_fun_facts/:character_name")
+  .get(lib.getLimiter, async (req, res) => {
+    try {
+      const [result1, result2] = await Promise.all([
+        sequelize.sequelize.query(
+          `SELECT count(*) as role_count, role FROM showlads WHERE character_name = '${req.params.character_name}' AND role != 'Unknown' GROUP BY role ORDER BY COUNT(*) DESC LIMIT 1`
+        ),
+        sequelize.sequelize.query(
+          `SELECT COUNT(ckey) AS static_count, ckey FROM showlads WHERE character_name = '${req.params.character_name}' GROUP BY ckey ORDER BY static_count DESC LIMIT 1;`
+        ),
+      ]);
+
+      //idk why tf these are getting duplicated some dumb node stuff
+      res.status(200).json([result1[0][0], result2[0][0]]);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+router.get(
+  "/pie_chart_character/:character_name",
+  lib.getLimiter,
+  async (req, res) => {
+    try {
+      const [results, metadata] = await sequelize.sequelize.query(
+        `SELECT COUNT(showlads.role) AS play_count, rc.category_name FROM role_categories rc LEFT JOIN lifeweb_roles lr ON rc.category_id = lr.role_category LEFT JOIN showlads ON lr.role_name = showlads.role AND showlads.character_name = '${req.params.character_name}' GROUP BY rc.category_name ORDER BY category_name asc;`
+      );
+
+      res.status(200).send(results);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
 
 module.exports = router; //Exports our routes

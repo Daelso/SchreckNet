@@ -30,6 +30,20 @@ router.get("/ckeys", lib.getLimiter, async (req, res) => {
   }
 });
 
+router.get("/characters", lib.getLimiter, async (req, res) => {
+  try {
+    const result = await sequelize.sequelize.query(
+      "SELECT DISTINCT character_name FROM showlads ORDER by character_name asc"
+    );
+    const characters = result[0].map((item) => item.character_name);
+
+    res.status(200).json(characters);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.route("/ckey/:ckey").get(lib.getLimiter, async (req, res) => {
   try {
     const ckey_stats = await Showlads.findAll({
@@ -142,6 +156,33 @@ router.get(
   }
 );
 
+router.get(
+  "/find_role_played_by_char/:character_name/:role",
+  lib.getLimiter,
+  async (req, res) => {
+    try {
+      const character_name = req.params.character_name;
+      const role = req.params.role;
+
+      const query = `
+        SELECT COUNT(role) as played_count
+        FROM showlads
+        WHERE character_name = :character_name AND role = :role
+      `;
+
+      const [results, metadata] = await sequelize.sequelize.query(query, {
+        replacements: { character_name: character_name, role: role },
+        type: QueryTypes.SELECT,
+      });
+
+      res.status(200).send(results);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
+
 router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
   try {
     const [results, metadata] = await sequelize.sequelize.query(
@@ -152,6 +193,19 @@ router.get("/pie_chart/:ckey", lib.getLimiter, async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.route("/char_name").get(lib.getLimiter, async (req, res) => {
+  try {
+    const char_stats = await Showlads.findAll({
+      where: {
+        character_name: decodeURIComponent(req.query.character_name.trim()),
+      },
+    });
+    res.send(char_stats);
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 

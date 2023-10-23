@@ -50,6 +50,12 @@
         "description": "This rituals allows the vampire to protect their herd, from poachers."
       },
       {
+        "name": "Koldunic Sorcery",
+        "prerequisite": "Koldunic Sorcery",
+        "clan_prerequisite": "Tzimisce",
+        "description": "A Tzimisce esoteric art that forever links the Dragon to the very earth itself. Unlocks a path of elemental rituals."
+      },
+      {
         "name": "Letter Ward",
         "description": "This ritual is used by Tremere, when they want to make sure the missives they send are protected."
       },
@@ -93,7 +99,7 @@
       },
       {
         "name": "Elemental Grasp",
-        "prerequisite": "Koldunic",
+        "prerequisite": "Koldunic Sorcery",
         "description": "The ritual slows or otherwise inhibits the target via natural methods such as sticky mud or a rockslide."
       },
       {
@@ -109,8 +115,20 @@
         "description": "Allows the caster to perceive the past whereabouts of an individual through a glowing trail."
       },
       {
+        "name": "Le Sang de l'Amour",
+        "description": "A psychic bond between two lovers that allows them to always approximate each others location with a bit of concentration."
+      },
+      {
+        "name": "Silentia Mortis",
+        "description": "Create a 6-meter radius of magical silence around the holder of an enchanted talisman. A critical win increases the range to 12-meters."
+      },
+      {
         "name": "Soporific Touch",
         "description": "The caster turns a dose of their own vitae into a narcotic, 'truth-serum' like substance that leaves a victim more suggestible and vulnerable to mind-affecting Disciplines like Presence and Dominate."
+      },
+      {
+        "name": "Tiamat Glistens",
+        "description": "Prime a place of power for additional rituals. Each success empowering the location for another night."
       },
       {
         "name": "Truth of Blood",
@@ -119,6 +137,10 @@
       {
         "name": "The Shroud of Silence",
         "description": "Used by the Banu Haqim, this ritual creates a shroud of impenetrable silence centered in a room."
+      },
+      {
+        "name": "Viscera Garden",
+        "description": "Disintigrates a buried body into smoke, any plants grown on that site are especially hardy and ingestible by kindred (Slaking no hunger)."
       },
       {
         "name": "Ward against Spirits",
@@ -139,6 +161,10 @@
         "description": "This ritual creates an elixir that holds a human sacrifice's Resonance or Dyscrasia (if any), but also makes any vampire who drinks it, more vulnerable to diablerie."
       },
       {
+        "name": "Blood Sigil",
+        "description": "Allows you to store important records or documents in the skin of another Kindred."
+      },
+      {
         "name": "Communal Vigor",
         "description": "Based on sanguinary properties similar to the Vaulderie, this Ritual allows a Pack Priest to share their Blood Potency with their pack, while strengthening their own ability to keep those packmates in line."
       },
@@ -149,6 +175,11 @@
       {
         "name": "Deflection of Wooden Doom",
         "description": "Causes a stake about to pierce the heart to shatter."
+      },
+      {
+        "name": "Elemental Shelter",
+        "prerequisite": "Koldunic Sorcery",
+        "description": "Allows the ritualist to meld into the elements becoming immune to physical attack, sunlight or fire. The Koldun remains aware of their surroundings."
       },
       {
         "name": "Essence of Air",
@@ -186,6 +217,10 @@
         "name": "Illusion of Peaceful Death",
         "description": "Restores wounds on a corpse (at most half-unexsanguinated) to conceal evidence of an unnatural death."
       },
+      {
+        "name": "Nepanthe",
+        "description": "Ritualistically cleanse the soul of a Kindred, removing a stain on success and up to two on a critical win. A fail makes the stain carry over to the next session."
+      },
 
       {
         "name": "One with the Blade",
@@ -196,12 +231,36 @@
         "description": "Summons a rat familiar out of Kindred vitae."
       },
       {
+        "name": "Seeing with the Sky's Eyes",
+        "description": "Enter a trance like state, on success, ask your storyteller ONE question about a target's location and surroundings for every success."
+      },
+      {
+        "name": "Seeking Tiamat",
+        "description": "On success, your arm will turn into a locator for the nearest place of power."
+      },
+      {
         "name": "Sleep of Judas",
         "description": "Creates a drug that can incapacitate a kindred."
       },
       {
+        "name": "Soul of the Hemonculus",
+        "description": "This enchantment forms a shriveled, impaired, quarter-weight duplicate of its caster's mortal self (pp. 133-134). This squat, restricted, and often bitter creature must obey any command by its maker"
+      },
+      {
+        "name": "Stone of the True Form",
+        "description": "Create an enchanted stone, when thrown and striking an object or person, make a roll to dispel any illusion or reveal the beings true form."
+      },
+      {
         "name": "The Unseen Change",
         "description": "Forces a Garou into their Lupus form."
+      },
+      {
+        "name": "Trespass",
+        "description": "Appear as a decorative piece of the surroundings to mortals. Also gain the ability to flow through small crevices or passage in your desired structure."
+      },
+      {
+        "name": "Viral Haruspex",
+        "description": "Create and bind a virus to your will. The virus will aggregate all sensory data or factual recollection of mortals infected with the virus within 20km."
       },
       {
         "name": "Ward against Lupine",
@@ -214,8 +273,16 @@
     ],
     [
       {
+        "name": "Compel the Inanimate",
+        "description": "Issue a SIMPLE order that will be followed by an inanimate object (Fall over, erase data, crash)."
+      },
+      {
         "name": "Defense of the Sacred Haven",
         "description": "Wards a haven against the sun itself."
+      },
+      {
+        "name": "Egregore Consultation",
+        "description": "Bind a virus to your will, harnessing the collective knowledge of all the infected to enhance a skill."
       },
       {
         "name": "Eyes of the Nighthawk",
@@ -242,12 +309,20 @@
         "description": "Binds the victim in invisible chains, binding them to the spot for the duration of the ritual."
       },
       {
+        "name": "Land's Sustenance",
+        "description": "Turns a place of power into a hungering beast. The land itself causes accidents, worsens injuries and imbibes the blood of the innocent, mystically feeding the ritualist."
+      },
+      {
         "name": "Protean Curse",
         "description": "Transforms the target into a bat."
       },
       {
         "name": "Rending the Sweet Earth",
         "description": "Reveals the presence of a Protean Earth Meld user."
+      },
+      {
+        "name": "Riding the Earth's Veins",
+        "description": "A last-ditch escape hatch. The caster turns into red smoke, and appears again twenty minutes later at a random location of the ST's choosing."
       },
       {
         "name": "Ward against Kindred",
@@ -276,8 +351,17 @@
         "description": "Allows to caster to drain blood from creatures within a nearby area."
       },
       {
+        "name": "Elemental Attack",
+        "prerequisite": "Koldunic Sorcery",
+        "description": "The elements themselves will strike at your desired target. A lighting bolt, flash flood or falling tree are only some of your options."
+      },
+      {
         "name": "Escape to True Sanctuary",
         "description": "The caster creates two circles that act as a one-way portal from one point to another."
+      },
+      {
+        "name": "Fisher King",
+        "description": "Bond with the land itself. Call upon its knowledge with a test and each success will reveal a truthful answer from your storyteller."
       },
       {
         "name": "Heart of Stone",

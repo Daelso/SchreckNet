@@ -271,10 +271,22 @@
       "threat": 2,
       "resonance": "Varies",
       "skills": [
-        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
         [
+          "Body Paint",
+          "Checkout Time",
+          "Elevate",
+          "Food Stain",
+          "Far Reach",
+          "Gaoler's Bane",
+          "Haze",
+          "Portable Shade",
+          "Speak From the Heart"
+        ],
+        [
+          "Advanced Torpor",
+          "Blacklight Surprise",
           "Blood of Mandagloire",
-
+          "Blue State",
           "Counterfeit - Level 1",
           "Envelop",
           "Mirror of Trust",
@@ -285,19 +297,30 @@
           "Concoct Ashe",
           "Counterfeit - Level 2",
           "Defractionate",
+          "Diamond Skin",
           "Fang-Stinger",
+          "Fireskin",
           "Freezer Fluid",
+          "Hospital Chains",
+          "Martian Purity",
+          "Mask Off",
           "On-Demand Sunburn",
           "Profane Heiros Gamos",
-          "Stay the Falling Sand"
+          "Stay the Falling Sand",
+          "TLC",
+          "Troll the Pious"
         ],
         [
           "Airborne Momentum",
+          "Copycat",
           "Counterfeit - Level 3",
           "Discipline Channeling",
-          "Hollow Leg"
+          "Half-Living Conductor",
+          "Hollow Leg",
+          "Red State",
+          "Vitae MSG"
         ],
-        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+        ["Awaken the Sleeper", "Counterfeit - Level 4", "Saturn's Flux"]
       ]
     },
     "Calcinatio": {
@@ -305,10 +328,22 @@
       "threat": 2,
       "resonance": "Varies",
       "skills": [
-        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
         [
+          "Body Paint",
+          "Checkout Time",
+          "Elevate",
+          "Food Stain",
+          "Far Reach",
+          "Gaoler's Bane",
+          "Haze",
+          "Portable Shade",
+          "Speak From the Heart"
+        ],
+        [
+          "Advanced Torpor",
+          "Blacklight Surprise",
           "Blood of Mandagloire",
-
+          "Blue State",
           "Counterfeit - Level 1",
           "Envelop",
           "Mirror of Trust",
@@ -319,19 +354,30 @@
           "Concoct Ashe",
           "Counterfeit - Level 2",
           "Defractionate",
+          "Diamond Skin",
           "Fang-Stinger",
+          "Fireskin",
           "Freezer Fluid",
+          "Hospital Chains",
+          "Martian Purity",
+          "Mask Off",
           "On-Demand Sunburn",
           "Profane Heiros Gamos",
-          "Stay the Falling Sand"
+          "Stay the Falling Sand",
+          "TLC",
+          "Troll the Pious"
         ],
         [
           "Airborne Momentum",
+          "Copycat",
           "Counterfeit - Level 3",
           "Discipline Channeling",
-          "Hollow Leg"
+          "Half-Living Conductor",
+          "Hollow Leg",
+          "Red State",
+          "Vitae MSG"
         ],
-        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+        ["Awaken the Sleeper", "Counterfeit - Level 4", "Saturn's Flux"]
       ]
     },
     "Fixatio": {
@@ -339,10 +385,22 @@
       "threat": 2,
       "resonance": "Varies",
       "skills": [
-        ["Far Reach", "Gaoler's Bane", "Haze", "Portable Shade"],
         [
+          "Body Paint",
+          "Checkout Time",
+          "Elevate",
+          "Food Stain",
+          "Far Reach",
+          "Gaoler's Bane",
+          "Haze",
+          "Portable Shade",
+          "Speak From the Heart"
+        ],
+        [
+          "Advanced Torpor",
+          "Blacklight Surprise",
           "Blood of Mandagloire",
-
+          "Blue State",
           "Counterfeit - Level 1",
           "Envelop",
           "Mirror of Trust",
@@ -353,19 +411,30 @@
           "Concoct Ashe",
           "Counterfeit - Level 2",
           "Defractionate",
+          "Diamond Skin",
           "Fang-Stinger",
+          "Fireskin",
           "Freezer Fluid",
+          "Hospital Chains",
+          "Martian Purity",
+          "Mask Off",
           "On-Demand Sunburn",
           "Profane Heiros Gamos",
-          "Stay the Falling Sand"
+          "Stay the Falling Sand",
+          "TLC",
+          "Troll the Pious"
         ],
         [
           "Airborne Momentum",
+          "Copycat",
           "Counterfeit - Level 3",
           "Discipline Channeling",
-          "Hollow Leg"
+          "Half-Living Conductor",
+          "Hollow Leg",
+          "Red State",
+          "Vitae MSG"
         ],
-        ["Awaken the Sleeper", "Counterfeit - Level 4"]
+        ["Awaken the Sleeper", "Counterfeit - Level 4", "Saturn's Flux"]
       ]
     }
   }

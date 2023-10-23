@@ -313,6 +313,24 @@
                   label-color="primary"
                   popup-content-style="background-color:#222831; color:white"
                 />
+                <q-select
+                  v-if="this.thinDisc === 'Blood Sorcery'"
+                  v-model="ritualChoice"
+                  label="Which ritual would you like?"
+                  :options="ritualOptions(1)"
+                  bg-color="grey-3"
+                  map-options
+                  option-label="name"
+                  filled
+                  style="width: 100%"
+                  class="select q-my-sm"
+                  color="secondary"
+                  label-color="primary"
+                  popup-content-style="background-color:#222831; color:white"
+                />
+                <div class="q-pa-md">
+                  {{ this.ritualChoice.description }}
+                </div>
                 <!-- Clan Bane Flaw -->
                 <q-select
                   v-if="this.thinBloodMerits.name === 'Thin-Blood: Clan Curse'"
@@ -330,6 +348,7 @@
                 <q-separator />
                 <q-btn
                   v-if="this.thinBloodMerits"
+                  :disable="disableMeritSelect()"
                   class="q-mt-sm"
                   style="background-color: #222831"
                   :label="
@@ -900,6 +919,20 @@ export default defineComponent({
     };
   },
   methods: {
+    disableMeritSelect() {
+      if (this.thinBloodMerits.name === "Thin-Blood: Discipline Affinity") {
+        if (
+          !this.thinDisc ||
+          !this.thinDiscPower ||
+          (this.thinDisc === "Blood Sorcery" && !this.ritualChoice)
+        ) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+
     clanSelected() {
       this.advantagesOrFlaws = "";
       this.thinBloodMerits = "";
@@ -1411,6 +1444,7 @@ export default defineComponent({
       mergedOptions = mergedOptions.filter(
         (ritual) => !ritual.hasOwnProperty("prerequisite")
       );
+
       return mergedOptions;
     },
 
@@ -1835,6 +1869,15 @@ export default defineComponent({
             if (
               (this.finalDisciplineObj.Auspex === undefined ||
                 this.finalDisciplineObj.Auspex < 1) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Koldunic Sorcery":
+            if (
+              this.finalDisciplineObj["Blood Sorcery"] === undefined ||
+              this.finalDisciplineObj["Blood Sorcery"] < 1 ||
+              this.clan !== "Tzimisce"
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -2840,6 +2883,13 @@ export default defineComponent({
             discipline: this.thinDisc,
             skill: this.thinDiscPower,
           });
+          if (this.thinDisc === "Blood Sorcery" && this.ritualChoice) {
+            this.skillsSelected.push({
+              discipline: this.thinDisc,
+              skill: "Ritual: " + this.ritualChoice.name,
+            });
+          }
+
           this.clearThinFields();
           break;
         case "Thin-Blood: Lifelike":

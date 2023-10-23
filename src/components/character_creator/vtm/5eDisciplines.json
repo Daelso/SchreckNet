@@ -43,8 +43,9 @@
       "resonance": "Sanguine",
       "skills": [
         [
-          "Corrosive Vitae",
           "A Taste For Blood",
+          "Corrosive Vitae",
+          "Koldunic Sorcery",
           "Shape the Sanguine Sacrament"
         ],
         ["Extinguish Vitae", "Scour Secrets"],

@@ -561,7 +561,7 @@ export default {
   },
   data() {
     return {
-      debug: true,
+      debug: false,
       saving: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },

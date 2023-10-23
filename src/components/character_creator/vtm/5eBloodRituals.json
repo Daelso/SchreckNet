@@ -38,10 +38,6 @@
         "description": "This Ritual allows the caster to briefly douse their natural vampiric fear of fire."
       },
       {
-        "name": "Seal the Brand",
-        "description": "Allows the user to mark their own flesh with things like tattoos permanently."
-      },
-      {
         "name": "Enrich the Blood",
         "description": "This ritual increases the potency of human blood, allowing Kindred to slake their Hunger from a smaller quantity of blood."
       },
@@ -50,14 +46,12 @@
         "description": "This rituals allows the vampire to protect their herd, from poachers."
       },
       {
-        "name": "Koldunic Sorcery",
-        "prerequisite": "Koldunic Sorcery",
-        "clan_prerequisite": "Tzimisce",
-        "description": "A Tzimisce esoteric art that forever links the Dragon to the very earth itself. Unlocks a path of elemental rituals."
-      },
-      {
         "name": "Letter Ward",
         "description": "This ritual is used by Tremere, when they want to make sure the missives they send are protected."
+      },
+      {
+        "name": "Seal the Brand",
+        "description": "Allows the user to mark their own flesh with things like tattoos permanently."
       },
       {
         "name": "Unseen Underground",

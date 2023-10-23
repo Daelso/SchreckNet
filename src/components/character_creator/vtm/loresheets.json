@@ -873,7 +873,7 @@
     {
       "Name": "Vienna Zero",
       "Type": "Other",
-      "Prerequisite": ["Banu Haqim", "Tremere"],
+      "Prerequisite": ["Banu Haqim", "Tremere", "Tzimisce"],
       "Description": "Through some means, you have access to the destroyed Vienna Chantry and its recovery efforts. It's knowledge is invaluable.",
       "Reference": "Blood Sigils 180"
     },

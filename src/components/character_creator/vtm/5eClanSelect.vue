@@ -559,6 +559,34 @@
                   <q-separator />
                 </div>
               </div>
+              <div
+                v-if="
+                  this.finalDisciplineObj.hasOwnProperty('Blood Sorcery') &&
+                  this.finalDisciplineObj['Blood Sorcery'] > 0
+                "
+              >
+                Choose: 1
+                <q-select
+                  v-model="ritualChoice"
+                  label="Select a Blood Ritual"
+                  :options="
+                    ritualOptions(this.finalDisciplineObj['Blood Sorcery'])
+                  "
+                  bg-color="grey-3"
+                  filled
+                  style="margin-bottom: 20px; width: 100%"
+                  class="select"
+                  map-options
+                  label-color="primary"
+                  option-label="name"
+                  color="secondary"
+                  @update:model-value="ritualPicked(ritualChoice)"
+                  popup-content-style="background-color:#222831; color:white"
+                />
+                <div class="q-pa-md">
+                  Ritual Description: {{ ritualChoice.description }}
+                </div>
+              </div>
               <q-list bordered separator>
                 <q-item
                   v-for="(skill, key) in skillsSelected"
@@ -639,6 +667,7 @@ import allPredatorTypes from "../vtm/predatorTypes.json";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 import meritJSON from "../vtm/5eMerits.json";
 import clanBanes from "../vtm/5eClanBanes.json";
+import bloodRituals from "../vtm/5eBloodRituals.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -750,6 +779,7 @@ export default defineComponent({
       formula: ref(""),
       advantages,
       allPredatorTypes,
+      bloodRituals,
       clan,
       clanBane,
       clanBanes,
@@ -866,6 +896,7 @@ export default defineComponent({
       bonusDisc: "",
       bonusSpecs: "",
       caitiffThird: "",
+      ritualChoice: "",
     };
   },
   methods: {
@@ -1368,6 +1399,21 @@ export default defineComponent({
       return `(V5 ${bookName}, p.${pageNum})`;
     },
 
+    ritualOptions(points) {
+      let mergedOptions = [];
+
+      for (let i = 0; i < points; i++) {
+        this.bloodRituals.Rituals[i].forEach((x) => {
+          mergedOptions.push(x);
+        });
+      }
+
+      mergedOptions = mergedOptions.filter(
+        (ritual) => !ritual.hasOwnProperty("prerequisite")
+      );
+      return mergedOptions;
+    },
+
     disciplineOptions(data, points) {
       let mergedOptions = [];
       for (let i = 0; i < points; i++) {
@@ -1798,8 +1844,62 @@ export default defineComponent({
       return mergedOptions;
     },
 
+    ritualPicked(skill) {
+      let allowedLen = 0;
+
+      //Adds extra slot for the ritual
+      if (
+        this.finalDisciplineObj.hasOwnProperty("Blood Sorcery") &&
+        this.finalDisciplineObj["Blood Sorcery"] > 0
+      ) {
+        allowedLen++;
+      }
+      for (const property in this.finalDisciplineObj) {
+        if (isNaN(this.finalDisciplineObj[property])) {
+          continue;
+        }
+        allowedLen += this.finalDisciplineObj[property];
+      }
+
+      if (this.skillsSelected.length === allowedLen) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message:
+            "You have selected all possible skills, please remove one to pick again.",
+        });
+        return;
+      }
+
+      if (
+        this.skillsSelected.filter((e) => e.skill === "Ritual: " + skill.name)
+          .length > 0
+      ) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You have already selected this ritual!",
+        });
+        return;
+      }
+
+      let newSkill = {
+        discipline: "Blood Sorcery",
+        skill: "Ritual: " + skill.name,
+      };
+      this.skillsSelected.push(newSkill);
+    },
+
     skillPicked(skill, discipline) {
       let allowedLen = 0;
+
+      //Adds extra slot for the ritual
+      if (
+        this.finalDisciplineObj.hasOwnProperty("Blood Sorcery") &&
+        this.finalDisciplineObj["Blood Sorcery"] > 0
+      ) {
+        allowedLen++;
+      }
       for (const property in this.finalDisciplineObj) {
         if (isNaN(this.finalDisciplineObj[property])) {
           continue;

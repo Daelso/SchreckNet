@@ -52,7 +52,7 @@
             <q-select
               v-if="this.ritualLevel"
               v-model="ritualInput"
-              :options="bloodRitualOptions"
+              :options="ritualOptions"
               label="Which ritual would you like to purchase?"
               label-color="primary"
               bg-color="grey-3"
@@ -356,7 +356,15 @@ export default defineComponent({
           this.cost = this.ceremonyLevel * 3;
           break;
         case "Out of Clan Discipline":
-          this.cost = (this.disciplines[this.clanDiscInput] + 1) * 7;
+          let disciplineLevel = 0;
+
+          if (typeof this.disciplines[this.clanDiscInput] !== "undefined") {
+            disciplineLevel = this.disciplines[this.clanDiscInput];
+          } else {
+            disciplineLevel = 0;
+          }
+
+          this.cost = (disciplineLevel + 1) * 7;
           break;
         case "Skills":
           if (this.skills[this.skillCategory.toLowerCase()] === 0) {
@@ -541,7 +549,12 @@ export default defineComponent({
             return;
           }
 
-          this.disciplines[this.clanDiscInput]++;
+          if (typeof this.disciplines[this.clanDiscInput] !== "undefined") {
+            this.disciplines[this.clanDiscInput]++;
+          } else {
+            this.disciplines[this.clanDiscInput] = 1;
+          }
+
           this.disciplineSkillsObj.push({
             discipline: this.clanDiscInput,
             skill: this.disciplinePower,
@@ -649,12 +662,23 @@ export default defineComponent({
           arr.push(this.disciplines.Caitiff);
           return arr;
         }
-        arr = Object.keys(this.disciplines).filter(
+        arr = Object.keys(this.disciplineSkills.Disciplines).filter(
           (discipline) =>
             !this.clanDisciplines.clans[this.clan].disciplines.includes(
               discipline
             )
         );
+
+        if (this.clan !== "Thin-Blood") {
+          arr = arr.filter(
+            (discipline) =>
+              discipline !== "Thin-blood Alchemy" &&
+              discipline !== "Fixatio" &&
+              discipline !== "Athanor Corporis" &&
+              discipline !== "Calcinatio"
+          );
+        }
+
         return arr;
       }
       if (this.clan !== "Caitiff") {
@@ -675,7 +699,15 @@ export default defineComponent({
     },
     disciplineOptions() {
       let mergedOptions = [];
-      for (let i = 0; i < this.disciplines[this.clanDiscInput] + 1; i++) {
+      let disciplineLevel = 0;
+
+      if (typeof this.disciplines[this.clanDiscInput] !== "undefined") {
+        disciplineLevel = this.disciplines[this.clanDiscInput];
+      } else {
+        disciplineLevel = 0;
+      }
+
+      for (let i = 0; i < disciplineLevel + 1; i++) {
         this.disciplineSkills.Disciplines[this.clanDiscInput].skills[i].forEach(
           (x) => {
             mergedOptions.push(x);
@@ -1108,6 +1140,15 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Koldunic Sorcery":
+            if (
+              this.clan !== "Tzimisce" ||
+              (this.disciplines["Blood Sorcery"] !== undefined &&
+                this.disciplines["Blood Sorcery"] > 0)
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
         }
       }
 
@@ -1138,10 +1179,35 @@ export default defineComponent({
       return arr;
     },
 
-    bloodRitualOptions() {
-      let arr = this.bloodRituals.Rituals[this.ritualLevel - 1];
+    ritualOptions() {
+      let mergedOptions = [];
 
-      return arr;
+      this.bloodRituals.Rituals[this.ritualLevel - 1].forEach((x) => {
+        mergedOptions.push(x);
+      });
+
+      if (this.clan !== "Tzimisce") {
+        mergedOptions = mergedOptions.filter(
+          (ritual) => !ritual.hasOwnProperty("prerequisite")
+        );
+      } else {
+        let isKoldun = false;
+
+        for (const discipline of this.disciplineSkillsObj) {
+          if (discipline.skill === "Koldunic Sorcery") {
+            isKoldun = true;
+            break;
+          }
+        }
+
+        if (!isKoldun) {
+          mergedOptions = mergedOptions.filter(
+            (ritual) => !ritual.hasOwnProperty("prerequisite")
+          );
+        }
+      }
+
+      return mergedOptions;
     },
 
     ceremonyLevelOptions() {

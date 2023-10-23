@@ -2,6 +2,10 @@
   "Rituals": [
     [
       {
+        "name": "Astromancy",
+        "description": "A ritual to reveal the targets greatest aptitudes, ambitions, desires and convictions."
+      },
+      {
         "name": "Blood Walk",
         "description": "An advanced version of A Taste for Blood, the caster is able to learn even more information about another Kindred from their vitae."
       },
@@ -12,6 +16,10 @@
       {
         "name": "Beelzebeatit",
         "description": "This ritual causes lower-order living creatures to find the ritual area repellent."
+      },
+      {
+        "name": "Bind the Accusing Tongue",
+        "description": "Prevents a target from speaking, writing or otherwise communicating anything negative against the caster without a check."
       },
       {
         "name": "Clinging of the Insect",
@@ -74,6 +82,19 @@
       {
         "name": "Communicate with Kindred Sire",
         "description": "Creates a telepathic link between a childe and their sire."
+      },
+      {
+        "name": "Craftmaster",
+        "description": "Creates a concoction formed from the blood of a skilled craftsman. The imbiber temporarily gains his or her skill."
+      },
+      {
+        "name": "Depths of Nightmare",
+        "description": "The target is plagued by days or nights filled with nightmares equal to successes."
+      },
+      {
+        "name": "Elemental Grasp",
+        "prerequisite": "Koldunic",
+        "description": "The ritual slows or otherwise inhibits the target via natural methods such as sticky mud or a rockslide."
       },
       {
         "name": "Enhance Dyscrasia",

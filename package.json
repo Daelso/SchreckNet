@@ -18,7 +18,6 @@
     "@pdf-lib/fontkit": "^1.1.1",
     "@quasar/app-webpack": "^3.7.1",
     "@quasar/extras": "^1.0.0",
-    "@vue/devtools": "^6.5.1",
     "axios": "^0.21.1",
     "bcrypt": "^5.1.0",
     "compression": "^1.7.4",
@@ -37,7 +36,6 @@
     "pdf-lib": "^1.17.1",
     "quasar": "^2.6.0",
     "raw-loader": "^4.0.2",
-    "semver": "^7.5.4",
     "sequelize": "^6.29.0",
     "serve-static": "^1.15.0",
     "unidecode": "^0.1.8",
@@ -66,7 +64,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">= 18.x",
+    "node": ">= 12.22.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }

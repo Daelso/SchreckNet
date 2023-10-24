@@ -67,7 +67,7 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
         "SELECT ckey, COUNT(*) AS role_count FROM showlads WHERE role = 'Bum' GROUP BY ckey ORDER BY role_count DESC LIMIT 1;"
       ),
       sequelize.sequelize.query(
-        "SELECT role, COUNT(*) AS role_count FROM showlads GROUP BY role HAVING role_count > 40 ORDER BY role_count ASC LIMIT 1;"
+        "SELECT role, COUNT(*) AS role_count FROM showlads GROUP BY role HAVING role_count > 20 ORDER BY role_count ASC LIMIT 1;"
       ),
       sequelize.sequelize.query(
         "SELECT character_name, COUNT(*) AS played_count FROM showlads GROUP BY character_name ORDER BY COUNT(*) DESC LIMIT 1;"

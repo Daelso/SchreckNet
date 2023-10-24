@@ -234,6 +234,13 @@
       "Reference": "CbN 271"
     },
     {
+      "Name": "Descendant of Al-Ashrad",
+      "Type": "Bloodline",
+      "Prerequisite": ["Banu Haqim"],
+      "Description": "A descendendant of the legendayr ur-Shulgi. Limitless potential for Blood Sorcery.",
+      "Reference": "Blood Sigils 177"
+    },
+    {
       "Name": "Descendant of de Camden",
       "Type": "Bloodline",
       "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
@@ -773,6 +780,13 @@
       "Reference": "Download"
     },
     {
+      "Name": "Student of Kirin Taunk",
+      "Type": "Other",
+      "Prerequisite": ["Thin-Blood"],
+      "Description": "You're associated with the legendary alchemist Kirin Taunk. Hopefully you learned a thing or two.",
+      "Reference": "Blood Sigils 178"
+    },
+    {
       "Name": "Talley",
       "Type": "NPC",
       "Prerequisite": null,
@@ -843,11 +857,25 @@
       "Reference": "V5 383"
     },
     {
+      "Name": "Veins of the Earth",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You are especially tuned into the earth's ley lines setting sorcery up for success",
+      "Reference": "Blood Sigils 179"
+    },
+    {
       "Name": "Victoria Ash",
       "Type": "NPC",
       "Prerequisite": null,
       "Description": "Prestigious Toreador diplomat of the Camarilla",
       "Reference": "Cam 190"
+    },
+    {
+      "Name": "Vienna Zero",
+      "Type": "Other",
+      "Prerequisite": ["Banu Haqim", "Tremere", "Tzimisce"],
+      "Description": "Through some means, you have access to the destroyed Vienna Chantry and its recovery efforts. It's knowledge is invaluable.",
+      "Reference": "Blood Sigils 180"
     },
     {
       "Name": "Wauneka",

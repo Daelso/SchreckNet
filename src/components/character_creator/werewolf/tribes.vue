@@ -89,14 +89,18 @@
                       option-label="renown_name"
                       option-value="renown_id"
                       popup-content-style="background-color:#222831; color:white"
-                      @update:model-value="applyBonusRenown()"
                     />
                   </div>
                 </div>
                 <q-stepper-navigation>
                   <q-btn
                     :disable="!tribe || !bonus_renown"
-                    @click="step = 2"
+                    @click="
+                      () => {
+                        applyBonusRenown();
+                        this.step = 2;
+                      }
+                    "
                     color="primary"
                     label="Continue"
                   >

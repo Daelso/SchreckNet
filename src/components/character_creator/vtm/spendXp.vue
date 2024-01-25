@@ -757,6 +757,14 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Doubletalk":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Dementation":
             if (
               this.disciplines.Obfuscate === undefined ||
@@ -904,6 +912,14 @@ export default defineComponent({
             if (
               this.disciplines.Fortitude === undefined ||
               this.disciplines.Fortitude < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "The False Sip":
+            if (
+              this.disciplines.Fortitude === undefined ||
+              this.disciplines.Fortitude < 1
             ) {
               mergedOptions.splice(i, 1);
             }

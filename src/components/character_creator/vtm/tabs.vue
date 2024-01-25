@@ -1088,6 +1088,11 @@ export default defineComponent({
         }
       }
 
+      arr = arr.filter(
+        (type) =>
+          allMerits.Merits[this.meritCategory][type.toLowerCase()].length > 0
+      );
+
       return arr;
     },
     meritCatOptions() {
@@ -1151,6 +1156,29 @@ export default defineComponent({
         switch (this.advantageCategory) {
           case "Merits":
             arr = allMerits.Merits[this.meritCategory].advantages;
+
+            if (this.clan === "Nosferatu") {
+              arr.forEach((merit, index) => {
+                if (
+                  merit.name === "Up All Night" ||
+                  merit.name === "Up All Night x2"
+                ) {
+                  arr.splice(index, 1);
+                }
+              });
+            } else if (
+              this.clan === "Hecata" ||
+              this.clan === "Giovanni" ||
+              this.clan === "Lamiae" ||
+              this.clan === "Samedi" ||
+              this.clan === "Nagaraja"
+            ) {
+              arr.forEach((merit, index) => {
+                if (merit.name === "Up All Night x2") {
+                  arr.splice(index, 1);
+                }
+              });
+            }
             break;
           case "Cult":
             arr = allCultMerits.Cults[this.meritCategory].advantages;

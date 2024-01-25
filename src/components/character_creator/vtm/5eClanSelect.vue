@@ -1474,6 +1474,14 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "The False Sip":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Unerring Pursuit":
             if (
               this.finalDisciplineObj.Dominate === undefined ||
@@ -1494,6 +1502,14 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Doubletalk":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 1
             ) {
               mergedOptions.splice(i, 1);
             }

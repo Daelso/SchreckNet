@@ -228,9 +228,19 @@
           "desc": "You are considered beautiful."
         },
         {
+          "name": "Up All Night",
+          "cost": 2,
+          "desc": "For blush of life, eating and sex act as if your humanity is 1 point higher than it is. DOES NOT COMBINE WITH OTHERS."
+        },
+        {
           "name": "Stunning",
           "cost": 4,
           "desc": "You are considered exceptionally good-looking, you turn heads everywhere you go."
+        },
+        {
+          "name": "Up All Night x2",
+          "cost": 4,
+          "desc": "For blush of life, eating and sex act as if your humanity is 2 points higher than it is. DOES NOT COMBINE WITH OTHERS."
         }
       ],
       "flaws": [
@@ -354,7 +364,18 @@
       ]
     },
     "Psychological": {
-      "advantages": [],
+      "advantages": [
+        {
+          "name": "Soothed Beast",
+          "cost": 1,
+          "desc": "Choose an NPC as your obsession, once a session, when in that NPC's presence, you can ignore a bestial fail or messy crit. If the character dies, gain 3 stains and choose a new obsession."
+        },
+        {
+          "name": "False Love",
+          "cost": 1,
+          "desc": "Choose an NPC as your obsession, when in that NPC's presence, treat your humanity as 1 point above what it is. DOES NOT COMBINE WITH OTHERS. If the character dies, gain 3 stains and choose a new obsession."
+        }
+      ],
       "flaws": [
         {
           "name": "Living on the Edge",
@@ -386,6 +407,16 @@
           "name": "Addiction",
           "cost": 1,
           "desc": "Lose 1 die from all pools if you feed from someone not on your drug of choice."
+        }
+      ]
+    },
+    "Supernatural": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Two Masters",
+          "cost": 1,
+          "desc": "You can be blood bound to two separate kindred at once."
         }
       ]
     },

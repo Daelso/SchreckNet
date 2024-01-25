@@ -49,7 +49,12 @@
           "Shape the Sanguine Sacrament"
         ],
         ["Extinguish Vitae", "Scour Secrets"],
-        ["Blood of Potency", "Scorpion's Touch", "Transitive Bond"],
+        [
+          "Blood of Potency",
+          "Ripples of the Heart",
+          "Scorpion's Touch",
+          "Transitive Bond"
+        ],
         ["Blood Aegis", "Theft of Vitae"],
         ["Baal's Caress", "Cauldron of Blood", "Reclamation of Vitae"]
       ]
@@ -119,6 +124,7 @@
         ["Cloak of Shadows", "Silence of Death"],
         [
           "Chimerstry",
+          "Doubletalk",
           "Ghost's Passing",
           "Mental Maze",
           "Unseen Passage",
@@ -194,7 +200,13 @@
           "Thrown Voice",
           "True Love's Face"
         ],
-        ["Irresistible Voice", "Magnum Opus", "Summon", "Suffuse the Edifice"],
+        [
+          "Irresistible Voice",
+          "Magnum Opus",
+          "Summon",
+          "Suffuse the Edifice",
+          "Wingman"
+        ],
         ["Majesty", "Star Magnetism"]
       ]
     },
@@ -204,7 +216,7 @@
       "resonance": "Animal Blood",
       "skills": [
         ["Eyes of the Beast", "Weight of the Feather"],
-        ["Feral Weapons", "Vicissitude"],
+        ["Feral Weapons", "Serpent's Kiss", "The False Sip", "Vicissitude"],
         ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
         ["Horrid Form", "Metamorphosis"],
         [

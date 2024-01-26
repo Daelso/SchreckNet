@@ -2166,7 +2166,7 @@ export default defineComponent({
             desc: "You are a cult-leader, celebrity or popular twitch streamer with a ready and willing group of fans or worshippers from which to harvest blood. While access to blood is easy, attention isn't always good.",
             choices: [
               "Gain a choice of the Occult (specific tradition) or Performance (Specific entertainment field) specialty.",
-              "Choose between one dot of Blood Sorcery (Tremere only) or Presence.",
+              "Choose between one dot of Blood Sorcery (Tremere or Banu Haqim only) or Presence.",
               "Spend three dots between Fame and Herd.",
               "Spend two points between Enemies and Mythic flaws.",
             ],
@@ -2660,7 +2660,7 @@ export default defineComponent({
           break;
         case "Osiris":
           arr = ["Presence"];
-          if (this.clan === "Tremere") {
+          if (this.clan === "Tremere" || this.clan === "Banu Haqim") {
             arr.push("Blood Sorcery");
           }
           break;

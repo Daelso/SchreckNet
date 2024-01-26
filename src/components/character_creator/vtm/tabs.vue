@@ -1088,10 +1088,12 @@ export default defineComponent({
         }
       }
 
-      arr = arr.filter(
-        (type) =>
-          allMerits.Merits[this.meritCategory][type.toLowerCase()].length > 0
-      );
+      if (this.advantageCategory === "Merits") {
+        arr = arr.filter(
+          (type) =>
+            allMerits.Merits[this.meritCategory][type.toLowerCase()].length > 0
+        );
+      }
 
       return arr;
     },

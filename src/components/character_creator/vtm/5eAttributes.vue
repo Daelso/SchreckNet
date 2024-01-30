@@ -335,6 +335,10 @@ export default defineComponent({
       return check;
     },
     checkIfGood() {
+      if (this.debug) {
+        this.attributesDone = true;
+        return false;
+      }
       let attributes = [
         this.charisma,
         this.composure,

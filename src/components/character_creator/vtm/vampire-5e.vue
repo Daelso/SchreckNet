@@ -317,6 +317,47 @@
             </q-expansion-item>
           </q-list>
         </div>
+        <q-btn
+          flat
+          :label="!this.debug ? 'Make Homebrew/SPC' : 'Disable Homebrew'"
+          type="submit"
+          color="white"
+          @click="this.homebrewDialog = true"
+        />
+
+        <q-dialog v-model="homebrewDialog" persistent>
+          <q-card style="background-color: #222831">
+            <q-card-section class="row items-center">
+              <q-avatar :src="nosImage" />
+              <span class="q-ml-sm" style="color: white"
+                >This will disable any rules and allow you to make this
+                character any way you would like. This character will be marked
+                as homebrew/SPC. It is highly recommended you get permission
+                from your ST if you want to use this character in a game.
+                Resetting this option will clear the character.</span
+              >
+            </q-card-section>
+
+            <q-card-actions align="right">
+              <q-btn flat label="Cancel" color="white" v-close-popup />
+              <q-btn
+                v-if="this.debug === false"
+                flat
+                label="Make Homebrew"
+                color="white"
+                @click="this.homebrewHelper()"
+              />
+              <q-btn
+                v-else
+                flat
+                @click="this.homebrewHelper()"
+                label="Disable Homebrew"
+                color="white"
+                v-close-popup
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
 
         <template v-slot:action>
           <q-btn
@@ -360,14 +401,12 @@
             </q-item-section>
           </q-item>
           <q-item
-            :disable="
-              (!this.skillsDone || !this.attributesDone) && this.debug !== true
-            "
+            :disable="(!this.skillsDone || !this.attributesDone) && !this.debug"
             clickable
             @click="clanSelected"
           >
             <q-tooltip
-              v-if="!this.skillsDone || !this.attributesDone"
+              v-if="!this.skillsDone || (!this.attributesDone && !this.debug)"
               class="bg-dark text-body2"
               >Please set valid base attributes and skills.</q-tooltip
             >
@@ -514,6 +553,8 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import nosImage from "../../../assets/images/Nosfer_logo.png";
+
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";
@@ -563,6 +604,7 @@ export default {
     return {
       debug: false,
       saving: false,
+      homebrewDialog: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },
@@ -712,6 +754,23 @@ export default {
     };
   },
   methods: {
+    homebrewHelper() {
+      this.debug = !this.debug;
+
+      if (this.debug) {
+        this.xp = 999;
+        this.totalSpecialty = 999;
+        this.advantages = 999;
+        this.flaws = 999;
+        this.attributePoints = 45;
+        this.skillPoints = 135;
+      } else {
+        window.location.reload();
+      }
+
+      this.homebrewDialog = false;
+    },
+
     onSubmit() {
       if (this.saving === true) {
         this.$q.notify({
@@ -777,6 +836,7 @@ export default {
         advantages: this.advantagesObj,
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
+        homebrew: this.debug,
       };
 
       axios
@@ -831,6 +891,7 @@ export default {
               disciplinesDone: this.disciplinesDone,
               merits: this.advantagesObj,
               altBane: this.altBane,
+              debug: this.debug,
             },
           },
         })
@@ -876,6 +937,7 @@ export default {
               strength: this.baseStrength,
               wits: this.baseWits,
               xp: this.xp,
+              debug: this.debug,
             },
           },
         })
@@ -908,6 +970,7 @@ export default {
               skillDistribution: this.skillDistribution,
               skillsDone: this.skillsDone,
               specialties: this.specialties,
+              debug: this.debug,
             },
           },
         })
@@ -986,6 +1049,8 @@ export default {
     },
 
     saveGuard() {
+      if (this.debug) return false;
+
       //primary sections
       if (!this.skillsDone || !this.attributesDone || !this.disciplinesDone) {
         this.disableBlurb =

@@ -1,6 +1,12 @@
 <template>
   <div class="top-box">
     <h2 class="banner">Find Your Next Game</h2>
+    <div><q-btn label="Create a Game" @click="createDialog = true" /></div>
+
+    <!-- Dialog -->
+    <q-dialog v-model="createDialog" persistent>
+      <create_a_game />
+    </q-dialog>
   </div>
 </template>
 
@@ -83,9 +89,10 @@
 <script>
 import { defineComponent } from "vue";
 import nosImage from "../../assets/images/Nosfer_logo.png";
+import create_a_game from "../../components/game_finder/create_a_game.vue";
 
 export default defineComponent({
-  components: {},
+  components: { create_a_game },
   name: "findAGame",
   async created() {
     if (window.location.href.includes("localhost")) {
@@ -117,6 +124,7 @@ export default defineComponent({
       baseUrl: "",
       currentUser: null,
       nosImage,
+      createDialog: false,
     };
   },
   methods: {},

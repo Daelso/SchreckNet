@@ -31,6 +31,21 @@
         color="secondary"
         popup-content-style="background-color:#222831; color:white"
       />
+      <q-select
+        v-model="game_style"
+        :options="style_options"
+        label="How Will This Game Be Played?"
+        label-color="primary"
+        map-options
+        option-label="style"
+        option-value="style_id"
+        emit-value
+        bg-color="grey-3"
+        filled
+        style="margin-bottom: 10px"
+        color="secondary"
+        popup-content-style="background-color:#222831; color:white"
+      />
       <q-input
         filled
         type="number"
@@ -49,13 +64,14 @@
         class="select"
         label-color="primary"
         v-model="max_players"
+        min="2"
         max="99"
       />
 
       <q-input
         filled
         type="textarea"
-        label="Describe your Game"
+        label="Describe Your Game"
         bg-color="grey-3"
         class="select"
         label-color="primary"
@@ -68,7 +84,17 @@
       class="text-primary"
       style="display: flex; flex-direction: column"
     >
-      <q-btn style="color: white" flat label="Create Game" v-close-popup />
+      <q-btn
+        style="color: white"
+        flat
+        label="Create Game"
+        :disable="validateCreate"
+        v-close-popup
+      >
+        <q-tooltip v-if="validateCreate"
+          >Please fill out all required fields.</q-tooltip
+        >
+      </q-btn>
       <q-btn flat style="color: white" label="Cancel" v-close-popup />
     </q-card-actions>
   </q-card>
@@ -147,17 +173,41 @@ export default defineComponent({
     } else {
       this.baseUrl = window.location.origin;
     }
+    const styleReq = await this.$axios.get(
+      this.baseUrl + "/game_finder/styles"
+    );
+    this.style_options = styleReq.data;
+    console.log(this.style_options);
   },
   data() {
     return {
       baseUrl: null,
       game_title: "",
+      game_style: "",
       min_players: 1,
       max_players: 2,
       game_line: "",
+      game_description: "",
+      style_options: [],
     };
   },
 
   methods: {},
+  computed: {
+    validateCreate() {
+      if (
+        this.game_title.trim() === "" ||
+        this.game_style.trim() === "" ||
+        this.min_players === null ||
+        this.max_players === null ||
+        this.game_line === "" ||
+        this.game_description.trim() === ""
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
 });
 </script>

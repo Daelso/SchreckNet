@@ -48,6 +48,20 @@
         <q-item-label header> Create a Character </q-item-label>
         <EssentialLink />
         <comingSoonLinks />
+        <q-item-label header> Play the World of Darkness </q-item-label>
+        <q-item clickable style="color: red" :to="{ name: 'findGame' }">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="casino" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Find/Create a Game</q-item-label>
+            <q-item-label caption style="color: white"
+              >Find a group to play with or host a game of your
+              own</q-item-label
+            >
+          </q-item-section>
+        </q-item>
         <q-item-label header> Search Characters </q-item-label>
         <q-item clickable style="color: red" :to="{ name: 'baseSearch' }">
           <q-item-section avatar>
@@ -61,6 +75,7 @@
             >
           </q-item-section>
         </q-item>
+
         <socialLinks />
       </q-list>
     </q-drawer>

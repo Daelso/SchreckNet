@@ -59,6 +59,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import nosImage from "../../assets/images/Nosfer_logo.png";
 
 export default defineComponent({
   components: {},
@@ -69,17 +70,30 @@ export default defineComponent({
     } else {
       this.baseUrl = window.location.origin;
     }
-    return {
-      baseUrl,
-      router,
-      currentUser,
-    };
+    this.currentUser = await this.$axios
+      .get(this.baseUrl + "/user/currentUser", {
+        withCredentials: true,
+      })
+      .then((resp) => {
+        this.currentUser = resp.data;
+        console.log(this.currentUser);
+      })
+      .catch((err) => {
+        this.$q.notify({
+          message: "Log in to create or join a game!",
+          color: "primary",
+          position: "top",
+          avatar: nosImage,
+          timeout: 20000,
+        });
+      });
   },
 
   data() {
     return {
       baseUrl: "",
-      currentUser,
+      currentUser: null,
+      nosImage,
     };
   },
   methods: {},

@@ -1,7 +1,9 @@
 <template>
   <q-card class="card q-pa-sm">
     <q-card-section>
-      <div class="text-h6">Create a Game</div>
+      <div class="text-h6 head" style="font-family: TMUnicorn">
+        Create a Game
+      </div>
     </q-card-section>
 
     <q-card-section class="q-pa-sm">
@@ -37,6 +39,7 @@
         class="select"
         label-color="primary"
         v-model="min_players"
+        min="1"
       />
       <q-input
         filled
@@ -46,6 +49,7 @@
         class="select"
         label-color="primary"
         v-model="max_players"
+        max="99"
       />
 
       <q-input
@@ -87,6 +91,21 @@
 
   @media (max-width: 480px) {
     min-width: 1.5em;
+  }
+}
+
+.head {
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  color: red;
+  font-size: 2em;
+
+  @media (max-width: 768px) {
+    font-size: 2em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5em; /* Further adjust font size for even smaller screens */
   }
 }
 

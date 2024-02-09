@@ -131,8 +131,7 @@ const routes = [
       {
         name: "findGame",
         path: "game/find",
-        component: () =>
-          import("pages/character_creator/werewolf/editGarou.vue"),
+        component: () => import("pages/game_finder/find_a_game.vue"),
       },
     ],
   },

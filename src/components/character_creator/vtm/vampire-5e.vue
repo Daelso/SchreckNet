@@ -317,25 +317,29 @@
             </q-expansion-item>
           </q-list>
         </div>
-        <q-btn
+        <!-- <q-btn
           flat
           :label="!this.debug ? 'Make Homebrew/SPC' : 'Disable Homebrew'"
           type="submit"
           color="white"
           @click="this.homebrewDialog = true"
-        />
+        /> -->
 
         <q-dialog v-model="homebrewDialog" persistent>
           <q-card style="background-color: #222831">
             <q-card-section class="row items-center">
-              <q-avatar :src="nosImage" />
+              <q-avatar />
               <span class="q-ml-sm" style="color: white"
                 >This will disable any rules and allow you to make this
                 character any way you would like. This character will be marked
                 as homebrew/SPC. It is highly recommended you get permission
                 from your ST if you want to use this character in a game.
-                Resetting this option will clear the character.</span
-              >
+                Resetting this option will clear the character.
+                <br />
+                <br />
+                Be aware you are liable to overrun the PDF if you take a ton of
+                disciplines, specialties, etc
+              </span>
             </q-card-section>
 
             <q-card-actions align="right">
@@ -553,8 +557,6 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import nosImage from "../../../assets/images/Nosfer_logo.png";
-
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";

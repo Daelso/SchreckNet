@@ -38,6 +38,7 @@
               >Attribute Points Remaining: {{ this.attributePoints }}</q-badge
             >
             <div
+              v-if="!this.info.debug"
               class="q-ma-sm q-pa-sm"
               style="
                 background-color: #222831;
@@ -335,7 +336,7 @@ export default defineComponent({
       return check;
     },
     checkIfGood() {
-      if (this.debug) {
+      if (this.info.debug) {
         this.attributesDone = true;
         return false;
       }

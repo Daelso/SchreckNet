@@ -6,7 +6,7 @@
           "name": "Ally: ",
           "desc": "A mortal, group or organization who assists you each point taken increases their loyalty and capability.",
           "cost": 0,
-          "maxCost": 4,
+          "maxCost": 6,
           "specNeeded": true
         }
       ],

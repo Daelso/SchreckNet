@@ -1,5 +1,7 @@
 <template>
-  <div class="q-pa-md">tn island</div>
+  <div class="top-box">
+    <h2 class="banner">Find Your Next Game</h2>
+  </div>
 </template>
 
 <style>
@@ -16,12 +18,33 @@
   margin-right: 25px;
 }
 
-.banner {
+.top-box {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    font-size: 2em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5em;
+  }
+}
+
+.banner {
   font-family: TMUnicorn;
   text-shadow: 3px 2px 3px black;
-  font-size: 35px;
+  font-size: 2.5em;
+
+  @media (max-width: 768px) {
+    font-size: 2em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5em; /* Further adjust font size for even smaller screens */
+  }
 }
 
 .backgroundDefault {

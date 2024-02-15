@@ -59,6 +59,8 @@ const garouRoutes = require("./server/api/garou");
 app.use("/garou", garouRoutes);
 const ladRoutes = require("./server/api/showlads");
 app.use("/showlads", ladRoutes);
+const gameFinderRoutes = require("./server/api/game_finder");
+app.use("/game_finder", gameFinderRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

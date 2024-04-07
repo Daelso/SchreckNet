@@ -604,7 +604,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       saving: false,
       homebrewDialog: false,
       advantagesObj: {

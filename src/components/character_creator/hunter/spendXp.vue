@@ -263,7 +263,7 @@ export default defineComponent({
             this.cost = "Skill is maxxed!";
             this.canBuy = false;
           }
-          this.cost = this.skills[this.skillCategory.toLowerCase()] * 3;
+          this.cost = (this.skills[this.skillCategory.toLowerCase()] + 1) * 3;
           break;
         case "Specialty":
           this.cost = 3;

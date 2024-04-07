@@ -117,6 +117,28 @@
         }
       ]
     },
+    "Contagion": {
+      "advantages": [
+        {
+          "name": "Blood Empathy",
+          "cost": 2,
+          "desc": "You share a closer bond to your domitor than most ghouls, able to sense their emotional and psychological state."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Disease Vector",
+          "cost": 1,
+          "desc": "Whenever you feed from a sick mortal, you always contract that sickness and will pass it on to your next vessel."
+        },
+        {
+          "name": "Plaugebringer",
+          "cost": 1,
+          "maxCost": 2,
+          "desc": "You have a disease in your vitae, at one dot it is something mild like sores or a rash. At two, it can be debilitating. There is no way to cure this. Mortals you feed from are vulnerable to your diseases."
+        }
+      ]
+    },
     "Feeding": {
       "advantages": [
         {
@@ -279,6 +301,16 @@
           "desc": "Your body does not automatically revert to the death-state each night allowing you to keep haircuts, tattoos or things like piercings in. Only available while potency is 1 or lower."
         },
         {
+          "name": "Pack Diablerie",
+          "cost": 2,
+          "desc": "If you attempt a pack diablerie, you are always the one who has the chance to consume the whole soul. If you help another consume a soul, you gain 5 xp."
+        },
+        {
+          "name": "Cold Dead Hunger",
+          "cost": 3,
+          "desc": "You've gained mastery over your hunger. Add two die to your rolls to resist hunger frenzy."
+        },
+        {
           "name": "Luck of the Devil",
           "cost": 4,
           "desc": "Once per session you can pass an attack, blame or misfortune towards another person present."
@@ -374,9 +406,51 @@
           "name": "False Love",
           "cost": 1,
           "desc": "Choose an NPC as your obsession, when in that NPC's presence, treat your humanity as 1 point above what it is. DOES NOT COMBINE WITH OTHERS. If the character dies, gain 3 stains and choose a new obsession."
+        },
+        {
+          "name": "Penitence",
+          "cost": 1,
+          "maxCost": 5,
+          "desc": "For each dot you possess in this Merit, you can scourge yourself once per session as part of a scene, suffering one point of Superficial Health damage and immediately healing one point of Superficial Willpower damage"
+        },
+        {
+          "name": "Unholy Will (2)",
+          "cost": 2,
+          "desc": "At two dots, add one die to any dice pool when you resist or contest an individual with true Faith on matters of their faith"
+        },
+        {
+          "name": "Unholy Will (4)",
+          "cost": 4,
+          "desc": "At four dots, add two die to any dice pool when you resist or contest an individual with true Faith on matters of their faith"
+        },
+        {
+          "name": "Zealotry",
+          "cost": 1,
+          "maxCost": 3,
+          "desc": "For each dot in this Merit, once per session after rolling a normal success on an action that corresponds to or aligns with one of your Convictions, you may choose to turn that normal success into a messy critical instead."
         }
       ],
       "flaws": [
+        {
+          "name": "Beacon of Profanity",
+          "cost": 1,
+          "desc": "Mortals with any amount of True Faith can sense your presence"
+        },
+        {
+          "name": "Crisis of Faith",
+          "cost": 1,
+          "desc": "Bestial failures also cause 1 point of superficial WP damage."
+        },
+        {
+          "name": "Groveling Worm",
+          "cost": 2,
+          "desc": "You must find time to scourge your flesh at least once per session."
+        },
+        {
+          "name": "Horrible Scars of Penitence",
+          "cost": 1,
+          "desc": "Your scars give you away as a crazed zealot."
+        },
         {
           "name": "Living on the Edge",
           "cost": 2,

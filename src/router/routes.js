@@ -128,6 +128,11 @@ const routes = [
         component: () =>
           import("pages/character_creator/werewolf/editGarou.vue"),
       },
+      {
+        name: "findGame",
+        path: "game/find",
+        component: () => import("pages/game_finder/find_a_game.vue"),
+      },
     ],
   },
 

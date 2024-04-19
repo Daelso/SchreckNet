@@ -270,7 +270,7 @@
         ]
       },
       "Thwart the Unnatural": {
-        "desc": "The Hunter owns and excels in piloting drones.",
+        "desc": "Using an object of focus, the Hunter is highly resistant to any supernatural abilities that affect the mind.",
         "perks": [
           {
             "name": "Creature Specialization",

@@ -504,7 +504,7 @@ export default {
       ambition: "",
       drive: "",
       redemption: "",
-      edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
+      edgeDist: { dist: "Two edges", distArr: [2, 0] },
       attributePoints: 22,
       skillPoints: 29,
       charName: "",

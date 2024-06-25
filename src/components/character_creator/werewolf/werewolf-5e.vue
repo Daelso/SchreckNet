@@ -576,7 +576,6 @@ export default {
       tribe_renown: { glory: 0, honor: 0, wisdom: 0 },
       purchased_renown: { glory: 0, honor: 0, wisdom: 0 },
       chronicle: "",
-      edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
       attributePoints: 22,
       skillPoints: 29,
       charName: "",

@@ -17,8 +17,8 @@
       <q-page-container>
         <q-page padding class="bg-dark">
           <div class="q-my-md">
-            Hunters can select an initial distribution of two edges and a perk,
-            or one edge and two perks.
+            Hunters can select an initial distribution of two edges or one edge
+            and two perks.
           </div>
           <q-select
             color="secondary"
@@ -215,7 +215,7 @@ export default defineComponent({
       edgeDoneLocal,
       edgeDist,
       edgeDistOptions: ref([
-        { dist: "Two edges, one perk", distArr: [2, 1] },
+        { dist: "Two edges", distArr: [2, 0] },
         { dist: "One edge, two perks", distArr: [1, 2] },
       ]),
 

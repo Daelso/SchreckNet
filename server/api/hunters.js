@@ -46,18 +46,20 @@ router.route("/new").post(async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.status(200).json(newHunter.id);
+    return res.status(200).json(newHunter.id);
   } catch (err) {
-    res.status(403).send(err);
+    console.log(err);
+    return res.status(403).send("Forbidden");
   }
 });
 
 router.route("/hunter/:id").get(async (req, res) => {
   try {
     const hunter = await Hunters.findByPk(req.params.id);
-    res.send(hunter.dataValues);
+    return res.send(hunter.dataValues);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -68,9 +70,10 @@ router.route("/myHunter/:id").get(async (req, res) => {
         created_by: req.params.id,
       },
     });
-    res.status(200).send(hunter);
+    return res.status(200).send(hunter);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -80,9 +83,10 @@ router.route("/card").get(async (req, res) => {
       limit: 3,
       order: [["createdAt", "DESC"]],
     });
-    res.send(hunter);
+    return res.send(hunter);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -93,8 +97,7 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
     const hunter = await Hunters.findByPk(req.params.id);
 
     if (currentUser.id !== hunter.created_by) {
-      res.status(403).send("Access Denied");
-      return;
+      return res.status(403).send("Access Denied");
     }
 
     await hunter.update({
@@ -123,9 +126,10 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.status(200).send("Hunter updated!");
+    return res.status(200).send("Hunter updated!");
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -139,9 +143,10 @@ router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
       return;
     }
     hunter.destroy();
-    res.status(200).send("Deletion successful");
+    return res.status(200).send("Deletion successful");
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 

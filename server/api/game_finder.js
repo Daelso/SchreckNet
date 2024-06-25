@@ -16,9 +16,9 @@ router.route("/styles").get(lib.getLimiter, async (req, res) => {
   try {
     const styles = await GameStyles.findAll();
 
-    res.status(200).json(styles);
+    return res.status(200).json(styles);
   } catch (err) {
-    res.status(403).send(err);
+    return res.status(403).send("forbidden");
   }
 });
 

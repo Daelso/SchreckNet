@@ -26,9 +26,10 @@ router.route("/vampires").post(async (req, res) => {
     }
     const [results, metadata] = await sequelize.sequelize.query(baseQuery);
 
-    res.status(200).send(results);
+    return res.status(200).send(results);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -48,9 +49,10 @@ router.route("/hunters").post(async (req, res) => {
 
     const [results, metadata] = await sequelize.sequelize.query(baseQuery);
 
-    res.status(200).send(results);
+    return res.status(200).send(results);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -70,9 +72,10 @@ router.route("/garou").post(async (req, res) => {
 
     const [results, metadata] = await sequelize.sequelize.query(baseQuery);
 
-    res.status(200).send(results);
+    return res.status(200).send(results);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 

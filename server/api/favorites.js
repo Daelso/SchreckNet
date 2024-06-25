@@ -33,9 +33,9 @@ router.route("/add").post(lib.authenticateToken, async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.sendStatus(200);
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(403).send(err);
+    return res.status(403).send("Forbidden");
   }
 });
 
@@ -46,9 +46,9 @@ router.route("/remove").post(lib.authenticateToken, async (req, res) => {
         id: req.body.favId,
       },
     });
-    res.sendStatus(200);
+    return res.sendStatus(200);
   } catch (err) {
-    res.status(403).send(err);
+    return res.status(403).send("Forbidden");
   }
 });
 
@@ -67,9 +67,10 @@ router.route("/my").get(lib.authenticateToken, async (req, res) => {
       `SELECT favs.id as favId, favs.game_id, favs.sheet_id, garou.* FROM ey140u9j4rs9xcib.favorites as favs INNER JOIN ey140u9j4rs9xcib.garou garou ON favs.sheet_id = garou.id WHERE favs.game_id = 3 AND favs.favorited_by = ${req.currentUser.id}`
     );
 
-    res.status(200).send([vampires, hunters, garou, req.currentUser]);
+    return res.status(200).send([vampires, hunters, garou, req.currentUser]);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.sendStatus(500);
   }
 });
 
@@ -81,9 +82,9 @@ router.route("/favCount/:id").get(async (req, res) => {
       },
     });
 
-    res.status(200).send(count);
+    return res.status(200).send(count);
   } catch (err) {
-    res.status(404).send(err);
+    return res.status(404).send("Not found!");
   }
 });
 

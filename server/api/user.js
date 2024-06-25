@@ -22,9 +22,10 @@ router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
 router.route("/getUser/:id").get(async (req, res) => {
   try {
     const user = await Users.findByPk(req.params.id);
-    res.send(user.dataValues);
+    return res.send(user.dataValues);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -64,9 +65,10 @@ router.route("/register").post(async (req, res) => {
 
     mailer.sendActivationEmail(req.body.email, req.body.username, activateLink);
 
-    res.status(200).send("User created successfully!");
+    return res.status(200).send("User created successfully!");
   } catch (err) {
-    res.status(403).send(err);
+    console.log(err);
+    return res.status(403).send("Forbidden");
   }
 });
 
@@ -107,13 +109,13 @@ router.route("/login").post(lib.limiter, async (req, res) => {
         httpOnly: true,
         sameSite: "None",
       });
-      res.status(200).send("Logged in!");
+      return res.status(200).send("Logged in!");
     } else {
-      res.status(401).send("Incorrect email or password!");
+      return res.status(401).send("Incorrect email or password!");
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send(err);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -145,7 +147,7 @@ router.route("/token").post(async (req, res) => {
         httpOnly: true,
         sameSite: "None",
       });
-      res.status(200).send(`Token refreshed`);
+      return res.status(200).send(`Token refreshed`);
     }
   );
 });
@@ -197,9 +199,9 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
     await resetUser.update({ password: hashedPassword });
   } catch (err) {
     console.log(err.message);
-    return res.status(400).send(err.message);
+    return res.status(400).send("Missing");
   }
-  res.sendStatus(200);
+  return res.sendStatus(200);
 });
 
 router.route("/passwordForgot").post(async (req, res) => {
@@ -241,19 +243,20 @@ router.route("/activateAccount/:username/:token").post(async (req, res) => {
     await activationUser.update({ activated: 1 });
   } catch (err) {
     console.log(err.message);
-    return res.status(400).send(err.message);
+    return res.status(400).send("Missing");
   }
   res.clearCookie("access");
   res.clearCookie("refresh");
-  res.sendStatus(200);
+  return res.sendStatus(200);
 });
 
 router.route("/sendContactEmail").post(lib.limiter, async (req, res) => {
   try {
     mailer.sendContactForm(req.body);
-    res.sendStatus(200);
+    return res.sendStatus(200);
   } catch (err) {
-    return res.status(400).send(err.message);
+    console.log(err);
+    return res.status(400).send("Failed to send contact");
   }
 });
 
@@ -280,7 +283,8 @@ router
         activateLink
       );
     } catch (err) {
-      return res.status(400).send(err.message);
+      console.log(err);
+      return res.status(400).send("Failed to send mail");
     }
   });
 

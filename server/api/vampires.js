@@ -55,18 +55,19 @@ router.route("/new").post(async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.status(200).json(newKindred.id);
+    return res.status(200).json(newKindred.id);
   } catch (err) {
-    res.status(403).send(err);
+    return res.status(403).send("Forbidden");
   }
 });
 
 router.route("/vampire/:id").get(async (req, res) => {
   try {
     const kindred = await Vampires.findByPk(req.params.id);
-    res.send(kindred.dataValues);
+    return res.send(kindred.dataValues);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -77,9 +78,10 @@ router.route("/myVampire/:id").get(async (req, res) => {
         created_by: req.params.id,
       },
     });
-    res.status(200).send(kindred);
+    return res.status(200).send(kindred);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -89,9 +91,10 @@ router.route("/card").get(async (req, res) => {
       limit: 3,
       order: [["createdAt", "DESC"]],
     });
-    res.send(kindred);
+    return res.send(kindred);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -102,8 +105,7 @@ router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
     const kindred = await Vampires.findByPk(req.params.id);
 
     if (currentUser.id !== kindred.created_by) {
-      res.status(403).send("Access Denied");
-      return;
+      return res.status(403).send("Access Denied");
     }
 
     await kindred.update({
@@ -143,9 +145,10 @@ router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.status(200).send("Kindred updated!");
+    return res.status(200).send("Kindred updated!");
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -159,9 +162,10 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
       return;
     }
     kindred.destroy();
-    res.status(200).send("Deletion successful");
+    return res.status(200).send("Deletion successful");
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 

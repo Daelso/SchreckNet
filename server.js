@@ -6,11 +6,12 @@ const compression = require("compression");
 const helmet = require("helmet");
 const app = express();
 const cookieParser = require("cookie-parser");
-app.use(cookieParser());
 require("dotenv").config();
 const cors = require("cors");
 app.use(compression());
 app.use(helmet());
+app.use(cookieParser());
+
 app.use(history());
 app.use(serveStatic(__dirname + "/dist/spa"));
 app.use(express.json());
@@ -24,6 +25,8 @@ const allowedOriginsProd = [
   "https://schrecknet-live.herokuapp.com",
   "https://daelso.github.io",
 ];
+
+app.use(lib.getLimiter);
 
 if (process.env.ENV !== "prod") {
   app.use(

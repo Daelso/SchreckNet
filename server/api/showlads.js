@@ -51,9 +51,10 @@ router.route("/ckey/:ckey").get(lib.getLimiter, async (req, res) => {
         ckey: req.params.ckey,
       },
     });
-    res.send(ckey_stats);
+    return res.send(ckey_stats);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -78,7 +79,7 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
     ]);
 
     //idk why tf these are getting duplicated some dumb node stuff
-    res
+    return res
       .status(200)
       .json([
         result1[0][0],
@@ -88,8 +89,8 @@ router.route("/fun_facts").get(lib.getLimiter, async (req, res) => {
         result5[0][0],
       ]);
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
+    return res.status(500).send("Error");
   }
 });
 
@@ -121,10 +122,10 @@ router.get(
         `SELECT count(character_name) as played_count FROM showlads WHERE ckey = '${req.params.ckey}' AND character_name = '${req.params.character_name}'`
       );
 
-      res.status(200).send(results);
+      return res.status(200).send(results);
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 );
@@ -148,10 +149,10 @@ router.get(
         type: QueryTypes.SELECT,
       });
 
-      res.status(200).send(results);
+      return res.status(200).send(results);
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 );
@@ -175,10 +176,10 @@ router.get(
         type: QueryTypes.SELECT,
       });
 
-      res.status(200).send(results);
+      return res.status(200).send(results);
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 );
@@ -203,9 +204,10 @@ router.route("/char_name").get(lib.getLimiter, async (req, res) => {
         character_name: decodeURIComponent(req.query.character_name.trim()),
       },
     });
-    res.send(char_stats);
+    return res.send(char_stats);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -223,10 +225,10 @@ router
       ]);
 
       //idk why tf these are getting duplicated some dumb node stuff
-      res.status(200).json([result1[0][0], result2[0][0]]);
+      return res.status(200).json([result1[0][0], result2[0][0]]);
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
@@ -239,10 +241,10 @@ router.get(
         `SELECT COUNT(showlads.role) AS play_count, rc.category_name FROM role_categories rc LEFT JOIN lifeweb_roles lr ON rc.category_id = lr.role_category LEFT JOIN showlads ON lr.role_name = showlads.role AND showlads.character_name = '${req.params.character_name}' GROUP BY rc.category_name ORDER BY category_name asc;`
       );
 
-      res.status(200).send(results);
+      return res.status(200).send(results);
     } catch (error) {
       console.error("Error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 );

@@ -59,7 +59,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
 
     res.status(200).json(newGarou.id);
   } catch (err) {
-    res.status(403).send(err);
+    res.status(403).send("Forbidden");
   }
 });
 
@@ -103,16 +103,18 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
 
     res.status(200).send("Garou updated!");
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
 router.route("/garou/:id").get(lib.getLimiter, async (req, res) => {
   try {
     const garou = await Garou.findByPk(req.params.id);
-    res.json(garou);
+    return res.json(garou);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -123,9 +125,10 @@ router.route("/myGarou/:id").get(async (req, res) => {
         created_by: req.params.id,
       },
     });
-    res.status(200).send(garou);
+    return res.status(200).send(garou);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -139,27 +142,30 @@ router.route("/tribes").get(lib.getLimiter, async (req, res) => {
         },
       ],
     });
-    res.json(tribes);
+    return res.json(tribes);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
 router.route("/auspices").get(lib.getLimiter, async (req, res) => {
   try {
     const auspices = await Auspices.findAll();
-    res.json(auspices);
+    return res.json(auspices);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
 router.route("/renown_types").get(lib.getLimiter, async (req, res) => {
   try {
     const renown_types = await RenownTypes.findAll();
-    res.json(renown_types);
+    return res.json(renown_types);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -180,9 +186,10 @@ router
           },
         },
       });
-      res.json(native_gifts);
+      return res.json(native_gifts);
     } catch (err) {
-      res.status(404).send(err);
+      console.log(err);
+      return res.status(404).send("Not found");
     }
   });
 
@@ -214,9 +221,10 @@ router
           },
         },
       });
-      res.json(gifts);
+      return res.json(gifts);
     } catch (err) {
-      res.status(404).send(err);
+      console.log(err);
+      return res.status(404).send("Not found");
     }
   });
 
@@ -244,18 +252,20 @@ router
         },
       });
 
-      res.status(200).json(gifts);
+      return res.status(200).json(gifts);
     } catch (err) {
-      res.status(404).send(err);
+      console.log(err);
+      return res.status(404).send("Not found");
     }
   });
 
 router.route("/rites").get(lib.getLimiter, async (req, res) => {
   try {
     const rites = await Rites.findAll();
-    res.json(rites);
+    return res.json(rites);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -265,9 +275,10 @@ router.route("/card").get(async (req, res) => {
       limit: 3,
       order: [["createdAt", "DESC"]],
     });
-    res.json(garou);
+    return res.json(garou);
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 
@@ -281,9 +292,10 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
       return;
     }
     garou.destroy();
-    res.status(200).send("Deletion successful");
+    return res.status(200).send("Deletion successful");
   } catch (err) {
-    res.status(404).send(err);
+    console.log(err);
+    return res.status(404).send("Not found");
   }
 });
 

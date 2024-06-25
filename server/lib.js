@@ -17,7 +17,7 @@ const postLimiter = rateLimit({
 
 const getLimiter = rateLimit({
   windowMs: 300000, //5 min
-  max: 250, //attempts
+  max: 450, //attempts
   message: "Rate limit exceeded, please wait 5 minutes and try again!",
 });
 
@@ -58,7 +58,10 @@ const authenticateToken = (req, res, next) => {
   }
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.send(err);
+    if (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
     req.currentUser = user;
     next();
   });
@@ -104,7 +107,10 @@ const getCurrentUser = (req, res) => {
 
   let currentUser = "";
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.send(err);
+    if (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
     currentUser = user;
   });
   return currentUser;

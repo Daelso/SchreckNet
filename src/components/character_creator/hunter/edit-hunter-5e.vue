@@ -537,7 +537,7 @@ export default {
       ambition: this.hunter.ambition,
       drive: this.hunter.drive,
       redemption: this.hunter.redemption,
-      edgeDist: { dist: "Two edges, one perk", distArr: [2, 1] },
+      edgeDist: { dist: "Two edges", distArr: [2, 0] },
       attributePoints: 0,
       skillPoints: 0,
       charName: this.hunter.charName,

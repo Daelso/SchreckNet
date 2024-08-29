@@ -86,6 +86,13 @@
       "Reference": "Cults 220"
     },
     {
+      "Name": "Beckett",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "Inspired by Beckett's quest for knowledge, you too seek out the occult and the Elders of your kind.",
+      "Reference": "GW 157"
+    },
+    {
       "Name": "Blacksite 24",
       "Type": "Other",
       "Prerequisite": null,
@@ -794,6 +801,13 @@
       "Reference": "CbN 286"
     },
     {
+      "Name": "Tegyrius the Vizier",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "You are associated with Tegyrius, one of the most renown Kindred diplomats in history. Likewise, others respect your natural erudition and will be more willing to listen to someone like you.",
+      "Reference": "GW 159"
+    },
+    {
       "Name": "Temple of Boom Contract",
       "Type": "NPC",
       "Prerequisite": null,
@@ -806,6 +820,13 @@
       "Prerequisite": null,
       "Description": "You have connections to an influential nightclub in Chicago",
       "Reference": "CbN 266"
+    },
+    {
+      "Name": "The Eternal Arena",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You have a membership to a local Kindred Fight Club be it as a fighter, organizer or attendee. You are more than familiar with fighting other Kindred.",
+      "Reference": "GW 158"
     },
     {
       "Name": "The Hartford Chantry",

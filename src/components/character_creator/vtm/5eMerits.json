@@ -23,9 +23,19 @@
           "desc": "Its easier for you to resist against the effects of a Blood Bond."
         },
         {
+          "name": "Enduring Bond",
+          "cost": 1,
+          "desc": "Your bonds last longer than others. Complete and partial bonds only weaken every other month."
+        },
+        {
           "name": "Short Bond",
           "cost": 2,
           "desc": "The Bond decays quicker for you."
+        },
+        {
+          "name": "Bonds of Fealty",
+          "cost": 3,
+          "desc": "Your dominate powers do not require eye contact if the target is blood bound to you."
         },
         {
           "name": "Unbondable",
@@ -48,6 +58,33 @@
           "name": "Long Bond",
           "cost": 1,
           "desc": "The Bond takes more time to decay."
+        }
+      ]
+    },
+    "Blood Ties": {
+      "advantages": [
+        {
+          "name": "Consanguinous Sense",
+          "cost": 2,
+          "desc": "With a roll, you gain the ability to instantly recognize those of your bloodline."
+        },
+        {
+          "name": "Consanguinous Influence",
+          "cost": 2,
+          "desc": "Mental disciplines are more powerful against those of the same bloodline."
+        },
+        {
+          "name": "Sins of the Father",
+          "cost": 2,
+          "maxCost": 3,
+          "desc": "After diablerizing a direct descendant you show no telltale signs of the crime."
+        }
+      ],
+      "flaws": [
+        {
+          "name": "Bondslave",
+          "cost": 2,
+          "desc": "You bond at the first drink of Vitae."
         }
       ]
     },
@@ -136,6 +173,21 @@
           "cost": 1,
           "maxCost": 2,
           "desc": "You have a disease in your vitae, at one dot it is something mild like sores or a rash. At two, it can be debilitating. There is no way to cure this. Mortals you feed from are vulnerable to your diseases."
+        }
+      ]
+    },
+    "Diablerie": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Blatant Diablerist",
+          "cost": 1,
+          "desc": "To anyone who really looks, your sins are blatantly obvious."
+        },
+        {
+          "name": "Inherited Bane",
+          "cost": 2,
+          "desc": "Select another clan's bane following diablerie. Tremere may take the Salubri bane with this flaw without commiting diablerie."
         }
       ]
     },
@@ -277,14 +329,19 @@
           "desc": "You are an exceptionally poor liar. Lose one die from any pools requiring subterfuge. You may not gain any further subterfuge dots."
         },
         {
+          "name": "Ugly",
+          "cost": 1,
+          "desc": "You aren't very good-looking."
+        },
+        {
           "name": "Repulsive",
           "cost": 2,
           "desc": "Your appearance is exceptionally horrifying."
         },
         {
-          "name": "Ugly",
-          "cost": 1,
-          "desc": "You aren't very good-looking."
+          "name": "Unblinking Visage",
+          "cost": 2,
+          "desc": "Count your humanity 2 points lower for blush of life. You no longer blink, breath or have other automatic reflexes."
         }
       ]
     },

@@ -20,6 +20,7 @@
         }
       ]
     },
+
     "Contacts": {
       "advantages": [
         {
@@ -157,6 +158,11 @@
           "cost": 0,
           "maxCost": 3,
           "specNeeded": true
+        },
+        {
+          "name": "Secret Master",
+          "desc": "Your mawla has a hold over you. Once per story you have a minor task that you must complete which cannot become public.",
+          "cost": 1
         }
       ]
     },

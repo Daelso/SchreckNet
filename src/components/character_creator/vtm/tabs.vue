@@ -1159,6 +1159,17 @@ export default defineComponent({
           case "Merits":
             arr = allMerits.Merits[this.meritCategory].advantages;
 
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.dominate < 1
+            ) {
+              arr.forEach((merit, index) => {
+                if (merit.name === "Bonds of Fealty") {
+                  arr.splice(index, 1);
+                }
+              });
+            }
+
             if (this.clan === "Nosferatu") {
               arr.forEach((merit, index) => {
                 if (
@@ -1287,13 +1298,15 @@ export default defineComponent({
           }
           break;
         case "Backgrounds":
+          let bg_choice = { ...choiceObj };
+
           if (this.specificationInput) {
-            choiceObj.name = choiceObj.name + this.specificationInput;
+            bg_choice.name = choiceObj.name + this.specificationInput;
           }
           if (advOrFlaw === true) {
-            modifiedObj.backgrounds.advantages.push(choiceObj);
+            modifiedObj.backgrounds.advantages.push(bg_choice);
           } else {
-            modifiedObj.backgrounds.flaws.push(choiceObj);
+            modifiedObj.backgrounds.flaws.push(bg_choice);
           }
           break;
         case "Haven":

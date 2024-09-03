@@ -1889,6 +1889,15 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Cache":
+            if (
+              (this.finalDisciplineObj.Obfuscate === undefined ||
+                this.finalDisciplineObj.Obfuscate < 1) === false ||
+              this.skillsSelected.some((e) => e.skill === "Ensconce") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Koldunic Sorcery":
             if (
               this.finalDisciplineObj["Blood Sorcery"] === undefined ||

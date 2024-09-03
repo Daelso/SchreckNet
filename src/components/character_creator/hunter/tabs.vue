@@ -992,13 +992,15 @@ export default defineComponent({
           break;
 
         case "Backgrounds":
+          let bg_choice = { ...choiceObj };
+
           if (this.specificationInput) {
-            choiceObj.name = choiceObj.name + this.specificationInput;
+            bg_choice.name = choiceObj.name + this.specificationInput;
           }
           if (advOrFlaw === true) {
-            modifiedObj.backgrounds.advantages.push(choiceObj);
+            modifiedObj.backgrounds.advantages.push(bg_choice);
           } else {
-            modifiedObj.backgrounds.flaws.push(choiceObj);
+            modifiedObj.backgrounds.flaws.push(bg_choice);
           }
           break;
         case "Safe House":

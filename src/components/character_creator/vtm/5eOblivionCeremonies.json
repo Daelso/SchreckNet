@@ -56,6 +56,10 @@
       {
         "name": "Shambling Hordes",
         "description": "Raise a group of aggressive walking dead."
+      },
+      {
+        "name": "The Shallow Slumber",
+        "description": "Shorten the torpor of another kindred."
       }
     ],
     [

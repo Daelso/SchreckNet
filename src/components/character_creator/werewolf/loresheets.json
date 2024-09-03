@@ -1,6 +1,34 @@
 {
   "loresheets": [
     {
+      "Name": "Aino 'Lil Gaia' Metsala",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A Finnish activist who only recently underwent the change but has already established a network of reliable allies to be called upon in the fight for Gaia.",
+      "Reference": "SN 134"
+    },
+    {
+      "Name": "Alejandro 'Vaporfang' Mendoza",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A legendary Bone Gnawer hacker. (REQUIRES 2 DOTS IN TECHNOLOGY) --- By associating with him you gain access to a deep network of information, private forums and media sources to both understand and spread your message.",
+      "Reference": "SN 135"
+    },
+    {
+      "Name": "Jonas Albrecht",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A legendary Silver Fang Ahroun fallen to Harano. Once the personification of the Garou Nation he could be again, with your help.",
+      "Reference": "SN 136"
+    },
+    {
+      "Name": "Liu 'Returning Maiden' Aihan",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A Galestalker astronaut who has stepped foot on Luna herself. Liu has a deep understanding of rites, ritual and the umbra.",
+      "Reference": "SN 137"
+    },
+    {
       "Name": "Monkeywrenchers",
       "Type": "Other",
       "Prerequisite": null,
@@ -8,11 +36,25 @@
       "Reference": "WtA 295"
     },
     {
+      "Name": "Oba 'Trailblazer' Makinde",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A legendary Glass Walker Theurge who runs the company Omniscient, a revolutionary AI platform that like its name states has access to real-time data across the world. By knowing Makinde, you have access to a reliable tech job at the company.",
+      "Reference": "SN 138"
+    },
+    {
       "Name": "Renunciate of Fenris",
       "Type": "Other",
       "Prerequisite": null,
       "Description": "You refused to follow your pack-mates down the path of hauglosk. You broke your pact with Wolf and have found a home in another tribe under another Patron.",
       "Reference": "WtA 298"
+    },
+    {
+      "Name": "Ross 'The She-Wolf' Jackson",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A Silent Strider who has mastered shapeshifting to the point of being able to change sex at will. You are deeply embedded in minority groups and other marginalized groups.",
+      "Reference": "SN 139"
     },
     {
       "Name": "Project Twilight",
@@ -35,6 +77,13 @@
       "Prerequisite": null,
       "Description": "You have a particular interest and expertise in exploring the Umbra, a tiny fraction of it's infinite mysteries are better understood to you.",
       "Reference": "WtA 295"
+    },
+    {
+      "Name": "Vandana 'The Impressario' Puri",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "A legendary party planner and Moot organizer. None in the Garou nation are better at running a rite, overseeing the first change or just bringing Garou together.",
+      "Reference": "SN 140"
     }
   ]
 }

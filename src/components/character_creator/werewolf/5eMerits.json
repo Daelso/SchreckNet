@@ -72,6 +72,16 @@
       ],
       "flaws": [
         {
+          "name": "Stench",
+          "cost": 1,
+          "desc": "Your breath and body odor are supernaturally foul."
+        },
+        {
+          "name": "Transparent",
+          "cost": 1,
+          "desc": "For some reason or another, you are an awful liar, do not gain any additional dots in subterfuge."
+        },
+        {
           "name": "Repulsive",
           "cost": 2,
           "desc": "Your appearance is exceptionally horrifying."
@@ -82,6 +92,46 @@
           "desc": "You aren't very good-looking."
         }
       ]
+    },
+    "Mythic": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Additional Ban",
+          "cost": 2,
+          "desc": "Choose another tribe from your own and suffer from their additional ban."
+        }
+      ]
+    },
+    "Other": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Knowledge Hungry",
+          "cost": 1,
+          "desc": "At creation, choose a few topics your character is obsessed with. When encountering them make a difficulty 3 willpower check to resist chasing the obsession."
+        }
+      ]
+    },
+    "Rites": {
+      "advantages": [
+        {
+          "name": "Improviser",
+          "cost": 1,
+          "desc": "You suffer two dice less penalties for performing Rites in suboptimal conditions."
+        },
+        {
+          "name": "Moot Caller",
+          "cost": 2,
+          "desc": "Select 5 social rites, you've mastered them. If allowed during a moot, you can assist in any rite so long as it is performed at a moot or substantially similar gathering of Garou."
+        },
+        {
+          "name": "Rite Master",
+          "cost": 3,
+          "desc": "You add +1 die to any dice pools involving Rite knowledge or performance."
+        }
+      ],
+      "flaws": []
     },
     "Safe House": {
       "advantages": [

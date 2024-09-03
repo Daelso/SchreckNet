@@ -6,6 +6,10 @@
         "description": "A ritual to reveal the targets greatest aptitudes, ambitions, desires and convictions."
       },
       {
+        "name": "Blood to Water",
+        "description": "A ritual to turn all spilled blood in an area into water."
+      },
+      {
         "name": "Blood Walk",
         "description": "An advanced version of A Taste for Blood, the caster is able to learn even more information about another Kindred from their vitae."
       },
@@ -48,6 +52,10 @@
       {
         "name": "Letter Ward",
         "description": "This ritual is used by Tremere, when they want to make sure the missives they send are protected."
+      },
+      {
+        "name": "Revealing the Crimson Trail",
+        "description": "A ritual to reveal any traces of spilled blood, no matter how old or insignificant."
       },
       {
         "name": "Seal the Brand",
@@ -299,6 +307,10 @@
         "description": "Conceals the caster's Kindred aura from Auspex."
       },
       {
+        "name": "Innocence's Veil",
+        "description": "Make any trace of diablerie on your part temporarily undetectable."
+      },
+      {
         "name": "Invisible Chains of Binding",
         "description": "Binds the victim in invisible chains, binding them to the spot for the duration of the ritual."
       },
@@ -337,6 +349,10 @@
         "description": "Allows the caster to coat their arms in vitae and light them on fire, being magically protected from the flames."
       },
       {
+        "name": "Atrocity's Release",
+        "description": "This ritual allows a Sorcerer to extract stolen Blood from a diablerist, reversing the latest diablerie."
+      },
+      {
         "name": "Dominion",
         "description": "Allows the Vampire to prevent the use of disciplines by anyone but themselves."
       },
@@ -360,6 +376,10 @@
       {
         "name": "Heart of Stone",
         "description": "Turns the caster's heart into stone, making them immune to stakes but completely numbs their sense of emotional and social awareness."
+      },
+      {
+        "name": "Reawakened Vigor",
+        "description": "Allows the caster to rapidly regain lost Blood Potency due to torpor."
       },
       {
         "name": "Shaft of Belated Dissolution",

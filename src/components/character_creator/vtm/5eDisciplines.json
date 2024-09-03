@@ -16,7 +16,12 @@
           "Plague of Beasts"
         ],
         ["Subsume Spirit", "Sway the Flock"],
-        ["Animal Dominion", "Drawing Out the Beast", "Coax the Bestial Temper"]
+        [
+          "Animal Dominion",
+          "Coax the Bestial Temper",
+          "Drawing Out the Beast",
+          "Spirit Walk"
+        ]
       ]
     },
     "Auspex": {
@@ -48,7 +53,7 @@
           "Koldunic Sorcery",
           "Shape the Sanguine Sacrament"
         ],
-        ["Extinguish Vitae", "Scour Secrets"],
+        ["Blood's Curse", "Extinguish Vitae", "Scour Secrets"],
         [
           "Blood of Potency",
           "Ripples of the Heart",
@@ -64,7 +69,7 @@
       "threat": 3,
       "resonance": "Choleric",
       "skills": [
-        ["Cat's Grace", "Rapid Reflexes"],
+        ["Cat's Grace", "Fluent Swiftness", "Rapid Reflexes"],
         ["Fleetness", "Rush Job"],
         ["Blink", "Traversal", "Weaving"],
         [
@@ -90,7 +95,7 @@
           "Tabula Rasa",
           "Implant Suggestion"
         ],
-        ["Mass Manipulation", "Terminal Decree "]
+        ["Lethe's Call", "Mass Manipulation", "Terminal Decree"]
       ]
     },
     "Fortitude": {
@@ -98,7 +103,7 @@
       "threat": 2,
       "resonance": "Melancholic",
       "skills": [
-        ["Resilience", "Unswayable Mind"],
+        ["Fluent Endurance", "Resilience", "Unswayable Mind"],
         [
           "Enduring Beasts",
           "Obdurate",
@@ -121,8 +126,9 @@
       "threat": 3,
       "resonance": "Empty",
       "skills": [
-        ["Cloak of Shadows", "Silence of Death"],
+        ["Cloak of Shadows", "Ensconce", "Silence of Death"],
         [
+          "Cache",
           "Chimerstry",
           "Doubletalk",
           "Ghost's Passing",
@@ -179,7 +185,7 @@
       "threat": 3,
       "resonance": "Choleric",
       "skills": [
-        ["Lethal Body", "Soaring Leap"],
+        ["Fluent Strength", "Lethal Body", "Soaring Leap"],
         ["Prowess", "Relentless Grasp"],
         ["Brutal Feed", "Spark of Rage", "Uncanny Grip", "Wrecker"],
         ["Draught of Might", "Crash Down"],
@@ -220,7 +226,9 @@
         ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
         ["Horrid Form", "Metamorphosis"],
         [
+          "Bloodform",
           "One With the Land",
+          "Master of Forms",
           "Mist Form",
           "The Heart of Darkness",
           "The Unfettered Heart"
@@ -247,7 +255,8 @@
           "Envelop",
           "Friend's List",
           "Mirror of Trust",
-          "Red's Flamin' Hot Sauce"
+          "Red's Flamin' Hot Sauce",
+          "Whiff-Its"
         ],
         [
           "Chemically-Induced Flashback",
@@ -268,11 +277,13 @@
           "Counterfeit - Level 3",
           "Discipline Channeling",
           "Hollow Leg",
+          "Juice Box",
           "Short Circuit",
           "Toxic Personality"
         ],
         [
           "Awaken the Sleeper",
+          "Beast Mode",
           "Counterfeit - Level 4",
           "Flowering Amaranth",
           "Moment of Clarity"

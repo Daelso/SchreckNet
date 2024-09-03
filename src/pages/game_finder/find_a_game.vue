@@ -95,33 +95,23 @@ export default defineComponent({
   components: { create_a_game },
   name: "findAGame",
   async created() {
-    if (window.location.href.includes("localhost")) {
-      this.baseUrl = "http://localhost:5000";
-    } else {
-      this.baseUrl = window.location.origin;
-    }
-    this.currentUser = await this.$axios
-      .get(this.baseUrl + "/user/currentUser", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        this.currentUser = resp.data;
-        console.log(this.currentUser);
-      })
-      .catch((err) => {
-        this.$q.notify({
-          message: "Log in to create or join a game!",
-          color: "primary",
-          position: "top",
-          avatar: nosImage,
-          timeout: 20000,
-        });
+    try {
+      const curUser = await this.$api.get("/user/currentUser");
+      this.currentUser = curUser.data;
+      console.log(this.currentUser);
+    } catch (err) {
+      this.$q.notify({
+        message: "Log in to create or join a game!",
+        color: "primary",
+        position: "top",
+        avatar: nosImage,
+        timeout: 20000,
       });
+    }
   },
 
   data() {
     return {
-      baseUrl: "",
       currentUser: null,
       nosImage,
       createDialog: false,

@@ -957,6 +957,17 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Spirit Walk":
+            if (
+              this.disciplines.Animalism === undefined ||
+              this.disciplines.Animalism < 4 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Subsume the Spirit"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Irresistible Voice":
             if (
               this.disciplines.Dominate === undefined ||
@@ -981,6 +992,20 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Lethe's Call":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 4 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Cloud Memory"
+              ) === false ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "The Forgetful Mind"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Flesh Crafting":
             if (
               this.disciplines.Dominate === undefined ||
@@ -992,7 +1017,35 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
-
+          case "Bloodform":
+            if (
+              this.disciplines["Blood Sorcery"] === undefined ||
+              this.disciplines["Blood Sorcery"] < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Master of Forms":
+            if (
+              this.disciplines["Blood Sorcery"] === undefined ||
+              this.disciplines["Blood Sorcery"] < 4 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Shapechange"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Cache":
+            if (
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 1 ||
+              this.disciplineSkillsObj.some((e) => e.skill !== "Ensconce") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Visceral Absorption":
             if (
               this.disciplines["Blood Sorcery"] === undefined ||
@@ -1348,6 +1401,18 @@ export default defineComponent({
             if (
               this.disciplineSkillsObj.some(
                 (e) => e.skill !== "Aura of Decay"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "The Shallow Slumber":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Passion Feast"
+              ) === false ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Touch of Oblivion"
               ) === false
             ) {
               arr.splice(i, 1);

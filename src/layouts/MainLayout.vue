@@ -48,8 +48,8 @@
         <q-item-label header> Create a Character </q-item-label>
         <EssentialLink />
         <comingSoonLinks />
-        <!-- <q-item-label header> Play the World of Darkness </q-item-label>
-        <q-item clickable style="color: red" :to="{ name: 'findGame' }">
+        <!-- <q-item-label header> Play the World of Darkness </q-item-label> -->
+        <!-- <q-item clickable style="color: red" :to="{ name: 'findGame' }">
           <q-item-section avatar>
             <q-icon color="secondary" name="casino" />
           </q-item-section>

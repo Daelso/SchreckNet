@@ -601,6 +601,7 @@ export default defineComponent({
       for (const property in this.baseSkills) {
         this.baseSkills[property] = 0;
       }
+      this.currentPoints = 1;
     },
   },
 });

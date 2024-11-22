@@ -231,6 +231,7 @@ export default defineComponent({
   setup(props) {
     const skillsDone = ref(props.info.skillsDone);
     const baseSkills = ref(props.info.baseSkills);
+    const intro_points = ref(props.info.specialtyPoints);
     const currentPoints = ref(props.info.specialtyPoints);
 
     const skillPoints = ref(props.info.skillPoints);
@@ -250,6 +251,7 @@ export default defineComponent({
       distribution,
       skillPoints,
       dialogRef,
+      intro_points,
       currentPoints,
       skillDistribution,
       skillsDone,
@@ -528,6 +530,7 @@ export default defineComponent({
       for (const property in this.baseSkills) {
         this.baseSkills[property] = 0;
       }
+      this.currentPoints = this.intro_points;
     },
 
     checkIfGood() {
@@ -601,7 +604,7 @@ export default defineComponent({
       for (const property in this.baseSkills) {
         this.baseSkills[property] = 0;
       }
-      this.currentPoints = 1;
+      this.currentPoints = this.intro_points;
     },
   },
 });

@@ -431,6 +431,18 @@
             <q-icon name="app:ankh" />
           </template>
         </q-input>
+
+        <q-select
+          v-model="humanity"
+          :options="humanityOptions"
+          label="Set Humanity"
+          label-color="primary"
+          bg-color="grey-3"
+          filled
+          color="secondary"
+          style="width: 50%; margin: auto; padding: 10px"
+          popup-content-style="background-color:#222831; color:white"
+        />
       </q-card>
       <tabs
         v-model:charName="charName"
@@ -611,6 +623,7 @@ export default {
       attributeInfo,
       altBane: this.kindred.alt_bane,
       skillInfo,
+      humanityOptions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       age: { label: this.kindred.age, bonusXp: 0 },
       archtypeModel: this.kindred.archetype,
       ambition: this.kindred.ambition,

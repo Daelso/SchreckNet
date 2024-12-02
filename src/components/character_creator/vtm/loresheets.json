@@ -549,6 +549,13 @@
       "Reference": "CbN 280"
     },
     {
+      "Name": "Machinations of Saulot",
+      "Type": "Bloodline",
+      "Prerequisite": ["Salubri", "Tremere"],
+      "Description": "This Loresheet gives bonuses and drawbacks shared between the Salubri and Tremere.",
+      "Reference": "Book of Nod 39"
+    },
+    {
       "Name": "Malkavian Family",
       "Type": "Other",
       "Prerequisite": ["Malkavian"],

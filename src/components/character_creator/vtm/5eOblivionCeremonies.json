@@ -3,33 +3,46 @@
     [
       {
         "name": "The Gift of False Life",
-        "description": "Raise either a single corpse or a group to perform simple single or repetitive tasks."
+        "description": "Raise either a single corpse or a group to perform simple single or repetitive tasks.",
+        "prereq": "Ashes to Ashes"
       },
       {
         "name": "Knowing Stone",
-        "description": "Identify the locations of specific ghosts. "
+        "description": "Identify the locations of specific ghosts.",
+        "prereq": "Ashes to Ashes"
       },
       {
         "name": "Summon Spirit",
-        "description": "Summon a spirit from the underworld."
+        "description": "Summon a spirit from the underworld.",
+        "prereq": "Binding Fetter"
       },
       {
         "name": "Traveler's Call",
-        "description": "Summon another Shalimite."
+        "description": "Summon another Shalimite.",
+        "prereq": "Oblivion Sight"
       }
     ],
     [
       {
-        "name": "Awaken the Homuncular Servant",
-        "description": "Create spies and stalkers out of body parts or small animals"
+        "name": "Ashen Relic",
+        "description": "Preservation of a Kindred's body.",
+        "prereq": "Ashes to Ashes"
       },
       {
+        "name": "Awaken the Homuncular Servant",
+        "description": "Create spies and stalkers out of body parts or small animals",
+        "prereq": "Where the Shroud Thins"
+      },
+
+      {
         "name": "Blinding the Alloy Eye",
-        "description": "Cameras cannot perceive the user clearly."
+        "description": "Cameras cannot perceive the user clearly.",
+        "prereq": "Shadow Cast"
       },
       {
         "name": "Compel Spirit",
-        "description": "Bend a wraith to a vampire's will. "
+        "description": "Bend a wraith to a vampire's will.",
+        "prereq": "Where the Shroud Thins"
       }
     ],
     [
@@ -60,6 +73,10 @@
       {
         "name": "The Shallow Slumber",
         "description": "Shorten the torpor of another kindred."
+      },
+      {
+        "name": "Wisdom of the Dead",
+        "description": "Gain information from a corpse skull or head. "
       }
     ],
     [
@@ -76,8 +93,8 @@
         "description": "Inflict the sensory experience of a wraith's death onto a target."
       },
       {
-        "name": "Split the Shroud",
-        "description": "Create a tear into a shroud to allow wraith and vampires to enter."
+        "name": "Split the Veil",
+        "description": "Create a tear into a shroud to allow wraiths to enter."
       }
     ],
     [

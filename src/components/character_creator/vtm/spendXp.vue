@@ -1387,6 +1387,27 @@ export default defineComponent({
               arr.splice(i, 1);
             }
             break;
+          case "Ashen Relic":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Ashes to Ashes"
+              ) === false ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Oblivion's Sight"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Knowing Stone":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Ashes to Ashes"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
           case "Name of the Father":
             if (
               this.disciplineSkillsObj.some(

@@ -606,6 +606,34 @@
                   Ritual Description: {{ ritualChoice.description }}
                 </div>
               </div>
+              <div
+                v-if="
+                  this.finalDisciplineObj.hasOwnProperty('Oblivion') &&
+                  this.finalDisciplineObj['Oblivion'] > 0 &&
+                  this.skillsSelected.length > 0 &&
+                  this.ceremonyOptions.length > 0
+                "
+              >
+                Choose: 1
+                <q-select
+                  v-model="ceremonyChoice"
+                  label="Select an Oblivion Ritual"
+                  :options="ceremonyOptions"
+                  bg-color="grey-3"
+                  filled
+                  style="margin-bottom: 20px; width: 100%"
+                  class="select"
+                  map-options
+                  label-color="primary"
+                  option-label="name"
+                  color="secondary"
+                  @update:model-value="ceremonyPicked(ceremonyChoice)"
+                  popup-content-style="background-color:#222831; color:white"
+                />
+                <div class="q-pa-md">
+                  Ceremony Description: {{ ceremonyChoice.description }}
+                </div>
+              </div>
               <q-list bordered separator>
                 <q-item
                   v-for="(skill, key) in skillsSelected"
@@ -687,6 +715,7 @@ import nosImage from "../../../assets/images/Nosfer_logo.png";
 import meritJSON from "../vtm/5eMerits.json";
 import clanBanes from "../vtm/5eClanBanes.json";
 import bloodRituals from "../vtm/5eBloodRituals.json";
+import oblivionCeremonies from "../vtm/5eOblivionCeremonies.json";
 
 export default defineComponent({
   name: "5eClanSelect",
@@ -799,6 +828,7 @@ export default defineComponent({
       advantages,
       allPredatorTypes,
       bloodRituals,
+      oblivionCeremonies,
       clan,
       clanBane,
       clanBanes,
@@ -916,6 +946,7 @@ export default defineComponent({
       bonusSpecs: "",
       caitiffThird: "",
       ritualChoice: "",
+      ceremonyChoice: "",
     };
   },
   methods: {
@@ -1958,6 +1989,52 @@ export default defineComponent({
       this.skillsSelected.push(newSkill);
     },
 
+    ceremonyPicked(skill) {
+      let allowedLen = 0;
+
+      //Adds extra slot for the ceremony
+      if (
+        this.finalDisciplineObj.hasOwnProperty("Oblivion") &&
+        this.finalDisciplineObj["Oblivion"] > 0
+      ) {
+        allowedLen++;
+      }
+      for (const property in this.finalDisciplineObj) {
+        if (isNaN(this.finalDisciplineObj[property])) {
+          continue;
+        }
+        allowedLen += this.finalDisciplineObj[property];
+      }
+
+      if (this.skillsSelected.length === allowedLen) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message:
+            "You have selected all possible skills, please remove one to pick again.",
+        });
+        return;
+      }
+
+      if (
+        this.skillsSelected.filter((e) => e.skill === "Ceremony: " + skill.name)
+          .length > 0
+      ) {
+        this.$q.notify({
+          type: "negative",
+          textColor: "white",
+          message: "You have already selected this ceremony!",
+        });
+        return;
+      }
+
+      let newSkill = {
+        discipline: "Oblivion",
+        skill: "Ceremony: " + skill.name,
+      };
+      this.skillsSelected.push(newSkill);
+    },
+
     skillPicked(skill, discipline) {
       let allowedLen = 0;
 
@@ -1965,6 +2042,14 @@ export default defineComponent({
       if (
         this.finalDisciplineObj.hasOwnProperty("Blood Sorcery") &&
         this.finalDisciplineObj["Blood Sorcery"] > 0
+      ) {
+        allowedLen++;
+      }
+
+      //Adds extra slot for the ceremony
+      if (
+        this.finalDisciplineObj.hasOwnProperty("Oblivion") &&
+        this.finalDisciplineObj["Oblivion"] > 0
       ) {
         allowedLen++;
       }
@@ -3262,6 +3347,28 @@ export default defineComponent({
     },
   },
   computed: {
+    ceremonyOptions() {
+      let mergedOptions = [];
+
+      if (this.skillsSelected.length < 1) {
+        return [];
+      }
+
+      this.oblivionCeremonies.Ceremonies[0].forEach((x) => {
+        mergedOptions.push(x);
+      });
+
+      mergedOptions = mergedOptions.filter((ceremony) => {
+        if (ceremony.hasOwnProperty("prereq") && ceremony.prereq !== null) {
+          return this.skillsSelected.some(
+            (obj) => obj.skill === ceremony.prereq
+          );
+        }
+        return false;
+      });
+
+      return mergedOptions;
+    },
     allThinBloodOptions() {
       //fix this its beyond horrible
       let arr = [];

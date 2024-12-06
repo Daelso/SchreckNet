@@ -221,8 +221,6 @@ export default defineComponent({
         this.game_line === "" ||
         this.game_description.trim() === ""
       ) {
-        console.log(this.min_players);
-        console.log(this.max_players);
         return false;
       } else {
         return true;
@@ -232,14 +230,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.q-field__counter {
-  color: white !important;
-  background-color: white;
-}
-
-.q-field__bottom row {
-  color: white;
-  background-color: white;
-}
-</style>
+<style scoped></style>

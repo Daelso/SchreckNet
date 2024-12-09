@@ -1,9 +1,9 @@
 {
   "name": "SchreckNet",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "A World of Darkness character creator, manager and exporter. We offer characters from Vampire: The Masquerade (VtM 5e), Werewolf: The Apocalypse (WtA 5e), Hunter: The Reckoning (HtR 5e), and many other White Wolf RPG lines.",
   "productName": "SchreckNet",
-  "author": "Chase Murtaugh <Chasemurtaugh@gmail.com>",
+  "author": "xD <xd@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "quasar dev",
@@ -27,7 +27,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "downloadjs": "^1.4.7",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "express-rate-limit": "^6.6.0",
     "helmet": "^6.0.0",
     "jsonwebtoken": "^9.0.0",

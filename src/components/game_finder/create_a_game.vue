@@ -11,17 +11,19 @@
         filled
         label="Game Title"
         bg-color="grey-3"
+        maxlength="75"
         class="select"
         label-color="primary"
         v-model="game_title"
+        counter
       />
 
       <q-select
         v-model="game_line"
         :options="[
-          { label: 'Vampire: The Masquerade', value: 1 },
-          { label: 'Werewolf: The Apocalypse', value: 2 },
-          { label: 'Hunter: The Reckoning', value: 3 },
+          { label: 'Vampire: the Masquerade', value: 1 },
+          { label: 'Werewolf: the Apocalypse', value: 2 },
+          { label: 'Hunter: the Reckoning', value: 3 },
         ]"
         label="Which Game Line?"
         label-color="primary"
@@ -76,6 +78,10 @@
         class="select"
         label-color="primary"
         v-model="game_description"
+        counter
+        maxlength="900"
+        bottom-slots
+        counter-color="white"
       />
       <div>Include how you would like potential players to contact you</div>
     </q-card-section>
@@ -85,13 +91,14 @@
       style="display: flex; flex-direction: column"
     >
       <q-btn
-        style="color: white"
+        style="color: white; background-color: #0e1012"
         flat
         label="Create Game"
-        :disable="validateCreate"
+        :disable="!validateCreate"
+        @click="create_game()"
         v-close-popup
       >
-        <q-tooltip v-if="validateCreate"
+        <q-tooltip v-if="!validateCreate"
           >Please fill out all required fields.</q-tooltip
         >
       </q-btn>
@@ -168,20 +175,12 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "createAGame",
   async created() {
-    if (window.location.href.includes("localhost")) {
-      this.baseUrl = "http://localhost:5000";
-    } else {
-      this.baseUrl = window.location.origin;
-    }
-    const styleReq = await this.$axios.get(
-      this.baseUrl + "/game_finder/styles"
-    );
+    const styleReq = await this.$api.get("/game_finder/styles");
     this.style_options = styleReq.data;
     console.log(this.style_options);
   },
   data() {
     return {
-      baseUrl: null,
       game_title: "",
       game_style: "",
       min_players: 1,
@@ -192,12 +191,31 @@ export default defineComponent({
     };
   },
 
-  methods: {},
+  methods: {
+    async create_game() {
+      try {
+        this.$q.loading.show();
+        const new_game = {
+          title: this.game_title,
+          style: this.game_style,
+          min: this.min_players,
+          max: this.max_players,
+          game_line: this.game_line,
+          desc: this.game_description,
+        };
+        await this.$api.post("/games/new_game", new_game);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+  },
   computed: {
     validateCreate() {
       if (
         this.game_title.trim() === "" ||
-        this.game_style.trim() === "" ||
+        !this.game_style ||
         this.min_players === null ||
         this.max_players === null ||
         this.game_line === "" ||
@@ -211,3 +229,5 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped></style>

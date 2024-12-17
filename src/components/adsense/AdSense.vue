@@ -34,7 +34,6 @@ export default {
     },
   },
   mounted() {
-    console.log(window);
     if (window.adsbygoogle) {
       window.adsbygoogle.push({});
     } else {

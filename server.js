@@ -9,7 +9,25 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const cors = require("cors");
 app.use(compression());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": [
+          "'self'",
+          "pagead2.googlesyndication.com",
+          "*.google.com",
+          "*.google-analytics.com",
+          "*.googlesyndication.com",
+          "*.googleadservices.com",
+          "*.googletagservices.com",
+          "*.googleapis.com",
+        ],
+        "style-src": null,
+      },
+    },
+  })
+);
 app.use(cookieParser());
 
 app.use(history());

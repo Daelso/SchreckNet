@@ -1,5 +1,10 @@
 <template>
   <div class="q-pa-md" style="max-width: 1400px">
+    <AdSense
+      ad-client="ca-pub-2718109649710977"
+      ad-slot="1234567890"
+      :style="{ display: 'block', width: '100%', height: '200px' }"
+    />
     <div class="banner">Elysium's Newest Kindred</div>
 
     <Suspense>
@@ -56,6 +61,7 @@ import nosImage from "../assets/images/Nosfer_logo.png";
 import vampCards from "./character_creator/vtm/vampireCards.vue";
 import huntCards from "./character_creator/hunter/hunterCards.vue";
 import garouCards from "./character_creator/werewolf/garouCards.vue";
+import AdSense from "components/adsense/AdSense.vue";
 
 import { useMeta } from "quasar";
 
@@ -74,7 +80,7 @@ const metaData = {
 };
 
 export default {
-  components: { vampCards, huntCards, garouCards },
+  components: { vampCards, huntCards, garouCards, AdSense },
   setup() {
     useMeta(metaData);
 

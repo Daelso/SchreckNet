@@ -19,7 +19,15 @@ module.exports = configure(function (ctx) {
 
     // https://v2.quasar.dev/quasar-cli-webpack/prefetch-feature
     // preFetch: true,
-
+    metaVariables: {
+      metaTags: [
+        {
+          name: "Content-Security-Policy",
+          content:
+            "script-src 'self' https://pagead2.googlesyndication.com; frame-src https://googleads.g.doubleclick.net https://*.googlesyndication.com;",
+        },
+      ],
+    },
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files

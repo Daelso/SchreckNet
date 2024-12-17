@@ -227,5 +227,13 @@ export default defineComponent({
         return resp.data;
       });
   },
+
+  watch: {
+    $route() {
+      if (window.adsbygoogle) {
+        window.adsbygoogle.push({});
+      }
+    },
+  },
 });
 </script>

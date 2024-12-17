@@ -20,10 +20,15 @@ app.use(express.urlencoded({ extended: true }));
 const bodyParser = require("body-parser");
 const lib = require("./server/lib"); //This is all custom functions
 //for dev use only, very insecure in a prod env, this is just to prevent CORS errors. Origin is your vue clients port
-const allowedOriginsDev = ["http://localhost:8080"];
+
+const allowedOriginsDev = [
+  "http://localhost:8080",
+  "https://pagead2.googlesyndication.com",
+];
 const allowedOriginsProd = [
   "https://schrecknet-live.herokuapp.com",
   "https://daelso.github.io",
+  "https://pagead2.googlesyndication.com",
 ];
 
 app.use(lib.getLimiter);

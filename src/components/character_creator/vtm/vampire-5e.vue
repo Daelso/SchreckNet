@@ -584,6 +584,7 @@ export default {
   components: {
     tabs,
   },
+
   setup() {
     const router = useRouter();
     const axios = require("axios");

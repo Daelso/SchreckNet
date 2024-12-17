@@ -11,21 +11,7 @@ const cors = require("cors");
 app.use(compression());
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        "script-src": [
-          "'self'",
-          "pagead2.googlesyndication.com",
-          "*.google.com",
-          "*.google-analytics.com",
-          "*.googlesyndication.com",
-          "*.googleadservices.com",
-          "*.googletagservices.com",
-          "*.googleapis.com",
-        ],
-        "style-src": null,
-      },
-    },
+    contentSecurityPolicy: false,
   })
 );
 app.use(cookieParser());

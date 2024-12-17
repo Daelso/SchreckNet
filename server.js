@@ -9,11 +9,7 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const cors = require("cors");
 app.use(compression());
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-  })
-);
+app.use(helmet());
 app.use(cookieParser());
 
 app.use(history());

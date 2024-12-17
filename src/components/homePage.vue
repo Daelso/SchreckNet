@@ -76,11 +76,18 @@ const metaData = {
       content:
         "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse, hunter the reckoning, htr",
     },
+    script: {
+      adSense: {
+        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2718109649710977",
+        defer: true,
+      },
+    },
   },
 };
 
 export default {
   components: { vampCards, huntCards, garouCards, AdSense },
+
   setup() {
     useMeta(metaData);
 

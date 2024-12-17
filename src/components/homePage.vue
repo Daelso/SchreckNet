@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md" style="max-width: 1400px">
     <AdSense
-      ad-client="ca-pub-2718109649710977"
+      ad-client="pub-2718109649710977"
       ad-slot="1234567890"
       :style="{ display: 'block', width: '100%', height: '200px' }"
     />

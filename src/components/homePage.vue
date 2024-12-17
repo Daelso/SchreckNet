@@ -1,10 +1,5 @@
 <template>
   <div class="q-pa-md" style="max-width: 1400px">
-    <AdSense
-      ad-client="ca-pub-2718109649710977"
-      ad-slot="1234567890"
-      :style="{ display: 'block', width: '100%', height: '200px' }"
-    />
     <div class="banner">Elysium's Newest Kindred</div>
 
     <Suspense>
@@ -61,7 +56,6 @@ import nosImage from "../assets/images/Nosfer_logo.png";
 import vampCards from "./character_creator/vtm/vampireCards.vue";
 import huntCards from "./character_creator/hunter/hunterCards.vue";
 import garouCards from "./character_creator/werewolf/garouCards.vue";
-import AdSense from "components/adsense/AdSense.vue";
 
 import { useMeta } from "quasar";
 
@@ -76,17 +70,11 @@ const metaData = {
       content:
         "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse, hunter the reckoning, htr",
     },
-    script: {
-      adSense: {
-        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2718109649710977",
-        defer: true,
-      },
-    },
   },
 };
 
 export default {
-  components: { vampCards, huntCards, garouCards, AdSense },
+  components: { vampCards, huntCards, garouCards },
 
   setup() {
     useMeta(metaData);

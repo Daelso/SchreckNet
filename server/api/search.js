@@ -11,7 +11,7 @@ router.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const SCHEMA = "login";
+const SCHEMA = "ey140u9j4rs9xcib";
 
 /**
  * Generic search function for different tables with pagination (most recent first)

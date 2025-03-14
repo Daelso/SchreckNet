@@ -1030,11 +1030,13 @@ export default {
               potency: this.generation.potency,
               xp: this.xp,
               edit: this.edit,
+              flaws_remaining: this.flaws,
             },
           },
         })
         .onOk((data) => {
           this.xp = data.xp;
+          this.flaws = this.flaws + data.flaws_remaining.value;
           this.advantages = this.advantages + data.advantages.value;
           this.generation.potency = data.potency;
           this.disciplines = data.disciplines;

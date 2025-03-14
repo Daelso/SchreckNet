@@ -3,7 +3,7 @@ const sequelize = require("../database");
 const { QueryTypes } = require("sequelize");
 let router = express.Router();
 
-const SCHEMA = "ey140u9j4rs9xcib";
+const SCHEMA = "login";
 
 /**
  * Generic search function for different tables with pagination (most recent first)
@@ -59,9 +59,9 @@ async function searchTable(table, conditions, page = 1, res) {
       replacements: queryParams,
       type: QueryTypes.SELECT,
     });
-    const resultsPerPage = 25;
+
     const totalCount = countResults[0].totalCount;
-    const totalPages = Math.ceil(totalCount / resultsPerPage);
+    const totalPages = Math.ceil(totalCount / limit);
 
     return res.status(200).json({ results: results, total_pages: totalPages });
   } catch (err) {

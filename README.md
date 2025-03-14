@@ -1,6 +1,6 @@
 # SchreckNet (WoD Character Creator)
 
-This is a character creator app based on the World of Darkness (Vampire: the Masquerade, Werewolf: the Apocalypse, etc) line of games. It features book-legal character creation, character saving and sharing, export to PDF and more.
+This is a character creator app based on the World of Darkness (Vampire: the Masquerade, Werewolf: the Apocalypse, etc) line of games. It features book-legal character creation, character saving and sharing, export to PDF and more. I made this while learning JS so some of the code is absolutely abysmal. Look more towards Werewolf code and stuff that came after for a semblence of decent work.
 
 https://discord.gg/CvUuaM84Ng
 

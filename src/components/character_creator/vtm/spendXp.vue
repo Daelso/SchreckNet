@@ -270,6 +270,8 @@ export default defineComponent({
     let disciplineSkillsObj = ref(props.info.disciplineSkills);
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
+    let flaws_remaining = ref(0);
+
     return {
       dialogRef,
       cult: props.info.cult,
@@ -284,6 +286,7 @@ export default defineComponent({
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
+          flaws_remaining: flaws_remaining,
         });
       },
       range,
@@ -293,6 +296,7 @@ export default defineComponent({
 
       //Begin actual vars below
       advantagePoints,
+      flaws_remaining,
       oblivionCeremonies,
       cost: ref(0),
       localXP,
@@ -351,6 +355,9 @@ export default defineComponent({
           break;
         case "Clan Discipline":
           this.cost = (this.disciplines[this.clanDiscInput] + 1) * 5;
+          break;
+        case "Flaw":
+          this.cost = this.dotsInput * 3;
           break;
         case "Oblivion Ceremony":
           this.cost = this.ceremonyLevel * 3;
@@ -513,6 +520,10 @@ export default defineComponent({
             skill: this.disciplinePower,
           });
           break;
+        case "Flaw":
+          this.flaws_remaining = this.flaws_remaining + this.dotsInput;
+
+          break;
         case "Oblivion Ceremony":
           if (
             this.disciplineSkillsObj.filter(
@@ -587,6 +598,7 @@ export default defineComponent({
         "Blood Sorcery Ritual",
         "Caitiff Discipline",
         "Clan Discipline",
+        "Flaw",
         "Oblivion Ceremony",
         "Out of Clan Discipline",
         "Skills",
@@ -634,6 +646,9 @@ export default defineComponent({
           break;
         case "Clan Discipline":
           // code block
+          break;
+        case "Flaw":
+          costRange = Math.floor(this.localXP / 3);
           break;
         case "Out of Clan Discipline":
           // code block

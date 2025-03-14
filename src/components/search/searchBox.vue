@@ -8,7 +8,13 @@
         bg-color="white"
         color="secondary"
         v-model="splatPick"
-        @update:model-value="this.$emit('update:splat', this.splatPick)"
+        @update:model-value="
+          () => {
+            handleChange();
+
+            this.$emit('update:splat', this.splatPick);
+          }
+        "
         :options="splatOptions"
         label="Select a Splat"
         popup-content-style="background-color:#222831; color:white"
@@ -27,7 +33,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="clanPick"
-        @update:model-value="this.$emit('update:clan', this.clanPick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:clan', this.clanPick);
+          }
+        "
         :options="clanOptions"
         label="Search by Clan"
         popup-content-style="background-color:#222831; color:white"
@@ -40,7 +51,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="predatorPick"
-        @update:model-value="this.$emit('update:predator', this.predatorPick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:predator', this.predatorPick);
+          }
+        "
         :options="predatorOptions"
         label="Search by Predator Type"
         popup-content-style="background-color:#222831; color:white"
@@ -55,7 +71,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="drivePick"
-        @update:model-value="this.$emit('update:drive', this.drivePick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:drive', this.drivePick);
+          }
+        "
         :options="driveOptions"
         option-label="name"
         label="Search by Drive"
@@ -70,7 +91,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="creedPick"
-        @update:model-value="this.$emit('update:creed', this.creedPick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:creed', this.creedPick);
+          }
+        "
         :options="creedOptions"
         option-label="name"
         label="Search by Creed"
@@ -86,7 +112,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="tribePick"
-        @update:model-value="this.$emit('update:tribe', this.tribePick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:tribe', this.tribePick);
+          }
+        "
         :options="tribeOptions"
         option-label="tribe_name"
         option-value="tribe_id"
@@ -101,7 +132,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="auspicePick"
-        @update:model-value="this.$emit('update:auspice', this.auspicePick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:auspice', this.auspicePick);
+          }
+        "
         :options="auspiceOptions"
         label="Search by Auspice"
         option-label="auspice_name"
@@ -118,7 +154,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="pickedUser"
-        @update:model-value="this.$emit('update:user', this.pickedUser)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:user', this.pickedUser);
+          }
+        "
         :options="userOptions"
         label="Search by User"
         input-debounce="0"
@@ -419,13 +460,7 @@ export default defineComponent({
         this.$q.loading.hide();
       }
     },
-    handleSplatChange() {
-      this.totalPages = null;
-    },
     handleChange() {
-      this.totalPages = null;
-    },
-    handleUserChange() {
       this.totalPages = null;
     },
   },

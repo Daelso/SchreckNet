@@ -3,80 +3,94 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
 const sequelize = require("../database");
+const { QueryTypes } = require("sequelize");
 let router = express.Router();
+
 router.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const lib = require("../lib");
 
-//Route is base/search/
+const SCHEMA = "ey140u9j4rs9xcib";
 
-router.route("/vampires").post(async (req, res) => {
+/**
+ * Generic search function for different tables
+ */
+async function searchTable(table, conditions, res) {
   try {
-    const params = req.body.searchParams;
-    let baseQuery = "SELECT * FROM ey140u9j4rs9xcib.vampires WHERE 1=1";
-    if (params.user) {
-      baseQuery += ` AND created_by = ${params.user}`;
-    }
-    if (params.clan) {
-      baseQuery += ` AND clan = "${params.clan}"`;
-    }
-    if (params.predator) {
-      baseQuery += ` AND predator_type = "${params.predator}"`;
-    }
-    const [results, metadata] = await sequelize.sequelize.query(baseQuery);
+    const queryConditions = [];
+    const queryParams = {};
 
-    return res.status(200).send(results);
+    for (const key in conditions) {
+      if (conditions[key] && conditions[key] !== "") {
+        if (key.includes(".")) {
+          const [jsonCol, jsonKey] = key.split(".");
+          const paramKey = key.replace(".", "_");
+          queryConditions.push(
+            `JSON_UNQUOTE(JSON_EXTRACT(${jsonCol}, '$.${jsonKey}')) = :${paramKey}`
+          );
+          queryParams[paramKey] = conditions[key];
+        } else {
+          queryConditions.push(`${key} = :${key}`);
+          queryParams[key] = conditions[key];
+        }
+      }
+    }
+
+    const query = `
+      SELECT * FROM ${SCHEMA}.${table}
+      ${queryConditions.length ? "WHERE " + queryConditions.join(" AND ") : ""}
+    `;
+
+    const results = await sequelize.sequelize.query(query, {
+      replacements: queryParams,
+      type: QueryTypes.SELECT,
+    });
+
+    return res.status(200).json(results);
   } catch (err) {
-    console.log(err);
-    return res.status(404).send("Not found");
+    console.error(`Error fetching ${table}:`, err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
+}
+
+// Search Routes
+router.post("/vampires", async (req, res) => {
+  const params = req.body.searchParams || {};
+  return searchTable(
+    "vampires",
+    {
+      created_by: params.user,
+      clan: params.clan,
+      predator_type: params.predator,
+    },
+    res
+  );
 });
 
-router.route("/hunters").post(async (req, res) => {
-  try {
-    const params = req.body.searchParams;
-    let baseQuery = "SELECT * FROM ey140u9j4rs9xcib.hunters WHERE 1=1";
-    if (params.user) {
-      baseQuery += ` AND created_by = ${params.user}`;
-    }
-    if (params.drive) {
-      baseQuery += ` AND drive->"$.name" = "${params.drive.name}"`;
-    }
-    if (params.creed) {
-      baseQuery += ` AND creed->"$.name" = "${params.creed.name}"`;
-    }
-
-    const [results, metadata] = await sequelize.sequelize.query(baseQuery);
-
-    return res.status(200).send(results);
-  } catch (err) {
-    console.log(err);
-    return res.status(404).send("Not found");
-  }
+router.post("/hunters", async (req, res) => {
+  const params = req.body.searchParams || {};
+  return searchTable(
+    "hunters",
+    {
+      created_by: params.user,
+      "drive.name": params.drive?.name,
+      "creed.name": params.creed?.name,
+    },
+    res
+  );
 });
 
-router.route("/garou").post(async (req, res) => {
-  try {
-    const params = req.body.searchParams;
-    let baseQuery = "SELECT * FROM ey140u9j4rs9xcib.garou WHERE 1=1";
-    if (params.user) {
-      baseQuery += ` AND created_by = ${params.user}`;
-    }
-    if (params.tribe) {
-      baseQuery += ` AND tribe->"$.tribe_id" = "${params.tribe.tribe_id}"`;
-    }
-    if (params.auspice) {
-      baseQuery += ` AND auspice->"$.auspice_id" = "${params.auspice.auspice_id}"`;
-    }
-
-    const [results, metadata] = await sequelize.sequelize.query(baseQuery);
-
-    return res.status(200).send(results);
-  } catch (err) {
-    console.log(err);
-    return res.status(404).send("Not found");
-  }
+router.post("/garou", async (req, res) => {
+  const params = req.body.searchParams || {};
+  return searchTable(
+    "garou",
+    {
+      created_by: params.user,
+      "tribe.tribe_id": params.tribe?.tribe_id,
+      "auspice.auspice_id": params.auspice?.auspice_id,
+    },
+    res
+  );
 });
 
-module.exports = router; //Exports our routes
+module.exports = router;

@@ -5,12 +5,10 @@ const express = require("express"),
 const compression = require("compression");
 const helmet = require("helmet");
 const app = express();
-const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const cors = require("cors");
 app.use(compression());
 app.use(helmet());
-app.use(cookieParser());
 
 app.use(history());
 app.use(serveStatic(__dirname + "/dist/spa"));
@@ -65,8 +63,8 @@ const searchRoutes = require("./server/api/search");
 app.use("/search", searchRoutes);
 const garouRoutes = require("./server/api/garou");
 app.use("/garou", garouRoutes);
-const ladRoutes = require("./server/api/showlads");
-app.use("/showlads", ladRoutes);
+// const ladRoutes = require("./server/api/showlads");
+// app.use("/showlads", ladRoutes); /////dead and gonneeee, dead and goneeee
 const gameFinderRoutes = require("./server/api/game_finder");
 app.use("/game_finder", gameFinderRoutes);
 const gameRoutes = require("./server/api/games");

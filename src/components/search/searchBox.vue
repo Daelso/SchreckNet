@@ -175,7 +175,12 @@
       text-color="white"
       label="Search"
       :disable="!this.splatPick"
-      @click="this.doSearch()"
+      @click="
+        () => {
+          this.currentPage = 1;
+          this.doSearch();
+        }
+      "
       style="margin-bottom: 10px"
     >
       <q-tooltip v-if="!this.splatPick" class="bg-dark text-body2"

@@ -1,15 +1,7 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
-require("dotenv").config();
-const app = express();
 const sequelize = require("../database");
 const { QueryTypes } = require("sequelize");
-const Vampires = require("../models/vampires");
 let router = express.Router();
-
-router.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const SCHEMA = "ey140u9j4rs9xcib";
 

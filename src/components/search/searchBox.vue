@@ -173,7 +173,7 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+
 import clans from "../character_creator/vtm/5eClanBanes.json";
 import predatorTypes from "../character_creator/vtm/predatorTypes.json";
 import driveTypes from "../character_creator/hunter/drives.json";

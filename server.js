@@ -5,10 +5,12 @@ const express = require("express"),
 const compression = require("compression");
 const helmet = require("helmet");
 const app = express();
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const cors = require("cors");
 app.use(compression());
 app.use(helmet());
+app.use(cookieParser());
 
 app.use(history());
 app.use(serveStatic(__dirname + "/dist/spa"));

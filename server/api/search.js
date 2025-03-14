@@ -3,7 +3,7 @@ const sequelize = require("../database");
 const { QueryTypes } = require("sequelize");
 let router = express.Router();
 
-const SCHEMA = "login";
+const SCHEMA = "ey140u9j4rs9xcib";
 
 /**
  * Generic search function for different tables with pagination (most recent first)

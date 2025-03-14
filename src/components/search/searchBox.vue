@@ -407,7 +407,6 @@ export default defineComponent({
           this.$emit("update:kindred", this.vampires.data.results);
           this.$emit("update:hunter", []);
           this.$emit("update:garou", []);
-          console.log(this.vampires.data);
           this.totalPages = this.vampires.data.total_pages;
         }
 
@@ -416,6 +415,7 @@ export default defineComponent({
             game: this.splatPick,
             drive: this.drivePick,
             creed: this.creedPick,
+            page: this.currentPage,
           };
 
           if (this.pickedUser !== null) {
@@ -440,6 +440,7 @@ export default defineComponent({
             game: this.splatPick,
             tribe: this.tribePick,
             auspice: this.auspicePick,
+            page: this.currentPage,
           };
 
           if (this.pickedUser !== null) {

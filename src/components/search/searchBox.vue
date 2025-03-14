@@ -8,7 +8,13 @@
         bg-color="white"
         color="secondary"
         v-model="splatPick"
-        @update:model-value="this.$emit('update:splat', this.splatPick)"
+        @update:model-value="
+          () => {
+            handleChange();
+
+            this.$emit('update:splat', this.splatPick);
+          }
+        "
         :options="splatOptions"
         label="Select a Splat"
         popup-content-style="background-color:#222831; color:white"
@@ -27,7 +33,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="clanPick"
-        @update:model-value="this.$emit('update:clan', this.clanPick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:clan', this.clanPick);
+          }
+        "
         :options="clanOptions"
         label="Search by Clan"
         popup-content-style="background-color:#222831; color:white"
@@ -40,7 +51,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="predatorPick"
-        @update:model-value="this.$emit('update:predator', this.predatorPick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:predator', this.predatorPick);
+          }
+        "
         :options="predatorOptions"
         label="Search by Predator Type"
         popup-content-style="background-color:#222831; color:white"
@@ -55,7 +71,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="drivePick"
-        @update:model-value="this.$emit('update:drive', this.drivePick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:drive', this.drivePick);
+          }
+        "
         :options="driveOptions"
         option-label="name"
         label="Search by Drive"
@@ -70,7 +91,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="creedPick"
-        @update:model-value="this.$emit('update:creed', this.creedPick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:creed', this.creedPick);
+          }
+        "
         :options="creedOptions"
         option-label="name"
         label="Search by Creed"
@@ -86,7 +112,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="tribePick"
-        @update:model-value="this.$emit('update:tribe', this.tribePick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:tribe', this.tribePick);
+          }
+        "
         :options="tribeOptions"
         option-label="tribe_name"
         option-value="tribe_id"
@@ -101,7 +132,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="auspicePick"
-        @update:model-value="this.$emit('update:auspice', this.auspicePick)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:auspice', this.auspicePick);
+          }
+        "
         :options="auspiceOptions"
         label="Search by Auspice"
         option-label="auspice_name"
@@ -118,7 +154,12 @@
         color="secondary"
         bg-color="grey-3"
         v-model="pickedUser"
-        @update:model-value="this.$emit('update:user', this.pickedUser)"
+        @update:model-value="
+          () => {
+            this.handleChange();
+            this.$emit('update:user', this.pickedUser);
+          }
+        "
         :options="userOptions"
         label="Search by User"
         input-debounce="0"
@@ -141,6 +182,44 @@
         >Please select a splat first.</q-tooltip
       >
     </q-btn>
+  </div>
+
+  <!-- Pagination Buttons -->
+  <div
+    class="flex flex-center q-pa-sm"
+    style="flex-direction: column"
+    v-if="totalPages"
+  >
+    <div class="q-pa-md flex flex-center" style="gap: 10px">
+      <q-btn
+        label="First Page"
+        color="primary"
+        @click="goToPage(1)"
+        :disable="currentPage === 1"
+      />
+      <q-btn
+        label="Previous"
+        color="secondary"
+        @click="goToPage(currentPage - 1)"
+        :disable="currentPage === 1"
+      />
+      <q-btn
+        label="Next"
+        color="secondary"
+        @click="goToPage(currentPage + 1)"
+        :disable="currentPage === totalPages"
+      />
+      <q-btn
+        label="Last Page"
+        color="primary"
+        @click="goToPage(totalPages)"
+        :disable="currentPage === totalPages"
+      />
+    </div>
+    <!-- Displaying Current Page and Total Pages -->
+    <div class="q-pa-md flex flex-center">
+      <p>Page {{ currentPage }} of {{ totalPages }}</p>
+    </div>
   </div>
 </template>
 
@@ -241,6 +320,8 @@ export default defineComponent({
 
     return {
       splatOptions,
+      currentPage: 1,
+      totalPages: null,
       tribeOptions,
       auspiceOptions,
       userOptions: userList,
@@ -284,87 +365,103 @@ export default defineComponent({
   },
 
   methods: {
+    async goToPage(page) {
+      this.currentPage = page;
+      await this.doSearch();
+    },
+
     async doSearch() {
       this.loading = true;
+      this.$q.loading.show({
+        delay: 400,
+      });
       this.vampires = [];
       this.hunters = [];
       this.garous = [];
       let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
+      try {
+        if (this.splatPick === "Vampire: the Masquerade") {
+          let searchParams = {
+            game: this.splatPick,
+            clan: this.clanPick,
+            predator: this.predatorPick,
+            page: this.currentPage,
+          };
 
-      if (this.splatPick === "Vampire: the Masquerade") {
-        let searchParams = {
-          game: this.splatPick,
-          clan: this.clanPick,
-          predator: this.predatorPick,
-        };
+          if (this.pickedUser !== null) {
+            searchParams.user = this.pickedUser.user_id;
+          }
 
-        if (this.pickedUser !== null) {
-          searchParams.user = this.pickedUser.user_id;
+          this.vampires = await this.$api.post(
+            baseUrl + "/search/vampires",
+            { searchParams },
+            {
+              withCredentials: true,
+            }
+          );
+          this.$emit("update:kindred", this.vampires.data.results);
+          this.$emit("update:hunter", []);
+          this.$emit("update:garou", []);
+          console.log(this.vampires.data);
+          this.totalPages = this.vampires.data.total_pages;
         }
 
-        this.vampires = await this.$axios.post(
-          baseUrl + "/search/vampires",
-          { searchParams },
-          {
-            withCredentials: true,
+        if (this.splatPick === "Hunter: the Reckoning") {
+          let searchParams = {
+            game: this.splatPick,
+            drive: this.drivePick,
+            creed: this.creedPick,
+          };
+
+          if (this.pickedUser !== null) {
+            searchParams.user = this.pickedUser.user_id;
           }
-        );
-        this.$emit("update:kindred", this.vampires.data);
-        this.$emit("update:hunter", []);
-        this.$emit("update:garou", []);
-      }
 
-      if (this.splatPick === "Hunter: the Reckoning") {
-        let searchParams = {
-          game: this.splatPick,
-          drive: this.drivePick,
-          creed: this.creedPick,
-        };
-
-        if (this.pickedUser !== null) {
-          searchParams.user = this.pickedUser.user_id;
+          this.hunters = await this.$api.post(
+            baseUrl + "/search/hunters",
+            { searchParams },
+            {
+              withCredentials: true,
+            }
+          );
+          this.$emit("update:kindred", []);
+          this.$emit("update:hunter", this.hunters.data.results);
+          this.$emit("update:garou", []);
+          this.totalPages = this.hunters.data.total_pages;
         }
 
-        this.hunters = await this.$axios.post(
-          baseUrl + "/search/hunters",
-          { searchParams },
-          {
-            withCredentials: true,
+        if (this.splatPick === "Werewolf: the Apocalypse") {
+          let searchParams = {
+            game: this.splatPick,
+            tribe: this.tribePick,
+            auspice: this.auspicePick,
+          };
+
+          if (this.pickedUser !== null) {
+            searchParams.user = this.pickedUser.user_id;
           }
-        );
-        this.$emit("update:kindred", []);
-        this.$emit("update:hunter", this.hunters.data);
-        this.$emit("update:garou", []);
-      }
 
-      if (this.splatPick === "Werewolf: the Apocalypse") {
-        let searchParams = {
-          game: this.splatPick,
-          tribe: this.tribePick,
-          auspice: this.auspicePick,
-        };
-
-        if (this.pickedUser !== null) {
-          searchParams.user = this.pickedUser.user_id;
+          this.garous = await this.$api.post(
+            baseUrl + "/search/garou",
+            { searchParams },
+            {
+              withCredentials: true,
+            }
+          );
+          this.$emit("update:kindred", []);
+          this.$emit("update:hunter", []);
+          this.$emit("update:garou", this.garous.data.results);
+          this.totalPages = this.garous.data.total_pages;
         }
-
-        this.garous = await this.$axios.post(
-          baseUrl + "/search/garou",
-          { searchParams },
-          {
-            withCredentials: true,
-          }
-        );
-        this.$emit("update:kindred", []);
-        this.$emit("update:hunter", []);
-        this.$emit("update:garou", this.garous.data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.loading = false;
+        this.$q.loading.hide();
       }
-      this.loading = false;
+    },
+    handleChange() {
+      this.totalPages = null;
     },
   },
 });

@@ -16,7 +16,7 @@ const mailer = require("../mailer");
 //Route is base/user/
 
 router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
-  res.json(req.currentUser);
+  return res.json(req.currentUser);
 });
 
 router.route("/getUser/:id").get(async (req, res) => {
@@ -32,7 +32,7 @@ router.route("/getUser/:id").get(async (req, res) => {
 router.route("/users").get(async (req, res) => {
   Users.findAll()
     .then((users) => {
-      res.status(200).send(users);
+      return res.status(200).send(users);
     })
     .catch((err) => console.log(err));
 });
@@ -129,7 +129,7 @@ router.route("/token").post(async (req, res) => {
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
     async (err, user) => {
-      if (err) return res.sendStatus(403).send("Invalid refresh token!");
+      if (err) return res.status(403).send("Invalid refresh token!");
       let newToken = jwt.sign(
         {
           username: user.username,
@@ -155,7 +155,7 @@ router.route("/token").post(async (req, res) => {
 router.route("/logout").post((req, res) => {
   res.clearCookie("refresh");
   res.clearCookie("access");
-  res.sendStatus(204);
+  return res.sendStatus(204);
 });
 
 router.route("/passwordForgot").post(async (req, res) => {
@@ -179,7 +179,7 @@ router.route("/passwordForgot").post(async (req, res) => {
   }
 
   mailer.sendResetEmail(req.body.email, resetUser.get("username"), resetLink);
-  res.sendStatus(200);
+  return res.sendStatus(200);
 });
 
 router.route("/passwordReset/:user/:token").post(async (req, res) => {
@@ -225,7 +225,7 @@ router.route("/passwordForgot").post(async (req, res) => {
   }
 
   mailer.sendResetEmail(req.body.email, resetUser.get("username"), resetLink);
-  res.sendStatus(200);
+  return res.sendStatus(200);
 });
 
 router.route("/activateAccount/:username/:token").post(async (req, res) => {
@@ -282,6 +282,7 @@ router
         req.currentUser.username,
         activateLink
       );
+      return res.sendStatus(200);
     } catch (err) {
       console.log(err);
       return res.status(400).send("Failed to send mail");

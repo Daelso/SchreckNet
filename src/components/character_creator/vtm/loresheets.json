@@ -4,7 +4,7 @@
       "Name": "1444 Chamber",
       "Type": "Other",
       "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
-      "Description": "You're personally trusted by one of the clan leaders",
+      "Description": "Connected to the 1444 Chamber. The once advisor to Augustus Giovanni who is now in the modern age leading the Hecata. Different levels grant the character connection to the chamber to carry out their will, granting bonuses of status, arranging the services of the Hecata to help outsiders, and access to money, or other aid from the Necromancers.",
       "Reference": "FR 88"
     },
     {
@@ -103,7 +103,7 @@
       "Name": "Blood Asceticism",
       "Type": "Cult",
       "Prerequisite": null,
-      "Description": "You're starving your Beast into submission",
+      "Description": "Connected to the rejection of blood addiction and the path that kindred may attempt to take to reduce the amount of blood needed to satisfy them. Different levels grant the character strengths from not consuming blood, the ability to reroll Rouse Checks, animal blood satiating more than it normally would, status as those who see the character's choices and compare them to a godlike figure, or a reduction in the hunger frenzy difficulty.",
       "Reference": "FR 89"
     },
     {
@@ -180,7 +180,7 @@
       "Name": "Circulatory System",
       "Type": "Other",
       "Prerequisite": null,
-      "Description": "Human trafficking network that provides blood for a price",
+      "Description": "Connected to the Circulatory System and their mortal trafficking. Different levels grant vessels to feed from, it aids in learning alchemy, securing safe travel for kindred, or learning the resonance properties of blood.",
       "Reference": "V5 386"
     },
     {
@@ -290,10 +290,10 @@
       "Reference": "CbN 274"
     },
     {
-      "Name": "Descendant of Schreckt",
+      "Name": "Descendant of Karl Schreckt",
       "Type": "Bloodline",
       "Prerequisite": ["Tremere"],
-      "Description": "You descend from the ruler of the Pyramid",
+      "Description": "Connected to Karl Schrekt. Different levels grant the character information regarding House Tremere, bonuses for working towards Schrekt's goals, reduce the effort needed for a ritual, find aid in an unlikely ally, or gain information on those same allies.",
       "Reference": "V5 405"
     },
     {
@@ -363,7 +363,7 @@
       "Name": "First Inquisition",
       "Type": "Other",
       "Prerequisite": null,
-      "Description": "The original Inquisition against vampires, and their methods",
+      "Description": "Connected to the Inquisition and its history. Different levels grant knowledge about the original hunters and in turn about the Second Inquisition.",
       "Reference": "V5 388"
     },
     {
@@ -384,7 +384,7 @@
       "Name": "Gehenna Cults",
       "Type": "Other",
       "Prerequisite": null,
-      "Description": "You've studied Gehenna cults and know how they work",
+      "Description": "Connected to the Gehenna Cults and the investigation into these groups. Different levels grant the character knowledge about these cults' lore, bonuses when tracking a new cult, or respect as an expert in these groups.",
       "Reference": "FR 90"
     },
     {
@@ -657,7 +657,7 @@
       "Name": "Plagues of Gehenna",
       "Type": "Other",
       "Prerequisite": null,
-      "Description": "You've studied diseases that can affect vampires",
+      "Description": "Connected to diseases and illnesses spread through vampires who are given the name blisters. Different levels grant the character knowledge about these blisters and the illness they spread, access to a clean herd, knowledge of when a victim of the character is infected, influence in handling outbreaks, or ownership of tainted blood.",
       "Reference": "FR 91"
     },
     {
@@ -671,7 +671,7 @@
       "Name": "Praepositor",
       "Type": "Cult",
       "Prerequisite": ["Tremere"],
-      "Description": "The Praesidium, dedicated to restoring the Pyramid",
+      "Description": "Connected to the Praesidium and the devotion to restoring the clan to its old power. Different levels grant the character bonuses against other Tremere who stand against the cult's will, draw on favors or debts, strengthen the character when protecting the clan's members or secrets, grant a temporary safehouse when needed, or create a contract officialized by a blood bond.",
       "Reference": "FR 92"
     },
     {
@@ -769,7 +769,7 @@
       "Name": "Spear of Orthia",
       "Type": "Bloodline",
       "Prerequisite": ["Ventrue"],
-      "Description": "Militant Ventrue descended from Artemis Orthia",
+      "Description": "Connected to Artemis Orthia, the first childe of Ventrue. Different levels grant the character membership to the Shattered Spear granting them benefits as they develop their relationship and skills within the cult up to owning a splinter of the spear itself.",
       "Reference": "FR 93"
     },
     {
@@ -820,6 +820,13 @@
       "Prerequisite": null,
       "Description": "Victor Temple's media empire",
       "Reference": "Download"
+    },
+    {
+      "Name": "The Bahari",
+      "Type": "Cult",
+      "Prerequisite": null,
+      "Description": "Connected to the cult of the Bahari. Different levels grant bonuses based on their beliefs and ideology when embracing it.",
+      "Reference": "V5 382"
     },
     {
       "Name": "The Blue Velvet",

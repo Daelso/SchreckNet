@@ -2,157 +2,182 @@
   <div v-if="this.garou === null || this.garou.length === 0" class="banner">
     No characters created yet!
   </div>
-  <div class="card-container">
-    <q-card
-      v-for="wolf in this.garou"
-      :key="wolf"
-      class="my-card"
-      flat
-      bordered
-    >
-      <q-item>
-        <q-item-section avatar>
-          <q-avatar>
-            <q-icon color="secondary" name="app:claws" style="scale: 170%" />
-          </q-avatar>
-        </q-item-section>
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      height: 100%;
+    "
+  >
+    <div>
+      <q-btn
+        v-if="this.is_selected"
+        label="Delete Selected"
+        color="primary"
+        @click="deleteConfirm()"
+      ></q-btn>
+    </div>
 
-        <q-item-section>
-          <q-item-label>{{ wolf.charName }}</q-item-label>
-          <q-item-label style="color: white" caption>
-            {{ wolf.tribe.tribe_name }} ({{ wolf.auspice.auspice_name }})
-          </q-item-label>
-        </q-item-section>
-      </q-item>
+    <div class="card-container">
+      <q-card
+        v-for="wolf in this.garou"
+        :key="wolf"
+        class="my-card"
+        flat
+        bordered
+      >
+        <q-item>
+          <q-item-section avatar>
+            <q-avatar>
+              <q-icon color="secondary" name="app:claws" style="scale: 170%" />
+            </q-avatar>
+          </q-item-section>
 
-      <q-separator />
-      <div class="row">
-        <q-card-section horizontal class="col">
-          <q-card-section class="base-info">
-            <q-list bordered separator>
-              <q-item>
-                <q-item-section>
-                  <q-expansion-item expand-separator label="Attributes" dark>
-                    <q-card>
-                      <q-card-section
-                        v-for="(attribute, key) in Object.keys(
-                          wolf.attributes
-                        ).sort()"
-                        :key="key"
-                        class="backgroundDefault"
-                      >
-                        <div class="attribute">
-                          {{ attribute }} - {{ wolf.attributes[attribute] }}
-                        </div>
-                      </q-card-section>
-                    </q-card>
-                  </q-expansion-item></q-item-section
-                >
-              </q-item>
-              <q-item>
-                <q-item-section>
-                  <q-expansion-item expand-separator label="Gifts/Rites" dark>
-                    <q-card>
-                      <q-card-section class="backgroundDefault">
-                        Gifts:
-                        <div
-                          v-for="(gift, key) in this.combineGifts(wolf)"
+          <q-item-section>
+            <q-item-label>{{ wolf.charName }}</q-item-label>
+            <q-item-label style="color: white" caption>
+              {{ wolf.tribe.tribe_name }} ({{ wolf.auspice.auspice_name }})
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator />
+        <div class="row">
+          <q-card-section horizontal class="col">
+            <q-card-section class="base-info">
+              <q-list bordered separator>
+                <q-item>
+                  <q-item-section>
+                    <q-expansion-item expand-separator label="Attributes" dark>
+                      <q-card>
+                        <q-card-section
+                          v-for="(attribute, key) in Object.keys(
+                            wolf.attributes
+                          ).sort()"
                           :key="key"
+                          class="backgroundDefault"
                         >
-                          <div>
-                            {{ gift.gift_name ? gift.gift_name : "" }}
+                          <div class="attribute">
+                            {{ attribute }} - {{ wolf.attributes[attribute] }}
                           </div>
-                        </div>
-                        <br />
-                        Rites:
-                        <div
-                          v-for="(gift, key) in this.combineGifts(wolf)"
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item></q-item-section
+                  >
+                </q-item>
+                <q-item>
+                  <q-item-section>
+                    <q-expansion-item expand-separator label="Gifts/Rites" dark>
+                      <q-card>
+                        <q-card-section class="backgroundDefault">
+                          Gifts:
+                          <div
+                            v-for="(gift, key) in this.combineGifts(wolf)"
+                            :key="key"
+                          >
+                            <div>
+                              {{ gift.gift_name ? gift.gift_name : "" }}
+                            </div>
+                          </div>
+                          <br />
+                          Rites:
+                          <div
+                            v-for="(gift, key) in this.combineGifts(wolf)"
+                            :key="key"
+                          >
+                            {{ gift.rite_name ? gift.rite_name : "" }}
+                          </div>
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item></q-item-section
+                  >
+                </q-item>
+                <q-item>
+                  <q-item-section>
+                    <q-expansion-item expand-separator label="Touchstones" dark>
+                      <q-card>
+                        <q-card-section
+                          v-for="(touchstone, key) in wolf.touchstones"
                           :key="key"
+                          class="backgroundDefault"
                         >
-                          {{ gift.rite_name ? gift.rite_name : "" }}
-                        </div>
-                      </q-card-section>
-                    </q-card>
-                  </q-expansion-item></q-item-section
-                >
+                          {{ touchstone }}
+                        </q-card-section>
+                      </q-card>
+                    </q-expansion-item></q-item-section
+                  >
+                </q-item>
+              </q-list>
+            </q-card-section>
+          </q-card-section>
+          <!-- Right side of card -->
+          <div class="right-side">
+            <q-list separator>
+              <q-item>
+                <q-item-section>
+                  <q-item-label style="color: white" overline
+                    >Concept</q-item-label
+                  >
+                  <q-item-label>{{ truncate(wolf.concept, 50) }}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item>
+                <q-item-section>
+                  <q-item-label style="color: white" overline
+                    >Patron</q-item-label
+                  >
+                  <q-item-label>{{ wolf.tribe.patron }}</q-item-label>
+                </q-item-section>
               </q-item>
               <q-item>
                 <q-item-section>
-                  <q-expansion-item expand-separator label="Touchstones" dark>
-                    <q-card>
-                      <q-card-section
-                        v-for="(touchstone, key) in wolf.touchstones"
-                        :key="key"
-                        class="backgroundDefault"
-                      >
-                        {{ touchstone }}
-                      </q-card-section>
-                    </q-card>
-                  </q-expansion-item></q-item-section
-                >
+                  <q-item-label style="color: white" overline
+                    >Total Renown
+                  </q-item-label>
+                  <q-item-label>{{ this.renownSum(wolf) }}</q-item-label>
+                </q-item-section>
               </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card-section>
-        <!-- Right side of card -->
-        <div class="right-side">
-          <q-list separator>
-            <q-item>
-              <q-item-section>
-                <q-item-label style="color: white" overline
-                  >Concept</q-item-label
-                >
-                <q-item-label>{{ truncate(wolf.concept, 50) }}</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item>
-              <q-item-section>
-                <q-item-label style="color: white" overline
-                  >Patron</q-item-label
-                >
-                <q-item-label>{{ wolf.tribe.patron }}</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-item-label style="color: white" overline
-                  >Total Renown
-                </q-item-label>
-                <q-item-label>{{ this.renownSum(wolf) }}</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-item-label style="color: white" overline
-                  >Loresheet
-                </q-item-label>
-                <q-item-label>{{
-                  wolf.advantages.loresheets.advantages.length > 0
-                    ? wolf.advantages.loresheets.advantages[0].name
-                    : "None"
-                }}</q-item-label>
-              </q-item-section>
-            </q-item>
+              <q-item>
+                <q-item-section>
+                  <q-item-label style="color: white" overline
+                    >Loresheet
+                  </q-item-label>
+                  <q-item-label>{{
+                    wolf.advantages.loresheets.advantages.length > 0
+                      ? wolf.advantages.loresheets.advantages[0].name
+                      : "None"
+                  }}</q-item-label>
+                </q-item-section>
+              </q-item>
 
-            <q-separator />
-          </q-list>
+              <q-separator />
+            </q-list>
+          </div>
         </div>
-      </div>
-      <q-separator />
-      <q-card-actions>
-        <q-btn
-          style="margin: auto"
-          flat
-          color="white"
-          @click="
-            this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
-          "
-        >
-          View Full Character
-        </q-btn>
-      </q-card-actions>
-    </q-card>
+        <q-separator />
+        <q-card-actions>
+          <q-btn
+            style="margin: auto"
+            flat
+            color="white"
+            @click="
+              this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
+            "
+          >
+            View Full Character
+          </q-btn>
+          <q-checkbox
+            v-model="wolf.checked"
+            label="Select"
+            @click="update_selected(wolf)"
+          />
+        </q-card-actions>
+      </q-card>
+    </div>
   </div>
 </template>
 <style scoped>
@@ -212,24 +237,13 @@
 }
 </style>
 <script>
-import { useRouter } from "vue-router";
-
 export default {
   props: ["currentUser"],
-  async setup(props) {
-    const router = useRouter();
-
-    const axios = require("axios");
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
+  async created() {
     let id = window.location.href.split("/")[6];
 
-    let garou = await axios
-      .get(baseUrl + "/garou/myGarou/" + id, {
+    this.garou = await this.$api
+      .get("/garou/myGarou/" + id, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -238,30 +252,20 @@ export default {
       .catch((err) => {
         return "Not found!";
       });
-
-    return {
-      garou,
-      router,
-      lorem:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    };
   },
 
+  data() {
+    return { selected: [], garou: [] };
+  },
   async mounted() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
     let kindredId = window.location.href.split("/")[6];
 
     this.$q.loading.show({
       delay: 150, // ms
     });
 
-    this.garou = await this.$axios
-      .get(baseUrl + "/garou/myGarou/" + kindredId, {
+    this.garou = await this.$api
+      .get("/garou/myGarou/" + kindredId, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -271,6 +275,9 @@ export default {
       .catch((err) => {
         return "Not found!";
       });
+    this.garou.forEach((wolf) => {
+      wolf.checked = false;
+    });
   },
 
   methods: {
@@ -281,20 +288,68 @@ export default {
         return value;
       }
     },
+    update_selected(wolf) {
+      if (wolf.checked) {
+        if (!this.selected.includes(wolf.id)) {
+          this.selected.push(wolf.id);
+        }
+      } else {
+        this.selected = this.selected.filter((id) => id !== wolf.id);
+      }
+    },
+
+    deleteConfirm() {
+      if (this.selected.length === 0) {
+        return;
+      }
+      this.$q
+        .dialog({
+          title: "Confirm Deletion",
+          dark: true,
+          color: "red",
+          message: `Are you sure you wish to delete ${this.selected.length} characters? This cannot be undone!`,
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(async () => {
+          try {
+            this.selected.forEach(async (id) => {
+              await this.$api.delete("/garou/delete/" + id, {
+                withCredentials: true,
+              });
+            });
+          } catch (err) {
+            this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "Failed to delete! Try again later!",
+            });
+            console.log(err);
+            return;
+          }
+          this.$q.notify({
+            color: "green-5",
+            textColor: "white",
+            icon: "check",
+            message: "Character deleted!",
+          });
+          window.location.reload();
+
+          return;
+        })
+        .onCancel(() => {
+          return;
+        });
+    },
 
     favoriteChar(sheet_id, charName) {
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
       const payload = {
         game_id: 3,
         sheet_id: sheet_id,
       };
-      this.$axios
-        .post(baseUrl + "/favorites/add", payload, {
+      this.$api
+        .post("/favorites/add", payload, {
           withCredentials: true,
         })
         .then((res) => {
@@ -367,6 +422,14 @@ export default {
       return Object.keys(gifts)
         .filter((key) => key !== "rite") // Filter out the "rite" key
         .reduce((sum, key) => sum + gifts[key].length, 0);
+    },
+  },
+  computed: {
+    is_selected() {
+      if (this.selected.length > 0) {
+        return true;
+      }
+      return false;
     },
   },
 };

@@ -161,7 +161,7 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
     if (currentUser.id !== kindred.created_by) {
       return;
     }
-    kindred.destroy();
+    await kindred.destroy();
     return res.status(200).send("Deletion successful");
   } catch (err) {
     console.log(err);

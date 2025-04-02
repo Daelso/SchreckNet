@@ -22,10 +22,15 @@ router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
 router.route("/getUser/:id").get(async (req, res) => {
   try {
     const user = await Users.findByPk(req.params.id);
-    return res.send(user.dataValues);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json(user);
   } catch (err) {
-    console.log(err);
-    return res.status(404).send("Not found");
+    console.error("Error fetching user:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 

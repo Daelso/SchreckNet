@@ -5,10 +5,43 @@
   src: url(./fonts/TMUnicorn.ttf);
 }
 
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .nos-font {
   font-family: TMUnicorn;
 }
 
 .q-field__counter {
   color: white;
+}
+
+.clickable {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  padding: 4px 8px;
+
+  transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.clickable:hover {
+  color: red;
+  transform: scale(1.1);
+}
+
+.tooltip {
+  background-color: #171a1e;
+  font-family: monospace;
+  font-size: clamp(9px, 1.4vw, 14px);
 }

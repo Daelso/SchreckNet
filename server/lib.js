@@ -21,46 +21,46 @@ const getLimiter = rateLimit({
   message: "Rate limit exceeded, please wait 5 minutes and try again!",
 });
 
-const authenticateToken = (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
   let token = req.cookies.access;
 
-  if (token == null) {
+  if (!token) {
     const refreshToken = req.cookies.refresh;
-    if (refreshToken == null) {
-      return res.sendStatus(401);
-    } else {
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET,
-        async (err, user) => {
-          if (err) return res.sendStatus(403).send("Invalid refresh token!");
-          token = jwt.sign(
-            {
-              username: user.username,
-              email: user.email,
-              id: user.id,
-              activated: user.activated,
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "5m" }
-          );
+    if (!refreshToken) {
+      return res.sendStatus(401); // Unauthorized, no refresh token
+    }
 
-          const newCookie = await res.cookie("access", token, {
-            maxAge: 300000,
-            secure: true,
-            httpOnly: true,
-            sameSite: "None",
-          });
-          req.currentUser = user;
-        }
+    try {
+      const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      token = jwt.sign(
+        {
+          username: user.username,
+          email: user.email,
+          id: user.id,
+          activated: user.activated,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "5m" }
       );
+
+      res.cookie("access", token, {
+        maxAge: 300000,
+        secure: true,
+        httpOnly: true,
+        sameSite: "None",
+      });
+
+      req.currentUser = user;
+      return next(); // Stop execution and move to the next middleware
+    } catch (err) {
+      return res.status(403).send("Invalid refresh token!");
     }
   }
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) {
       console.log(err);
-      return res.sendStatus(500);
+      return res.sendStatus(403); // Forbidden, invalid token
     }
     req.currentUser = user;
     next();

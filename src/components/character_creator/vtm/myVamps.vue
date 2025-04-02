@@ -251,46 +251,19 @@
 }
 </style>
 <script>
-import { useRouter } from "vue-router";
-
 export default {
-  async setup() {
-    const router = useRouter();
+  async created() {
+    this.kindred_id = window.location.href.split("/")[6];
 
-    return {
-      router,
-    };
+    await this.load_kindred();
   },
 
   data() {
     return {
       kindred: null,
       selected: [],
+      kindred_id: 0,
     };
-  },
-
-  async mounted() {
-    let kindredId = window.location.href.split("/")[6];
-
-    this.$q.loading.show({
-      delay: 150, // ms
-    });
-
-    this.kindred = await this.$api
-      .get("/vampires/myVampire/" + kindredId, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        this.$q.loading.hide();
-        return resp.data;
-      })
-      .catch((err) => {
-        console.log(err);
-        return "Not found!";
-      });
-    this.kindred.forEach((vamp) => {
-      vamp.checked = false;
-    });
   },
 
   methods: {
@@ -299,6 +272,24 @@ export default {
         return value.substring(0, length) + "...";
       } else {
         return value;
+      }
+    },
+
+    async load_kindred() {
+      try {
+        const kindred_req = await this.$api.get(
+          "/vampires/myVampire/" + this.kindred_id,
+          {
+            withCredentials: true,
+          }
+        );
+
+        this.kindred = kindred_req.data;
+        this.kindred.forEach((vamp) => {
+          vamp.checked = false;
+        });
+      } catch (err) {
+        console.log(err);
       }
     },
     update_selected(vamp) {
@@ -340,16 +331,17 @@ export default {
             });
             console.log(err);
             return;
+          } finally {
+            this.$q.notify({
+              color: "green-5",
+              textColor: "white",
+              icon: "check",
+              message: "Character deleted!",
+            });
+            setTimeout(async () => {
+              window.location.reload();
+            }, "4 second");
           }
-          this.$q.notify({
-            color: "green-5",
-            textColor: "white",
-            icon: "check",
-            message: "Character deleted!",
-          });
-          window.location.reload();
-
-          return;
         })
         .onCancel(() => {
           return;

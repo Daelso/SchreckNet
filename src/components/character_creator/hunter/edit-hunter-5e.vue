@@ -834,6 +834,7 @@ export default {
               xp: this.xp,
               spentXp: this.spentXp,
               edgeArr: this.edgeArr,
+              flaws_remaining: this.flaws,
             },
           },
         })
@@ -847,6 +848,7 @@ export default {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
           this.edgeArr = data.edgeArr;
+          this.flaws = this.flaws + data.flaws_remaining.value;
         });
     },
 

@@ -186,7 +186,7 @@ export default defineComponent({
     let localXP = ref(props.info.xp);
     let advantagePoints = ref(0);
     let localAttributes = ref(props.info.attributes);
-
+    let flaws_remaining = ref(0);
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     let localSpentXp = ref(props.info.spentXp);
@@ -203,6 +203,7 @@ export default defineComponent({
           skills: skills,
           spentXp: localSpentXp,
           edgeArr: localEdgeArr,
+          flaws_remaining: flaws_remaining,
         });
       },
       range,
@@ -215,6 +216,7 @@ export default defineComponent({
       cost: ref(0),
       localXP,
       localSpentXp,
+      flaws_remaining,
       edgeCat: ref(""),
       edge: ref(""),
       perk: ref(""),
@@ -223,14 +225,12 @@ export default defineComponent({
       canBuy: ref(true),
       attributeInput: ref(""),
       categoryInput: ref(""),
-
       specialtyInput: ref(""),
       specialtyDefinition: ref(""),
       dotsInput: ref(1),
       localAttributes,
       specialtiesFromXp,
       attributeOptions: ref(props.info.attributes),
-
       skills,
       skillCategory: ref(""),
     };
@@ -250,6 +250,9 @@ export default defineComponent({
           break;
         case "Edge":
           this.cost = 7;
+          break;
+        case "Flaw":
+          this.cost = this.dotsInput * 3;
           break;
         case "Perk":
           this.cost = 3;
@@ -332,6 +335,9 @@ export default defineComponent({
             edge: this.edge,
           });
           break;
+        case "Flaw":
+          this.flaws_remaining = this.flaws_remaining + this.dotsInput;
+          break;
         case "Perk":
           this.localEdgeArr.perks.push({
             category: this.perk.parent,
@@ -360,6 +366,7 @@ export default defineComponent({
         "Advantage",
         "Attributes",
         "Edge",
+        "Flaw",
         "Perk",
         "Skills",
         "Specialty",
@@ -375,6 +382,9 @@ export default defineComponent({
           break;
         case "Attributes":
           costRange = Math.floor(this.localXP / this.cost);
+          break;
+        case "Flaw":
+          costRange = Math.floor(this.localXP / 3);
           break;
       }
       let arr = [];

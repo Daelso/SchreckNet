@@ -291,7 +291,7 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
     if (currentUser.id !== garou.created_by) {
       return;
     }
-    garou.destroy();
+    await garou.destroy();
     return res.status(200).send("Deletion successful");
   } catch (err) {
     console.log(err);

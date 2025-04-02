@@ -142,7 +142,7 @@ router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
     if (currentUser.id !== hunter.created_by) {
       return;
     }
-    hunter.destroy();
+    await hunter.destroy();
     return res.status(200).send("Deletion successful");
   } catch (err) {
     console.log(err);

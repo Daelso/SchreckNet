@@ -327,16 +327,17 @@ export default {
             });
             console.log(err);
             return;
+          } finally {
+            this.$q.notify({
+              color: "green-5",
+              textColor: "white",
+              icon: "check",
+              message: "Character deleted!",
+            });
+            setTimeout(async () => {
+              window.location.reload();
+            }, "4 second");
           }
-          this.$q.notify({
-            color: "green-5",
-            textColor: "white",
-            icon: "check",
-            message: "Character deleted!",
-          });
-          window.location.reload();
-
-          return;
         })
         .onCancel(() => {
           return;

@@ -265,6 +265,7 @@ export default defineComponent({
     let baseUrl = "";
     let purchased_renown = ref(props.info.purchased_renown);
     let tribe_renown = ref(props.info.tribe_renown);
+    let flaws_remaining = ref(0);
 
     const tribe = ref(props.info.tribe);
     const auspice = ref(props.info.auspice);
@@ -296,7 +297,7 @@ export default defineComponent({
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
           spentXp: localSpentXp,
-
+          flaws_remaining: flaws_remaining,
           purchased_renown: purchased_renown,
           tribe_renown: tribe_renown,
           purchased_gifts: purchased_gifts,
@@ -311,6 +312,7 @@ export default defineComponent({
       advantagePoints,
       cost: ref(0),
       localXP,
+      flaws_remaining,
       localSpentXp,
       canBuy: ref(true),
       attributeInput: ref(""),
@@ -428,16 +430,15 @@ export default defineComponent({
           break;
         case "Auspice Gift":
           this.cost = (this.gift_total + 1) * 2;
-
+          break;
+        case "Flaw":
+          this.cost = this.dotsInput * 3;
           break;
         case "Native Gift":
           this.cost = (this.gift_total + 1) * 2;
-
           break;
-
         case "Rite":
           this.cost = 5;
-
           break;
 
         case "Renown":
@@ -535,7 +536,9 @@ export default defineComponent({
           this.purchased_gifts.auspice.push(this.giftSelection);
           this.gift_total++;
           break;
-
+        case "Flaw":
+          this.flaws_remaining = this.flaws_remaining + this.dotsInput;
+          break;
         case "Native Gift":
           this.purchased_gifts.native.push(this.giftSelection);
           this.gift_total++;
@@ -584,6 +587,7 @@ export default defineComponent({
         "Advantage",
         "Attributes",
         "Auspice Gift",
+        "Flaw",
         "Native Gift",
         "Renown",
         "Rite",
@@ -602,6 +606,9 @@ export default defineComponent({
           break;
         case "Attributes":
           costRange = Math.floor(this.localXP / this.cost);
+          break;
+        case "Flaw":
+          costRange = Math.floor(this.localXP / 3);
           break;
       }
       let arr = [];

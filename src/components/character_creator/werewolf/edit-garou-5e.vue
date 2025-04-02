@@ -891,6 +891,7 @@ export default {
               auspice: this.auspice,
               gift_count: this.getGiftAmount,
               purchased_gifts: this.purchased_gifts,
+              flaws_remaining: this.flaws,
             },
           },
         })
@@ -903,6 +904,7 @@ export default {
           this.purchased_renown = data.purchased_renown;
           this.tribe_renown = data.tribe_renown;
           this.purchased_gifts = data.purchased_gifts;
+          this.flaws = this.flaws + data.flaws_remaining.value;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });

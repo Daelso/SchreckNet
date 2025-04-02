@@ -32,6 +32,7 @@ const allowedOriginsProd = [
 ];
 
 app.use(lib.getLimiter);
+app.set("trust proxy", 1);
 
 if (process.env.ENV !== "prod") {
   app.use(

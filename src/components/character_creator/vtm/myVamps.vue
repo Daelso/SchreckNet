@@ -160,7 +160,7 @@
             color="white"
             label="View Full Character"
             @click="
-              this.router.push({
+              this.$router.push({
                 name: 'vampire5eView',
                 params: { id: vamp.id },
               })

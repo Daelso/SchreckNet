@@ -165,7 +165,10 @@
             flat
             color="white"
             @click="
-              this.router.push({ name: 'garou5eView', params: { id: wolf.id } })
+              this.$router.push({
+                name: 'garou5eView',
+                params: { id: wolf.id },
+              })
             "
           >
             View Full Character

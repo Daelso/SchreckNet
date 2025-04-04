@@ -144,7 +144,7 @@
           flat
           color="white"
           @click="
-            this.router.push({ name: 'hunter5eView', params: { id: hunt.id } })
+            this.$router.push({ name: 'hunter5eView', params: { id: hunt.id } })
           "
         >
           View Full Character

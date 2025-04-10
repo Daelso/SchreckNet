@@ -1,8 +1,11 @@
 // app global css in SCSS form
 
 @font-face {
-  font-family: TMUnicorn;
-  src: url(./fonts/TMUnicorn.ttf);
+  font-family: "TMUnicorn";
+  src: url("/fonts/TMUnicorn.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @keyframes zoom {
@@ -17,6 +20,14 @@
   }
 }
 
+.banner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  font-size: 2.8em;
+}
 .nos-font {
   font-family: TMUnicorn;
 }

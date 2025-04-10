@@ -429,6 +429,7 @@ import fontkit from "@pdf-lib/fontkit";
 import { ref } from "vue";
 
 import { useMeta } from "quasar";
+import { api } from "src/boot/axios";
 
 export default defineComponent({
   name: "hunter-view",
@@ -470,7 +471,7 @@ export default defineComponent({
 
     let hunterId = ref(window.location.href.split("/")[5]);
 
-    let hunter = await this.$api
+    let hunter = await api
       .get("/hunters/hunter/" + hunterId.value, {
         withCredentials: true,
       })
@@ -496,7 +497,7 @@ export default defineComponent({
         })
         .onOk(async () => {
           try {
-            await this.$aapi.delete("/hunters/delete/" + hunter.id, {
+            await this.$api.delete("/hunters/delete/" + hunter.id, {
               withCredentials: true,
             });
           } catch (err) {

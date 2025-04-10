@@ -429,6 +429,7 @@ import fontkit from "@pdf-lib/fontkit";
 import { ref } from "vue";
 
 import { useMeta } from "quasar";
+import { api } from "src/boot/axios";
 
 export default defineComponent({
   name: "hunter-view",
@@ -463,22 +464,15 @@ export default defineComponent({
         "Created using SchreckNet, a Hunter: Reckoning character creator.";
     }
 
-    const axios = require("axios");
     let currentUser = ref(false);
     let pageFound = ref(false);
 
     let creator = ref("Anonymous");
 
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
     let hunterId = ref(window.location.href.split("/")[5]);
 
-    let hunter = await axios
-      .get(baseUrl + "/hunters/hunter/" + hunterId.value, {
+    let hunter = await api
+      .get("/hunters/hunter/" + hunterId.value, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -503,14 +497,7 @@ export default defineComponent({
         })
         .onOk(async () => {
           try {
-            let baseUrl = "";
-            if (window.location.href.includes("localhost")) {
-              baseUrl = "http://localhost:5000";
-            } else {
-              baseUrl = window.location.origin;
-            }
-
-            await this.$axios.delete(baseUrl + "/hunters/delete/" + hunter.id, {
+            await this.$api.delete("/hunters/delete/" + hunter.id, {
               withCredentials: true,
             });
           } catch (err) {
@@ -560,14 +547,8 @@ export default defineComponent({
     };
   },
   async created() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-    await this.$axios
-      .get(baseUrl + "/user/getUser/" + this.created_by, {
+    await this.$api
+      .get("/user/getUser/" + this.created_by, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -589,20 +570,13 @@ export default defineComponent({
     };
   },
   async mounted() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-
-    this.favCount = await this.$axios
-      .get(baseUrl + "/favorites/favCount/" + this.hunterId)
+    this.favCount = await this.$api
+      .get("/favorites/favCount/" + this.hunterId)
       .then((resp) => {
         return resp.data;
       });
-    this.currentUser = await this.$axios
-      .get(baseUrl + "/user/currentUser", {
+    this.currentUser = await this.$api
+      .get("/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {
@@ -982,18 +956,12 @@ export default defineComponent({
     },
 
     favoriteChar(sheet_id, charName) {
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
       const payload = {
         game_id: 2,
         sheet_id: sheet_id,
       };
-      this.$axios
-        .post(baseUrl + "/favorites/add", payload, {
+      this.$api
+        .post("/favorites/add", payload, {
           withCredentials: true,
         })
         .then((res) => {

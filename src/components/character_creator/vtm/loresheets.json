@@ -93,6 +93,13 @@
       "Reference": "GW 157"
     },
     {
+      "Name": "Birth of the Anarch Free States",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You were there in LA when the first Anarch free states were born. You fought to free yourself and others from the yoke of the Camarilla. Or at least you say you did.",
+      "Reference": "IM 149"
+    },
+    {
       "Name": "Blacksite 24",
       "Type": "Other",
       "Prerequisite": null,
@@ -177,6 +184,13 @@
       "Reference": "Cults 221"
     },
     {
+      "Name": "Child of the Revolution",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You lived through the tumultuous French revolution, you know how to move a crowd and made many contacts through the turmoil.",
+      "Reference": "IM 150"
+    },
+    {
       "Name": "Circulatory System",
       "Type": "Other",
       "Prerequisite": null,
@@ -253,6 +267,13 @@
       "Prerequisite": ["Hecata", "Samedi", "Lamiae", "Giovanni", "Nagaraja"],
       "Description": "You are descended from an ancient Cappadocian necromancer",
       "Reference": "Trails 171"
+    },
+    {
+      "Name": "Descendant of Dracula",
+      "Type": "Bloodline",
+      "Prerequisite": ["Tzimisce"],
+      "Description": "Your blood carries within it Dracula's legendary strength. With it comes the renown and infamy of your great forefather.",
+      "Reference": "IM 151"
     },
     {
       "Name": "Descendant of Hardestadt",
@@ -857,11 +878,25 @@
       "Reference": "Children 107"
     },
     {
+      "Name": "The Order of Repentants",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "Once kindred of low humanity, Repentants have clawed back their humanity and seek to atone for their vile deeds. Always conscious of the beast raging within.",
+      "Reference": "IM 152"
+    },
+    {
       "Name": "The Pyramid",
       "Type": "Cult",
       "Prerequisite": ["Tremere"],
       "Description": "You are faithful to the ancient Pyramid of House Tremere",
       "Reference": "Cam 189"
+    },
+    {
+      "Name": "The Red Lady",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "You have a connection to Prague's infamous Red Lady, a toreador of great reknown, known for her legendary parties.",
+      "Reference": "IM 153"
     },
     {
       "Name": "The Ruby Throat",
@@ -890,6 +925,13 @@
       "Prerequisite": null,
       "Description": "Former Archon who defected to the Anarchs",
       "Reference": "V5 383"
+    },
+    {
+      "Name": "The Vanderbilt Ventrue",
+      "Type": "Other",
+      "Prerequisite": ["Ventrue"],
+      "Description": "You are either related to, or closely connected with the historic Vanderbilt family. A wealthy and powerful New York institution.",
+      "Reference": "IM 154"
     },
     {
       "Name": "Veins of the Earth",

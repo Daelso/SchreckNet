@@ -21,6 +21,7 @@ router.route("/new").post(async (req, res) => {
     const newKindred = await Vampires.create({
       charName: req.body.name,
       alt_bane: req.body.altBane,
+      alt_ancilla: req.body.altAncilla,
       clan: req.body.clan,
       concept: req.body.concept,
       ambition: req.body.ambition,
@@ -111,6 +112,7 @@ router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
     await kindred.update({
       charName: req.body.name,
       alt_bane: req.body.altBane,
+      alt_ancilla: req.body.altAncilla,
       clan: req.body.clan,
       concept: req.body.concept,
       ambition: req.body.ambition,

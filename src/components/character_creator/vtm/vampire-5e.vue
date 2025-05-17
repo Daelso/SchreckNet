@@ -11,7 +11,10 @@
               Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
             </div>
             <div>Sect: {{ sect }}</div>
-            <div>Age: {{ age.label }}</div>
+            <div>
+              Age: {{ age.label }}
+              {{ this.altAncilla ? "(Alternate Rules)" : "" }}
+            </div>
             <div>Generation: {{ generation.label }}</div>
             <div>Predator Type: {{ predatorType }}</div>
             <div>Humanity: {{ humanity }}</div>
@@ -897,6 +900,7 @@ export default {
               merits: this.advantagesObj,
               altBane: this.altBane,
               debug: this.debug,
+              altAncilla: this.altAncilla,
             },
           },
         })
@@ -921,6 +925,7 @@ export default {
           this.thinAdvantages = data.thinAdvantages;
           this.thinFlaws = data.thinFlaws;
           this.altBane = data.altBane;
+          this.altAncilla = data.altAncilla;
         });
     },
     attributes() {

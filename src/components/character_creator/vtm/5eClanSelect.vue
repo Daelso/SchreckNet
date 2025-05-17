@@ -9,7 +9,7 @@
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
-          <q-toolbar-title>Affiliations</q-toolbar-title>
+          <q-toolbar-title>Affiliations {{ altAncilla }}</q-toolbar-title>
           <q-btn color="primary" label="OK" @click="onOKClick" />
         </q-toolbar>
       </q-header>
@@ -30,6 +30,18 @@
               icon="settings"
               :done="step > 1"
             >
+              <q-checkbox
+                v-model="altAncilla"
+                dark
+                label="Use Alternative Ancilla Rules (In Memorium)"
+                class="q-ma-sm"
+                @click="toggleAltAncilla()"
+              >
+                <q-tooltip class="bg-dark text-body1">
+                  This will lock the character into the Ancilla age and offer a
+                  new creation flow designed for older Ancilla characters
+                </q-tooltip>
+              </q-checkbox>
               <q-select
                 v-model="clan"
                 color="secondary"
@@ -43,6 +55,7 @@
                 label-color="primary"
                 @update:model-value="clanSelected"
               />
+
               <q-separator />
               <div>Clan Description: {{ clanDesc }}</div>
               <q-separator />
@@ -732,6 +745,7 @@ export default defineComponent({
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
     const altBane = ref(props.info.altBane);
+    const altAncilla = ref(props.info.altAncilla);
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
@@ -818,6 +832,7 @@ export default defineComponent({
     return {
       age,
       altBane,
+      altAncilla,
       advantagesOrFlaws: ref(""),
       alchemyDiscipline: ref(""),
       thinDisc: ref(""),
@@ -875,7 +890,14 @@ export default defineComponent({
             "Adds 1 dot in Blood Potency, two dots of advantages, two dots of Flaws and costs you a point of humanity.",
         },
       ],
-
+      alternateAgeOptions: [
+        {
+          label: "Ancillae",
+          bonusXp: 0,
+          other:
+            "Adds 1 dot in Blood Potency, two dots of advantages, two dots of Flaws and costs you a point of humanity.",
+        },
+      ],
       clanOptions: [
         "Banu Haqim",
         "Brujah",
@@ -969,6 +991,18 @@ export default defineComponent({
       }
 
       return false;
+    },
+
+    toggleAltAncilla() {
+      if (this.altAncilla) {
+        this.clan = "Brujah";
+        this.clanOptions.pop();
+        this.clanSelected();
+      } else {
+        this.clanOptions.push("Thin-Blood");
+        this.clan = "Brujah";
+        this.clanSelected();
+      }
     },
 
     clanSelected() {

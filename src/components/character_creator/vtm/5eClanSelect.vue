@@ -907,6 +907,13 @@ export default defineComponent({
         { label: "11th", potency: 2, maxPotency: 4 },
         { label: "10th", potency: 2, maxPotency: 4 },
       ],
+      altGenerationOptions: [
+        { label: "12th", potency: 1, maxPotency: 3 },
+        { label: "11th", potency: 2, maxPotency: 4 },
+        { label: "10th", potency: 2, maxPotency: 4 },
+        { label: "9th", potency: 3, maxPotency: 5 },
+        { label: "8th", potency: 3, maxPotency: 6 },
+      ],
 
       onOKClick() {
         onDialogOK({

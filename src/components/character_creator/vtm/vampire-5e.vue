@@ -605,7 +605,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       saving: false,
       homebrewDialog: false,
       advantagesObj: {
@@ -617,6 +617,7 @@ export default {
       attributesDone: false,
       attributeInfo,
       altBane: false,
+      altAncilla: false,
       skillInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
@@ -800,6 +801,7 @@ export default {
       let character = {
         name: this.charName,
         altBane: this.altBane,
+        altAncilla: this.altAncilla,
         clan: this.clan,
         concept: this.concept,
         ambition: this.ambition,

@@ -21,7 +21,10 @@
             </div>
 
             <div>Sect: {{ sect }}</div>
-            <div>Age: {{ age.label }}</div>
+            <div>
+              Age: {{ age.label }}
+              {{ this.altAncilla ? "(Alternate Rules)" : "" }}
+            </div>
             <div>Generation: {{ generation.label }}</div>
             <div>Predator Type: {{ predatorType }}</div>
             <div>Humanity: {{ humanity }}</div>
@@ -654,6 +657,7 @@ export default {
       humanityOptions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       age: { label: this.kindred.age, bonusXp: 0 },
       archtypeModel: this.kindred.archetype,
+      altAncilla: this.kindred.alt_ancilla,
       ambition: this.kindred.ambition,
       attributePoints: 0,
       skillPoints: 0,

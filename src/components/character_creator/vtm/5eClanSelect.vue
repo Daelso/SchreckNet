@@ -33,7 +33,7 @@
               <q-checkbox
                 v-model="altAncilla"
                 dark
-                label="Use Alternative Ancilla Rules (In Memorium)"
+                label="Use Alternative Ancilla Rules (In Memorium - BETA)"
                 class="q-ma-sm"
                 @update:model-value="toggleAltAncilla()"
               >

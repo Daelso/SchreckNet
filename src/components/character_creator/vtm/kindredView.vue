@@ -24,7 +24,9 @@
             {{ this.altBane ? "(Alternate Bane)" : "" }}
           </div>
           <div>Sect: {{ sect }}</div>
-          <div>Age: {{ age }}</div>
+          <div>
+            Age: {{ age }} {{ this.altAncilla ? "(Alternate Rules)" : "" }}
+          </div>
           <div>Generation: {{ generation }}</div>
           <div>Predator Type: {{ predatorType }}</div>
           <div>Humanity: {{ humanity }}</div>
@@ -595,6 +597,7 @@ export default defineComponent({
       clanCompulsions,
       skillInfo,
       deleteConfirm,
+      altAncilla: kindred.alt_ancilla,
       altBane: kindred.alt_bane,
       charName: kindred.charName,
       clan: kindred.clan,
@@ -640,14 +643,8 @@ export default defineComponent({
     };
   },
   async created() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-    let creator = await this.$axios
-      .get(baseUrl + "/user/getUser/" + this.created_by, {
+    await this.$api
+      .get("/user/getUser/" + this.created_by, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -671,20 +668,13 @@ export default defineComponent({
     };
   },
   async mounted() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-
-    this.favCount = await this.$axios
-      .get(baseUrl + "/favorites/favCount/" + this.kindredId)
+    this.favCount = await this.$api
+      .get("/favorites/favCount/" + this.kindredId)
       .then((resp) => {
         return resp.data;
       });
-    this.currentUser = await this.$axios
-      .get(baseUrl + "/user/currentUser", {
+    this.currentUser = await this.$api
+      .get("/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {
@@ -1251,18 +1241,12 @@ export default defineComponent({
     },
 
     favoriteChar(sheet_id, charName) {
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
       const payload = {
         game_id: 1,
         sheet_id: sheet_id,
       };
-      this.$axios
-        .post(baseUrl + "/favorites/add", payload, {
+      this.$api
+        .post("/favorites/add", payload, {
           withCredentials: true,
         })
         .then((res) => {

@@ -11,7 +11,10 @@
               Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
             </div>
             <div>Sect: {{ sect }}</div>
-            <div>Age: {{ age.label }}</div>
+            <div>
+              Age: {{ age.label }}
+              {{ this.altAncilla ? "(Alternate Rules)" : "" }}
+            </div>
             <div>Generation: {{ generation.label }}</div>
             <div>Predator Type: {{ predatorType }}</div>
             <div>Humanity: {{ humanity }}</div>
@@ -491,6 +494,7 @@
         :clan="this.clan"
         :debug="this.debug"
         :edit="this.edit"
+        :altAncilla="this.altAncilla"
       />
     </div>
   </q-form>
@@ -586,16 +590,7 @@ export default {
   },
 
   setup() {
-    const router = useRouter();
-    const axios = require("axios");
     useMeta(metaData);
-
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
 
     return {
       tab: ref("coreConcept"),
@@ -617,6 +612,7 @@ export default {
       attributesDone: false,
       attributeInfo,
       altBane: false,
+      altAncilla: false,
       skillInfo,
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
@@ -788,18 +784,11 @@ export default {
       this.$q.loading.show({
         delay: 50, // ms
       });
-      const axios = require("axios");
-
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
 
       let character = {
         name: this.charName,
         altBane: this.altBane,
+        altAncilla: this.altAncilla,
         clan: this.clan,
         concept: this.concept,
         ambition: this.ambition,
@@ -842,8 +831,8 @@ export default {
         homebrew: this.debug,
       };
 
-      axios
-        .post(baseUrl + "/vampires/new", character, {
+      this.$api
+        .post("/vampires/new", character, {
           withCredentials: true,
         })
         .then((res) => {
@@ -895,6 +884,7 @@ export default {
               merits: this.advantagesObj,
               altBane: this.altBane,
               debug: this.debug,
+              altAncilla: this.altAncilla,
             },
           },
         })
@@ -919,6 +909,7 @@ export default {
           this.thinAdvantages = data.thinAdvantages;
           this.thinFlaws = data.thinFlaws;
           this.altBane = data.altBane;
+          this.altAncilla = data.altAncilla;
         });
     },
     attributes() {

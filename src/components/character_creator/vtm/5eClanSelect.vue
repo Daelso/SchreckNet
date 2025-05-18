@@ -9,7 +9,7 @@
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
-          <q-toolbar-title>Affiliations</q-toolbar-title>
+          <q-toolbar-title>Affiliations {{ altAncilla }}</q-toolbar-title>
           <q-btn color="primary" label="OK" @click="onOKClick" />
         </q-toolbar>
       </q-header>
@@ -30,6 +30,18 @@
               icon="settings"
               :done="step > 1"
             >
+              <q-checkbox
+                v-model="altAncilla"
+                dark
+                label="Use Alternative Ancilla Rules (In Memorium - BETA)"
+                class="q-ma-sm"
+                @update:model-value="toggleAltAncilla()"
+              >
+                <q-tooltip class="bg-dark text-body1">
+                  This will lock the character into the Ancilla age and offer a
+                  new creation flow designed for older Ancilla characters
+                </q-tooltip>
+              </q-checkbox>
               <q-select
                 v-model="clan"
                 color="secondary"
@@ -43,12 +55,17 @@
                 label-color="primary"
                 @update:model-value="clanSelected"
               />
-              <q-separator />
+
+              <q-separator size="4px" class="q-ma-sm" />
               <div>Clan Description: {{ clanDesc }}</div>
-              <q-separator />
+              <q-separator size="4px" class="q-ma-sm" />
               <div
                 class="q-mt-md q-mb-sm"
-                v-if="this.clan !== 'Thin-Blood' && this.clan !== 'Caitiff'"
+                v-if="
+                  this.clan !== 'Thin-Blood' &&
+                  this.clan !== 'Caitiff' &&
+                  !this.altAncilla
+                "
               >
                 Disciplines: (Choose two in-clan Disciplines. Put two dots in
                 one and one dot in the other.)
@@ -56,7 +73,11 @@
               <q-item
                 v-for="(disciplines, key) in clanDisciplines"
                 :key="key"
-                v-if="this.clan !== 'Thin-Blood' && this.clan !== 'Caitiff'"
+                v-if="
+                  this.clan !== 'Thin-Blood' &&
+                  this.clan !== 'Caitiff' &&
+                  !this.altAncilla
+                "
               >
                 <q-item>
                   {{ disciplines }}:
@@ -78,7 +99,8 @@
                   @update:model-value="discSelected()"
                 />
               </q-item>
-              <q-separator />
+              <!-- Begin In Memorium Discipline Selection -->
+
               <div
                 class="q-pa-md"
                 v-if="this.clan !== 'Caitiff' && this.clan !== 'Thin-Blood'"
@@ -95,16 +117,16 @@
                   ? clanBane
                   : this.clanBanes.altClans[this.clan]
               }}
-              <q-separator />
+              <q-separator size="4px" class="q-ma-sm" />
               <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
               <q-separator />
-              <div v-if="this.clan === 'Caitiff'">
+              <div v-if="this.clan === 'Caitiff' && !this.altAncilla">
                 <div class="q-my-md" style="font-weight: bold">
                   Disciplines: (Choose three Caitiff Disciplines. Put two dots
                   in one and one dot in the other. Select a third to be taken at
                   0.)
                 </div>
-                <q-separator />
+                <q-separator size="4px" class="q-ma-sm" />
                 <q-item
                   v-for="(disciplines, key) in clanDisciplines"
                   :key="key"
@@ -361,6 +383,7 @@
               </div>
               <q-stepper-navigation>
                 <q-btn
+                  v-if="!this.altAncilla"
                   @click="
                     () => {
                       step = 2;
@@ -378,6 +401,33 @@
                     class="bg-dark text-body2"
                     :offset="[1, 1]"
                     >Please select your disciplines</q-tooltip
+                  >
+                </q-btn>
+                <q-btn
+                  v-else
+                  @click="
+                    () => {
+                      step = 2;
+                      this.generation = {
+                        label: `12th`,
+                        potency: 1,
+                        maxPotency: 3,
+                        info: 'You gain eight dots to spend on advantages and 12 xp to spend.',
+                      };
+                      this.age = { label: `Ancillae`, bonusXp: 12 };
+                      this.advantages = 8;
+                      this.flaws = 0;
+                    }
+                  "
+                  color="primary"
+                  label="Continue"
+                  :disable="stepOneAncilla()"
+                >
+                  <q-tooltip
+                    v-if="stepOneAncilla()"
+                    class="bg-dark text-body2"
+                    :offset="[1, 1]"
+                    >Please select your clan and discipline spread</q-tooltip
                   >
                 </q-btn>
               </q-stepper-navigation>
@@ -401,14 +451,28 @@
                 color="secondary"
                 option-label="label"
                 popup-content-style="background-color:#222831; color:white"
+                @update:model-value="altAncillaHandling()"
               />
+              <div v-if="this.altAncilla">
+                <p>Rules: {{ this.generation.info }}</p>
+              </div>
               <q-separator />
               <div>Blood Potency: {{ generation.potency }}</div>
               <q-separator />
               <div class="q-mb-md">
                 Max Blood Potency: {{ generation.maxPotency }}
               </div>
+              <div v-if="this.altAncilla && this.generation.maxPotency >= 5">
+                <q-checkbox
+                  v-model="ancillaHumanity"
+                  dark
+                  label="Sacrifice Humanity for 2 Advantage Dots"
+                  class="q-ma-sm"
+                  @click="sacHumanity()"
+                ></q-checkbox>
+              </div>
               <q-select
+                v-if="!this.altAncilla"
                 v-model="age"
                 label="Coterie Age"
                 :options="filteredAgeOptions"
@@ -529,6 +593,7 @@
                       step = 4;
 
                       confirmPredator();
+                      setupAltAncillaDiscs();
                     }
                   "
                   color="primary"
@@ -555,8 +620,82 @@
               </q-stepper-navigation>
             </q-step>
             <q-step :name="4" title="Select Discipline Skills" icon="sort">
-              Select disciplines available to you:
-              <div v-for="(discPoints, key) in finalDisciplineObj" :key="key">
+              <div
+                class="q-mt-md q-mb-sm"
+                v-if="this.clan !== 'Thin-Blood' && this.altAncilla"
+              >
+                Disciplines: (In Memorium Edition) -
+                <div>
+                  <p>Select a discipline spread:</p>
+
+                  <p>
+                    Focused: 3 dots into a clan discipline, 1 dot into any
+                    discipline of your choice and 1 more dot into any OTHER
+                    discipline.
+                  </p>
+
+                  <p>
+                    Strategic: 2 dots into two of your clan disciplines, 1 dot
+                    into any discipline of your choice and 1 more dot into any
+                    OTHER discipline.
+                  </p>
+                  <p>Caitiff can choose any disciplines to distribute into.</p>
+                  <q-select
+                    v-model="disciplineSpread"
+                    color="secondary"
+                    label="Discipline Spread"
+                    popup-content-style="background-color:#222831; color:white"
+                    :options="discSpreadOptions"
+                    bg-color="grey-3"
+                    filled
+                    class="select"
+                    label-color="primary"
+                    @update:model-value="switchSpread()"
+                  />
+                </div>
+              </div>
+
+              <div v-if="this.disciplineSpread === 'Focused'">
+                <q-select
+                  v-for="(key, index) in focusedSpread"
+                  :key="key"
+                  v-model="altSpreadDisc[index]"
+                  color="secondary"
+                  :label="getDisciplineLabel(index)"
+                  :options="getDisciplineOptions(index)"
+                  popup-content-style="background-color:#222831; color:white"
+                  bg-color="grey-3"
+                  filled
+                  class="select q-ma-sm"
+                  label-color="primary"
+                  @update:model-value="(val) => onDisciplineChange(val, index)"
+                />
+              </div>
+              <div v-if="this.disciplineSpread === 'Strategic'">
+                <q-select
+                  v-for="(key, index) in strategicSpread"
+                  :key="key"
+                  v-model="altSpreadDisc[index]"
+                  color="secondary"
+                  :label="getStrategicDisciplineLabel(index)"
+                  :options="getStrategicDisciplineOptions(index)"
+                  popup-content-style="background-color:#222831; color:white"
+                  bg-color="grey-3"
+                  filled
+                  class="select q-ma-sm"
+                  label-color="primary"
+                  @update:model-value="
+                    (val) => onStrategicDisciplineChange(val, index)
+                  "
+                />
+              </div>
+
+              <p>Select disciplines available to you:</p>
+              <div
+                v-if="altSpreadSelected"
+                v-for="(discPoints, key) in finalDisciplineObj"
+                :key="key"
+              >
                 <div v-if="discPoints > 0">
                   Choose: {{ discPoints }}
                   <q-select
@@ -732,6 +871,7 @@ export default defineComponent({
     const age = ref(props.info.age);
     const clan = ref(props.info.clan);
     const altBane = ref(props.info.altBane);
+    const altAncilla = ref(props.info.altAncilla);
     let newBane = ref(props.info.bane);
     let newTips = ref(props.info.tooltips);
     let newDesc = ref(props.info.desc);
@@ -818,6 +958,7 @@ export default defineComponent({
     return {
       age,
       altBane,
+      altAncilla,
       advantagesOrFlaws: ref(""),
       alchemyDiscipline: ref(""),
       thinDisc: ref(""),
@@ -875,7 +1016,14 @@ export default defineComponent({
             "Adds 1 dot in Blood Potency, two dots of advantages, two dots of Flaws and costs you a point of humanity.",
         },
       ],
-
+      alternateAgeOptions: [
+        {
+          label: "Ancillae",
+          bonusXp: 12,
+          other:
+            "Adds 1 dot in Blood Potency, two dots of advantages, two dots of Flaws and costs you a point of humanity.",
+        },
+      ],
       clanOptions: [
         "Banu Haqim",
         "Brujah",
@@ -907,6 +1055,38 @@ export default defineComponent({
         { label: "11th", potency: 2, maxPotency: 4 },
         { label: "10th", potency: 2, maxPotency: 4 },
       ],
+      altGenerationOptions: [
+        {
+          label: "12th",
+          potency: 1,
+          maxPotency: 3,
+          info: "You gain eight dots to spend on advantages and 12 xp to spend.",
+        },
+        {
+          label: "11th",
+          potency: 2,
+          maxPotency: 4,
+          info: "You gain eight dots to spend on advantages and 3 flaws.",
+        },
+        {
+          label: "10th",
+          potency: 2,
+          maxPotency: 4,
+          info: "You gain eight dots to spend on advantages and 3 flaws.",
+        },
+        {
+          label: "9th",
+          potency: 2,
+          maxPotency: 5,
+          info: "You have no starting advantages and must take five points of flaws. You may gain two advantage dots by sacrificing a level of humanity",
+        },
+        {
+          label: "8th",
+          potency: 2,
+          maxPotency: 6,
+          info: "You have no starting advantages and must take five points of flaws. You may gain two advantage dots by sacrificing a level of humanity",
+        },
+      ],
 
       onOKClick() {
         onDialogOK({
@@ -933,6 +1113,7 @@ export default defineComponent({
           thinAdvantages: clanThinAdvantages,
           thinFlaws: clanThinFlaws,
           altBane: altBane,
+          altAncilla: altAncilla,
         });
       },
 
@@ -943,10 +1124,34 @@ export default defineComponent({
   data() {
     return {
       bonusDisc: "",
+      discSpreadOptions: ["Focused", "Strategic"],
       bonusSpecs: "",
+      ancillaHumanity: false,
+      altSetupDone: false,
       caitiffThird: "",
       ritualChoice: "",
       ceremonyChoice: "",
+      disciplineSpread: "",
+      altDiscChoices: [],
+      focusedSpread: [3, 1, 1],
+      strategicSpread: [2, 2, 1, 1],
+      altSpreadDisc: [],
+      prevAltSpreadDisc: ["", "", ""],
+      altStrategicDisc: ["", "", "", ""],
+      prevStrategicDisc: ["", "", "", ""],
+      allDisciplines: [
+        "Animalism",
+        "Auspex",
+        "Blood Sorcery",
+        "Celerity",
+        "Dominate",
+        "Fortitude",
+        "Obfuscate",
+        "Oblivion",
+        "Potence",
+        "Presence",
+        "Protean",
+      ],
     };
   },
   methods: {
@@ -963,7 +1168,149 @@ export default defineComponent({
 
       return false;
     },
+    getStrategicDisciplineLabel(index) {
+      if (index === 0 || index === 1) return "Select a Clan Discipline";
+      if (index === 2) return "Select another Clan Discipline";
+      if (index === 3) return "Select any Discipline";
+      return "Select a Discipline";
+    },
+    getStrategicDisciplineOptions(index) {
+      const used = this.altSpreadDisc || [];
 
+      if (index === 0 || index === 1 || index === 2) {
+        return this.clanDisciplines.filter(
+          (discipline) => !used.includes(discipline)
+        );
+      }
+
+      if (index === 3) {
+        return this.allDisciplines.filter(
+          (discipline) => !used.includes(discipline)
+        );
+      }
+
+      return this.clanDisciplines; // fallback
+    },
+    onStrategicDisciplineChange(newVal, index) {
+      this.skillsSelected = [];
+      this.disciplineChoice = [];
+      const prevVal = this.prevStrategicDisc[index];
+      const strategicWeights = [2, 2, 1, 1];
+      const pointValue = strategicWeights[index];
+
+      if (prevVal) {
+        this.finalDisciplineObj[prevVal] =
+          (this.finalDisciplineObj[prevVal] || 0) - pointValue;
+        if (this.finalDisciplineObj[prevVal] < 0) {
+          this.finalDisciplineObj[prevVal] = 0;
+        }
+      }
+
+      if (newVal) {
+        this.finalDisciplineObj[newVal] =
+          (this.finalDisciplineObj[newVal] || 0) + pointValue;
+      }
+
+      this.prevStrategicDisc[index] = newVal;
+    },
+    onDisciplineChange(newVal, index) {
+      this.skillsSelected = [];
+      this.disciplineChoice = [];
+      const prevVal = this.prevAltSpreadDisc[index];
+
+      const getAmount = (i) => (i === 0 ? 3 : 1);
+
+      // Subtract from previous value
+      if (prevVal) {
+        const subtractAmount = getAmount(index);
+        this.finalDisciplineObj[prevVal] =
+          (this.finalDisciplineObj[prevVal] || 0) - subtractAmount;
+
+        // Ensure we never go below 0
+        if (this.finalDisciplineObj[prevVal] < 0) {
+          this.finalDisciplineObj[prevVal] = 0;
+        }
+      }
+
+      // Add to new value
+      if (newVal) {
+        const addAmount = getAmount(index);
+        this.finalDisciplineObj[newVal] =
+          (this.finalDisciplineObj[newVal] || 0) + addAmount;
+      }
+
+      // Update previous selection tracker
+      this.prevAltSpreadDisc[index] = newVal;
+    },
+    updateAltDisciplinePoints(discipline, index) {
+      if (!discipline) return;
+
+      if (index === 0) {
+        this.finalDisciplineObj[discipline] =
+          (this.finalDisciplineObj[discipline] || 0) + 3;
+      } else if (index === 1) {
+        this.finalDisciplineObj[discipline] =
+          (this.finalDisciplineObj[discipline] || 0) + 1;
+      } else if (index === 2) {
+        this.finalDisciplineObj[discipline] = 1;
+      }
+    },
+    getDisciplineLabel(index) {
+      if (index === 0) return "Select a Clan Discipline";
+      if (index === 1) return "Select another Clan Discipline";
+      return "Select another discipline";
+    },
+    switchSpread() {
+      this.skillsSelected = [];
+      this.disciplineChoice = [];
+      this.altSpreadDisc = [];
+    },
+    getDisciplineOptions(index) {
+      const used = this.altSpreadDisc || [];
+
+      if (index === 0 || index === 1) {
+        return this.clanDisciplines.filter(
+          (discipline) => !used.includes(discipline)
+        );
+      }
+
+      return this.allDisciplines.filter(
+        (discipline) => !used.includes(discipline)
+      );
+    },
+
+    toggleAltAncilla() {
+      if (this.clan === "Thin-Blood") {
+        this.clan = "Brujah";
+        this.$q.notify({
+          color: "primary",
+          textColor: "white",
+          postion: "center",
+          avatar: nosImage,
+          timeout: 14000,
+          message:
+            "In Memorium does not allow for Thin-Blood Ancillae, your clan has been reset.",
+        });
+      }
+
+      if (this.altAncilla) {
+        if (this.clanOptions.includes("Thin-Blood")) {
+          this.clanOptions.pop();
+        }
+        this.resetAltAncilla();
+      } else {
+        if (!this.clanOptions.includes("Thin-Blood")) {
+          this.clanOptions.push("Thin-Blood");
+        }
+        this.resetAltAncilla();
+      }
+    },
+
+    resetAltAncilla() {
+      this.clanSelected();
+      this.altDiscChoices = [];
+      this.altSetupDone = false;
+    },
     clanSelected() {
       this.advantagesOrFlaws = "";
       this.thinBloodMerits = "";
@@ -991,6 +1338,7 @@ export default defineComponent({
         haven: { advantages: [], flaws: [] },
         loresheets: { advantages: [], flaws: [] },
       };
+
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -1330,6 +1678,50 @@ export default defineComponent({
           ];
       }
     },
+    altAncillaHandling() {
+      this.humanity = 7;
+      this.advantages = 8;
+      this.ancillaHumanity = false;
+      switch (this.generation.label) {
+        case "12th":
+          this.age.bonusXp = 12;
+          this.advantages = 8;
+          break;
+        case "11th":
+          this.age.bonusXp = 0;
+          this.advantages = 8;
+          this.flaws = 3;
+          break;
+        case "10th":
+          this.age.bonusXp = 0;
+          this.advantages = 8;
+          this.flaws = 3;
+          break;
+        case "9th":
+          this.age.bonusXp = 0;
+          this.advantages = 0;
+          this.flaws = 5;
+          break;
+        case "8th":
+          this.age.bonusXp = 0;
+          this.advantages = 0;
+          this.flaws = 5;
+          break;
+        default:
+          this.age.bonusXp = 12;
+          this.advantages = 8;
+          break;
+      }
+    },
+    sacHumanity() {
+      if (this.ancillaHumanity) {
+        this.humanity = 6;
+        this.advantages = 2;
+      } else {
+        this.humanity = 7;
+        this.advantages = 0;
+      }
+    },
     discSelected() {
       this.skillsSelected = []; //reset it
       this.disciplineObj = {};
@@ -1367,6 +1759,12 @@ export default defineComponent({
     },
 
     ageSelected() {
+      if (this.altAncilla) {
+        if (this.age.label === "Ancillae") {
+          return;
+        }
+      }
+
       switch (this.age.label) {
         case "Fledgling":
           this.xp = 0;
@@ -1427,6 +1825,13 @@ export default defineComponent({
         return true;
       }
       if (sum < 3) {
+        return true;
+      }
+
+      return false;
+    },
+    stepOneAncilla() {
+      if (!this.clan) {
         return true;
       }
 
@@ -2100,6 +2505,9 @@ export default defineComponent({
       if (this.generation.potency >= 3) {
         modifiedArr = modifiedArr.filter((x) => x !== "Farmer");
       }
+      if (this.age.label !== "Ancillae") {
+        modifiedArr = modifiedArr.filter((x) => x !== "Tithe Collector");
+      }
       return modifiedArr;
     },
     predatorPicked() {
@@ -2322,6 +2730,17 @@ export default defineComponent({
             ],
           };
           break;
+        case "Tithe Collector":
+          this.predBlurb = {
+            desc: "You control enough of the area that Kindred around you must pay tribute. Carefully selected vessels are delivered at a time and place of your choosing, as long as you return them in acceptable condition and maintain power, the masquerade is someone elses problem.",
+            choices: [
+              "Collectors gain a choice of  Intimidation (Kindred) or Leadership (Kindred) specialty.",
+              "Choose between one dot of Dominate or Presence",
+              "Gain 3 advantage dots to be spent on Domain or Status",
+              "Gain the Adversary flaw: (••) Not everyone appreciates kicking up.",
+            ],
+          };
+          break;
         case "Trapdoor":
           this.predBlurb = {
             desc: "You build your nest and lure prey into it like the trapdoor spider. When a mortal enters your domain, they surely will be drunk deep.",
@@ -2358,6 +2777,13 @@ export default defineComponent({
       }
     },
 
+    setupAltAncillaDiscs() {
+      this.clanDisciplines.forEach((discipline) => {
+        if (!(discipline in this.finalDisciplineObj)) {
+          this.finalDisciplineObj[discipline] = 0;
+        }
+      });
+    },
     confirmPredator() {
       let trueDiscs = {};
       trueDiscs = { ...trueDiscs, ...this.disciplineObj };
@@ -2652,6 +3078,17 @@ export default defineComponent({
               name: "Enemy: Spurned Lover",
             });
             break;
+          case "Tithe Collector":
+            this.merits.merits.flaws.push({
+              name: "Adversary",
+              desc: "Someone who is a rival to your power.",
+              cost: 2,
+              ancillaOnly: true,
+            });
+
+            this.advantages = this.advantages + 3;
+
+            break;
           case "Trapdoor":
             this.merits.haven.advantages.push({
               name: "Haven",
@@ -2772,6 +3209,9 @@ export default defineComponent({
           break;
         case "Siren":
           arr = ["Fortitude", "Presence"];
+          break;
+        case "Tithe Collector":
+          arr = ["Dominate", "Presence"];
           break;
         case "Trapdoor":
           arr = ["Protean", "Obfuscate"];
@@ -2900,6 +3340,12 @@ export default defineComponent({
           arr = [
             { skill: "Persuasion", specialty: "Seduction" },
             { skill: "Subterfuge", specialty: "Seduction" },
+          ];
+          break;
+        case "Tithe Collector":
+          arr = [
+            { skill: "Intimidation", specialty: "Kindred" },
+            { skill: "Leadership", specialty: "Kindred" },
           ];
           break;
         case "Trapdoor":
@@ -3369,6 +3815,19 @@ export default defineComponent({
 
       return mergedOptions;
     },
+    altSpreadSelected() {
+      if (this.disciplineSpread === "Focused") {
+        if (this.altSpreadDisc.length >= 3) {
+          return true;
+        }
+      }
+      if (this.disciplineSpread === "Strategic") {
+        if (this.altSpreadDisc.length >= 4) {
+          return true;
+        }
+      }
+      return false;
+    },
     allThinBloodOptions() {
       //fix this its beyond horrible
       let arr = [];
@@ -3450,6 +3909,9 @@ export default defineComponent({
     },
     filteredAgeOptions() {
       let arr = this.ageOptions;
+      if (this.altAncilla) {
+        arr = this.alternateAgeOptions;
+      }
       if (this.clan === "Thin-Blood") {
         arr = arr.filter(
           (x) => x.label !== "Neonate" && x.label !== "Ancillae"
@@ -3465,6 +3927,8 @@ export default defineComponent({
         arr = arr.filter(
           (x) => x.label === "14th" || x.label === "15th" || x.label === "16th"
         );
+      } else if (this.altAncilla) {
+        arr = this.altGenerationOptions;
       } else {
         arr = arr.filter(
           (x) => x.label !== "14th" && x.label !== "15th" && x.label !== "16th"

@@ -1,7 +1,33 @@
 {
   "Merits": {
-    "Archaic": {
+    "Adversary": {
       "advantages": [],
+      "flaws": [
+        {
+          "name": "Adversary",
+          "cost": 2,
+          "desc": "Someone who is a rival to your power."
+        },
+        {
+          "name": "Shameful Childe",
+          "cost": 1,
+          "desc": "You embraced a childe and promptly abandoned them. They're out there somewhere and one day will come to confront you."
+        },
+        {
+          "name": "Touchstone Embraced by Your Enemies",
+          "cost": 2,
+          "desc": "One of your touchstones was embraced by an enemy decades ago. They now roam the world with your enemies as a capable neonate with allies."
+        }
+      ]
+    },
+    "Archaic": {
+      "advantages": [
+        {
+          "name": "Custodian of History",
+          "cost": 1,
+          "desc": "An Elder has confided lost history to you before their disappearance. Gain +1 die to any checks focused around this knowledge such as the Book of Nod, Antiquity or the Convention of Thorns."
+        }
+      ],
       "flaws": [
         {
           "name": "Archaic",
@@ -9,9 +35,19 @@
           "desc": "You are stuck in the past and cannot use modern technology"
         },
         {
+          "name": "Grief Phobia",
+          "cost": 1,
+          "desc": "The traumatic loss of a touchstone left you with a fear of ever losing again. Lose a die in all situations when confronted by a trigger of your grief."
+        },
+        {
           "name": "Living in the Past",
           "cost": 1,
           "desc": "You have one or more outdated convictions."
+        },
+        {
+          "name": "Old Tricks",
+          "cost": 1,
+          "desc": "You never adjusted to the modern age. All specialties must be archaic."
         }
       ]
     },
@@ -221,6 +257,12 @@
           "desc": "You slake hunger only from eating human flesh."
         },
         {
+          "name": "Outdated Preference: ",
+          "desc": "Actions earlier in your life led to your being banned from this city:",
+          "cost": 2,
+          "ancillaOnly": true
+        },
+        {
           "name": "Methuselah's Thirst",
           "cost": 1,
           "desc": "Your hunger can only be fully slaked by the blood of supernatural creatures."
@@ -348,6 +390,13 @@
     "Mythic": {
       "advantages": [
         {
+          "name": "Object of Power",
+          "cost": 1,
+          "maxCost": 3,
+          "desc": "You've acquired a rare object of power, 1 dot = 1 reroll per story, 2 dots = a grimoire that adds +1 die to all level 1 rituals, 3 dots = a premonition once per story that warns of harm.",
+          "ancillaOnly": true
+        },
+        {
           "name": "Eat food",
           "cost": 2,
           "desc": "You can eat food, though it provides no nourishment and must be expelled before daysleep."
@@ -357,6 +406,7 @@
           "cost": 2,
           "desc": "Your body does not automatically revert to the death-state each night allowing you to keep haircuts, tattoos or things like piercings in. Only available while potency is 1 or lower."
         },
+
         {
           "name": "Pack Diablerie",
           "cost": 2,
@@ -374,6 +424,12 @@
         }
       ],
       "flaws": [
+        {
+          "name": "Cursed Object",
+          "cost": 1,
+          "desc": "Something you own wants you dead. Once per session, at a time determined by the Storyteller, you must reroll a successful test, risking failure instead.",
+          "ancillaOnly": true
+        },
         {
           "name": "Stake Bait",
           "cost": 2,

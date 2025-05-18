@@ -1018,7 +1018,6 @@ export default defineComponent({
           "media.tenor.com",
         ];
         const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
-        console.log("here");
 
         const test =
           ["https:"].includes(parsed.protocol) &&

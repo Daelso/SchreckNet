@@ -813,13 +813,7 @@ export default {
       this.$q.loading.show({
         delay: 50, // ms
       });
-      const axios = require("axios");
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
+
       let character = {
         name: this.charName,
         altBane: this.altBane,
@@ -863,8 +857,8 @@ export default {
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
       };
-      axios
-        .put(baseUrl + "/vampires/vampire/edit/" + this.kindred.id, character, {
+      this.$api
+        .put("/vampires/vampire/edit/" + this.kindred.id, character, {
           withCredentials: true,
         })
         .then((res) => {

@@ -11,8 +11,9 @@ const cors = require("cors");
 app.use(compression());
 app.use(
   helmet({
-    crossOriginEmbedderPolicy: false, // disable COEP
-    crossOriginOpenerPolicy: false, // disable COOP
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
@@ -24,6 +25,7 @@ app.use(
           "https://www.googletagservices.com",
           "https://static.cloudflareinsights.com", // ✅ Cloudflare script
           "https://ep2.adtrafficquality.google", // ✅ Google Ad Sodar script
+          "https://fundingchoicesmessages.google.com",
         ],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: [
@@ -38,6 +40,7 @@ app.use(
           "https://images.unsplash.com",
           "https://*.googlesyndication.com",
           "https://*.doubleclick.net",
+          "https://ep1.adtrafficquality.google",
         ],
         fontSrc: ["'self'", "data:"],
         connectSrc: [

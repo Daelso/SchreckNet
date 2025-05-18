@@ -494,6 +494,7 @@
         :clan="this.clan"
         :debug="this.debug"
         :edit="this.edit"
+        :altAncilla="this.altAncilla"
       />
     </div>
   </q-form>

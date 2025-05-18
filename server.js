@@ -49,6 +49,8 @@ app.use(
           "'self'",
           "https://googleads.g.doubleclick.net",
           "https://tpc.googlesyndication.com",
+          "https://www.google.com", // for reCAPTCHA iframe
+          "https://ep2.adtrafficquality.google", // for Sodar iframe
         ],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],

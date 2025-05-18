@@ -876,6 +876,7 @@ export default defineComponent({
     "sect",
     "chronicle",
     "edit",
+    "altAncilla",
   ],
   emits: [
     "update:specialtiePoints",
@@ -915,6 +916,7 @@ export default defineComponent({
   data(props) {
     return {
       advantagesArr: [],
+      tabAltAncilla: props.altAncilla,
       allMerits: allMerits.Merits,
       allCultMerits: allCultMerits.Cults,
       allBackgrounds: allBackgrounds.Backgrounds,
@@ -1103,7 +1105,7 @@ export default defineComponent({
         case "Merits":
           arr = Object.keys(allMerits.Merits);
           if (this.age.label !== "Ancillae") {
-            arr = arr.filter((x) => x !== "Archaic");
+            arr = arr.filter((x) => x !== "Archaic" && x !== "Adversary");
           }
           if (this.clan !== "Thin-Blood") {
             arr = arr.filter((x) => x !== "Thin-blood");
@@ -1192,12 +1194,20 @@ export default defineComponent({
                 }
               });
             }
+
+            if (this.age.label !== "Ancillae") {
+              const advantages =
+                allMerits.Merits[this.meritCategory].advantages;
+              arr = advantages.filter((advantage) => !advantage.ancillaOnly);
+            }
+
             break;
           case "Cult":
             arr = allCultMerits.Cults[this.meritCategory].advantages;
             break;
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].advantages;
+
             break;
           case "Haven":
             arr = havenMerits.havens[this.meritCategory].advantages;
@@ -1208,12 +1218,21 @@ export default defineComponent({
         switch (this.advantageCategory) {
           case "Merits":
             arr = allMerits.Merits[this.meritCategory].flaws;
+            if (this.age.label !== "Ancillae") {
+              const flaws = allMerits.Merits[this.meritCategory].flaws;
+              arr = flaws.filter((flaw) => !flaw.ancillaOnly);
+            }
             break;
           case "Cult":
             arr = allCultMerits.Cults[this.meritCategory].flaws;
             break;
           case "Backgrounds":
             arr = allBackgrounds.Backgrounds[this.meritCategory].flaws;
+            if (this.age.label !== "Ancillae") {
+              const flaws =
+                allBackgrounds.Backgrounds[this.meritCategory].flaws;
+              arr = flaws.filter((flaw) => !flaw.ancillaOnly);
+            }
             break;
           case "Haven":
             arr = havenMerits.havens[this.meritCategory].flaws;

@@ -1073,6 +1073,7 @@ export default defineComponent({
           thinAdvantages: clanThinAdvantages,
           thinFlaws: clanThinFlaws,
           altBane: altBane,
+          altAncilla: altAncilla,
         });
       },
 
@@ -2335,6 +2336,9 @@ export default defineComponent({
       if (this.generation.potency >= 3) {
         modifiedArr = modifiedArr.filter((x) => x !== "Farmer");
       }
+      if (this.age.label !== "Ancillae") {
+        modifiedArr = modifiedArr.filter((x) => x !== "Tithe Collector");
+      }
       return modifiedArr;
     },
     predatorPicked() {
@@ -2554,6 +2558,17 @@ export default defineComponent({
               "Choose between one dot of Fortitude or Presence.",
               "Gain the Looks (••) merit: Beautiful",
               "Gain the Enemy Flaw: (•) A spurned lover or jealous partner.",
+            ],
+          };
+          break;
+        case "Tithe Collector":
+          this.predBlurb = {
+            desc: "You control enough of the area that Kindred around you must pay tribute. Carefully selected vessels are delivered at a time and place of your choosing, as long as you return them in acceptable condition and maintain power, the masquerade is someone elses problem.",
+            choices: [
+              "Collectors gain a choice of  Intimidation (Kindred) or Leadership (Kindred) specialty.",
+              "Choose between one dot of Dominate or Presence",
+              "Gain 3 advantage dots to be spent on Domain or Status",
+              "Gain the Adversary flaw: (••) Not everyone appreciates kicking up.",
             ],
           };
           break;
@@ -2887,6 +2902,17 @@ export default defineComponent({
               name: "Enemy: Spurned Lover",
             });
             break;
+          case "Tithe Collector":
+            this.merits.merits.flaws.push({
+              name: "Adversary",
+              desc: "Someone who is a rival to your power.",
+              cost: 2,
+              ancillaOnly: true,
+            });
+
+            this.advantages = this.advantages + 3;
+
+            break;
           case "Trapdoor":
             this.merits.haven.advantages.push({
               name: "Haven",
@@ -3007,6 +3033,9 @@ export default defineComponent({
           break;
         case "Siren":
           arr = ["Fortitude", "Presence"];
+          break;
+        case "Tithe Collector":
+          arr = ["Dominate", "Presence"];
           break;
         case "Trapdoor":
           arr = ["Protean", "Obfuscate"];
@@ -3135,6 +3164,12 @@ export default defineComponent({
           arr = [
             { skill: "Persuasion", specialty: "Seduction" },
             { skill: "Subterfuge", specialty: "Seduction" },
+          ];
+          break;
+        case "Tithe Collector":
+          arr = [
+            { skill: "Intimidation", specialty: "Kindred" },
+            { skill: "Leadership", specialty: "Kindred" },
           ];
           break;
         case "Trapdoor":

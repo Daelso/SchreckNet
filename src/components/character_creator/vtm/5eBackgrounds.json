@@ -44,11 +44,12 @@
       ],
       "flaws": [
         {
-          "name": "Infamy: ",
-          "desc": "You are infamous for some wicked deed. Add each dot of this flaw to the difficulty of your reaction role. A severe flaw may lead to pursuit from authorities.",
+          "name": "Banned From: ",
+          "desc": "Actions earlier in your life led to your being banned from this city (1 dot = small, 2 dot = medium, 3 dot = large):",
           "cost": 0,
-          "maxCost": 5,
-          "specNeeded": true
+          "maxCost": 3,
+          "specNeeded": true,
+          "ancillaOnly": true
         },
         {
           "name": "Dark Secret: ",
@@ -66,6 +67,13 @@
           "name": "Debt",
           "desc": "You owe a debt to the wrong people. Alternatively, your spouse, lover or other close relations has 2 dots of infamy.",
           "cost": 1
+        },
+        {
+          "name": "Infamy: ",
+          "desc": "You are infamous for some wicked deed. Add each dot of this flaw to the difficulty of your reaction role. A severe flaw may lead to pursuit from authorities.",
+          "cost": 0,
+          "maxCost": 5,
+          "specNeeded": true
         }
       ]
     },

@@ -22,6 +22,7 @@ router.route("/new").post(async (req, res) => {
       charName: req.body.name,
       alt_bane: req.body.altBane,
       alt_ancilla: req.body.altAncilla,
+      image_link: sanitizeImageLink(req.body.imgLink),
       clan: req.body.clan,
       concept: req.body.concept,
       ambition: req.body.ambition,
@@ -113,6 +114,7 @@ router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
       charName: req.body.name,
       alt_bane: req.body.altBane,
       alt_ancilla: req.body.altAncilla,
+      image_link: sanitizeImageLink(req.body.imgLink),
       clan: req.body.clan,
       concept: req.body.concept,
       ambition: req.body.ambition,
@@ -170,5 +172,34 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
     return res.status(404).send("Not found");
   }
 });
+
+function sanitizeImageLink(urlString) {
+  try {
+    const url = new URL(urlString);
+    const allowedHosts = [
+      "cdn.discordapp.com",
+      "media.discordapp.net",
+      "i.imgur.com",
+      "imgur.com",
+      "media.tenor.com",
+      "tenor.com",
+      "images.unsplash.com",
+      "unsplash.com",
+    ];
+    const isHostAllowed = allowedHosts.some((host) =>
+      url.hostname.includes(host)
+    );
+
+    const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname);
+
+    if (isHostAllowed && isImageFile) {
+      return url.toString();
+    }
+
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
 
 module.exports = router; //Exports our routes

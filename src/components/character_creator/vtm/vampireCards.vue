@@ -24,7 +24,8 @@
           ({{ vamp.sect }}) - {{ vamp.predator_type }}
         </q-item-label>
         <q-item-label style="color: white" caption>
-          Generation: {{ vamp.generation }} ({{ vamp.age }})
+          Generation: {{ vamp.generation }} ({{ vamp.age
+          }}{{ vamp.alt_ancilla ? " - Alternate Rules" : "" }})
         </q-item-label>
         <q-item-label style="color: white" caption>
           Cult: {{ vamp.cult }}

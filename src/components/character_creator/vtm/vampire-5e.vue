@@ -10,8 +10,16 @@
               :src="imgLink"
               v-show="isValidImageUrl(imgLink)"
               :alt="`Character Image for ${charName}`"
-              style="max-width: 300px; max-height: 300px; border-radius: 8px"
               spinner-color="primary"
+              loading="lazy"
+              style="
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+                max-width: 200px;
+                max-height: 200px;
+              "
+              @click="zoomed = !zoomed"
+              :class="{ 'hover-zoom': true, zoomed: zoomed }"
             />
           </div>
           <div class="info q-my-sm">
@@ -564,11 +572,19 @@
   gap: 3px;
   grid-template-columns: repeat(3, 1fr);
 }
+.hover-zoom:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.zoomed {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
 </style>
 
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";
@@ -608,6 +624,7 @@ export default {
   },
   data() {
     return {
+      zoomed: false,
       debug: true,
       saving: false,
       homebrewDialog: false,

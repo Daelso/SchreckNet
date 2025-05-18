@@ -17,6 +17,7 @@
           <div v-if="imgLink">
             <q-img
               :src="imgLink"
+              crossorigin="anonymous"
               v-show="isValidImageUrl(imgLink)"
               :alt="`Character Image for ${charName}`"
               spinner-color="primary"

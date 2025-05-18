@@ -14,7 +14,14 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://pagead2.googlesyndication.com"],
+        scriptSrc: [
+          "'self'",
+          "https://pagead2.googlesyndication.com",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "https://pagead2.googlesyndication.com",
+          "https://www.googletagservices.com",
+        ],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: [
           "'self'",
@@ -26,10 +33,23 @@ app.use(
           "https://media.tenor.com",
           "https://unsplash.com",
           "https://images.unsplash.com",
+          "https://*.googlesyndication.com",
+          "https://*.doubleclick.net",
         ],
         fontSrc: ["'self'", "data:"],
-        connectSrc: ["'self'"],
-        frameSrc: ["'self'"],
+        connectSrc: [
+          "'self'",
+          "https://googleads.g.doubleclick.net",
+          "https://tpc.googlesyndication.com",
+          "https://pagead2.googlesyndication.com",
+          "https://googleads.g.doubleclick.net",
+          "https://ep1.adtrafficquality.google",
+        ],
+        frameSrc: [
+          "'self'",
+          "https://googleads.g.doubleclick.net",
+          "https://tpc.googlesyndication.com",
+        ],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
       },

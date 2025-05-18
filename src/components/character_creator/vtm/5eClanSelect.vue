@@ -448,6 +448,9 @@
                         potency: 1,
                         maxPotency: 3,
                       };
+                      this.age = { label: `Ancillae`, bonusXp: 12 };
+                      this.advantages = 8;
+                      this.flaws = 3;
                     }
                   "
                   color="primary"
@@ -998,11 +1001,17 @@ export default defineComponent({
         { label: "10th", potency: 2, maxPotency: 4 },
       ],
       altGenerationOptions: [
-        { label: "12th", potency: 1, maxPotency: 3 },
+        {
+          label: "12th",
+          potency: 1,
+          maxPotency: 3,
+          label:
+            "You gain eight dots to spend on Starting Advantages and 12 experience points to spend on Skills.",
+        },
         { label: "11th", potency: 2, maxPotency: 4 },
         { label: "10th", potency: 2, maxPotency: 4 },
-        { label: "9th", potency: 3, maxPotency: 5 },
-        { label: "8th", potency: 3, maxPotency: 6 },
+        { label: "9th", potency: 2, maxPotency: 5 },
+        { label: "8th", potency: 2, maxPotency: 6 },
       ],
 
       onOKClick() {
@@ -3590,12 +3599,7 @@ export default defineComponent({
     filteredAgeOptions() {
       let arr = this.ageOptions;
       if (this.altAncilla) {
-        arr = arr.filter(
-          (x) =>
-            x.label !== "Neonate" &&
-            x.label !== "Childer" &&
-            x.label !== "Fledgling"
-        );
+        arr = this.alternateAgeOptions;
       }
       if (this.clan === "Thin-Blood") {
         arr = arr.filter(
@@ -3613,23 +3617,7 @@ export default defineComponent({
           (x) => x.label === "14th" || x.label === "15th" || x.label === "16th"
         );
       } else if (this.altAncilla) {
-        arr = arr.filter(
-          (x) =>
-            x.label !== "13th" &&
-            x.label !== "14th" &&
-            x.label !== "15th" &&
-            x.label !== "16th"
-        );
-        arr.push({
-          label: `9th`,
-          potency: 2,
-          maxPotency: 5,
-        });
-        arr.push({
-          label: `8th`,
-          potency: 2,
-          maxPotency: 6,
-        });
+        arr = this.altGenerationOptions;
       } else {
         arr = arr.filter(
           (x) => x.label !== "14th" && x.label !== "15th" && x.label !== "16th"

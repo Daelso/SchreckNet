@@ -11,6 +11,8 @@ const cors = require("cors");
 app.use(compression());
 app.use(
   helmet({
+    crossOriginEmbedderPolicy: false, // disable COEP
+    crossOriginOpenerPolicy: false, // disable COOP
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],

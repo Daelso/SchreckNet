@@ -1715,10 +1715,10 @@ export default defineComponent({
     },
     sacHumanity() {
       if (this.ancillaHumanity) {
-        this.humanity = 6;
+        this.humanity--;
         this.advantages = 2;
       } else {
-        this.humanity = 7;
+        this.humanity++;
         this.advantages = 0;
       }
     },

@@ -625,7 +625,7 @@ export default {
   data() {
     return {
       zoomed: false,
-      debug: true,
+      debug: false,
       saving: false,
       homebrewDialog: false,
       advantagesObj: {

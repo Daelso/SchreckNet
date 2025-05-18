@@ -56,12 +56,16 @@
                 @update:model-value="clanSelected"
               />
 
-              <q-separator />
+              <q-separator size="4px" class="q-ma-sm" />
               <div>Clan Description: {{ clanDesc }}</div>
-              <q-separator />
+              <q-separator size="4px" class="q-ma-sm" />
               <div
                 class="q-mt-md q-mb-sm"
-                v-if="this.clan !== 'Thin-Blood' && this.clan !== 'Caitiff'"
+                v-if="
+                  this.clan !== 'Thin-Blood' &&
+                  this.clan !== 'Caitiff' &&
+                  !this.altAncilla
+                "
               >
                 Disciplines: (Choose two in-clan Disciplines. Put two dots in
                 one and one dot in the other.)
@@ -69,7 +73,11 @@
               <q-item
                 v-for="(disciplines, key) in clanDisciplines"
                 :key="key"
-                v-if="this.clan !== 'Thin-Blood' && this.clan !== 'Caitiff'"
+                v-if="
+                  this.clan !== 'Thin-Blood' &&
+                  this.clan !== 'Caitiff' &&
+                  !this.altAncilla
+                "
               >
                 <q-item>
                   {{ disciplines }}:
@@ -91,7 +99,43 @@
                   @update:model-value="discSelected()"
                 />
               </q-item>
-              <q-separator />
+              <!-- Begin In Memorium Discipline Selection -->
+
+              <div
+                class="q-mt-md q-mb-sm"
+                v-if="this.clan !== 'Thin-Blood' && this.altAncilla"
+              >
+                Disciplines: (In Memorium Edition) -
+                <div>
+                  <p>Select a discipline spread:</p>
+
+                  <p>
+                    Focused: 3 dots into a clan discipline, 1 dot into any
+                    discipline of your choice and 1 more dot into any OTHER
+                    discipline.
+                  </p>
+
+                  <p>
+                    Strategic: 3 dots into a clan discipline, 1 dot into any
+                    discipline of your choice and 1 more dot into any OTHER
+                    discipline.
+                  </p>
+                  <p>Caitiff can choose any disciplines to distribute into.</p>
+                  <q-select
+                    v-model="disciplineSpread"
+                    color="secondary"
+                    label="Discipline Spread"
+                    popup-content-style="background-color:#222831; color:white"
+                    :options="discSpreadOptions"
+                    bg-color="grey-3"
+                    filled
+                    class="select"
+                    label-color="primary"
+                    @update:model-value="this.resetAltAncilla()"
+                  />
+                </div>
+              </div>
+              <q-separator size="4px" class="q-ma-sm" />
               <div
                 class="q-pa-md"
                 v-if="this.clan !== 'Caitiff' && this.clan !== 'Thin-Blood'"
@@ -108,7 +152,7 @@
                   ? clanBane
                   : this.clanBanes.altClans[this.clan]
               }}
-              <q-separator />
+              <q-separator size="4px" class="q-ma-sm" />
               <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
               <q-separator />
               <div v-if="this.clan === 'Caitiff'">
@@ -117,7 +161,7 @@
                   in one and one dot in the other. Select a third to be taken at
                   0.)
                 </div>
-                <q-separator />
+                <q-separator size="4px" class="q-ma-sm" />
                 <q-item
                   v-for="(disciplines, key) in clanDisciplines"
                   :key="key"
@@ -374,6 +418,7 @@
               </div>
               <q-stepper-navigation>
                 <q-btn
+                  v-if="!this.altAncilla"
                   @click="
                     () => {
                       step = 2;
@@ -391,6 +436,29 @@
                     class="bg-dark text-body2"
                     :offset="[1, 1]"
                     >Please select your disciplines</q-tooltip
+                  >
+                </q-btn>
+                <q-btn
+                  v-else
+                  @click="
+                    () => {
+                      step = 2;
+                      this.generation = {
+                        label: `12th`,
+                        potency: 1,
+                        maxPotency: 3,
+                      };
+                    }
+                  "
+                  color="primary"
+                  label="Continue"
+                  :disable="stepOneAncilla()"
+                >
+                  <q-tooltip
+                    v-if="stepOneAncilla()"
+                    class="bg-dark text-body2"
+                    :offset="[1, 1]"
+                    >Please select your clan and discipline spread</q-tooltip
                   >
                 </q-btn>
               </q-stepper-navigation>
@@ -972,10 +1040,13 @@ export default defineComponent({
   data() {
     return {
       bonusDisc: "",
+      discSpreadOptions: ["Focused", "Strategic"],
       bonusSpecs: "",
       caitiffThird: "",
       ritualChoice: "",
       ceremonyChoice: "",
+      disciplineSpread: "",
+      altDiscChoices: [],
     };
   },
   methods: {
@@ -994,17 +1065,36 @@ export default defineComponent({
     },
 
     toggleAltAncilla() {
+      if (this.clan === "Thin-Blood") {
+        this.clan = "Brujah";
+        this.$q.notify({
+          color: "primary",
+          textColor: "white",
+          postion: "center",
+          avatar: nosImage,
+          timeout: 14000,
+          message:
+            "In Memorium does not allow for Thin-Blood Ancillae, your clan has been reset.",
+        });
+      }
+
       if (this.altAncilla) {
-        this.clan = "Brujah";
-        this.clanOptions.pop();
-        this.clanSelected();
+        if (this.clanOptions.includes("Thin-Blood")) {
+          this.clanOptions.pop();
+        }
+        this.resetAltAncilla();
       } else {
-        this.clanOptions.push("Thin-Blood");
-        this.clan = "Brujah";
-        this.clanSelected();
+        if (!this.clanOptions.includes("Thin-Blood")) {
+          this.clanOptions.push("Thin-Blood");
+        }
+        this.resetAltAncilla();
       }
     },
 
+    resetAltAncilla() {
+      this.clanSelected();
+      this.altDiscChoices = [];
+    },
     clanSelected() {
       this.advantagesOrFlaws = "";
       this.thinBloodMerits = "";
@@ -1032,6 +1122,7 @@ export default defineComponent({
         haven: { advantages: [], flaws: [] },
         loresheets: { advantages: [], flaws: [] },
       };
+
       switch (this.clan) {
         case "Banu Haqim":
           this.clanDesc =
@@ -1468,6 +1559,13 @@ export default defineComponent({
         return true;
       }
       if (sum < 3) {
+        return true;
+      }
+
+      return false;
+    },
+    stepOneAncilla() {
+      if (!this.clan || this.disciplineSpread === "") {
         return true;
       }
 
@@ -3491,6 +3589,14 @@ export default defineComponent({
     },
     filteredAgeOptions() {
       let arr = this.ageOptions;
+      if (this.altAncilla) {
+        arr = arr.filter(
+          (x) =>
+            x.label !== "Neonate" &&
+            x.label !== "Childer" &&
+            x.label !== "Fledgling"
+        );
+      }
       if (this.clan === "Thin-Blood") {
         arr = arr.filter(
           (x) => x.label !== "Neonate" && x.label !== "Ancillae"
@@ -3506,6 +3612,24 @@ export default defineComponent({
         arr = arr.filter(
           (x) => x.label === "14th" || x.label === "15th" || x.label === "16th"
         );
+      } else if (this.altAncilla) {
+        arr = arr.filter(
+          (x) =>
+            x.label !== "13th" &&
+            x.label !== "14th" &&
+            x.label !== "15th" &&
+            x.label !== "16th"
+        );
+        arr.push({
+          label: `9th`,
+          potency: 2,
+          maxPotency: 5,
+        });
+        arr.push({
+          label: `8th`,
+          potency: 2,
+          maxPotency: 6,
+        });
       } else {
         arr = arr.filter(
           (x) => x.label !== "14th" && x.label !== "15th" && x.label !== "16th"

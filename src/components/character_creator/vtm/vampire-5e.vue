@@ -4,12 +4,19 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Vampire: the Masquerade
+          <p>Vampire: the Masquerade</p>
+          <div v-if="imgLink">
+            <q-img
+              :src="imgLink"
+              v-show="isValidImageUrl(imgLink)"
+              :alt="`Character Image for ${charName}`"
+              style="max-width: 300px; max-height: 300px; border-radius: 8px"
+              spinner-color="primary"
+            />
+          </div>
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
-            <div>
-              Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
-            </div>
+            <div>Clan: {{ clan }} {{ altBane ? "(Alternate Bane)" : "" }}</div>
             <div>Sect: {{ sect }}</div>
             <div>
               Age: {{ age.label }}
@@ -477,6 +484,7 @@
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
         v-model:sire="sire"
+        v-model:imgLink="imgLink"
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
         v-model:tab="tab"
@@ -600,7 +608,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       saving: false,
       homebrewDialog: false,
       advantagesObj: {
@@ -614,6 +622,7 @@ export default {
       altBane: false,
       altAncilla: false,
       skillInfo,
+      imgLink: "",
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
       ambition: "",
@@ -769,7 +778,29 @@ export default {
 
       this.homebrewDialog = false;
     },
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = [
+          "i.imgur.com",
+          "imgur.com",
+          "images.unsplash.com",
+          "cdn.discordapp.com",
+          "media.tenor.com",
+        ];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
 
+        return (
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          )
+        );
+      } catch {
+        return false;
+      }
+    },
     onSubmit() {
       if (this.saving === true) {
         this.$q.notify({
@@ -813,6 +844,7 @@ export default {
         disciplineSkills: this.disciplineSkills,
         remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,
+        imgLink: this.imgLink,
         attributes: {
           charisma: this.charisma,
           composure: this.composure,

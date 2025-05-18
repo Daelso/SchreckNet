@@ -9,7 +9,33 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const cors = require("cors");
 app.use(compression());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://pagead2.googlesyndication.com"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://i.imgur.com",
+          "https://media.discordapp.net",
+          "https://cdn.discordapp.com",
+          "https://tenor.com",
+          "https://media.tenor.com",
+          "https://unsplash.com",
+          "https://images.unsplash.com",
+        ],
+        fontSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+        frameSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+  })
+);
 app.use(cookieParser());
 
 app.use(history());

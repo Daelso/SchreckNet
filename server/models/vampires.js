@@ -76,6 +76,10 @@ const Vampires = db.sequelize.define("vampires", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  image_link: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
   predator_type: {
     type: Sequelize.STRING,
     allowNull: false,

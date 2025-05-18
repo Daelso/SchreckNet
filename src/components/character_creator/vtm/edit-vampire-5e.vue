@@ -13,7 +13,24 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Vampire: the Masquerade
+          <p>Vampire: the Masquerade</p>
+          <div v-if="imgLink">
+            <q-img
+              :src="imgLink"
+              v-show="isValidImageUrl(imgLink)"
+              :alt="`Character Image for ${charName}`"
+              spinner-color="primary"
+              loading="lazy"
+              style="
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+                max-width: 200px;
+                max-height: 200px;
+              "
+              @click="zoomed = !zoomed"
+              :class="{ 'hover-zoom': true, zoomed: zoomed }"
+            />
+          </div>
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
             <div>
@@ -488,6 +505,7 @@
         v-model:sire="sire"
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
+        v-model:imgLink="imgLink"
         v-model:tab="tab"
         v-model:disciplines="disciplines"
         v-model:disciplineSkills="this.disciplineSkills"
@@ -563,6 +581,15 @@
   display: grid;
   gap: 3px;
   grid-template-columns: repeat(3, 1fr);
+}
+.hover-zoom:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.zoomed {
+  transform: scale(1.5);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 </style>
 
@@ -646,8 +673,10 @@ export default {
   },
   data() {
     return {
+      zoomed: false,
       debug: false,
       saving: false,
+      imgLink: this.kindred.image_link,
       advantagesObj: this.kindred.advantages,
       attributesDone: true,
       attributeInfo,
@@ -799,6 +828,29 @@ export default {
     };
   },
   methods: {
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = [
+          "i.imgur.com",
+          "imgur.com",
+          "images.unsplash.com",
+          "cdn.discordapp.com",
+          "media.tenor.com",
+        ];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+        return (
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          )
+        );
+      } catch {
+        return false;
+      }
+    },
     onSubmit() {
       if (this.saving === true) {
         this.$q.notify({
@@ -818,6 +870,7 @@ export default {
         name: this.charName,
         altBane: this.altBane,
         clan: this.clan,
+        imgLink: this.imgLink,
         concept: this.concept,
         ambition: this.ambition,
         desire: this.desire,

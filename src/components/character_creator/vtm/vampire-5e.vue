@@ -4,12 +4,27 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Vampire: the Masquerade
+          <p>Vampire: the Masquerade</p>
+          <div v-if="imgLink">
+            <q-img
+              :src="imgLink"
+              v-show="isValidImageUrl(imgLink)"
+              :alt="`Character Image for ${charName}`"
+              spinner-color="primary"
+              loading="lazy"
+              style="
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+                max-width: 200px;
+                max-height: 200px;
+              "
+              @click="zoomed = !zoomed"
+              :class="{ 'hover-zoom': true, zoomed: zoomed }"
+            />
+          </div>
           <div class="info q-my-sm">
             <div>Name: {{ charName }}</div>
-            <div>
-              Clan: {{ clan }} {{ this.altBane ? "(Alternate Bane)" : "" }}
-            </div>
+            <div>Clan: {{ clan }} {{ altBane ? "(Alternate Bane)" : "" }}</div>
             <div>Sect: {{ sect }}</div>
             <div>
               Age: {{ age.label }}
@@ -477,6 +492,7 @@
         v-model:advantagePoints="advantages"
         v-model:flawPoints="flaws"
         v-model:sire="sire"
+        v-model:imgLink="imgLink"
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
         v-model:tab="tab"
@@ -556,11 +572,19 @@
   gap: 3px;
   grid-template-columns: repeat(3, 1fr);
 }
+.hover-zoom:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.zoomed {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
 </style>
 
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";
@@ -600,7 +624,8 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      zoomed: false,
+      debug: true,
       saving: false,
       homebrewDialog: false,
       advantagesObj: {
@@ -614,6 +639,7 @@ export default {
       altBane: false,
       altAncilla: false,
       skillInfo,
+      imgLink: "",
       age: { label: "Childer", bonusXp: 0 },
       archtypeModel: ref(null),
       ambition: "",
@@ -769,7 +795,29 @@ export default {
 
       this.homebrewDialog = false;
     },
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = [
+          "i.imgur.com",
+          "imgur.com",
+          "images.unsplash.com",
+          "cdn.discordapp.com",
+          "media.tenor.com",
+        ];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
 
+        return (
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          )
+        );
+      } catch {
+        return false;
+      }
+    },
     onSubmit() {
       if (this.saving === true) {
         this.$q.notify({
@@ -813,6 +861,7 @@ export default {
         disciplineSkills: this.disciplineSkills,
         remainingSpecialties: this.totalSpecialty,
         skills: this.trueSkills,
+        imgLink: this.imgLink,
         attributes: {
           charisma: this.charisma,
           composure: this.composure,

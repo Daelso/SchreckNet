@@ -213,6 +213,24 @@
                 'Please keep this field below 128 characters',
             ]"
           />
+          <q-input
+            filled
+            type="text"
+            bg-color="grey-3"
+            v-model="localImgLink"
+            label="Image Link of Your Character"
+            placeholder="Paste a direct image link (e.g. i.imgur...)"
+            lazy-rules
+            label-color="primary"
+            debounce="2000"
+            @update:model-value="
+              () => {
+                isValidImageUrl(localImgLink);
+                this.$emit('update:imgLink', this.localImgLink);
+              }
+            "
+            hint="Please use a direct link, allowed hosts are: Discord, imgur, tenor, unsplash"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">
@@ -877,6 +895,7 @@ export default defineComponent({
     "chronicle",
     "edit",
     "altAncilla",
+    "imgLink",
   ],
   emits: [
     "update:specialtiePoints",
@@ -901,6 +920,7 @@ export default defineComponent({
     "update:archetype",
     "update:sect",
     "update:chronicle",
+    "update:imgLink",
   ],
 
   setup(props) {
@@ -945,6 +965,7 @@ export default defineComponent({
       meritCategory: "",
       cultCategory: "",
       tabSect: props.sect,
+      localImgLink: props.imgLink,
       sectOptions: [
         "Anarch",
         "Camarilla",
@@ -986,7 +1007,36 @@ export default defineComponent({
         );
       });
     },
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = [
+          "i.imgur.com",
+          "imgur.com",
+          "images.unsplash.com",
+          "cdn.discordapp.com",
+          "media.tenor.com",
+        ];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+        console.log("here");
 
+        const test =
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          );
+      } catch (err) {
+        console.log(err);
+        this.localImgLink = "";
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Please use a direct image link from an approved host`,
+        });
+      }
+    },
     removeConviction(event) {
       this.tabConvictions.splice(event, 1);
     },
@@ -1113,7 +1163,7 @@ export default defineComponent({
           if (this.clan !== "Caitiff") {
             arr = arr.filter((x) => x !== "Caitiff");
           }
-          if (this.clan === "Thin-Blood") {
+          if (this.clan === "Thin-Blood" && !this.edit) {
             arr = arr.filter((x) => x !== "Bonding");
           }
           break;
@@ -1127,7 +1177,7 @@ export default defineComponent({
           break;
         case "Backgrounds":
           arr = Object.keys(allBackgrounds.Backgrounds);
-          if (this.clan === "Thin-Blood") {
+          if (this.clan === "Thin-Blood" && !this.edit) {
             arr = arr.filter(
               (x) => x !== "Mawla" && x !== "Status" && x !== "Retainers"
             );

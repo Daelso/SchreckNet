@@ -51,6 +51,8 @@ app.use(
           "https://tpc.googlesyndication.com",
           "https://www.google.com", // for reCAPTCHA iframe
           "https://ep2.adtrafficquality.google", // for Sodar iframe
+          "https://www.google.com/recaptcha/api2/aframe", // for recaptcha iframe
+          "https://ep2.adtrafficquality.google/sodar/sodar2",
         ],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],

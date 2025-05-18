@@ -1138,6 +1138,8 @@ export default defineComponent({
       return false;
     },
     onDisciplineChange(newVal, index) {
+      this.skillsSelected = [];
+      this.disciplineChoice = [];
       const prevVal = this.prevAltSpreadDisc[index];
 
       const getAmount = (i) => (i === 0 ? 3 : 1);

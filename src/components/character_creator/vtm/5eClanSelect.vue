@@ -650,6 +650,7 @@
                     filled
                     class="select"
                     label-color="primary"
+                    @update:model-value="switchSpread()"
                   />
                 </div>
               </div>
@@ -670,10 +671,25 @@
                   @update:model-value="(val) => onDisciplineChange(val, index)"
                 />
               </div>
+              <div v-if="this.disciplineSpread === 'Strategic'">
+                <q-select
+                  v-for="(key, index) in strategicSpread"
+                  :key="key"
+                  v-model="altSpreadDisc[index]"
+                  color="secondary"
+                  :label="getStrategicDisciplineLabel(index)"
+                  :options="getStrategicDisciplineOptions(index)"
+                  popup-content-style="background-color:#222831; color:white"
+                  bg-color="grey-3"
+                  filled
+                  class="select q-ma-sm"
+                  label-color="primary"
+                  @update:model-value="
+                    (val) => onStrategicDisciplineChange(val, index)
+                  "
+                />
+              </div>
 
-              {{ finalDisciplineObj }}
-              {{ disciplineSpread }}
-              {{ altSpreadDisc }}
               <p>Select disciplines available to you:</p>
               <div
                 v-if="altSpreadSelected"
@@ -1121,6 +1137,21 @@ export default defineComponent({
       strategicSpread: [2, 2, 1, 1],
       altSpreadDisc: [],
       prevAltSpreadDisc: ["", "", ""],
+      altStrategicDisc: ["", "", "", ""],
+      prevStrategicDisc: ["", "", "", ""],
+      allDisciplines: [
+        "Animalism",
+        "Auspex",
+        "Blood Sorcery",
+        "Celerity",
+        "Dominate",
+        "Fortitude",
+        "Obfuscate",
+        "Oblivion",
+        "Potence",
+        "Presence",
+        "Protean",
+      ],
     };
   },
   methods: {
@@ -1136,6 +1167,51 @@ export default defineComponent({
       }
 
       return false;
+    },
+    getStrategicDisciplineLabel(index) {
+      if (index === 0 || index === 1) return "Select a Clan Discipline";
+      if (index === 2) return "Select another Clan Discipline";
+      if (index === 3) return "Select any Discipline";
+      return "Select a Discipline";
+    },
+    getStrategicDisciplineOptions(index) {
+      const used = this.altSpreadDisc || [];
+
+      if (index === 0 || index === 1 || index === 2) {
+        return this.clanDisciplines.filter(
+          (discipline) => !used.includes(discipline)
+        );
+      }
+
+      if (index === 3) {
+        return this.allDisciplines.filter(
+          (discipline) => !used.includes(discipline)
+        );
+      }
+
+      return this.clanDisciplines; // fallback
+    },
+    onStrategicDisciplineChange(newVal, index) {
+      this.skillsSelected = [];
+      this.disciplineChoice = [];
+      const prevVal = this.prevStrategicDisc[index];
+      const strategicWeights = [2, 2, 1, 1];
+      const pointValue = strategicWeights[index];
+
+      if (prevVal) {
+        this.finalDisciplineObj[prevVal] =
+          (this.finalDisciplineObj[prevVal] || 0) - pointValue;
+        if (this.finalDisciplineObj[prevVal] < 0) {
+          this.finalDisciplineObj[prevVal] = 0;
+        }
+      }
+
+      if (newVal) {
+        this.finalDisciplineObj[newVal] =
+          (this.finalDisciplineObj[newVal] || 0) + pointValue;
+      }
+
+      this.prevStrategicDisc[index] = newVal;
     },
     onDisciplineChange(newVal, index) {
       this.skillsSelected = [];
@@ -1184,6 +1260,11 @@ export default defineComponent({
       if (index === 1) return "Select another Clan Discipline";
       return "Select another discipline";
     },
+    switchSpread() {
+      this.skillsSelected = [];
+      this.disciplineChoice = [];
+      this.altSpreadDisc = [];
+    },
     getDisciplineOptions(index) {
       const used = this.altSpreadDisc || [];
 
@@ -1193,21 +1274,9 @@ export default defineComponent({
         );
       }
 
-      const allDisciplines = [
-        "Animalism",
-        "Auspex",
-        "Blood Sorcery",
-        "Celerity",
-        "Dominate",
-        "Fortitude",
-        "Obfuscate",
-        "Oblivion",
-        "Potence",
-        "Presence",
-        "Protean",
-      ];
-
-      return allDisciplines.filter((discipline) => !used.includes(discipline));
+      return this.allDisciplines.filter(
+        (discipline) => !used.includes(discipline)
+      );
     },
 
     toggleAltAncilla() {
@@ -1610,7 +1679,6 @@ export default defineComponent({
       }
     },
     altAncillaHandling() {
-      console.log(this.generation);
       this.humanity = 7;
       this.advantages = 8;
       this.ancillaHumanity = false;
@@ -1692,7 +1760,6 @@ export default defineComponent({
 
     ageSelected() {
       if (this.altAncilla) {
-        console.log(this.age);
         if (this.age.label === "Ancillae") {
           return;
         }
@@ -3751,6 +3818,11 @@ export default defineComponent({
     altSpreadSelected() {
       if (this.disciplineSpread === "Focused") {
         if (this.altSpreadDisc.length >= 3) {
+          return true;
+        }
+      }
+      if (this.disciplineSpread === "Strategic") {
+        if (this.altSpreadDisc.length >= 4) {
           return true;
         }
       }

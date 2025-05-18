@@ -102,41 +102,6 @@
               <!-- Begin In Memorium Discipline Selection -->
 
               <div
-                class="q-mt-md q-mb-sm"
-                v-if="this.clan !== 'Thin-Blood' && this.altAncilla"
-              >
-                Disciplines: (In Memorium Edition) -
-                <div>
-                  <p>Select a discipline spread:</p>
-
-                  <p>
-                    Focused: 3 dots into a clan discipline, 1 dot into any
-                    discipline of your choice and 1 more dot into any OTHER
-                    discipline.
-                  </p>
-
-                  <p>
-                    Strategic: 3 dots into a clan discipline, 1 dot into any
-                    discipline of your choice and 1 more dot into any OTHER
-                    discipline.
-                  </p>
-                  <p>Caitiff can choose any disciplines to distribute into.</p>
-                  <q-select
-                    v-model="disciplineSpread"
-                    color="secondary"
-                    label="Discipline Spread"
-                    popup-content-style="background-color:#222831; color:white"
-                    :options="discSpreadOptions"
-                    bg-color="grey-3"
-                    filled
-                    class="select"
-                    label-color="primary"
-                    @update:model-value="this.resetAltAncilla()"
-                  />
-                </div>
-              </div>
-              <q-separator size="4px" class="q-ma-sm" />
-              <div
                 class="q-pa-md"
                 v-if="this.clan !== 'Caitiff' && this.clan !== 'Thin-Blood'"
               >
@@ -155,7 +120,7 @@
               <q-separator size="4px" class="q-ma-sm" />
               <div class="q-mt-md">Compulsion: {{ compulsion }}</div>
               <q-separator />
-              <div v-if="this.clan === 'Caitiff'">
+              <div v-if="this.clan === 'Caitiff' && !this.altAncilla">
                 <div class="q-my-md" style="font-weight: bold">
                   Disciplines: (Choose three Caitiff Disciplines. Put two dots
                   in one and one dot in the other. Select a third to be taken at
@@ -628,6 +593,7 @@
                       step = 4;
 
                       confirmPredator();
+                      setupAltAncillaDiscs();
                     }
                   "
                   color="primary"
@@ -654,8 +620,66 @@
               </q-stepper-navigation>
             </q-step>
             <q-step :name="4" title="Select Discipline Skills" icon="sort">
-              Select disciplines available to you:
-              <div v-for="(discPoints, key) in finalDisciplineObj" :key="key">
+              <div
+                class="q-mt-md q-mb-sm"
+                v-if="this.clan !== 'Thin-Blood' && this.altAncilla"
+              >
+                Disciplines: (In Memorium Edition) -
+                <div>
+                  <p>Select a discipline spread:</p>
+
+                  <p>
+                    Focused: 3 dots into a clan discipline, 1 dot into any
+                    discipline of your choice and 1 more dot into any OTHER
+                    discipline.
+                  </p>
+
+                  <p>
+                    Strategic: 2 dots into two of your clan disciplines, 1 dot
+                    into any discipline of your choice and 1 more dot into any
+                    OTHER discipline.
+                  </p>
+                  <p>Caitiff can choose any disciplines to distribute into.</p>
+                  <q-select
+                    v-model="disciplineSpread"
+                    color="secondary"
+                    label="Discipline Spread"
+                    popup-content-style="background-color:#222831; color:white"
+                    :options="discSpreadOptions"
+                    bg-color="grey-3"
+                    filled
+                    class="select"
+                    label-color="primary"
+                  />
+                </div>
+              </div>
+
+              <div v-if="this.disciplineSpread === 'Focused'">
+                <q-select
+                  v-for="(key, index) in focusedSpread"
+                  :key="key"
+                  v-model="altSpreadDisc[index]"
+                  color="secondary"
+                  :label="getDisciplineLabel(index)"
+                  :options="getDisciplineOptions(index)"
+                  popup-content-style="background-color:#222831; color:white"
+                  bg-color="grey-3"
+                  filled
+                  class="select q-ma-sm"
+                  label-color="primary"
+                  @update:model-value="(val) => onDisciplineChange(val, index)"
+                />
+              </div>
+
+              {{ finalDisciplineObj }}
+              {{ disciplineSpread }}
+              {{ altSpreadDisc }}
+              <p>Select disciplines available to you:</p>
+              <div
+                v-if="altSpreadSelected"
+                v-for="(discPoints, key) in finalDisciplineObj"
+                :key="key"
+              >
                 <div v-if="discPoints > 0">
                   Choose: {{ discPoints }}
                   <q-select
@@ -1087,11 +1111,16 @@ export default defineComponent({
       discSpreadOptions: ["Focused", "Strategic"],
       bonusSpecs: "",
       ancillaHumanity: false,
+      altSetupDone: false,
       caitiffThird: "",
       ritualChoice: "",
       ceremonyChoice: "",
       disciplineSpread: "",
       altDiscChoices: [],
+      focusedSpread: [3, 1, 1],
+      strategicSpread: [2, 2, 1, 1],
+      altSpreadDisc: [],
+      prevAltSpreadDisc: ["", "", ""],
     };
   },
   methods: {
@@ -1107,6 +1136,76 @@ export default defineComponent({
       }
 
       return false;
+    },
+    onDisciplineChange(newVal, index) {
+      const prevVal = this.prevAltSpreadDisc[index];
+
+      const getAmount = (i) => (i === 0 ? 3 : 1);
+
+      // Subtract from previous value
+      if (prevVal) {
+        const subtractAmount = getAmount(index);
+        this.finalDisciplineObj[prevVal] =
+          (this.finalDisciplineObj[prevVal] || 0) - subtractAmount;
+
+        // Ensure we never go below 0
+        if (this.finalDisciplineObj[prevVal] < 0) {
+          this.finalDisciplineObj[prevVal] = 0;
+        }
+      }
+
+      // Add to new value
+      if (newVal) {
+        const addAmount = getAmount(index);
+        this.finalDisciplineObj[newVal] =
+          (this.finalDisciplineObj[newVal] || 0) + addAmount;
+      }
+
+      // Update previous selection tracker
+      this.prevAltSpreadDisc[index] = newVal;
+    },
+    updateAltDisciplinePoints(discipline, index) {
+      if (!discipline) return;
+
+      if (index === 0) {
+        this.finalDisciplineObj[discipline] =
+          (this.finalDisciplineObj[discipline] || 0) + 3;
+      } else if (index === 1) {
+        this.finalDisciplineObj[discipline] =
+          (this.finalDisciplineObj[discipline] || 0) + 1;
+      } else if (index === 2) {
+        this.finalDisciplineObj[discipline] = 1;
+      }
+    },
+    getDisciplineLabel(index) {
+      if (index === 0) return "Select a Clan Discipline";
+      if (index === 1) return "Select another Clan Discipline";
+      return "Select another discipline";
+    },
+    getDisciplineOptions(index) {
+      const used = this.altSpreadDisc || [];
+
+      if (index === 0 || index === 1) {
+        return this.clanDisciplines.filter(
+          (discipline) => !used.includes(discipline)
+        );
+      }
+
+      const allDisciplines = [
+        "Animalism",
+        "Auspex",
+        "Blood Sorcery",
+        "Celerity",
+        "Dominate",
+        "Fortitude",
+        "Obfuscate",
+        "Oblivion",
+        "Potence",
+        "Presence",
+        "Protean",
+      ];
+
+      return allDisciplines.filter((discipline) => !used.includes(discipline));
     },
 
     toggleAltAncilla() {
@@ -1139,6 +1238,7 @@ export default defineComponent({
     resetAltAncilla() {
       this.clanSelected();
       this.altDiscChoices = [];
+      this.altSetupDone = false;
     },
     clanSelected() {
       this.advantagesOrFlaws = "";
@@ -1662,7 +1762,7 @@ export default defineComponent({
       return false;
     },
     stepOneAncilla() {
-      if (!this.clan || this.disciplineSpread === "") {
+      if (!this.clan) {
         return true;
       }
 
@@ -2608,6 +2708,13 @@ export default defineComponent({
       }
     },
 
+    setupAltAncillaDiscs() {
+      this.clanDisciplines.forEach((discipline) => {
+        if (!(discipline in this.finalDisciplineObj)) {
+          this.finalDisciplineObj[discipline] = 0;
+        }
+      });
+    },
     confirmPredator() {
       let trueDiscs = {};
       trueDiscs = { ...trueDiscs, ...this.disciplineObj };
@@ -3638,6 +3745,14 @@ export default defineComponent({
       });
 
       return mergedOptions;
+    },
+    altSpreadSelected() {
+      if (this.disciplineSpread === "Focused") {
+        if (this.altSpreadDisc.length >= 3) {
+          return true;
+        }
+      }
+      return false;
     },
     allThinBloodOptions() {
       //fix this its beyond horrible

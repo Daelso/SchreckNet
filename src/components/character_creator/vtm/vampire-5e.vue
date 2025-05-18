@@ -589,16 +589,7 @@ export default {
   },
 
   setup() {
-    const router = useRouter();
-    const axios = require("axios");
     useMeta(metaData);
-
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
 
     return {
       tab: ref("coreConcept"),
@@ -792,14 +783,6 @@ export default {
       this.$q.loading.show({
         delay: 50, // ms
       });
-      const axios = require("axios");
-
-      let baseUrl = "";
-      if (window.location.href.includes("localhost")) {
-        baseUrl = "http://localhost:5000";
-      } else {
-        baseUrl = window.location.origin;
-      }
 
       let character = {
         name: this.charName,
@@ -847,8 +830,8 @@ export default {
         homebrew: this.debug,
       };
 
-      axios
-        .post(baseUrl + "/vampires/new", character, {
+      this.$api
+        .post("/vampires/new", character, {
           withCredentials: true,
         })
         .then((res) => {

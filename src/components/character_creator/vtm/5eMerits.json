@@ -1,7 +1,13 @@
 {
   "Merits": {
     "Archaic": {
-      "advantages": [],
+      "advantages": [
+        {
+          "name": "Custodian of History",
+          "cost": 1,
+          "desc": "An Elder has confided lost history to you before their disappearance. Gain +1 die to any checks focused around this knowledge such as the Book of Nod, Antiquity or the Convention of Thorns."
+        }
+      ],
       "flaws": [
         {
           "name": "Archaic",
@@ -9,9 +15,19 @@
           "desc": "You are stuck in the past and cannot use modern technology"
         },
         {
+          "name": "Grief Phobia",
+          "cost": 1,
+          "desc": "The traumatic loss of a touchstone left you with a fear of ever losing again. Lose a die in all situations when confronted by a trigger of your grief."
+        },
+        {
           "name": "Living in the Past",
           "cost": 1,
           "desc": "You have one or more outdated convictions."
+        },
+        {
+          "name": "Old Tricks",
+          "cost": 1,
+          "desc": "You never adjusted to the modern age. All specialties must be archaic."
         }
       ]
     },

@@ -35,7 +35,7 @@
                 dark
                 label="Use Alternative Ancilla Rules (In Memorium)"
                 class="q-ma-sm"
-                @click="toggleAltAncilla()"
+                @update:model-value="toggleAltAncilla()"
               >
                 <q-tooltip class="bg-dark text-body1">
                   This will lock the character into the Ancilla age and offer a
@@ -447,10 +447,11 @@
                         label: `12th`,
                         potency: 1,
                         maxPotency: 3,
+                        info: 'You gain eight dots to spend on advantages and 12 xp to spend.',
                       };
                       this.age = { label: `Ancillae`, bonusXp: 12 };
                       this.advantages = 8;
-                      this.flaws = 3;
+                      this.flaws = 0;
                     }
                   "
                   color="primary"
@@ -485,14 +486,28 @@
                 color="secondary"
                 option-label="label"
                 popup-content-style="background-color:#222831; color:white"
+                @update:model-value="altAncillaHandling()"
               />
+              <div v-if="this.altAncilla">
+                <p>Rules: {{ this.generation.info }}</p>
+              </div>
               <q-separator />
               <div>Blood Potency: {{ generation.potency }}</div>
               <q-separator />
               <div class="q-mb-md">
                 Max Blood Potency: {{ generation.maxPotency }}
               </div>
+              <div v-if="this.altAncilla && this.generation.maxPotency >= 5">
+                <q-checkbox
+                  v-model="ancillaHumanity"
+                  dark
+                  label="Sacrifice Humanity for 2 Advantage Dots"
+                  class="q-ma-sm"
+                  @click="sacHumanity()"
+                ></q-checkbox>
+              </div>
               <q-select
+                v-if="!this.altAncilla"
                 v-model="age"
                 label="Coterie Age"
                 :options="filteredAgeOptions"
@@ -964,7 +979,7 @@ export default defineComponent({
       alternateAgeOptions: [
         {
           label: "Ancillae",
-          bonusXp: 0,
+          bonusXp: 12,
           other:
             "Adds 1 dot in Blood Potency, two dots of advantages, two dots of Flaws and costs you a point of humanity.",
         },
@@ -1005,13 +1020,32 @@ export default defineComponent({
           label: "12th",
           potency: 1,
           maxPotency: 3,
-          label:
-            "You gain eight dots to spend on Starting Advantages and 12 experience points to spend on Skills.",
+          info: "You gain eight dots to spend on advantages and 12 xp to spend.",
         },
-        { label: "11th", potency: 2, maxPotency: 4 },
-        { label: "10th", potency: 2, maxPotency: 4 },
-        { label: "9th", potency: 2, maxPotency: 5 },
-        { label: "8th", potency: 2, maxPotency: 6 },
+        {
+          label: "11th",
+          potency: 2,
+          maxPotency: 4,
+          info: "You gain eight dots to spend on advantages and 3 flaws.",
+        },
+        {
+          label: "10th",
+          potency: 2,
+          maxPotency: 4,
+          info: "You gain eight dots to spend on advantages and 3 flaws.",
+        },
+        {
+          label: "9th",
+          potency: 2,
+          maxPotency: 5,
+          info: "You have no starting advantages and must take five points of flaws. You may gain two advantage dots by sacrificing a level of humanity",
+        },
+        {
+          label: "8th",
+          potency: 2,
+          maxPotency: 6,
+          info: "You have no starting advantages and must take five points of flaws. You may gain two advantage dots by sacrificing a level of humanity",
+        },
       ],
 
       onOKClick() {
@@ -1051,6 +1085,7 @@ export default defineComponent({
       bonusDisc: "",
       discSpreadOptions: ["Focused", "Strategic"],
       bonusSpecs: "",
+      ancillaHumanity: false,
       caitiffThird: "",
       ritualChoice: "",
       ceremonyChoice: "",
@@ -1471,6 +1506,51 @@ export default defineComponent({
           ];
       }
     },
+    altAncillaHandling() {
+      console.log(this.generation);
+      this.humanity = 7;
+      this.advantages = 8;
+      this.ancillaHumanity = false;
+      switch (this.generation.label) {
+        case "12th":
+          this.age.bonusXp = 12;
+          this.advantages = 8;
+          break;
+        case "11th":
+          this.age.bonusXp = 0;
+          this.advantages = 8;
+          this.flaws = 3;
+          break;
+        case "10th":
+          this.age.bonusXp = 0;
+          this.advantages = 8;
+          this.flaws = 3;
+          break;
+        case "9th":
+          this.age.bonusXp = 0;
+          this.advantages = 0;
+          this.flaws = 5;
+          break;
+        case "8th":
+          this.age.bonusXp = 0;
+          this.advantages = 0;
+          this.flaws = 5;
+          break;
+        default:
+          this.age.bonusXp = 12;
+          this.advantages = 8;
+          break;
+      }
+    },
+    sacHumanity() {
+      if (this.ancillaHumanity) {
+        this.humanity = 6;
+        this.advantages = 2;
+      } else {
+        this.humanity = 7;
+        this.advantages = 0;
+      }
+    },
     discSelected() {
       this.skillsSelected = []; //reset it
       this.disciplineObj = {};
@@ -1508,6 +1588,13 @@ export default defineComponent({
     },
 
     ageSelected() {
+      if (this.altAncilla) {
+        console.log(this.age);
+        if (this.age.label === "Ancillae") {
+          return;
+        }
+      }
+
       switch (this.age.label) {
         case "Fledgling":
           this.xp = 0;

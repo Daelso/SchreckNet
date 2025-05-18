@@ -16,11 +16,12 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: [
           "'self'",
-          "https://pagead2.googlesyndication.com",
           "'unsafe-inline'",
           "'unsafe-eval'",
           "https://pagead2.googlesyndication.com",
           "https://www.googletagservices.com",
+          "https://static.cloudflareinsights.com", // ✅ Cloudflare script
+          "https://ep2.adtrafficquality.google", // ✅ Google Ad Sodar script
         ],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: [
@@ -42,7 +43,6 @@ app.use(
           "https://googleads.g.doubleclick.net",
           "https://tpc.googlesyndication.com",
           "https://pagead2.googlesyndication.com",
-          "https://googleads.g.doubleclick.net",
           "https://ep1.adtrafficquality.google",
         ],
         frameSrc: [
@@ -56,6 +56,7 @@ app.use(
     },
   })
 );
+
 app.use(cookieParser());
 
 app.use(history());

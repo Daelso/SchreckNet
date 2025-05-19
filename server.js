@@ -49,6 +49,7 @@ app.use(
           "https://tpc.googlesyndication.com",
           "https://pagead2.googlesyndication.com",
           "https://ep1.adtrafficquality.google",
+          "https://fundingchoicesmessages.google.com",
         ],
         frameSrc: [
           "'self'",

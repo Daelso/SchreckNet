@@ -27,7 +27,7 @@ app.use(
           "https://ep2.adtrafficquality.google", // ✅ Google Ad Sodar script
           "https://fundingchoicesmessages.google.com",
         ],
-        styleSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         imgSrc: [
           "'self'",
           "data:",
@@ -43,7 +43,12 @@ app.use(
           "https://ep1.adtrafficquality.google",
           "https://lh3.googleusercontent.com",
         ],
-        fontSrc: ["'self'", "data:", "https://fonts.googleapis.com"],
+        fontSrc: [
+          "'self'",
+          "data:",
+          "https://fonts.googleapis.com",
+          "https://fonts.gstatic.com",
+        ],
         connectSrc: [
           "'self'",
           "https://googleads.g.doubleclick.net",

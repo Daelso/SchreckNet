@@ -41,8 +41,9 @@ app.use(
           "https://*.googlesyndication.com",
           "https://*.doubleclick.net",
           "https://ep1.adtrafficquality.google",
+          "https://lh3.googleusercontent.com",
         ],
-        fontSrc: ["'self'", "data:"],
+        fontSrc: ["'self'", "data:", "https://fonts.googleapis.com"],
         connectSrc: [
           "'self'",
           "https://googleads.g.doubleclick.net",

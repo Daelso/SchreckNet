@@ -3816,6 +3816,10 @@ export default defineComponent({
       return mergedOptions;
     },
     altSpreadSelected() {
+      if (!this.altAncilla) {
+        return true;
+      }
+
       if (this.disciplineSpread === "Focused") {
         if (this.altSpreadDisc.length >= 3) {
           return true;

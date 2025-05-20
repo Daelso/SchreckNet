@@ -9,7 +9,7 @@
     <q-layout view="Lhh lpR fff" container>
       <q-header class="bg-primary">
         <q-toolbar>
-          <q-toolbar-title>Affiliations {{ altAncilla }}</q-toolbar-title>
+          <q-toolbar-title>Affiliations</q-toolbar-title>
           <q-btn color="primary" label="OK" @click="onOKClick" />
         </q-toolbar>
       </q-header>

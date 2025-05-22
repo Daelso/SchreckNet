@@ -176,16 +176,7 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
 function sanitizeImageLink(urlString) {
   try {
     const url = new URL(urlString);
-    const allowedHosts = [
-      "cdn.discordapp.com",
-      "media.discordapp.net",
-      "i.imgur.com",
-      "imgur.com",
-      "media.tenor.com",
-      "tenor.com",
-      "images.unsplash.com",
-      "unsplash.com",
-    ];
+    const allowedHosts = ["i.imgur.com", "imgur.com"];
     const isHostAllowed = allowedHosts.some((host) =>
       url.hostname.includes(host)
     );

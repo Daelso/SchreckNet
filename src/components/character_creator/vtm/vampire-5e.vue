@@ -799,13 +799,7 @@ export default {
     isValidImageUrl(url) {
       try {
         const parsed = new URL(url);
-        const allowedHosts = [
-          "i.imgur.com",
-          "imgur.com",
-          "images.unsplash.com",
-          "cdn.discordapp.com",
-          "media.tenor.com",
-        ];
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
         const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
 
         return (

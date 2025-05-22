@@ -229,7 +229,7 @@
                 this.$emit('update:imgLink', this.localImgLink);
               }
             "
-            hint="Please use a direct link, allowed hosts are: Discord, imgur, tenor, unsplash"
+            hint="Please use a direct imgur link."
           />
         </q-tab-panel>
 
@@ -1010,13 +1010,7 @@ export default defineComponent({
     isValidImageUrl(url) {
       try {
         const parsed = new URL(url);
-        const allowedHosts = [
-          "i.imgur.com",
-          "imgur.com",
-          "images.unsplash.com",
-          "cdn.discordapp.com",
-          "media.tenor.com",
-        ];
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
         const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
 
         const test =

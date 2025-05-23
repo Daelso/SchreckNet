@@ -26,6 +26,31 @@
           }
         ]
       },
+      "Experimental Medicine": {
+        "desc": "The Hunter has signed an indefinite waiver allowing Monster-X's medical team to perform whatever experiments they want upon them in exchange for swift, free medical care.",
+        "perks": [
+          {
+            "name": "Improved Resilience",
+            "desc": "A layer of flexible armor is grafted to the Hunter, matching their flesh tone.",
+            "parent": "Experimental Medicine"
+          },
+          {
+            "name": "Monstrous Enhancement",
+            "desc": "The procedure uses an esoteric component to boost the Hunter's abilities.",
+            "parent": "Experimental Medicine"
+          },
+          {
+            "name": "Phoenix Protocol",
+            "desc": "For the duration of the next story, the Hunter's Health heals twice as quickly, and they benefit from supernatural resilience to damage",
+            "parent": "Experimental Medicine"
+          },
+          {
+            "name": "Unstable Steroids",
+            "desc": "One of the Hunter's Attributes is increased by one until the end of the next story. Should they achieve a Despair result on any tests before the end of the next story, they suffer one Aggravated damage.",
+            "parent": "Experimental Medicine"
+          }
+        ]
+      },
       "Fleet": {
         "desc": "The Hunter is able to provide a fleet of commercial or personal vehicles for the cell.",
         "perks": [
@@ -281,6 +306,31 @@
             "name": "Psychic Backlash",
             "desc": "A modicum of the torment experienced by the victim is thrown back at their tormentor as well.",
             "parent": "Cleanse the Unnatural"
+          }
+        ]
+      },
+      "Great Destiny": {
+        "desc": "Whether a higher power has blessed the Hunter, or they simply believe in their own righteousness, they seem to be chosen by providence",
+        "perks": [
+          {
+            "name": "Divine Protection",
+            "desc": "In any scene where the Hunter takes damage to Health in service of their destiny, they can reduce the damage by 2",
+            "parent": "Great Destiny"
+          },
+          {
+            "name": "Heavenly Resolve",
+            "desc": "In a scene where the Hunter has taken damage in Social Combat when defending or proselytizing their destiny, they can restore one Aggravated Willpower damage.",
+            "parent": "Great Destiny"
+          },
+          {
+            "name": "Sacred Insight",
+            "desc": "Once per story, the player may ask the Storyteller for a clue to help the Hunter fulfill their destiny.",
+            "parent": "Great Destiny"
+          },
+          {
+            "name": "Influence Fate",
+            "desc": "Once per session, the player may influence a Storyteller character to take one action that would aid them in their destiny.",
+            "parent": "Great Destiny"
           }
         ]
       },

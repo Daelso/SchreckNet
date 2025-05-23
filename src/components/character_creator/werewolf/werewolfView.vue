@@ -19,7 +19,7 @@
               :src="imgLink"
               crossorigin="anonymous"
               v-show="isValidImageUrl(imgLink)"
-              :alt="`Character Image for ${charName}`"
+              :alt="`Character Image for ${this.garou.charName}`"
               spinner-color="primary"
               loading="lazy"
               style="

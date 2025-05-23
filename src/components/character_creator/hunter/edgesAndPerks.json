@@ -91,12 +91,22 @@
           },
           {
             "name": "How To Halt Them",
-            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to ward an area, protect an area or poerson from your prey.",
+            "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to ward an area, protect an area or person from your prey.",
             "parent": "Library"
           },
           {
             "name": "How To Harm Them",
             "desc": "In addition to a clue gained you gain an additional bonus equal to the margin of the win when attempting to harm the prey by exploiting a supernatural weakness.",
+            "parent": "Library"
+          },
+          {
+            "name": "How To Silence Them",
+            "desc": "In addition to the clue gained from this Edge, you learn information that gives you leverage over the target: a secret they want to keep hidden, a name that strikes fear into their heart, or someone they would never risk hurting.",
+            "parent": "Library"
+          },
+          {
+            "name": "Pattern Analysis",
+            "desc": "You can discern, fairly easily, whether the phenomenon you're studying has occurred before, allowing you to identify a specific monster's behavior",
             "parent": "Library"
           }
         ]
@@ -133,6 +143,11 @@
       "Global Access": {
         "desc": "The Hunter is able to gain access to any digital system well-beyond simple 'hacking'.",
         "perks": [
+          {
+            "name": "Digital Cannon Fodder",
+            "desc": "You worked for Re:Venge or a similarly grimy employer — someone that harvested a ton of personal data. You use that data to camouflage your own activities.",
+            "parent": "Global Access"
+          },
           {
             "name": "Watching Big Brother",
             "desc": "The Hunter is able to not only gain access to but also manipulate digital surveillance footage.",
@@ -212,6 +227,31 @@
             "name": "Incognito",
             "desc": "The animal can masterfully stay out of sight.",
             "parent": "Beast Whisperer"
+          }
+        ]
+      },
+      "Turncoat": {
+        "desc": "You're a double agent, working with your cell to get on the inside with your Quarry, may not be something that even your cellmates know. The Quarry, however, believes you're now loyal to them completely",
+        "perks": [
+          {
+            "name": "Deathbed Confession",
+            "desc": "Allows you to suddenly switch sides and ignores combat usage restrictions, can pause combat temporarily.",
+            "parent": "Turncoat"
+          },
+          {
+            "name": "Poker Face",
+            "desc": "Gain a two-dice bonus to turncoat edge tests, your ability to lie convincingly to your cell and the quarry are unrivaled.",
+            "parent": "Turncoat"
+          },
+          {
+            "name": "Stick to the Plan",
+            "desc": "Regardless of how convincing your loyalty to the quarry is, or how little notice you give, your cell is always ready to trust you.",
+            "parent": "Turncoat"
+          },
+          {
+            "name": "We Come as a Team",
+            "desc": "Your voice speaks not just for you but your cell too. For each point of margin on a successful test, you can bring a cellmate along with you as long as they play along.",
+            "parent": "Turncoat"
           }
         ]
       }

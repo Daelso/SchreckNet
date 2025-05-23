@@ -1115,6 +1115,53 @@ export default defineComponent({
         }
       }
 
+      if (this.advFlawChoice.name === "Faked Death") {
+        let mask = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Mask"
+        );
+        if (typeof mask == "undefined" || mask.cost < 1) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "You must have 1 dot in mask to take this background!",
+          });
+          return false;
+        }
+      }
+
+      if (this.advFlawChoice.name === "Generous") {
+        let mentor = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Mentor"
+        );
+        if (typeof mentor == "undefined" || mentor.cost < 1) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "You must have 1 dot in mentor to take this background!",
+          });
+          return false;
+        }
+      }
+
+      if (
+        this.advFlawChoice.name === "Freelance" ||
+        this.advFlawChoice.name === "Gig Economy" ||
+        this.advFlawChoice.name === "Debts"
+      ) {
+        let resources = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Resources"
+        );
+        if (typeof resources == "undefined" || resources.cost < 1) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message:
+              "You must have 1 dot in resources to take this background!",
+          });
+          return false;
+        }
+      }
+
       return true;
     },
 

@@ -7,6 +7,13 @@
           "desc": "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
           "cost": 0,
           "maxCost": 3
+        },
+        {
+          "name": "Rural Hideaway",
+          "desc": "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
+          "cost": 0,
+          "maxCost": 3,
+          "org": "Arcanum"
         }
       ],
       "flaws": [
@@ -14,6 +21,11 @@
           "name": "No Haven",
           "desc": "Every morning you have to search for a new, safe place to await sunset.",
           "cost": 1
+        },
+        {
+          "name": "Isolated",
+          "desc": "Your safe house is in the middle of nowhere. This means you need to travel long distances to get back to civilization or enjoy modern conveniences.",
+          "cost": 2
         }
       ]
     },

@@ -14,6 +14,10 @@ const Garou = db.sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    image_link: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     tribe: {
       type: Sequelize.JSON,
       allowNull: false,

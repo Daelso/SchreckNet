@@ -817,7 +817,7 @@ export default {
         tribe_renown: this.tribe_renown,
         purchased_renown: this.purchased_renown,
         bonus_renown: this.bonus_renown,
-        imgLink: this.image_link,
+        imgLink: this.imgLink,
       };
 
       axios

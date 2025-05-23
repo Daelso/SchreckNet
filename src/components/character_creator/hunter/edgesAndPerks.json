@@ -259,6 +259,31 @@
   },
   "Endowments": {
     "edges": {
+      "Cleanse the Unnatural": {
+        "desc": "In the Society of St. Leopold, the ability to drive out supernatural influence from a victim is called exorcism. Others might call it an intervention or psychic surgery, but they all have the same goal: remove the taint of supernatural control from a person.",
+        "perks": [
+          {
+            "name": "Bedside Manner",
+            "desc": "Your touch is gentle and your mien soothing. Any damage caused by this edge becomes superficial.",
+            "parent": "Cleanse the Unnatural"
+          },
+          {
+            "name": "Inflict Stigmata",
+            "desc": "Inflicts a permanent stigmata on the target, causing an additional point of agg damage. Review Stigmata rules in the core rulebook!",
+            "parent": "Cleanse the Unnatural"
+          },
+          {
+            "name": "Trace on the Threads",
+            "desc": "As the Hunter purges the unnatural forces from their subject, they sense the connection between victim and aggressor",
+            "parent": "Cleanse the Unnatural"
+          },
+          {
+            "name": "Psychic Backlash",
+            "desc": "A modicum of the torment experienced by the victim is thrown back at their tormentor as well.",
+            "parent": "Cleanse the Unnatural"
+          }
+        ]
+      },
       "Sense the Unnatural": {
         "desc": "By holding an object of focus, the Hunter is able to sense the presence of supernatural creatures within close vicinity.",
         "perks": [
@@ -350,6 +375,11 @@
           {
             "name": "Detection",
             "desc": "The Artifact reacts to the presence of the supernatural, similar to the Sense the Unnatural Edge.",
+            "parent": "Artifact"
+          },
+          {
+            "name": "Feature Unlocked (Re:Venge)",
+            "desc": "Once per story, when Danger is at 5, you can call upon the deepest reserves of your artifact's power, allowing a spent Willpower point to reroll as many non-Desperation dice as you like.",
             "parent": "Artifact"
           },
           {

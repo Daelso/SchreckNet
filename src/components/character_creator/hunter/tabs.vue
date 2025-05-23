@@ -1129,6 +1129,23 @@ export default defineComponent({
         }
       }
 
+      if (
+        this.advFlawChoice.name === "Franchise Office: Location of Interest"
+      ) {
+        let haven = this.advantagesObj.haven.advantages.find(
+          (x) => x.haven === "Franchise Office (Monster-X)"
+        );
+        if (typeof haven == "undefined" || haven.cost < 2) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message:
+              "You must have 2 dots in Franchise Office (Monster-X) to take this flaw!",
+          });
+          return false;
+        }
+      }
+
       if (this.advFlawChoice.name === "Generous") {
         let mentor = this.advantagesObj.backgrounds.advantages.find(
           (x) => x.name === "Mentor"

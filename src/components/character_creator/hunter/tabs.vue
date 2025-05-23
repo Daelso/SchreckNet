@@ -209,9 +209,27 @@
             label="Your Starting XP *"
             lazy-rules
             label-color="primary"
-            hint="There are no written rules for amount of starting XP, discuss with your ST."
+            hint="Apostates recommends experienced hunters start with 15xp"
             hide-hint
             @update:model-value="$emit('update:xp', this.xpInput)"
+          />
+          <q-input
+            filled
+            type="text"
+            bg-color="grey-3"
+            v-model="localImgLink"
+            label="Image Link of Your Character"
+            placeholder="Paste a direct image link (e.g. i.imgur...)"
+            lazy-rules
+            label-color="primary"
+            debounce="2000"
+            @update:model-value="
+              () => {
+                isValidImageUrl(localImgLink);
+                this.$emit('update:imgLink', this.localImgLink);
+              }
+            "
+            hint="Please use a direct imgur link."
           />
         </q-tab-panel>
 
@@ -706,6 +724,7 @@ import allBackgrounds from "../hunter/5eBackgrounds.json";
 import safeHouseMerits from "../hunter/safeHouses.json";
 import creedList from "../hunter/creeds.json";
 import driveList from "../hunter/drives.json";
+import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 export default defineComponent({
   name: "v5-tabs",
@@ -729,6 +748,7 @@ export default defineComponent({
     "desire",
     "chronicle",
     "touchstones",
+    "imgLink",
   ],
   emits: [
     "update:specialtiePoints",
@@ -748,6 +768,7 @@ export default defineComponent({
     "update:ambition",
     "update:desire",
     "update:chronicle",
+    "update:imgLink",
     "update:touchstones",
   ],
 
@@ -776,9 +797,11 @@ export default defineComponent({
       advFlawChoice: "",
       creedList,
       driveList,
+      nosImage,
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
+      localImgLink: props.imgLink,
       tabAmbition: props.ambition,
       tabCharName: props.charName,
       filteredOptions: [],
@@ -818,6 +841,29 @@ export default defineComponent({
           (v) => v.toLowerCase().indexOf(needle) > -1
         );
       });
+    },
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+        const test =
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          );
+      } catch (err) {
+        console.log(err);
+        this.localImgLink = "";
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Please use a direct image link from an approved host`,
+        });
+      }
     },
 
     removeCreed(event) {

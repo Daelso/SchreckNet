@@ -2,7 +2,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
-
 let router = express.Router();
 router.use(cookieParser());
 app.use(express.json());
@@ -39,6 +38,7 @@ router.route("/new").post(async (req, res) => {
       spentXp: req.body.spentXp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
+      image_link: sanitizeImageLink(req.body.imgLink),
       advantages_remaining: req.body.advantages_remaining,
       flaws_remaining: req.body.flaws_remaining,
       created_by: currentUser,
@@ -115,6 +115,7 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
       skills: req.body.skills,
       health: req.body.health,
       willpower: req.body.willpower,
+      image_link: sanitizeImageLink(req.body.imgLink),
       remaining_specialties: req.body.remainingSpecialties,
       edges: req.body.edgeArr,
       xp: req.body.xp,
@@ -149,5 +150,25 @@ router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
     return res.status(404).send("Not found");
   }
 });
+
+function sanitizeImageLink(urlString) {
+  try {
+    const url = new URL(urlString);
+    const allowedHosts = ["i.imgur.com", "imgur.com"];
+    const isHostAllowed = allowedHosts.some((host) =>
+      url.hostname.includes(host)
+    );
+
+    const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname);
+
+    if (isHostAllowed && isImageFile) {
+      return url.toString();
+    }
+
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
 
 module.exports = router; //Exports our routes

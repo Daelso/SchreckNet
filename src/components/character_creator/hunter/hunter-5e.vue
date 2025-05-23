@@ -4,7 +4,25 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Hunter: the Reckoning
+          <p>Hunter: the Reckoning</p>
+          <div v-if="imgLink">
+            <q-img
+              :src="imgLink"
+              crossorigin="anonymous"
+              v-show="isValidImageUrl(imgLink)"
+              :alt="`Character Image for ${charName}`"
+              spinner-color="primary"
+              loading="lazy"
+              style="
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+                max-width: 200px;
+                max-height: 200px;
+              "
+              @click="zoomed = !zoomed"
+              :class="{ 'hover-zoom': true, zoomed: zoomed }"
+            />
+          </div>
           <div class="info q-my-sm">
             <div>Name: {{ charName ? charName : "Unknown" }}</div>
             <div>Creed: {{ creed.name ? creed.name : "Unknown" }}</div>
@@ -365,6 +383,7 @@
         v-model:flawPoints="flaws"
         v-model:advantagesObj="advantagesObj"
         v-model:creed="creed"
+        v-model:imgLink="imgLink"
         v-model:drive="drive"
         v-model:redemption="redemption"
         v-model:cell="cell"
@@ -439,6 +458,15 @@
   justify-content: center;
   gap: 45px;
 }
+.hover-zoom:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.zoomed {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
 </style>
 
 <script>
@@ -500,6 +528,7 @@ export default {
       attributesDone: false,
       attributeInfo,
       skillInfo,
+      imgLink: "",
       creed: "",
       ambition: "",
       drive: "",
@@ -608,9 +637,27 @@ export default {
       skillsDone: false,
       edgeDone: false,
       saving: false,
+      zoomed: false,
     };
   },
   methods: {
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+        return (
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          )
+        );
+      } catch {
+        return false;
+      }
+    },
     onSubmit() {
       if (this.saving === true) {
         this.$q.notify({
@@ -640,6 +687,7 @@ export default {
         concept: this.concept,
         ambition: this.ambition,
         desire: this.desire,
+        imgLink: this.imgLink,
         chronicle: this.chronicle,
         health: this.stamina + 3,
         edgeArr: this.edgeArr,

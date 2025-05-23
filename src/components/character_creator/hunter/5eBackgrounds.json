@@ -88,6 +88,11 @@
     "Mask": {
       "advantages": [
         {
+          "name": "Faked Death",
+          "desc": "You've faked your death, keeping a low profile from enemies but at a risk of limiting your old contacts. Requires 1 dot in mask",
+          "cost": 2
+        },
+        {
           "name": "Mask",
           "desc": "Each dot of mask strengthens the level of your fake identity. Choose a max of 2 dots. At 2 dots, you may purchase additional related 1 dot merits.",
           "cost": 0,
@@ -125,6 +130,18 @@
           "cost": 0,
           "maxCost": 5,
           "specNeeded": true
+        },
+        {
+          "name": "Generous",
+          "desc": "For whatever reason your mentor is more generous than usual. With each dot purchased you can call in a favor from your mentor.",
+          "cost": 0,
+          "maxCost": 3
+        },
+        {
+          "name": "Spirit Guide",
+          "desc": "Your mentor is a ghost or other spectral entity that you studied and remains loyal to you from your time in the Arcanum. You have the means and knowledge to summon them and help you equivalent to a 2 dot mentor.",
+          "cost": 2,
+          "org": "Arcanum"
         }
       ],
       "flaws": [
@@ -151,6 +168,23 @@
           "name": "Destitute",
           "desc": "No money and no home.",
           "cost": 1
+        },
+        {
+          "name": "Freelance",
+          "desc": "Your cash is constantly in a state of feast or famine, roll a die at the start of the story and reduce your resources by 1 on a failure, raising by 1 on a success.",
+          "cost": 1
+        },
+        {
+          "name": "Gig Economy",
+          "desc": "Your job is at someones beck and call, refusing the work could cost you your job and source of income.",
+          "cost": 0,
+          "maxCost": 2
+        },
+        {
+          "name": "Debts",
+          "desc": "Any money you owe, a decent chunk immediately is spent on servicing loans you owe. Failing to pay could result in a visit from loan sharks.",
+          "cost": 0,
+          "maxCost": 2
         }
       ]
     },

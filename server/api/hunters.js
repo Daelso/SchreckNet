@@ -44,6 +44,7 @@ router.route("/new").post(async (req, res) => {
       created_by: currentUser,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      organization: req.body.organization,
     });
 
     return res.status(200).json(newHunter.id);
@@ -125,6 +126,7 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
       advantages_remaining: req.body.advantages_remaining,
       flaws_remaining: req.body.flaws_remaining,
       updatedAt: Date.now(),
+      organization: req.body.organization,
     });
 
     return res.status(200).send("Hunter updated!");

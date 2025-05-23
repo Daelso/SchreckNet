@@ -1,0 +1,11 @@
+{
+  "loresheets": [
+    {
+      "Name": "Agent Cog",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "Based on Agent Cog's beginnings as a pirate radio host. Reach out with good intel, and he'll broadcast it — or even do a few favors.",
+      "Reference": "Apostates 22"
+    }
+  ]
+}

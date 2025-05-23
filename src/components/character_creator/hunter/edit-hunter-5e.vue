@@ -196,7 +196,7 @@
             <q-expansion-item
               icon="military_tech"
               label="Advantages/Flaws"
-              caption="View current advantages, flaws, backgrounds and safe houses"
+              caption="View current advantages, flaws, backgrounds, safe houses, and loresheets"
               dark
             >
               <q-card>
@@ -230,6 +230,7 @@
                     >
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
+
                     <br />
                     <div>
                       <div style="font-size: larger">Backgrounds:</div>
@@ -264,7 +265,7 @@
                     </div>
                   </div>
                   <div>
-                    <div style="font-size: larger">Safe House:</div>
+                    <div style="font-size: larger">Haven:</div>
                     <br />
                     Advantages:
                     <div
@@ -293,6 +294,34 @@
                       <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                     </div>
                     <br />
+                    <div style="font-size: larger">Loresheets:</div>
+                    <br />
+                    Advantages:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.loresheets.advantages.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="advantage in advantagesObj.loresheets.advantages"
+                      :key="advantage.name"
+                    >
+                      <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                    </div>
+                    Flaws:
+                    <div
+                      class="q-my-sm"
+                      v-if="advantagesObj.loresheets.flaws.length === 0"
+                    >
+                      Not yet selected
+                    </div>
+                    <div
+                      v-for="flaw in advantagesObj.loresheets.flaws"
+                      :key="flaw.name"
+                    >
+                      <div>{{ flaw.name }} - {{ flaw.cost }}</div>
+                    </div>
                   </div>
                 </q-card-section>
               </q-card>

@@ -518,7 +518,7 @@ export default {
   },
   data() {
     return {
-      debug: false,
+      debug: true,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
         backgrounds: { advantages: [], flaws: [] },

@@ -6,6 +6,55 @@
       "Prerequisite": null,
       "Description": "Based on Agent Cog's beginnings as a pirate radio host. Reach out with good intel, and he'll broadcast it — or even do a few favors.",
       "Reference": "Apostates 22"
+    },
+    {
+      "Name": "Arcanum Tenure",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "Your time spent walking the hallowed halls of the Arcanum was significant, and even though you've moved on, your knowledge remains as keen as ever.",
+      "Reference": "Apostates 23"
+    },
+    {
+      "Name": "Best Served Cold",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "You don't work for Re:Venge anymore, but you haven't fully cut ties either. You have connections",
+      "Reference": "Apostates 24"
+    },
+    {
+      "Name": "Defector from ESOG",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "The Entity Special Operations Group's history at the Society of St. Leopold stretches back to the wars against the Cathars and later the crusades. It's now a military force so modern and sophisticated that even SAD looks to them to train their teams.",
+      "Reference": "Apostates 25"
+    },
+    {
+      "Name": "Dr. Theresa Flanders",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "Theresa has been slowly taking over the day-to-day operations of SAD's Research and Forensics subdivisions. Bring her information and she is happy to help.",
+      "Reference": "Apostates 26"
+    },
+    {
+      "Name": "The Evangelical Friends of St.Rita",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "The Evangelical Friends of St. Rita are the least discriminating recruiters of inquisitors, so not every camp counselor, Catholic school teacher, or youth pastor truly understands the severity of the threat they've vowed to oppose.",
+      "Reference": "Apostates 27"
+    },
+    {
+      "Name": "Monster-X Franchise",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "You are a recent recruit to your local Monster-X Franchise, happy to be cannon fodder in exchange for their experimental gear.",
+      "Reference": "Apostates 28"
+    },
+    {
+      "Name": "Morag Holmscroft",
+      "Type": "Organization",
+      "Prerequisite": null,
+      "Description": "The familial relationship may be distant, but it's undeniable. You benefited from the right connections and upbringing to make the most of your place in the Arcanum",
+      "Reference": "Apostates 29"
     }
   ]
 }

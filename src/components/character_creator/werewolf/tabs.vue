@@ -110,6 +110,24 @@
             hide-hint
             @update:model-value="$emit('update:xp', this.xpInput)"
           />
+          <q-input
+            filled
+            type="text"
+            bg-color="grey-3"
+            v-model="localImgLink"
+            label="Image Link of Your Character"
+            placeholder="Paste a direct image link (e.g. i.imgur...)"
+            lazy-rules
+            label-color="primary"
+            debounce="2000"
+            @update:model-value="
+              () => {
+                isValidImageUrl(localImgLink);
+                this.$emit('update:imgLink', this.localImgLink);
+              }
+            "
+            hint="Please use a direct imgur link."
+          />
         </q-tab-panel>
 
         <q-tab-panel name="touchstones">
@@ -641,6 +659,7 @@ export default defineComponent({
     "concept",
     "chronicle",
     "touchstones",
+    "imgLink",
   ],
   emits: [
     "update:specialtiePoints",
@@ -654,6 +673,7 @@ export default defineComponent({
     "update:concept",
     "update:chronicle",
     "update:touchstones",
+    "update:imgLink",
   ],
 
   setup(props) {
@@ -679,7 +699,7 @@ export default defineComponent({
       allBackgrounds: allBackgrounds.Backgrounds,
       advOrFlaw: "",
       advFlawChoice: "",
-
+      localImgLink: props.imgLink,
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
@@ -719,7 +739,29 @@ export default defineComponent({
         );
       });
     },
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
 
+        const test =
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          );
+      } catch (err) {
+        console.log(err);
+        this.localImgLink = "";
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Please use a direct image link from an approved host`,
+        });
+      }
+    },
     removeTouchstone(event) {
       this.tabTouchStones.splice(event, 1);
     },

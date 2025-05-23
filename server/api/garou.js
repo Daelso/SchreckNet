@@ -52,6 +52,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
       purchased_gifts: req.body.purchased_gifts,
       tribe_renown: req.body.tribe_renown,
       purchased_renown: req.body.purchased_renown,
+      image_link: sanitizeImageLink(req.body.imgLink),
       created_by: currentUser,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -96,6 +97,7 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
       tribe_gifts: req.body.tribe_gifts,
       purchased_gifts: req.body.purchased_gifts,
       tribe_renown: req.body.tribe_renown,
+      image_link: sanitizeImageLink(req.body.imgLink),
       purchased_renown: req.body.purchased_renown,
       updatedAt: Date.now(),
       updatedBy: currentUser,
@@ -298,5 +300,25 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
     return res.status(404).send("Not found");
   }
 });
+
+function sanitizeImageLink(urlString) {
+  try {
+    const url = new URL(urlString);
+    const allowedHosts = ["i.imgur.com", "imgur.com"];
+    const isHostAllowed = allowedHosts.some((host) =>
+      url.hostname.includes(host)
+    );
+
+    const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname);
+
+    if (isHostAllowed && isImageFile) {
+      return url.toString();
+    }
+
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
 
 module.exports = router; //Exports our routes

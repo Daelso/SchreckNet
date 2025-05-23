@@ -11,7 +11,25 @@
   >
     <q-banner class="bg-primary text-white" rounded dark>
       <div class="container">
-        Hunter: The Reckoning
+        <p>Hunter: The Reckoning</p>
+        <div v-if="imgLink">
+          <q-img
+            :src="imgLink"
+            crossorigin="anonymous"
+            v-show="isValidImageUrl(imgLink)"
+            :alt="`Character Image for ${hunter.charName}`"
+            spinner-color="primary"
+            loading="lazy"
+            style="
+              border-radius: 8px;
+              transition: transform 0.3s ease;
+              max-width: 200px;
+              max-height: 200px;
+            "
+            @click="zoomed = !zoomed"
+            :class="{ 'hover-zoom': true, zoomed: zoomed }"
+          />
+        </div>
         <div class="info q-my-sm">
           <div>Name: {{ hunter.charName ? hunter.charName : "Unknown" }}</div>
           <div>
@@ -154,7 +172,7 @@
           <q-expansion-item
             icon="military_tech"
             label="Advantages/Flaws"
-            caption="View current advantages, flaws, backgrounds and safe houses"
+            caption="View current advantages, flaws, backgrounds, havens and loresheets"
             dark
           >
             <q-card>
@@ -188,6 +206,7 @@
                   >
                     <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                   </div>
+
                   <br />
                   <div>
                     <div style="font-size: larger">Backgrounds:</div>
@@ -224,7 +243,7 @@
                   </div>
                 </div>
                 <div>
-                  <div style="font-size: larger">Safe House:</div>
+                  <div style="font-size: larger">Haven:</div>
                   <br />
                   Advantages:
                   <div
@@ -253,6 +272,34 @@
                     <div>{{ flaw.name }} - {{ flaw.cost }}</div>
                   </div>
                   <br />
+                  <div style="font-size: larger">Loresheets:</div>
+                  <br />
+                  Advantages:
+                  <div
+                    class="q-my-sm"
+                    v-if="hunter.advantages.loresheets.advantages.length === 0"
+                  >
+                    Not yet selected
+                  </div>
+                  <div
+                    v-for="advantage in hunter.advantages.loresheets.advantages"
+                    :key="advantage.name"
+                  >
+                    <div>{{ advantage.name }} - {{ advantage.cost }}</div>
+                  </div>
+                  Flaws:
+                  <div
+                    class="q-my-sm"
+                    v-if="hunter.advantages.loresheets.flaws.length === 0"
+                  >
+                    Not yet selected
+                  </div>
+                  <div
+                    v-for="flaw in hunter.advantages.loresheets.flaws"
+                    :key="flaw.name"
+                  >
+                    <div>{{ flaw.name }} - {{ flaw.cost }}</div>
+                  </div>
                 </div>
               </q-card-section>
             </q-card>
@@ -411,6 +458,15 @@
   gap: 3px;
   grid-template-columns: repeat(3, 1fr);
 }
+.hover-zoom:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.zoomed {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
 </style>
 
 <script>
@@ -531,6 +587,7 @@ export default defineComponent({
       clanBanes,
       skillInfo,
       created_by: hunter.created_by,
+      imgLink: hunter.image_link,
       creator,
       pageFound,
       deleteConfirm,
@@ -567,6 +624,8 @@ export default defineComponent({
         return s[0].toUpperCase() + s.slice(1);
       },
       favCount: 0,
+
+      zoomed: false,
     };
   },
   async mounted() {
@@ -584,6 +643,23 @@ export default defineComponent({
       });
   },
   methods: {
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+        return (
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          )
+        );
+      } catch {
+        return false;
+      }
+    },
     async modifyPdf() {
       try {
         this.$q.loading.show({

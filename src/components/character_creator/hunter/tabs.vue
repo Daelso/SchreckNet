@@ -209,9 +209,27 @@
             label="Your Starting XP *"
             lazy-rules
             label-color="primary"
-            hint="There are no written rules for amount of starting XP, discuss with your ST."
+            hint="Apostates recommends experienced hunters start with 15xp"
             hide-hint
             @update:model-value="$emit('update:xp', this.xpInput)"
+          />
+          <q-input
+            filled
+            type="text"
+            bg-color="grey-3"
+            v-model="localImgLink"
+            label="Image Link of Your Character"
+            placeholder="Paste a direct image link (e.g. i.imgur...)"
+            lazy-rules
+            label-color="primary"
+            debounce="2000"
+            @update:model-value="
+              () => {
+                isValidImageUrl(localImgLink);
+                this.$emit('update:imgLink', this.localImgLink);
+              }
+            "
+            hint="Please use a direct imgur link."
           />
         </q-tab-panel>
 
@@ -353,13 +371,22 @@
             Remaining dots of advantages: {{ advantagePoints }}
           </div>
           <div class="q-my-sm">Remaining dots of flaws: {{ flawPoints }}</div>
+          <div
+            v-if="this.advantageCategory == 'Loresheets'"
+            class="q-my-sm"
+            style="color: red; font-weight: bold"
+          >
+            Loresheets are too varied and too numerous to handle automatically,
+            the sheet will track the dots you take, but please assign any
+            additional bonuses on your sheet manually after.
+          </div>
 
           <q-separator />
 
           <q-select
             v-model="advantageCategory"
             :options="advantageCategories"
-            label="Select merits and backgrounds"
+            label="Select merits, backgrounds and loresheets"
             label-color="primary"
             bg-color="grey-3"
             color="secondary"
@@ -372,7 +399,8 @@
             v-if="
               this.advantageCategory === 'Merits' ||
               this.advantageCategory == 'Backgrounds' ||
-              this.advantageCategory == 'Safe House'
+              this.advantageCategory == 'Safe House' ||
+              this.advantageCategory == 'Loresheets'
             "
           >
             <q-select
@@ -392,7 +420,9 @@
             />
           </div>
           <q-separator />
-          <div v-if="this.meritCategory">
+          <div
+            v-if="this.meritCategory && this.advantageCategory !== 'Loresheets'"
+          >
             <q-select
               v-model="advOrFlaw"
               :options="advorFlawOptions()"
@@ -420,7 +450,12 @@
               @update:model-value="clearDotField()"
             />
           </div>
-          <div v-if="this.advFlawChoice.maxCost">
+          <div
+            v-if="
+              this.advFlawChoice.maxCost ||
+              (this.advantageCategory === 'Loresheets' && this.meritCategory)
+            "
+          >
             <q-select
               v-model="howManyDots"
               :options="dotOptions()"
@@ -465,7 +500,23 @@
               ]"
             />
           </div>
-          <div v-if="this.advFlawChoice">
+          <div
+            v-if="this.advantageCategory === 'Loresheets' && this.meritCategory"
+          >
+            Description:
+            {{
+              this.loresheets.loresheets.find(
+                (x) => x.Name === this.meritCategory
+              ).Description
+            }}
+            <br />
+            <div v-if="this.howManyDots">
+              Dot Cost: {{ this.advFlawChoice.cost }} <br />
+            </div>
+          </div>
+          <div
+            v-if="this.advFlawChoice && this.advantageCategory !== 'Loresheets'"
+          >
             Description: {{ this.advFlawChoice.desc }}
             <br />
             Dot Cost: {{ this.advFlawChoice.cost }} <br />
@@ -612,6 +663,44 @@
             </q-list>
           </div>
           <br />
+          <!-- Loresheets -->
+          <div
+            v-if="
+              this.advantagesObj.loresheets.advantages.length > 0 ||
+              this.advantagesObj.loresheets.flaws.length > 0
+            "
+          >
+            <span class="text-h6">Loresheets</span>
+            <q-separator />
+            <div class="q-my-sm" style="font-family: monospace">Advantages</div>
+
+            <q-list bordered>
+              <q-item
+                v-for="(advantage, key) in advantagesObj.loresheets.advantages"
+                :key="key"
+                clickable
+                v-ripple
+                @click="
+                  removeAdvantage(
+                    $event.target.id,
+                    advantage.cost,
+                    advantage.name,
+                    'loresheets'
+                  )
+                "
+              >
+                <q-item-section :id="key"
+                  >Advantage:
+                  {{ advantage.name }}
+                  - {{ advantage.cost }} dots
+                  <q-tooltip class="bg-dark text-body2"
+                    >Click to delete</q-tooltip
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+          <br />
           <!-- Safe House -->
           <div
             v-if="
@@ -706,9 +795,11 @@ import allBackgrounds from "../hunter/5eBackgrounds.json";
 import safeHouseMerits from "../hunter/safeHouses.json";
 import creedList from "../hunter/creeds.json";
 import driveList from "../hunter/drives.json";
+import nosImage from "../../../assets/images/Nosfer_logo.png";
+import loresheets from "../hunter/loresheets.json";
 
 export default defineComponent({
-  name: "v5-tabs",
+  name: "h5-tabs",
   props: [
     "specialtiePoints",
     "specials",
@@ -729,6 +820,7 @@ export default defineComponent({
     "desire",
     "chronicle",
     "touchstones",
+    "imgLink",
   ],
   emits: [
     "update:specialtiePoints",
@@ -748,6 +840,7 @@ export default defineComponent({
     "update:ambition",
     "update:desire",
     "update:chronicle",
+    "update:imgLink",
     "update:touchstones",
   ],
 
@@ -776,9 +869,12 @@ export default defineComponent({
       advFlawChoice: "",
       creedList,
       driveList,
+      nosImage,
+      loresheets,
       howManyDots: "",
       specificationInput: "",
       advantageCategory: "",
+      localImgLink: props.imgLink,
       tabAmbition: props.ambition,
       tabCharName: props.charName,
       filteredOptions: [],
@@ -796,7 +892,12 @@ export default defineComponent({
       tabConcept: props.concept,
       meritCategory: "",
       cultCategory: "",
-      advantageCategories: ["Merits", "Backgrounds", "Safe House"],
+      advantageCategories: [
+        "Merits",
+        "Backgrounds",
+        "Safe House",
+        "Loresheets",
+      ],
       specialtyInput: "",
       skillSelect: "",
       specialties: props.specials,
@@ -818,6 +919,29 @@ export default defineComponent({
           (v) => v.toLowerCase().indexOf(needle) > -1
         );
       });
+    },
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+        const test =
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          );
+      } catch (err) {
+        console.log(err);
+        this.localImgLink = "";
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Please use a direct image link from an approved host`,
+        });
+      }
     },
 
     removeCreed(event) {
@@ -904,6 +1028,14 @@ export default defineComponent({
         case "Safe House":
           arr = Object.keys(safeHouseMerits["Safe House"]);
           break;
+        case "Loresheets":
+          for (const [key, value] of Object.entries(
+            this.loresheets.loresheets
+          )) {
+            arr.push(value.Name);
+          }
+
+          break;
       }
 
       return arr;
@@ -943,12 +1075,25 @@ export default defineComponent({
     },
     dotOptions() {
       let arr = [];
+      if (this.advantageCategory === "Loresheets") {
+        return this.range(5, 1);
+      }
 
       arr = this.range(this.advFlawChoice.maxCost, 1);
 
       return arr;
     },
     costAdjustment() {
+      if (this.howManyDots && this.advantageCategory === "Loresheets") {
+        let loresheet = this.loresheets.loresheets.find(
+          (x) => x.Name === this.meritCategory
+        );
+        this.advFlawChoice = {
+          name: loresheet.Name,
+          desc: loresheet.Description,
+          cost: this.howManyDots,
+        };
+      }
       this.advFlawChoice.cost = this.howManyDots;
     },
     clearDotField() {
@@ -1010,6 +1155,13 @@ export default defineComponent({
             modifiedObj.haven.flaws.push(choiceObj);
           }
           break;
+        case "Loresheets":
+          if (advOrFlaw === true) {
+            modifiedObj.loresheets.advantages.push(choiceObj);
+          } else {
+            modifiedObj.loresheets.flaws.push(choiceObj);
+          }
+          break;
       }
 
       if (advOrFlaw === true) {
@@ -1069,12 +1221,82 @@ export default defineComponent({
         }
       }
 
+      if (this.advFlawChoice.name === "Faked Death") {
+        let mask = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Mask"
+        );
+        if (typeof mask == "undefined" || mask.cost < 1) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "You must have 1 dot in mask to take this background!",
+          });
+          return false;
+        }
+      }
+
+      if (
+        this.advFlawChoice.name === "Franchise Office: Location of Interest"
+      ) {
+        let haven = this.advantagesObj.haven.advantages.find(
+          (x) => x.haven === "Franchise Office (Monster-X)"
+        );
+        if (typeof haven == "undefined" || haven.cost < 2) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message:
+              "You must have 2 dots in Franchise Office (Monster-X) to take this flaw!",
+          });
+          return false;
+        }
+      }
+
+      if (this.advFlawChoice.name === "Generous") {
+        let mentor = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Mentor"
+        );
+        if (typeof mentor == "undefined" || mentor.cost < 1) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message: "You must have 1 dot in mentor to take this background!",
+          });
+          return false;
+        }
+      }
+
+      if (
+        this.advFlawChoice.name === "Freelance" ||
+        this.advFlawChoice.name === "Gig Economy" ||
+        this.advFlawChoice.name === "Debts"
+      ) {
+        let resources = this.advantagesObj.backgrounds.advantages.find(
+          (x) => x.name === "Resources"
+        );
+        if (typeof resources == "undefined" || resources.cost < 1) {
+          this.$q.notify({
+            type: "negative",
+            textColor: "white",
+            message:
+              "You must have 1 dot in resources to take this background!",
+          });
+          return false;
+        }
+      }
+
       return true;
     },
 
     meritPicked() {
       let modifiedObj = { ...{}, ...this.advantagesObj };
 
+      if (this.advantageCategory === "Loresheets") {
+        if (this.canPurchase(true) === true) {
+          this.sortAdvantageChoice(this.advFlawChoice, true);
+          this.clearFields();
+        }
+      }
       if (this.advOrFlaw.toLowerCase() === "advantages") {
         //true represents an advantage, false a flaw
         if (this.canPurchase(true) === true) {

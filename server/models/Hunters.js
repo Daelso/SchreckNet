@@ -44,6 +44,14 @@ const Hunters = db.sequelize.define("hunters", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  image_link: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
+  organization: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
   chronicle: {
     type: Sequelize.STRING,
     allowNull: false,

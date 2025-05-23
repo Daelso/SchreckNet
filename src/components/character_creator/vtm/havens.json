@@ -7,16 +7,36 @@
           "desc": "Select between 1-3 dots, each point grows the size, security and privacy of your haven.",
           "cost": 0,
           "maxCost": 3
+        },
+        {
+          "name": "Rural Hideaway (Arcanum)",
+          "desc": "Many Arcanum safe houses are old family properties deep in the countryside. Yours might be a former hunting lodge on a sprawling English estate or a former plantation deep in the bayou...",
+          "cost": 0,
+          "maxCost": 3,
+          "org": "Arcanum"
+        },
+        {
+          "name": "Franchise Office (Monster-X)",
+          "desc": "Upon leaving Monster-X, a select few operatives are allowed to continue using their former franchise office in exchange for the occasional favor,",
+          "cost": 0,
+          "maxCost": 3,
+          "org": "Monster-X"
         }
       ],
       "flaws": [
         {
-          "name": "No Haven",
-          "desc": "Every morning you have to search for a new, safe place to await sunset.",
+          "name": "No Safe House",
+          "desc": "You have no safe house available to you.",
           "cost": 1
+        },
+        {
+          "name": "Isolated",
+          "desc": "Your safe house is in the middle of nowhere. This means you need to travel long distances to get back to civilization or enjoy modern conveniences.",
+          "cost": 2
         }
       ]
     },
+
     "Perks": {
       "advantages": [
         {
@@ -102,6 +122,16 @@
           "desc": "Your haven is magically warded barring access to supernatural forces. Each dot adds a die to resist supernatural scrying. Work out other advantages with your ST.",
           "cost": 0,
           "maxCost": 5
+        },
+        {
+          "name": "Franchise Office: Database Access",
+          "desc": "You've maintained a secure connection to Monster-X's research logs.",
+          "cost": 1
+        },
+        {
+          "name": "Franchise Office: New Hire",
+          "desc": "Once per story, you have access to one of these enthusiastic new hires and may bring them along on the Hunt.",
+          "cost": 1
         }
       ],
       "flaws": [
@@ -118,6 +148,16 @@
         {
           "name": "Haven: Haunted",
           "desc": "You aren't the only supernatural being 'living' in your haven. Work out with your ST what exactly is haunting your home.",
+          "cost": 1
+        },
+        {
+          "name": "Franchise Office: Poorly Maintained Equipment",
+          "desc": "Your stored equipment is faulty, if you roll a total failure when using equipment it will break until repaired.",
+          "cost": 1
+        },
+        {
+          "name": "Franchise Office: Location of Interest",
+          "desc": "One Franchise Office Merit is randomly selected at the start of each story, and you lose access to that Merit for the duration.",
           "cost": 1
         },
         {

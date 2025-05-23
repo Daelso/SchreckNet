@@ -13,7 +13,25 @@
     <div class="q-pa-md column text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          Werewolf: The Apocalypse
+          <p>Werewolf: the Apocalypse</p>
+          <div v-if="imgLink">
+            <q-img
+              :src="imgLink"
+              crossorigin="anonymous"
+              v-show="isValidImageUrl(imgLink)"
+              :alt="`Character Image for ${this.garou.charName}`"
+              spinner-color="primary"
+              loading="lazy"
+              style="
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+                max-width: 200px;
+                max-height: 200px;
+              "
+              @click="zoomed = !zoomed"
+              :class="{ 'hover-zoom': true, zoomed: zoomed }"
+            />
+          </div>
           <div class="info q-my-sm">
             <div>Name: {{ garou.charName ? garou.charName : "Unknown" }}</div>
             <div>
@@ -439,6 +457,15 @@
 .backgroundDefault {
   background-color: #171a1e;
 }
+.hover-zoom:hover {
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.zoomed {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
 .attributes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -638,14 +665,8 @@ export default defineComponent({
     };
   },
   async created() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-    await this.$axios
-      .get(baseUrl + "/user/getUser/" + this.created_by, {
+    await this.$api
+      .get("/user/getUser/" + this.created_by, {
         withCredentials: true,
       })
       .then((resp) => {
@@ -662,23 +683,18 @@ export default defineComponent({
         return s[0].toUpperCase() + s.slice(1);
       },
       favCount: 0,
+      zoomed: false,
+      imgLink: this.garou.image_link,
     };
   },
   async mounted() {
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-
-    this.favCount = await this.$axios
-      .get(baseUrl + "/favorites/favCount/" + this.garouId)
+    this.favCount = await this.$api
+      .get("/favorites/favCount/" + this.garouId)
       .then((resp) => {
         return resp.data;
       });
-    this.currentUser = await this.$axios
-      .get(baseUrl + "/user/currentUser", {
+    this.currentUser = await this.$api
+      .get("/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {
@@ -686,6 +702,23 @@ export default defineComponent({
       });
   },
   methods: {
+    isValidImageUrl(url) {
+      try {
+        const parsed = new URL(url);
+        const allowedHosts = ["i.imgur.com", "imgur.com"];
+        const allowedExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+        return (
+          ["https:"].includes(parsed.protocol) &&
+          allowedHosts.some((host) => parsed.hostname.endsWith(host)) &&
+          allowedExtensions.some((ext) =>
+            parsed.pathname.toLowerCase().endsWith(ext)
+          )
+        );
+      } catch {
+        return false;
+      }
+    },
     async modifyPdf() {
       try {
         this.$q.loading.show({

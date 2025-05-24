@@ -2,28 +2,16 @@
   <div class="top-box">
     <h2 class="banner">Find Your Next Game</h2>
     <div><q-btn label="Create a Game" @click="createDialog = true" /></div>
-
+  </div>
+  <div>
     <!-- Dialog -->
-    <q-dialog v-model="createDialog" persistent>
+    <q-dialog v-model="createDialog" persistent style="height: 1800px">
       <create_a_game />
     </q-dialog>
   </div>
 </template>
 
 <style>
-.my-card {
-  width: 450px;
-  max-width: 450px;
-  display: flex;
-  flex-flow: row wrap;
-  color: white;
-  background-color: #222831;
-  align-items: center;
-  justify-content: center;
-  margin-top: 25px;
-  margin-right: 25px;
-}
-
 .top-box {
   display: flex;
   flex-direction: column;
@@ -49,7 +37,7 @@
   }
 
   @media (max-width: 480px) {
-    font-size: 1.5em; /* Further adjust font size for even smaller screens */
+    font-size: 1.2em; /* Further adjust font size for even smaller screens */
   }
 }
 
@@ -77,12 +65,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-}
-
-@media (max-width: 800px) {
-  .my-card {
-    margin-bottom: 15px;
-  }
 }
 </style>
 

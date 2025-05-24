@@ -17,7 +17,17 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
   try {
     const sanitizedBody = sanitizeStrings(req.body);
 
-    const { title, style, min, max, game_line, desc } = sanitizedBody;
+    const {
+      title,
+      style,
+      min,
+      max,
+      game_line,
+      desc,
+      paid_game,
+      new_player,
+      optional_link,
+    } = sanitizedBody;
 
     await Games.create({
       game_title: title,
@@ -30,6 +40,9 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
       updated_by: req.currentUser.id,
       created_at: Date.now(),
       updated_at: Date.now(),
+      paid_game: paid_game,
+      new_player: new_player,
+      optional_link: optional_link,
     });
 
     return res.status(200).send("Game created!");
@@ -43,7 +56,13 @@ const sanitizeStrings = (obj) => {
   const sanitized = {};
   for (const key in obj) {
     if (typeof obj[key] === "string") {
-      sanitized[key] = validator.escape(obj[key]);
+      if (key === "link" || key === "optional_link") {
+        // Validate that it's a proper URL, but do NOT escape it
+        sanitized[key] = obj[key].trim();
+      } else {
+        // Escape other strings for safety
+        sanitized[key] = validator.escape(obj[key]);
+      }
     } else {
       sanitized[key] = obj[key];
     }

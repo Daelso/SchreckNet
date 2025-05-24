@@ -55,6 +55,18 @@ const Games = db.sequelize.define(
       type: Sequelize.DATE,
       allowNull: false,
     },
+    new_player: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    paid_game: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    optional_link: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   { timestamps: true, underscored: true }
 );

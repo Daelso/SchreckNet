@@ -1,6 +1,6 @@
 <template>
-  <q-card class="card q-pa-sm">
-    <q-card-section>
+  <q-card class="card q-pa-sm scroll">
+    <q-card-section class="q-ma-xl">
       <div class="text-h6 head" style="font-family: TMUnicorn">
         Create a Game
       </div>
@@ -29,7 +29,7 @@
         label-color="primary"
         bg-color="grey-3"
         filled
-        style="margin-bottom: 10px"
+        style="margin-bottom: 10px; width: 100%"
         color="secondary"
         popup-content-style="background-color:#222831; color:white"
       />
@@ -84,21 +84,51 @@
         counter-color="white"
       />
       <div>Include how you would like potential players to contact you</div>
+      <q-separator size="0.2em" class="q-my-md" />
+      <q-input
+        filled
+        label="Optional Link"
+        bg-color="grey-3"
+        class="select"
+        label-color="primary"
+        v-model="optional_link"
+      />
+    </q-card-section>
+    <q-card-section>
+      <div class="checkboxes">
+        <q-checkbox v-model="new_player" label="New Player Friendly?">
+          <q-tooltip class="bg-dark text-body2"
+            >Check this box to indicate that your game is open to new players
+            and you are willing to teach!</q-tooltip
+          >
+        </q-checkbox>
+        <q-checkbox v-model="paid_game" label="Paid Game?">
+          <q-tooltip class="bg-dark text-body2"
+            >Check this box if your game will require players to pay</q-tooltip
+          >
+        </q-checkbox>
+      </div>
     </q-card-section>
 
     <q-card-actions
       class="text-primary"
-      style="display: flex; flex-direction: column"
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+      "
     >
       <q-btn
-        style="color: white; background-color: #0e1012"
+        style="color: white; background-color: #0e1012; margin: auto"
         flat
         label="Create Game"
         :disable="!validateCreate"
         @click="create_game()"
         v-close-popup
       >
-        <q-tooltip v-if="!validateCreate"
+        <q-tooltip v-if="!validateCreate" class="bg-dark text-body2"
           >Please fill out all required fields.</q-tooltip
         >
       </q-btn>
@@ -127,6 +157,11 @@
   }
 }
 
+.checkboxes {
+  display: flex;
+  flex-direction: column;
+}
+
 .head {
   font-family: TMUnicorn;
   text-shadow: 3px 2px 3px black;
@@ -138,7 +173,7 @@
   }
 
   @media (max-width: 480px) {
-    font-size: 1.5em; /* Further adjust font size for even smaller screens */
+    font-size: 0.5em; /* Further adjust font size for even smaller screens */
   }
 }
 
@@ -147,11 +182,13 @@
   margin-bottom: 10px;
 
   @media (max-width: 768px) {
-    width: 50px;
+    width: 100%;
+    font-size: 1em;
   }
 
   @media (max-width: 480px) {
-    width: 45px;
+    width: 100%;
+    font-size: 1em;
   }
 }
 
@@ -171,6 +208,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import nosImage from "../../assets/images/Nosfer_logo.png";
 
 export default defineComponent({
   name: "createAGame",
@@ -188,10 +226,22 @@ export default defineComponent({
       game_line: "",
       game_description: "",
       style_options: [],
+      new_player: false,
+      paid_game: false,
+      optional_link: "",
     };
   },
 
   methods: {
+    sanitizeLink(link) {
+      if (!link) return "";
+
+      const trimmed = link.trim();
+
+      // Only allow http or https links
+      const isValid = /^(https?:\/\/)/i.test(trimmed);
+      return isValid ? trimmed : "";
+    },
     async create_game() {
       try {
         this.$q.loading.show();
@@ -202,10 +252,25 @@ export default defineComponent({
           max: this.max_players,
           game_line: this.game_line,
           desc: this.game_description,
+          new_player: this.new_player,
+          paid_game: this.paid_game,
+          optional_link: this.sanitizeLink(this.optional_link),
         };
         await this.$api.post("/games/new_game", new_game);
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Game created successfully!`,
+        });
       } catch (err) {
         console.log(err);
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Failed to create game, try again...`,
+        });
       } finally {
         this.$q.loading.hide();
       }

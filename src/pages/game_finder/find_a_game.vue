@@ -1,7 +1,51 @@
 <template>
   <div class="top-box">
     <h2 class="banner">Find Your Next Game</h2>
-    <div><q-btn label="Create a Game" @click="createDialog = true" /></div>
+    <div>
+      <q-btn
+        label="Create a Game"
+        @click="createDialog = true"
+        style="background-color: #222831; color: white"
+      />
+    </div>
+  </div>
+  <div class="game-container"></div>
+  <!-- Pagination Buttons -->
+  <div
+    class="flex flex-center q-pa-sm"
+    style="flex-direction: column"
+    v-if="totalPages"
+  >
+    <div class="q-pa-md flex flex-center" style="gap: 10px">
+      <q-btn
+        label="First Page"
+        color="primary"
+        @click="goToPage(1)"
+        :disable="currentPage === 1"
+      />
+      <q-btn
+        label="Previous"
+        color="secondary"
+        @click="goToPage(currentPage - 1)"
+        :disable="currentPage === 1"
+      />
+      <q-btn
+        label="Next"
+        color="secondary"
+        @click="goToPage(currentPage + 1)"
+        :disable="currentPage === totalPages"
+      />
+      <q-btn
+        label="Last Page"
+        color="primary"
+        @click="goToPage(totalPages)"
+        :disable="currentPage === totalPages"
+      />
+    </div>
+    <!-- Displaying Current Page and Total Pages -->
+    <div class="q-pa-md flex flex-center">
+      <p>Page {{ currentPage }} of {{ totalPages }}</p>
+    </div>
   </div>
   <div>
     <!-- Dialog -->
@@ -97,8 +141,33 @@ export default defineComponent({
       currentUser: null,
       nosImage,
       createDialog: false,
+      games: null,
+      currentPage: 1,
+      totalPages: null,
     };
   },
-  methods: {},
+  methods: {
+    async goToPage(page) {
+      this.currentPage = page;
+      await this.doSearch();
+    },
+    async doSearch() {
+      this.loading = true;
+      this.$q.loading.show({
+        delay: 400,
+      });
+
+      try {
+      } catch (err) {
+        console.log(err);
+      } finally {
+        this.loading = false;
+        this.$q.loading.hide();
+      }
+    },
+    handleChange() {
+      this.totalPages = null;
+    },
+  },
 });
 </script>

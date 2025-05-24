@@ -129,8 +129,8 @@ const searchRoutes = require("./server/api/search");
 app.use("/search", searchRoutes);
 const garouRoutes = require("./server/api/garou");
 app.use("/garou", garouRoutes);
-// const ladRoutes = require("./server/api/showlads");
-// app.use("/showlads", ladRoutes); /////dead and gonneeee, dead and goneeee
+const ladRoutes = require("./server/api/showlads");
+app.use("/showlads", ladRoutes); /////dead and gonneeee, dead and goneeee
 const gameFinderRoutes = require("./server/api/game_finder");
 app.use("/game_finder", gameFinderRoutes);
 const gameRoutes = require("./server/api/games");

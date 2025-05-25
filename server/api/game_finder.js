@@ -51,9 +51,9 @@ router.route("/all_games").get(lib.getLimiter, async (req, res) => {
           [
             Sequelize.literal(`
             CASE
-              WHEN games.game_line = 1 THEN 'Vampire: The Masquerade'
-              WHEN games.game_line = 2 THEN 'Werewolf: The Apocalypse'
-              WHEN games.game_line = 3 THEN 'Hunter: The Reckoning'
+              WHEN games.game_line = 1 THEN 'Vampire: the Masquerade'
+              WHEN games.game_line = 2 THEN 'Werewolf: the Apocalypse'
+              WHEN games.game_line = 3 THEN 'Hunter: the Reckoning'
               ELSE 'Unknown'
             END
           `),
@@ -63,7 +63,7 @@ router.route("/all_games").get(lib.getLimiter, async (req, res) => {
       },
       limit,
       offset,
-      order: [["created_at", "DESC"]],
+      order: [["updated_at", "DESC"]],
     });
 
     return res.status(200).json({

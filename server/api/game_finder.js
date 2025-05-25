@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 const GameStyles = require("../models/game_finder/game_styles.js");
 const lib = require("../lib");
 const Games = require("../models/game_finder/games.js");
+const { Sequelize } = require("sequelize");
 
 //Route is base/game_finder/
 router.route("/styles").get(lib.getLimiter, async (req, res) => {
@@ -38,6 +39,28 @@ router.route("/all_games").get(lib.getLimiter, async (req, res) => {
 
     const { count, rows } = await Games.findAndCountAll({
       where,
+      include: [
+        {
+          model: GameStyles,
+          as: "style", // MUST match alias in .belongsTo
+          attributes: ["style_id", "style"],
+        },
+      ],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(`
+            CASE
+              WHEN games.game_line = 1 THEN 'Vampire: The Masquerade'
+              WHEN games.game_line = 2 THEN 'Werewolf: The Apocalypse'
+              WHEN games.game_line = 3 THEN 'Hunter: The Reckoning'
+              ELSE 'Unknown'
+            END
+          `),
+            "line_title",
+          ],
+        ],
+      },
       limit,
       offset,
       order: [["created_at", "DESC"]],

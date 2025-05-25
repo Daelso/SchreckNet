@@ -71,4 +71,10 @@ const Games = db.sequelize.define(
   { timestamps: true, underscored: true }
 );
 
+Games.belongsTo(GameStyles, {
+  foreignKey: "game_style",
+  targetKey: "style_id",
+  as: "style",
+});
+
 module.exports = Games;

@@ -74,7 +74,68 @@
       </div>
     </div>
   </div>
-  <div class="game-container"></div>
+  <div class="q-gutter-md q-pa-md games-container q-pa-lg">
+    <div class="row q-col-gutter-md">
+      <div
+        class="col-12 col-sm-6 col-md-4"
+        v-for="game in filtered_games"
+        :key="game.game_id"
+      >
+        <q-card class="my-card" flat bordered>
+          <q-card-section>
+            <div class="text-h6">{{ game.game_title }}</div>
+            <div class="text-subtitle2 text-grey">
+              Players: {{ game.minimum_players }} - {{ game.maximum_players }}
+            </div>
+            <div class="text-caption q-mt-xs">
+              Game Line: {{ game.line_title }}<br />
+              Style ID: {{ game.style.style }}
+            </div>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-section>
+            <div class="text-body2">
+              {{ game.description }}
+            </div>
+          </q-card-section>
+
+          <q-card-section>
+            <q-chip
+              color="green-3"
+              text-color="black"
+              icon="person_add"
+              v-if="game.new_player === 1"
+              >New Player Friendly</q-chip
+            >
+            <q-chip
+              color="orange-3"
+              text-color="black"
+              icon="attach_money"
+              v-if="game.paid_game === 1"
+              >Paid Game</q-chip
+            >
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-actions align="right">
+            <q-btn
+              v-if="game.optional_link"
+              :href="game.optional_link"
+              target="_blank"
+              flat
+              icon="link"
+              label="View Link"
+              color="secondary"
+              rel="noreferrer noopener"
+            />
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+  </div>
   <!-- Pagination Buttons -->
   <div
     class="flex flex-center q-pa-sm"
@@ -121,6 +182,14 @@
 </template>
 
 <style>
+.my-card {
+  width: 100%;
+  max-width: 650px;
+  margin-right: 15px;
+  color: white;
+  background-color: #222831;
+  padding: 10px;
+}
 .top-box {
   display: flex;
   flex-direction: column;
@@ -309,7 +378,6 @@ export default defineComponent({
         this.games = response.data.games;
         this.totalPages = response.data.total_pages;
         this.filter_games();
-        console.log(this.filtered_games);
       } catch (err) {
         console.error(err);
       } finally {
@@ -318,7 +386,6 @@ export default defineComponent({
       }
     },
     filter_games() {
-      console.log(this.game_style);
       this.filtered_games = this.games.filter((game) => {
         const matchesNewPlayer = this.new_player ? true : game.new_player === 0;
         const matchesPaidGame = this.paid_game ? true : game.paid_game === 0;

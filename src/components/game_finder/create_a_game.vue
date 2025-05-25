@@ -214,7 +214,11 @@ import nosImage from "../../assets/images/Nosfer_logo.png";
 
 export default defineComponent({
   name: "createAGame",
+  props: {
+    selectedGame: Object,
+  },
   async created() {
+    console.log(this.selectedGame);
     const styleReq = await this.$api.get("/game_finder/styles");
     this.style_options = styleReq.data;
   },

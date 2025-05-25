@@ -146,7 +146,18 @@
               rel="noreferrer noopener"
             />
             <div v-if="currentUser && game.created_by === currentUser.id">
-              <q-btn flat icon="edit" label="Edit Game" color="secondary" />
+              <q-btn
+                flat
+                icon="edit"
+                label="Edit Game"
+                color="secondary"
+                @click="
+                  () => {
+                    this.selectedGame = game;
+                    this.createDialog = true;
+                  }
+                "
+              />
               <q-btn
                 flat
                 icon="arrow_upward"
@@ -207,7 +218,7 @@
   <div>
     <!-- Dialog -->
     <q-dialog v-model="createDialog" persistent style="height: 1800px">
-      <create_a_game />
+      <create_a_game :selectedGame="selectedGame" />
     </q-dialog>
   </div>
 </template>
@@ -378,6 +389,7 @@ export default defineComponent({
   data() {
     return {
       currentUser: null,
+      selectedGame: null,
       nosImage,
       date,
       createDialog: false,

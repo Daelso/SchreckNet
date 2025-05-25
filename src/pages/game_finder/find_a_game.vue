@@ -1,12 +1,60 @@
 <template>
   <div class="top-box">
     <h2 class="banner">Find Your Next Game</h2>
-    <div>
-      <q-btn
-        label="Create a Game"
-        @click="createDialog = true"
-        style="background-color: #222831; color: white"
-      />
+    <div class="actions-container">
+      <div class="action">
+        <q-btn
+          label="Create a Game"
+          @click="createDialog = true"
+          style="background-color: #222831; color: white"
+        />
+      </div>
+      <q-separator size="2em" color="red" />
+      <div class="filter-options">
+        <div class="select">
+          <q-select
+            v-model="game_line"
+            :options="[
+              { label: 'Vampire: the Masquerade', value: 1 },
+              { label: 'Werewolf: the Apocalypse', value: 2 },
+              { label: 'Hunter: the Reckoning', value: 3 },
+            ]"
+            label="Which Game Line?"
+            label-color="primary"
+            map-options
+            option-label="label"
+            option-value="value"
+            emit-value
+            bg-color="grey-3"
+            filled
+            style="margin-bottom: 10px; width: 100%"
+            color="secondary"
+            popup-content-style="background-color:#222831; color:white"
+            @update:model-value="doSearch()"
+          />
+        </div>
+
+        <div class="checkboxes">
+          <q-checkbox
+            v-model="new_player"
+            label="New Player Friendly?"
+            @update:model-value="doSearch()"
+          >
+            <q-tooltip class="bg-dark text-body2"
+              >Check this box to include new player friendly games</q-tooltip
+            >
+          </q-checkbox>
+          <q-checkbox
+            v-model="paid_game"
+            label="Paid Game?"
+            @update:model-value="doSearch()"
+          >
+            <q-tooltip class="bg-dark text-body2"
+              >Check this box to include paid games</q-tooltip
+            >
+          </q-checkbox>
+        </div>
+      </div>
     </div>
   </div>
   <div class="game-container"></div>
@@ -110,6 +158,50 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+.actions-container {
+  display: flex;
+  background-color: #222831;
+  margin: auto;
+  width: 400px;
+  height: 220px;
+  justify-content: start;
+  align-items: center;
+  border-radius: 5px;
+  flex-direction: column;
+  @media (max-width: 768px) {
+    width: 400px;
+    height: 220px;
+  }
+
+  @media (max-width: 480px) {
+    width: 280px;
+    height: 220px;
+  }
+}
+.action {
+  padding: 10px;
+}
+
+.filter-options {
+  flex-direction: row;
+  width: 250px;
+  @media (max-width: 768px) {
+    width: 240px;
+  }
+
+  @media (max-width: 480px) {
+    width: 220px;
+  }
+}
+
+.checkboxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  padding: 5px;
+}
 </style>
 
 <script>
@@ -124,7 +216,10 @@ export default defineComponent({
     try {
       const curUser = await this.$api.get("/user/currentUser");
       this.currentUser = curUser.data;
-      console.log(this.currentUser);
+
+      await this.doSearch();
+      console.log(this.totalPages);
+      console.log(this.filtered_games);
     } catch (err) {
       this.$q.notify({
         message: "Log in to create or join a game!",
@@ -144,6 +239,11 @@ export default defineComponent({
       games: null,
       currentPage: 1,
       totalPages: null,
+      new_player: true,
+      paid_game: true,
+      game_line: "Any",
+      game_type: null,
+      filtered_games: [],
     };
   },
   methods: {
@@ -153,18 +253,42 @@ export default defineComponent({
     },
     async doSearch() {
       this.loading = true;
-      this.$q.loading.show({
-        delay: 400,
-      });
+      this.$q.loading.show({ delay: 400 });
 
       try {
+        const query = {};
+
+        if (this.game_line !== null && this.game_line !== undefined) {
+          query.game_line = this.game_line;
+        }
+
+        if (this.page) {
+          query.page = this.page;
+        }
+
+        const response = await this.$api.get("game_finder/all_games", {
+          params: query,
+        });
+        this.games = response.data.games;
+        this.totalPages = response.data.total_pages;
+        this.filter_games();
+        console.log(this.filtered_games);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       } finally {
         this.loading = false;
         this.$q.loading.hide();
       }
     },
+
+    filter_games() {
+      this.filtered_games = this.games.filter((game) => {
+        const matchesNewPlayer = this.new_player ? true : game.new_player === 0;
+        const matchesPaidGame = this.paid_game ? true : game.paid_game === 0;
+        return matchesNewPlayer && matchesPaidGame;
+      });
+    },
+
     handleChange() {
       this.totalPages = null;
     },

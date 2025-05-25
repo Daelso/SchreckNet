@@ -83,7 +83,14 @@
       >
         <q-card class="my-card" flat bordered>
           <q-card-section>
-            <div class="text-h6">{{ game.game_title }}</div>
+            <div class="text-h6">
+              {{ game.game_title }} -
+              <q-icon
+                color="secondary"
+                :name="showIcon(game.line_title)"
+                style="scale: 170%"
+              />
+            </div>
             <div class="text-subtitle2 text-grey">
               Players: {{ game.minimum_players }} - {{ game.maximum_players }}
             </div>
@@ -120,7 +127,14 @@
 
           <q-separator />
 
-          <q-card-actions align="right">
+          <q-card-actions class="justify-between items-center">
+            <div class="text-caption text-grey-7">
+              Last bumped:
+              {{
+                date.formatDate(new Date(game.updated_at), "MM-DD-YY h:mm A")
+              }}
+            </div>
+
             <q-btn
               v-if="game.optional_link"
               :href="game.optional_link"
@@ -131,6 +145,17 @@
               color="secondary"
               rel="noreferrer noopener"
             />
+            <div v-if="currentUser && game.created_by === currentUser.id">
+              <q-btn flat icon="edit" label="Edit Game" color="secondary" />
+              <q-btn
+                flat
+                icon="arrow_upward"
+                label="Bump Game"
+                color="secondary"
+                :disable="can_bump(game.updated_at)"
+                @click="bump_game(game)"
+              />
+            </div>
           </q-card-actions>
         </q-card>
       </div>
@@ -308,6 +333,7 @@
 
 <script>
 import { defineComponent } from "vue";
+import { date } from "quasar";
 import nosImage from "../../assets/images/Nosfer_logo.png";
 import create_a_game from "../../components/game_finder/create_a_game.vue";
 
@@ -316,23 +342,30 @@ export default defineComponent({
   name: "findAGame",
   async created() {
     try {
-      const curUser = await this.$api.get("/user/currentUser");
+      try {
+        const curUser = await this.$api.get("/user/currentUser");
+        this.currentUser = curUser.data;
+      } catch (err) {
+        this.currentUser = null;
+        console.warn("User not logged in");
+      }
+
       const styleReq = await this.$api.get("/game_finder/styles");
       this.style_options = styleReq.data;
       this.style_options.push({ style: "Any", style_id: 100 });
-      this.currentUser = curUser.data;
 
       await this.doSearch();
       console.log(this.totalPages);
       console.log(this.filtered_games);
     } catch (err) {
       this.$q.notify({
-        message: "Log in to create or join a game!",
         color: "primary",
-        position: "top",
         avatar: nosImage,
-        timeout: 20000,
+        textColor: "white",
+        position: "top",
+        timeout: 5000,
       });
+      console.error(err);
     }
   },
 
@@ -340,6 +373,7 @@ export default defineComponent({
     return {
       currentUser: null,
       nosImage,
+      date,
       createDialog: false,
       games: null,
       currentPage: 1,
@@ -353,9 +387,51 @@ export default defineComponent({
     };
   },
   methods: {
+    can_bump(updated_at) {
+      const lastUpdated = new Date(updated_at);
+      const now = new Date();
+      const diffInMs = now - lastUpdated;
+      const diffInHours = diffInMs / (1000 * 60 * 60);
+      return diffInHours < 1; // disable if updated within the last hour
+    },
+    async bump_game(game) {
+      try {
+        await this.$api.post(`/games/${game.game_id}/bump`);
+        this.$q.notify({
+          message: "Game bumped successfully!",
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          position: "top",
+        });
+        // Re-fetch or manually update timestamp locally
+        game.updated_at = new Date().toISOString();
+      } catch (err) {
+        console.error(err);
+        this.$q.notify({
+          message: "Failed to bump the game.",
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          position: "top",
+        });
+      }
+    },
     async goToPage(page) {
       this.currentPage = page;
       await this.doSearch();
+    },
+    showIcon(game) {
+      switch (game) {
+        case "Vampire: the Masquerade":
+          return "app:ankh";
+        case "Werewolf: the Apocalypse":
+          return "app:claws";
+        case "Hunter: the Reckoning":
+          return "app:hunter";
+        default:
+          return "app:ankh";
+      }
     },
     async doSearch() {
       this.loading = true;

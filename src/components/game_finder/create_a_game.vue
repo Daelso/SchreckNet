@@ -57,6 +57,7 @@
         label-color="primary"
         v-model="min_players"
         min="1"
+        @update:model-value="validatePlayerRange()"
       />
       <q-input
         filled
@@ -68,6 +69,7 @@
         v-model="max_players"
         min="2"
         max="99"
+        @update:model-value="validatePlayerRange()"
       />
 
       <q-input
@@ -232,6 +234,18 @@ export default defineComponent({
   },
 
   methods: {
+    validatePlayerRange() {
+      if (this.min_players > this.max_players) {
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: "Minimum players cannot be greater than maximum players.",
+        });
+
+        this.min_players = this.max_players;
+      }
+    },
     sanitizeLink(link) {
       if (!link) return "";
 

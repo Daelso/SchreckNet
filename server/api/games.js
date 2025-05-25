@@ -52,6 +52,34 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
   }
 });
 
+router.route("/:id/bump").post(lib.postLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const game = await Games.findOne({ where: { game_id: id } });
+
+    if (!game) {
+      return res.status(404).send("Game not found.");
+    }
+
+    const now = new Date();
+    const lastUpdated = new Date(game.updated_at);
+    const diffInMs = now - lastUpdated;
+    const diffInHours = diffInMs / (1000 * 60 * 60);
+
+    if (diffInHours < 1) {
+      return res.status(429).send("You can only bump once per hour.");
+    }
+
+    await Games.update({ updated_at: now }, { where: { game_id: id } });
+
+    return res.status(200).send("Game bumped!");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
 const sanitizeStrings = (obj) => {
   const sanitized = {};
   for (const key in obj) {

@@ -154,7 +154,13 @@
                 color="secondary"
                 :disable="can_bump(game.updated_at)"
                 @click="bump_game(game)"
-              />
+              >
+                <q-tooltip
+                  v-if="can_bump(game.updated_at)"
+                  class="bg-dark text-body2"
+                  >You can only bump a game once per hour.</q-tooltip
+                >
+              </q-btn>
             </div>
           </q-card-actions>
         </q-card>
@@ -396,7 +402,7 @@ export default defineComponent({
     },
     async bump_game(game) {
       try {
-        await this.$api.post(`/games/${game.game_id}/bump`);
+        await this.$api.post(`games/${game.game_id}/bump`);
         this.$q.notify({
           message: "Game bumped successfully!",
           color: "primary",
@@ -404,8 +410,9 @@ export default defineComponent({
           textColor: "white",
           position: "top",
         });
-        // Re-fetch or manually update timestamp locally
+
         game.updated_at = new Date().toISOString();
+        await this.doSearch();
       } catch (err) {
         console.error(err);
         this.$q.notify({

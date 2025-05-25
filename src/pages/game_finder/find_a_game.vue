@@ -1,15 +1,16 @@
 <template>
   <div class="top-box">
     <h2 class="banner">Find Your Next Game</h2>
+    <div class="action">
+      <q-btn
+        label="Create a Game"
+        @click="createDialog = true"
+        style="background-color: #222831; color: white"
+      />
+    </div>
     <div class="actions-container">
-      <div class="action">
-        <q-btn
-          label="Create a Game"
-          @click="createDialog = true"
-          style="background-color: #222831; color: white"
-        />
-      </div>
-      <q-separator size="2em" color="red" />
+      <div class="options-banner q-ma-sm">Filter Options</div>
+
       <div class="filter-options">
         <div class="select">
           <q-select
@@ -19,7 +20,7 @@
               { label: 'Werewolf: the Apocalypse', value: 2 },
               { label: 'Hunter: the Reckoning', value: 3 },
             ]"
-            label="Which Game Line?"
+            label="Which Game Line"
             label-color="primary"
             map-options
             option-label="label"
@@ -28,6 +29,22 @@
             bg-color="grey-3"
             filled
             style="margin-bottom: 10px; width: 100%"
+            color="secondary"
+            popup-content-style="background-color:#222831; color:white"
+            @update:model-value="doSearch()"
+          />
+          <q-select
+            v-model="game_style"
+            :options="style_options"
+            label="Game Type"
+            label-color="primary"
+            map-options
+            option-label="style"
+            option-value="style_id"
+            emit-value
+            bg-color="grey-3"
+            filled
+            style="margin-bottom: 10px"
             color="secondary"
             popup-content-style="background-color:#222831; color:white"
             @update:model-value="doSearch()"
@@ -133,6 +150,19 @@
   }
 }
 
+.options-banner {
+  font-family: TMUnicorn;
+  text-shadow: 3px 2px 3px black;
+  font-size: 1.4em;
+  @media (max-width: 768px) {
+    font-size: 1em;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1em;
+  }
+}
+
 .backgroundDefault {
   background-color: #171a1e;
 }
@@ -163,19 +193,21 @@
   background-color: #222831;
   margin: auto;
   width: 400px;
-  height: 220px;
+  height: 245px;
   justify-content: start;
   align-items: center;
-  border-radius: 5px;
+  border-radius: 3%;
   flex-direction: column;
   @media (max-width: 768px) {
-    width: 400px;
-    height: 220px;
+    width: 320px;
+    height: 260px;
+    font-size: 0.7em;
   }
 
   @media (max-width: 480px) {
-    width: 280px;
-    height: 220px;
+    width: 320px;
+    height: 260px;
+    font-size: 0.7em;
   }
 }
 .action {
@@ -201,6 +233,7 @@
   align-items: center;
   margin: auto;
   padding: 5px;
+  font-family: monospace;
 }
 </style>
 
@@ -215,6 +248,9 @@ export default defineComponent({
   async created() {
     try {
       const curUser = await this.$api.get("/user/currentUser");
+      const styleReq = await this.$api.get("/game_finder/styles");
+      this.style_options = styleReq.data;
+      this.style_options.push({ style: "Any", style_id: 100 });
       this.currentUser = curUser.data;
 
       await this.doSearch();
@@ -242,8 +278,9 @@ export default defineComponent({
       new_player: true,
       paid_game: true,
       game_line: "Any",
-      game_type: null,
+      game_style: 100,
       filtered_games: [],
+      style_options: [],
     };
   },
   methods: {
@@ -280,12 +317,16 @@ export default defineComponent({
         this.$q.loading.hide();
       }
     },
-
     filter_games() {
+      console.log(this.game_style);
       this.filtered_games = this.games.filter((game) => {
         const matchesNewPlayer = this.new_player ? true : game.new_player === 0;
         const matchesPaidGame = this.paid_game ? true : game.paid_game === 0;
-        return matchesNewPlayer && matchesPaidGame;
+
+        const matchesStyle =
+          this.game_style > 10 ? true : game.game_style === this.game_style;
+
+        return matchesNewPlayer && matchesPaidGame && matchesStyle;
       });
     },
 

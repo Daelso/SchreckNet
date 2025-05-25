@@ -215,7 +215,6 @@ export default defineComponent({
   async created() {
     const styleReq = await this.$api.get("/game_finder/styles");
     this.style_options = styleReq.data;
-    console.log(this.style_options);
   },
   data() {
     return {

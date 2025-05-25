@@ -25,10 +25,32 @@ router.route("/styles").get(lib.getLimiter, async (req, res) => {
 
 router.route("/all_games").get(lib.getLimiter, async (req, res) => {
   try {
-    const games = await Games.findAll();
+    const { game_line, page = 1 } = req.query;
 
-    return res.status(200).json(games);
+    const where = {};
+
+    if (game_line !== undefined && game_line !== null && game_line !== "Any") {
+      where.game_line = game_line;
+    }
+
+    const limit = 25;
+    const offset = (parseInt(page) - 1) * limit;
+
+    const { count, rows } = await Games.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [["created_at", "DESC"]],
+    });
+
+    return res.status(200).json({
+      total: count,
+      page: parseInt(page),
+      total_pages: Math.ceil(count / limit),
+      games: rows,
+    });
   } catch (err) {
+    console.error(err);
     return res.status(403).send("forbidden");
   }
 });

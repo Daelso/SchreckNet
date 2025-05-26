@@ -133,6 +133,11 @@ const routes = [
         path: "game/find",
         component: () => import("pages/game_finder/find_a_game.vue"),
       },
+      {
+        name: "myGames",
+        path: "game/my",
+        component: () => import("pages/game_finder/my_games.vue"),
+      },
     ],
   },
 

@@ -12,14 +12,39 @@ const GameStyles = require("../models/game_finder/game_styles.js");
 const lib = require("../lib");
 const Games = require("../models/game_finder/games.js");
 const { Sequelize } = require("sequelize");
+const GameLines = require("../models/game_finder/game_lines");
+const Editions = require("../models/game_finder/editions");
 
 //Route is base/game_finder/
+router.route("/game_lines").get(lib.getLimiter, async (req, res) => {
+  try {
+    const game_lines = await GameLines.findAll();
+
+    return res.status(200).json(game_lines);
+  } catch (err) {
+    console.error(err);
+    return res.status(403).send("forbidden");
+  }
+});
+
+router.route("/editions").get(lib.getLimiter, async (req, res) => {
+  try {
+    const editions = await Editions.findAll();
+
+    return res.status(200).json(editions);
+  } catch (err) {
+    console.error(err);
+    return res.status(403).send("forbidden");
+  }
+});
+
 router.route("/styles").get(lib.getLimiter, async (req, res) => {
   try {
     const styles = await GameStyles.findAll();
 
     return res.status(200).json(styles);
   } catch (err) {
+    console.error(err);
     return res.status(403).send("forbidden");
   }
 });

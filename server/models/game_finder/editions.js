@@ -1,21 +1,21 @@
-import { INTEGER, STRING } from "sequelize";
-import { sequelize } from "../../database";
+const Sequelize = require("sequelize");
+const db = require("../../database");
 
-const Editions = sequelize.define(
+const Editions = db.sequelize.define(
   "editions",
   {
     edition_id: {
-      type: INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
     edition_name: {
-      type: STRING,
+      type: Sequelize.STRING,
       allowNull: false,
     },
   },
   { timestamps: false, underscored: true }
 );
 
-export default Editions;
+module.exports = Editions;

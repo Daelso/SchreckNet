@@ -1,21 +1,21 @@
-import { INTEGER, STRING } from "sequelize";
-import { sequelize } from "../../database";
+const Sequelize = require("sequelize");
+const db = require("../../database");
 
-const GameLines = sequelize.define(
+const GameLines = db.sequelize.define(
   "game_lines",
   {
     line_id: {
-      type: INTEGER,
+      type: Sequelize.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
     game_line: {
-      type: STRING,
+      type: Sequelize.STRING,
       allowNull: false,
     },
   },
   { timestamps: false, underscored: true }
 );
 
-export default GameLines;
+module.exports = GameLines;

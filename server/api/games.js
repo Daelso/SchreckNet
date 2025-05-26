@@ -80,6 +80,52 @@ router.route("/:id/bump").post(lib.postLimiter, async (req, res) => {
   }
 });
 
+router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
+  try {
+    const game_id = req.params.id;
+    const sanitizedBody = sanitizeStrings(req.body);
+
+    const {
+      title,
+      style,
+      min,
+      max,
+      game_line,
+      desc,
+      paid_game,
+      new_player,
+      optional_link,
+    } = sanitizedBody;
+
+    const game = await Games.findOne({ where: { game_id: game_id } });
+
+    if (!game) {
+      return res.status(404).send("Game not found.");
+    }
+
+    console.log(game);
+
+    game.update({
+      game_title: title,
+      game_style: style,
+      game_line: game_line.value,
+      minimum_players: min,
+      maximum_players: max,
+      description: desc,
+      updated_by: req.currentUser.id,
+      updated_at: Date.now(),
+      paid_game: paid_game,
+      new_player: new_player,
+      optional_link: optional_link,
+    });
+
+    return res.status(200).send("Game edited!");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
 const sanitizeStrings = (obj) => {
   const sanitized = {};
   for (const key in obj) {

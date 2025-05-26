@@ -125,7 +125,7 @@
       <q-btn
         style="color: white; background-color: #0e1012; margin: auto"
         flat
-        label="Create Game"
+        :label="this.selectedGame ? 'Update Game' : 'Create Game'"
         :disable="!validateCreate"
         @click="create_game()"
         v-close-popup
@@ -218,9 +218,20 @@ export default defineComponent({
     selectedGame: Object,
   },
   async created() {
-    console.log(this.selectedGame);
     const styleReq = await this.$api.get("/game_finder/styles");
     this.style_options = styleReq.data;
+
+    if (this.selectedGame) {
+      this.game_title = this.selectedGame.game_title;
+      this.game_style = this.selectedGame.game_style;
+      this.min_players = this.selectedGame.minimum_players;
+      this.max_players = this.selectedGame.maximum_players;
+      this.game_line = this.which_game();
+      this.game_description = this.selectedGame.description;
+      this.optional_link = this.selectedGame.optional_link;
+      this.new_player = this.selectedGame.new_player;
+      this.paid_game = this.selectedGame.paid_game;
+    }
   },
   data() {
     return {
@@ -238,6 +249,19 @@ export default defineComponent({
   },
 
   methods: {
+    which_game() {
+      switch (this.selectedGame.game_line) {
+        case 1:
+          return { label: "Vampire: the Masquerade", value: 1 };
+        case 2:
+          return { label: "Werewolf: the Apocalypse", value: 2 };
+        case 3:
+          return { label: "Hunter: the Reckoning", value: 3 };
+
+        default:
+          return { label: "Vampire: the Masquerade", value: 1 };
+      }
+    },
     validatePlayerRange() {
       if (this.min_players > this.max_players) {
         this.$q.notify({
@@ -273,6 +297,20 @@ export default defineComponent({
           paid_game: this.paid_game,
           optional_link: this.sanitizeLink(this.optional_link),
         };
+        if (this.selectedGame) {
+          await this.$api.put(
+            `/games/${this.selectedGame.game_id}/edit`,
+            new_game
+          );
+
+          this.$q.notify({
+            color: "primary",
+            avatar: nosImage,
+            textColor: "white",
+            message: `Game updated successfully!`,
+          });
+          return;
+        }
         await this.$api.post("/games/new_game", new_game);
         this.$q.notify({
           color: "primary",

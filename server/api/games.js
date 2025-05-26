@@ -17,9 +17,6 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
   try {
     const sanitizedBody = sanitizeStrings(req.body);
 
-    console.log(req.body);
-    console.log(sanitizedBody);
-
     const {
       title,
       style,

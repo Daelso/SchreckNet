@@ -415,7 +415,7 @@ export default defineComponent({
           avatar: nosImage,
           textColor: "white",
           position: "top",
-          timeout: 5000,
+          timeout: 6000,
           message: "Log in to create a game!",
         });
       }

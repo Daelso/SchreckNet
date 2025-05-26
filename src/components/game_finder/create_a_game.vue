@@ -1,6 +1,6 @@
 <template>
   <q-card class="card q-pa-sm scroll">
-    <q-card-section class="q-ma-xl">
+    <q-card-section class="headerthingy">
       <div class="text-h6 head" style="font-family: TMUnicorn">
         Create a Game
       </div>
@@ -20,14 +20,27 @@
 
       <q-select
         v-model="game_line"
-        :options="[
-          { label: 'Vampire: the Masquerade', value: 1 },
-          { label: 'Werewolf: the Apocalypse', value: 2 },
-          { label: 'Hunter: the Reckoning', value: 3 },
-        ]"
+        :options="game_lines"
         label="Which Game Line?"
         label-color="primary"
         bg-color="grey-3"
+        map-options
+        option-label="game_line"
+        option-value="line_id"
+        filled
+        style="margin-bottom: 10px; width: 100%"
+        color="secondary"
+        popup-content-style="background-color:#222831; color:white"
+      />
+      <q-select
+        v-model="edition"
+        :options="editions"
+        label="Which Edition"
+        label-color="primary"
+        bg-color="grey-3"
+        map-options
+        option-label="edition_name"
+        option-value="edition_id"
         filled
         style="margin-bottom: 10px; width: 100%"
         color="secondary"
@@ -36,7 +49,7 @@
       <q-select
         v-model="game_style"
         :options="style_options"
-        label="How Will This Game Be Played?"
+        label="Play Style"
         label-color="primary"
         map-options
         option-label="style"
@@ -192,6 +205,12 @@
   flex-direction: column;
 }
 
+.headerthingy {
+  @media (max-width: 480px) {
+    margin-bottom: 200px;
+  }
+}
+
 .head {
   font-family: TMUnicorn;
   text-shadow: 3px 2px 3px black;
@@ -248,13 +267,19 @@ export default defineComponent({
   async created() {
     const styleReq = await this.$api.get("/game_finder/styles");
     this.style_options = styleReq.data;
+    const game_line_req = await this.$api.get("/game_finder/game_lines");
+    this.game_lines = game_line_req.data;
+
+    const editions_req = await this.$api.get("/game_finder/editions");
+    this.editions = editions_req.data;
 
     if (this.selectedGame) {
       this.game_title = this.selectedGame.game_title;
       this.game_style = this.selectedGame.game_style;
       this.min_players = this.selectedGame.minimum_players;
       this.max_players = this.selectedGame.maximum_players;
-      this.game_line = this.which_game();
+      this.game_line = this.selectedGame.game_line;
+      this.edition = this.selectedGame.edition;
       this.game_description = this.selectedGame.description;
       this.optional_link = this.selectedGame.optional_link;
       this.new_player = this.selectedGame.new_player;
@@ -268,6 +293,9 @@ export default defineComponent({
       min_players: 1,
       max_players: 2,
       game_line: "",
+      game_lines: [],
+      editions: [],
+      edition: "",
       game_description: "",
       style_options: [],
       confirmDeleteDialog: false,
@@ -278,19 +306,6 @@ export default defineComponent({
   },
 
   methods: {
-    which_game() {
-      switch (this.selectedGame.game_line) {
-        case 1:
-          return { label: "Vampire: the Masquerade", value: 1 };
-        case 2:
-          return { label: "Werewolf: the Apocalypse", value: 2 };
-        case 3:
-          return { label: "Hunter: the Reckoning", value: 3 };
-
-        default:
-          return { label: "Vampire: the Masquerade", value: 1 };
-      }
-    },
     handleDelete() {
       this.deleteGame(); // run your deletion logic
       this.$emit("close-parent");
@@ -351,6 +366,7 @@ export default defineComponent({
           desc: this.game_description,
           new_player: this.new_player,
           paid_game: this.paid_game,
+          edition: this.edition,
           optional_link: this.sanitizeLink(this.optional_link),
         };
         if (this.selectedGame) {
@@ -394,8 +410,9 @@ export default defineComponent({
         !this.game_style ||
         this.min_players === null ||
         this.max_players === null ||
-        this.game_line === "" ||
-        this.game_description.trim() === ""
+        !this.game_line ||
+        this.game_description.trim() === "" ||
+        !this.edition
       ) {
         return false;
       } else {

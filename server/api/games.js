@@ -43,6 +43,7 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
       paid_game: paid_game,
       new_player: new_player,
       optional_link: optional_link,
+      active: 1,
     });
 
     return res.status(200).send("Game created!");
@@ -103,8 +104,6 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
       return res.status(404).send("Game not found.");
     }
 
-    console.log(game);
-
     game.update({
       game_title: title,
       game_style: style,
@@ -117,9 +116,31 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
       paid_game: paid_game,
       new_player: new_player,
       optional_link: optional_link,
+      active: 1,
     });
 
     return res.status(200).send("Game edited!");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
+});
+
+router.route("/:id/delete").put(lib.postLimiter, async (req, res) => {
+  try {
+    const game_id = req.params.id;
+
+    const game = await Games.findOne({ where: { game_id: game_id } });
+
+    if (!game) {
+      return res.status(404).send("Game not found.");
+    }
+
+    game.update({
+      active: 0,
+    });
+
+    return res.status(200).send("Game deleted!");
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");

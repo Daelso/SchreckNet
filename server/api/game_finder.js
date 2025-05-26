@@ -28,7 +28,9 @@ router.route("/all_games").get(lib.getLimiter, async (req, res) => {
   try {
     const { game_line, page = 1 } = req.query;
 
-    const where = {};
+    const where = {
+      active: 1,
+    };
 
     if (game_line !== undefined && game_line !== null && game_line !== "Any") {
       where.game_line = game_line;

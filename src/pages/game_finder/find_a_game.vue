@@ -218,7 +218,13 @@
   <div>
     <!-- Dialog -->
     <q-dialog v-model="createDialog" persistent @hide="doSearch()">
-      <create_a_game :selectedGame="selectedGame" />
+      <create_a_game
+        :selectedGame="selectedGame"
+        @close-parent="
+          createDialog = false;
+          doSearch();
+        "
+      />
     </q-dialog>
   </div>
 </template>

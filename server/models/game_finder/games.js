@@ -67,6 +67,11 @@ const Games = db.sequelize.define(
       type: Sequelize.STRING,
       allowNull: true,
     },
+    active: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
   },
   { timestamps: true, underscored: true }
 );

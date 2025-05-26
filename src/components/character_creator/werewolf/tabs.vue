@@ -140,7 +140,7 @@
             bg-color="grey-3"
             v-model="touchStoneInput"
             label="Touchstone *"
-            hint="A specific living human who binds you to reality. Who are you fighting for? (Press Enter to confirm)"
+            hint="A specific living human or wolf who binds you to reality. Who are you fighting for? (Press Enter to confirm)"
             hide-hint
             autogrow
             class="select"

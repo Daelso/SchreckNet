@@ -217,7 +217,7 @@
   </div>
   <div>
     <!-- Dialog -->
-    <q-dialog v-model="createDialog" persistent style="height: 1800px">
+    <q-dialog v-model="createDialog" persistent @hide="doSearch()">
       <create_a_game :selectedGame="selectedGame" />
     </q-dialog>
   </div>
@@ -372,8 +372,6 @@ export default defineComponent({
       this.style_options.push({ style: "Any", style_id: 100 });
 
       await this.doSearch();
-      console.log(this.totalPages);
-      console.log(this.filtered_games);
     } catch (err) {
       this.$q.notify({
         color: "primary",

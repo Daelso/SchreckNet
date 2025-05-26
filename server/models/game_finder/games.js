@@ -1,6 +1,8 @@
 const Sequelize = require("sequelize");
 const db = require("../../database");
 const GameStyles = require("./game_styles");
+const Editions = require("./editions");
+const GameLines = require("./game_lines");
 
 const Games = db.sequelize.define(
   "games",
@@ -24,6 +26,10 @@ const Games = db.sequelize.define(
       },
     },
     game_line: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    edition: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
@@ -80,6 +86,18 @@ Games.belongsTo(GameStyles, {
   foreignKey: "game_style",
   targetKey: "style_id",
   as: "style",
+});
+
+Games.belongsTo(Editions, {
+  foreignKey: "edition",
+  targetKey: "edition_id",
+  as: "edition_type",
+});
+
+Games.belongsTo(GameLines, {
+  foreignKey: "game_line",
+  targetKey: "line_id",
+  as: "game_line_type",
 });
 
 module.exports = Games;

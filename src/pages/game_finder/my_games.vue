@@ -15,16 +15,28 @@
         <div class="select">
           <q-select
             v-model="game_line"
-            :options="[
-              { label: 'Vampire: the Masquerade', value: 1 },
-              { label: 'Werewolf: the Apocalypse', value: 2 },
-              { label: 'Hunter: the Reckoning', value: 3 },
-            ]"
+            :options="game_lines"
             label="Which Game Line"
             label-color="primary"
             map-options
-            option-label="label"
-            option-value="value"
+            option-label="game_line"
+            option-value="line_id"
+            emit-value
+            bg-color="grey-3"
+            filled
+            style="margin-bottom: 10px; width: 100%"
+            color="secondary"
+            popup-content-style="background-color:#222831; color:white"
+            @update:model-value="doSearch()"
+          />
+          <q-select
+            v-model="edition"
+            :options="editions"
+            label="Which Edition"
+            label-color="primary"
+            map-options
+            option-label="edition_name"
+            option-value="edition_id"
             emit-value
             bg-color="grey-3"
             filled
@@ -74,7 +86,10 @@
       </div>
     </div>
   </div>
-  <div class="q-gutter-md q-pa-md games-container q-pa-lg">
+  <div
+    class="q-gutter-md q-pa-md games-container q-pa-lg"
+    v-if="this.filtered_games.length > 0"
+  >
     <div class="row q-col-gutter-md">
       <div
         class="col-12 col-sm-6 col-md-4"
@@ -87,7 +102,7 @@
               {{ game.game_title }} -
               <q-icon
                 color="secondary"
-                :name="showIcon(game.line_title)"
+                :name="showIcon(game.game_line_type.game_line)"
                 style="scale: 170%"
               />
             </div>
@@ -95,8 +110,9 @@
               Players: {{ game.minimum_players }} - {{ game.maximum_players }}
             </div>
             <div class="text-caption q-mt-xs">
-              Game Line: {{ game.line_title }}<br />
-              Style ID: {{ game.style.style }}
+              Game Line: {{ game.game_line_type.game_line }}<br />
+              Style ID: {{ game.style.style }} <br />
+              Edition: {{ game.edition_type.edition_name }}
             </div>
           </q-card-section>
 
@@ -178,6 +194,9 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    <h2 class="banner">No Games Found!</h2>
+  </div>
   <!-- Pagination Buttons -->
   <div
     class="flex flex-center q-pa-sm"
@@ -217,7 +236,12 @@
   </div>
   <div>
     <!-- Dialog -->
-    <q-dialog v-model="createDialog" persistent @hide="doSearch()">
+    <q-dialog
+      v-model="createDialog"
+      persistent
+      @hide="doSearch()"
+      style="overflow: visible !important"
+    >
       <create_a_game
         :selectedGame="selectedGame"
         @close-parent="
@@ -310,20 +334,21 @@
   background-color: #222831;
   margin: auto;
   width: 400px;
-  height: 245px;
+  height: 295px;
   justify-content: start;
   align-items: center;
   border-radius: 3%;
   flex-direction: column;
+  margin-bottom: 10px;
   @media (max-width: 768px) {
     width: 320px;
-    height: 260px;
+    height: 300px;
     font-size: 0.7em;
   }
 
   @media (max-width: 480px) {
     width: 320px;
-    height: 260px;
+    height: 300px;
     font-size: 0.7em;
   }
 }
@@ -365,16 +390,36 @@ export default defineComponent({
   name: "findAGame",
   async created() {
     try {
-      const curUser = await this.$api.get("/user/currentUser");
-      this.currentUser = curUser.data;
+      try {
+        const curUser = await this.$api.get("/user/currentUser");
+        this.currentUser = curUser.data;
+      } catch (err) {
+        this.currentUser = null;
+        console.warn("User not logged in");
+      }
+
       const styleReq = await this.$api.get("/game_finder/styles");
       this.style_options = styleReq.data;
       this.style_options.push({ style: "Any", style_id: 100 });
 
+      const game_line_req = await this.$api.get("/game_finder/game_lines");
+      this.game_lines = game_line_req.data;
+      this.game_lines.push({ line_id: 100, game_line: "Any" });
+
+      const editions_req = await this.$api.get("/game_finder/editions");
+      this.editions = editions_req.data;
+      this.editions.push({ edition_id: 100, edition_name: "Any" });
+
       await this.doSearch();
     } catch (err) {
-      this.currentUser = null;
-      console.warn("User not logged in");
+      this.$q.notify({
+        color: "primary",
+        avatar: nosImage,
+        textColor: "white",
+        position: "top",
+        timeout: 5000,
+      });
+      console.error(err);
     }
   },
 
@@ -391,9 +436,12 @@ export default defineComponent({
       new_player: true,
       paid_game: true,
       game_line: "Any",
+      edition: "Any",
       game_style: 100,
       filtered_games: [],
       style_options: [],
+      game_lines: [],
+      editions: [],
     };
   },
   methods: {
@@ -455,11 +503,15 @@ export default defineComponent({
           query.game_line = this.game_line;
         }
 
+        if (this.edition !== null && this.edition !== undefined) {
+          query.edition = this.edition;
+        }
+
         if (this.page) {
           query.page = this.page;
         }
 
-        const response = await this.$api.get("game_finder/all_games", {
+        const response = await this.$api.get("game_finder/all_my_games", {
           params: query,
         });
         this.games = response.data.games;

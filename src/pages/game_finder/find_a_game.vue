@@ -3,6 +3,7 @@
     <h2 class="banner">Find Your Next Game</h2>
     <div class="action">
       <q-btn
+        v-if="this.currentUser"
         label="Create a Game"
         @click="createDialog = true"
         style="background-color: #222831; color: white"
@@ -396,6 +397,14 @@ export default defineComponent({
       } catch (err) {
         this.currentUser = null;
         console.warn("User not logged in");
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          position: "top",
+          timeout: 5000,
+          message: "Log in to create a game!",
+        });
       }
 
       const styleReq = await this.$api.get("/game_finder/styles");
@@ -412,13 +421,6 @@ export default defineComponent({
 
       await this.doSearch();
     } catch (err) {
-      this.$q.notify({
-        color: "primary",
-        avatar: nosImage,
-        textColor: "white",
-        position: "top",
-        timeout: 5000,
-      });
       console.error(err);
     }
   },
@@ -488,6 +490,10 @@ export default defineComponent({
           return "app:claws";
         case "Hunter: the Reckoning":
           return "app:hunter";
+        case "Mage: the Ascension":
+          return "app:mage";
+        case "Changeling: the Dreaming":
+          return "app:changeling";
         default:
           return "app:ankh";
       }

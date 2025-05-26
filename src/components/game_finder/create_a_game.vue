@@ -135,8 +135,36 @@
         >
       </q-btn>
       <q-btn flat style="color: white" label="Cancel" v-close-popup />
+      <q-btn
+        v-if="this.selectedGame"
+        flat
+        style="color: white"
+        label="Delete Game"
+        @click="confirmDeleteDialog = true"
+      />
     </q-card-actions>
   </q-card>
+
+  <!-- Confirm delete -->
+  <q-dialog v-model="confirmDeleteDialog" persistent>
+    <q-card class="card">
+      <q-card-section class="q-pa-md">
+        <div class="text-h6">Confirm Deletion</div>
+        <div>Are you sure you want to delete this game?</div>
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Cancel" color="white" v-close-popup />
+        <q-btn
+          flat
+          label="Delete"
+          color="negative"
+          @click="handleDelete()"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <style scoped>
@@ -242,6 +270,7 @@ export default defineComponent({
       game_line: "",
       game_description: "",
       style_options: [],
+      confirmDeleteDialog: false,
       new_player: false,
       paid_game: false,
       optional_link: "",
@@ -261,6 +290,10 @@ export default defineComponent({
         default:
           return { label: "Vampire: the Masquerade", value: 1 };
       }
+    },
+    handleDelete() {
+      this.deleteGame(); // run your deletion logic
+      this.$emit("close-parent");
     },
     validatePlayerRange() {
       if (this.min_players > this.max_players) {
@@ -282,6 +315,29 @@ export default defineComponent({
       // Only allow http or https links
       const isValid = /^(https?:\/\/)/i.test(trimmed);
       return isValid ? trimmed : "";
+    },
+    async deleteGame() {
+      try {
+        this.$q.loading.show();
+
+        await this.$api.put(`/games/${this.selectedGame.game_id}/delete`);
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Game deleted successfully!`,
+        });
+      } catch (err) {
+        console.log(err);
+        this.$q.notify({
+          color: "primary",
+          avatar: nosImage,
+          textColor: "white",
+          message: `Failed to delete game, try again...`,
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     },
     async create_game() {
       try {
@@ -349,5 +405,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>

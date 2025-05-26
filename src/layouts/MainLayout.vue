@@ -62,7 +62,7 @@
             >
           </q-item-section>
         </q-item> -->
-        <q-item-label header> Search Characters </q-item-label>
+        <q-item-label header> Search Characters and Games </q-item-label>
         <q-item clickable style="color: red" :to="{ name: 'baseSearch' }">
           <q-item-section avatar>
             <q-icon color="secondary" name="search" />
@@ -72,6 +72,18 @@
             <q-item-label>Search all Characters</q-item-label>
             <q-item-label caption style="color: white"
               >Find a character for your next game</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+        <q-item clickable style="color: red" :to="{ name: 'findGame' }">
+          <q-item-section avatar>
+            <q-icon color="secondary" name="groups" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>Find and Create Games</q-item-label>
+            <q-item-label caption style="color: white"
+              >Find your next World of Darkness game</q-item-label
             >
           </q-item-section>
         </q-item>

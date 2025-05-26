@@ -64,7 +64,19 @@
     </q-item-section>
   </q-item>
   <q-separator />
+  <q-item clickable style="color: red" :to="{ name: 'myGames' }">
+    <q-item-section avatar>
+      <q-icon color="secondary" name="groups" />
+    </q-item-section>
 
+    <q-item-section>
+      <q-item-label>My Games</q-item-label>
+      <q-item-label caption style="color: white"
+        >Games Created by You</q-item-label
+      >
+    </q-item-section>
+  </q-item>
+  <q-separator />
   <q-item clickable style="color: red" @click="logout">
     <q-item-section avatar>
       <q-icon color="secondary" name="logout" />

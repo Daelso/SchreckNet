@@ -236,7 +236,12 @@
   </div>
   <div>
     <!-- Dialog -->
-    <q-dialog v-model="createDialog" persistent @hide="doSearch()">
+    <q-dialog
+      v-model="createDialog"
+      persistent
+      @hide="doSearch()"
+      style="overflow: visible !important"
+    >
       <create_a_game
         :selectedGame="selectedGame"
         @close-parent="
@@ -512,7 +517,6 @@ export default defineComponent({
         this.games = response.data.games;
         this.totalPages = response.data.total_pages;
         this.filter_games();
-        console.log(this.filtered_games);
       } catch (err) {
         console.error(err);
       } finally {
@@ -521,7 +525,6 @@ export default defineComponent({
       }
     },
     filter_games() {
-      console.log(this.games);
       this.filtered_games = this.games.filter((game) => {
         const matchesNewPlayer = this.new_player ? true : game.new_player === 0;
         const matchesPaidGame = this.paid_game ? true : game.paid_game === 0;

@@ -17,6 +17,9 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
   try {
     const sanitizedBody = sanitizeStrings(req.body);
 
+    console.log(req.body);
+    console.log(sanitizedBody);
+
     const {
       title,
       style,
@@ -33,7 +36,7 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
     await Games.create({
       game_title: title,
       game_style: style,
-      game_line: game_line.value,
+      game_line: game_line.line_id,
       minimum_players: min,
       maximum_players: max,
       description: desc,
@@ -45,7 +48,7 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
       new_player: new_player,
       optional_link: optional_link,
       active: 1,
-      edition: edition,
+      edition: edition.edition_id,
     });
 
     return res.status(200).send("Game created!");
@@ -110,7 +113,7 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
     game.update({
       game_title: title,
       game_style: style,
-      game_line: game_line.value,
+      game_line: game_line.line_id,
       minimum_players: min,
       maximum_players: max,
       description: desc,
@@ -119,7 +122,7 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
       paid_game: paid_game,
       new_player: new_player,
       optional_link: optional_link,
-      edition: edition,
+      edition: edition.edition_id,
       active: 1,
     });
 

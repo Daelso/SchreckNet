@@ -385,11 +385,24 @@ import { defineComponent } from "vue";
 import { date } from "quasar";
 import nosImage from "../../assets/images/Nosfer_logo.png";
 import create_a_game from "../../components/game_finder/create_a_game.vue";
+import { useMeta } from "quasar";
 
 export default defineComponent({
   components: { create_a_game },
   name: "findAGame",
   async created() {
+    useMeta({
+      title: "SchreckNet - Find a Game",
+      titleTemplate: (title) => `${title}`,
+      meta: {
+        keywords: {
+          name: "keywords",
+          content:
+            "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse, hunter the reckoning, htr, games, find a game, game finder",
+        },
+      },
+    });
+
     try {
       try {
         const curUser = await this.$api.get("/user/currentUser");

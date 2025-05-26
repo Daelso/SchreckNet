@@ -102,7 +102,7 @@
               {{ game.game_title }} -
               <q-icon
                 color="secondary"
-                :name="showIcon(game.line_title)"
+                :name="showIcon(game.game_line_type.game_line)"
                 style="scale: 170%"
               />
             </div>
@@ -110,8 +110,9 @@
               Players: {{ game.minimum_players }} - {{ game.maximum_players }}
             </div>
             <div class="text-caption q-mt-xs">
-              Game Line: {{ game.line_title }}<br />
-              Style ID: {{ game.style.style }}
+              Game Line: {{ game.game_line_type.game_line }}<br />
+              Style ID: {{ game.style.style }} <br />
+              Edition: {{ game.edition_type.edition_name }}
             </div>
           </q-card-section>
 
@@ -403,6 +404,7 @@ export default defineComponent({
       const editions_req = await this.$api.get("/game_finder/editions");
       this.editions = editions_req.data;
       this.editions.push({ edition_id: 100, edition_name: "Any" });
+
       await this.doSearch();
     } catch (err) {
       this.$q.notify({
@@ -496,6 +498,10 @@ export default defineComponent({
           query.game_line = this.game_line;
         }
 
+        if (this.edition !== null && this.edition !== undefined) {
+          query.edition = this.edition;
+        }
+
         if (this.page) {
           query.page = this.page;
         }
@@ -506,6 +512,7 @@ export default defineComponent({
         this.games = response.data.games;
         this.totalPages = response.data.total_pages;
         this.filter_games();
+        console.log(this.filtered_games);
       } catch (err) {
         console.error(err);
       } finally {
@@ -514,6 +521,7 @@ export default defineComponent({
       }
     },
     filter_games() {
+      console.log(this.games);
       this.filtered_games = this.games.filter((game) => {
         const matchesNewPlayer = this.new_player ? true : game.new_player === 0;
         const matchesPaidGame = this.paid_game ? true : game.paid_game === 0;

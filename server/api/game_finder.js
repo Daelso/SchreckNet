@@ -51,15 +51,14 @@ router.route("/styles").get(lib.getLimiter, async (req, res) => {
 
 router.route("/all_games").get(lib.getLimiter, async (req, res) => {
   try {
-    const { game_line, page = 1 } = req.query;
+    const { game_line, page = 1, edition } = req.query;
 
     const where = {
       active: 1,
     };
 
-    if (game_line !== undefined && game_line !== null && game_line !== "Any") {
-      where.game_line = game_line;
-    }
+    assignIfValid(where, "game_line", game_line);
+    assignIfValid(where, "edition", edition);
 
     const limit = 25;
     const offset = (parseInt(page) - 1) * limit;
@@ -69,25 +68,21 @@ router.route("/all_games").get(lib.getLimiter, async (req, res) => {
       include: [
         {
           model: GameStyles,
-          as: "style", // MUST match alias in .belongsTo
+          as: "style",
           attributes: ["style_id", "style"],
         },
+        {
+          model: Editions,
+          as: "edition_type",
+          attributes: ["edition_id", "edition_name"],
+        },
+        {
+          model: GameLines,
+          as: "game_line_type",
+          attributes: ["line_id", "game_line"],
+        },
       ],
-      attributes: {
-        include: [
-          [
-            Sequelize.literal(`
-            CASE
-              WHEN games.game_line = 1 THEN 'Vampire: the Masquerade'
-              WHEN games.game_line = 2 THEN 'Werewolf: the Apocalypse'
-              WHEN games.game_line = 3 THEN 'Hunter: the Reckoning'
-              ELSE 'Unknown'
-            END
-          `),
-            "line_title",
-          ],
-        ],
-      },
+
       limit,
       offset,
       order: [["updated_at", "DESC"]],
@@ -104,5 +99,16 @@ router.route("/all_games").get(lib.getLimiter, async (req, res) => {
     return res.status(403).send("forbidden");
   }
 });
+
+function assignIfValid(obj, key, value) {
+  if (
+    value !== undefined &&
+    value !== null &&
+    value !== "Any" &&
+    value !== "100"
+  ) {
+    obj[key] = value;
+  }
+}
 
 module.exports = router; //Exports our routes

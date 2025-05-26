@@ -27,6 +27,7 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
       paid_game,
       new_player,
       optional_link,
+      edition,
     } = sanitizedBody;
 
     await Games.create({
@@ -44,6 +45,7 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
       new_player: new_player,
       optional_link: optional_link,
       active: 1,
+      edition: edition,
     });
 
     return res.status(200).send("Game created!");
@@ -96,6 +98,7 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
       paid_game,
       new_player,
       optional_link,
+      edition,
     } = sanitizedBody;
 
     const game = await Games.findOne({ where: { game_id: game_id } });
@@ -116,6 +119,7 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
       paid_game: paid_game,
       new_player: new_player,
       optional_link: optional_link,
+      edition: edition,
       active: 1,
     });
 

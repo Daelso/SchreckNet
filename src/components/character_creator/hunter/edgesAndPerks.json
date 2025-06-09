@@ -192,11 +192,6 @@
             "name": "Payload",
             "desc": "The drone can carry a unit of cargo many times what its size suggests.",
             "parent": "Drone Jockey"
-          },
-          {
-            "name": "System",
-            "desc": "On acquiring this Edge, the Hunter must choose one type of animal and which key action pools it possesses.",
-            "parent": "Drone Jockey"
           }
         ]
       },

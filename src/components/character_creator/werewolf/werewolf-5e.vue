@@ -589,7 +589,7 @@ export default {
 
   data() {
     return {
-      debug: true,
+      debug: false,
       garou: null,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },

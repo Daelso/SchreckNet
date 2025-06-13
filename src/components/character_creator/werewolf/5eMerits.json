@@ -65,6 +65,11 @@
           "desc": "You are considered beautiful."
         },
         {
+          "name": "Fair Glabro",
+          "cost": 2,
+          "desc": "Your glabro form is more sinewy than bulky, at a distance you don't look that unusual. Up close you can even pass for hairy or feral. Glabro form no longer causes a 2 die social penalty."
+        },
+        {
           "name": "Stunning",
           "cost": 4,
           "desc": "You are considered exceptionally good-looking, you turn heads everywhere you go."
@@ -80,6 +85,12 @@
           "name": "Transparent",
           "cost": 1,
           "desc": "For some reason or another, you are an awful liar, do not gain any additional dots in subterfuge."
+        },
+        {
+          "name": "Wyrm-Marked Flesh",
+          "cost": 1,
+          "maxCost": 2,
+          "desc": "Your supernatural forms have been touched by some servant of the Wyrm, your forms show signs of wyrm corruption such as balding, open sores or bleeding gums. Take -2 die to all social situations with other Garou who know of these forms. As a two dot flaw these deformities extend to your homid and lupus forms as well."
         },
         {
           "name": "Repulsive",
@@ -121,6 +132,11 @@
           "desc": "You suffer two dice less penalties for performing Rites in suboptimal conditions."
         },
         {
+          "name": "Expert Assistant",
+          "cost": 2,
+          "desc": "When assisting with a rite you know, add one additional regular die to the pool."
+        },
+        {
           "name": "Moot Caller",
           "cost": 2,
           "desc": "Select 5 social rites, you've mastered them. If allowed during a moot, you can assist in any rite so long as it is performed at a moot or substantially similar gathering of Garou."
@@ -148,6 +164,16 @@
       ],
       "flaws": []
     },
+    "Shapeshifting": {
+      "advantages": [
+        {
+          "name": "Luna's Resilience",
+          "cost": 2,
+          "desc": "In glabro and hispo form you ain two additional health boxes. These carry over into crinos form."
+        }
+      ],
+      "flaws": []
+    },
     "Substance Use": {
       "advantages": [],
       "flaws": [
@@ -166,6 +192,12 @@
     "Supernatural Situations": {
       "advantages": [
         {
+          "name": "Gift of Form Mastery",
+          "cost": 1,
+          "maxCost": 4,
+          "desc": "For each dot in this merit, you may select a Gift whose use can be extended to either homid or lupus form."
+        },
+        {
           "name": "Moon-Quickened",
           "cost": 1,
           "desc": "Howl at the moon once per night to restore a point of superficial willpower."
@@ -177,6 +209,11 @@
         }
       ],
       "flaws": [
+        {
+          "name": "Bad Moon Rising",
+          "cost": 1,
+          "desc": "Howling at the moon is no longer a guarantee to restore rage. Perform a rage check and only gain rage on success."
+        },
         {
           "name": "Folkloric Bane",
           "cost": 1,
@@ -198,11 +235,36 @@
           "desc": "Either some curse causes rapid aging or you experienced the first change late in life. -1 HP."
         },
         {
+          "name": "Hellhound",
+          "cost": 2,
+          "desc": "Your forms are exceptionally frightening. Mortals now suffer the delerium from your hispo and lupus forms as well."
+        },
+        {
           "name": "Moon-Thrall",
           "cost": 2,
           "desc": "Upon seeing the moon for the first time each night, you immediately change form to glabro or hispo. (Must still perform rage checks!)"
+        },
+        {
+          "name": "Wolf-Man",
+          "cost": 2,
+          "desc": "Your crinos form bears a strangely human-looking head. Your lack of snout means that you cannot bite and your delerium is easier to resist."
+        },
+        {
+          "name": "Wyrm-Touched",
+          "cost": 2,
+          "desc": "Despite your dedication to Gaia, the Wyrm has burrowed into your soul. Review the flaw in the book and choose one of the Wyrm flaws listed."
         }
       ]
+    },
+    "Wild Heritage": {
+      "advantages": [
+        {
+          "name": "Thick Hide",
+          "cost": 3,
+          "desc": "You are far more robust than other Garou. Your Health tracker equals 4 + your Stamina, rather than 3 + your Stamina."
+        }
+      ],
+      "flaws": []
     }
   }
 }

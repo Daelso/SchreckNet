@@ -64,13 +64,26 @@
       "Reference": "WtA 296"
     },
     {
+      "Name": "Tender of Banes",
+      "Type": "Path",
+      "Prerequisite": null,
+      "Description": "Bane Tenders maintain and guard the seals that bind Banes who cannot be destroyed, preventing their escape and minimizing their influence. They gain abilities to detect Banes, track imprisoned Banes, create suitable prisons, communicate with captive Banes, and consult powerful bound spirits at risk of escape.",
+      "Reference": "WT 35"
+    },
+    {
       "Name": "The Black Spiral",
       "Type": "NPC",
       "Prerequisite": null,
       "Description": "You have an interest in the Black Spiral and are able to understand some of it's many mysteries. You may also have contacts within the Black Spiral Dancer's. Perhaps, you may even be able to pull a Garou from the madness of the Wyrm.",
       "Reference": "WtA 299"
     },
-
+    {
+      "Name": "The Skinner",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "The Skinner is a terrifying Stolen Moon who wears a patchwork of Garou skin and mimics their abilities. Known for a decades-long trail of horror, encounters with him leave lasting scars and grudges. Those who follow this path gain abilities to detect ambushes, gain knowledge of supernatural creatures, maintain a human support network, hinder Stolen Moons' shapeshifting, and wield a weapon that deals aggravated damage to Stolen Moons.",
+      "Reference": "WT 35"
+    },
     {
       "Name": "Umbral Traveler",
       "Type": "Other",
@@ -84,6 +97,13 @@
       "Prerequisite": null,
       "Description": "A legendary party planner and Moot organizer. None in the Garou nation are better at running a rite, overseeing the first change or just bringing Garou together.",
       "Reference": "SN 140"
+    },
+    {
+      "Name": "Zhyzhak",
+      "Type": "NPC",
+      "Prerequisite": null,
+      "Description": "Zhyzhak is a legendary Black Spiral Dancer warrior known for her brutal strength and her spiked leather whip. Feared as a dark messiah by her followers, she has left a trail of bloodshed and is rivaled by few. Selecting this loresheet grants you Zhyzhak as a five-dot Adversary and powers like natural armor, improvised weapon damage with self-inflicted Willpower damage, boosted Charisma dice when telling victory tales, physical dominance over Crinos werewolves, and the ability to intervene in prophecies or destinies once per story.",
+      "Reference": "WT 35"
     }
   ]
 }

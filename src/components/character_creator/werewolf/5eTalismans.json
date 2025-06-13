@@ -8,6 +8,7 @@
           "cost": 2,
           "single_use": true
         },
+
         {
           "name": "Apeskin",
           "desc": "Human or ape skin worn over one's skin that makes the user immune to silver in glabro or hispo form. Makes regeneration impossible for a full day after wearing.",
@@ -28,11 +29,33 @@
       ],
       "flaws": []
     },
+    "Hammer of King Brennus": {
+      "advantages": [
+        {
+          "name": "Hammer of King Brennus",
+          "desc": "4-dot Talisman. +4 damage; Black Spiral Dancers take Aggravated damage and suffer -2 dice to attack pools against it. Wielder needs Strength 4+ or suffers -2 dice to attack. If defeated by a Dancer or the hammer is lost, the wielder must roll a Difficulty 2 Harano test.",
+          "cost": 4,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
     "Harmony Flute": {
       "advantages": [
         {
           "name": "Harmony Flute",
           "desc": "An ornate flute bearing the image of Luna and Helios dancing, can pull a Garou back from their frenzied rage.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Herald's Horn": {
+      "advantages": [
+        {
+          "name": "Herald's Horn",
+          "desc": "3-dot Talisman. When blown, all pack members instantly know the user's location and the safest, quickest route to reach them. Grants +2 dice to any rolls needed to arrive safely or on time.",
           "cost": 3,
           "single_use": false
         }
@@ -112,6 +135,35 @@
         {
           "name": "Wind Whistle",
           "desc": "When blown, the spirits cause a large gust of wind covering the tracks of the pack with snow, debris or dust making it far harder to track them.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Wyrm-Tainted Talismans": {
+      "advantages": [
+        {
+          "name": "Iron Hatchet",
+          "desc": "A brutal weapon used by Black Spiral Dancers. Deals +2 damage, and on a successful hit, the wielder may sacrifice up to 3 Health (Superficial or Aggravated) to deal that much extra damage of the same type.",
+          "cost": 2,
+          "single_use": false
+        },
+        {
+          "name": "Bone Scourge",
+          "desc": "A black leather whip studded with bone spikes. Deals +3 damage, and each successful hit also inflicts 1 Willpower damage—2 if the target is defending family or loved ones.",
+          "cost": 3,
+          "single_use": false
+        },
+        {
+          "name": "Killer's Crown",
+          "desc": "A crude iron crown fused into the skull. Wearer always has at least 1 Rage and counts Rage as 2 higher (max 5) for Rage dice. Removing it causes 3 Aggravated damage and requires a Strength + Medicine test (Diff 3 if helped, 4 solo).",
+          "cost": 3,
+          "single_use": false
+        },
+        {
+          "name": "Warm Stone",
+          "desc": "A fist-sized radioactive rock that prevents all forms of healing—natural, supernatural, or Gift-based—within the same room. Prolonged exposure is lethal.",
           "cost": 3,
           "single_use": false
         }

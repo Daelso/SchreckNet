@@ -20,7 +20,7 @@
     "@quasar/extras": "^1.16.13",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.0",
-    "compression": "^1.7.4",
+    "compression": "^1.8.1",
     "connect-history-api-fallback": "^2.0.0",
     "cookie-parser": "^1.4.6",
     "core-js": "^3.6.5",

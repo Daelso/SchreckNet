@@ -104,6 +104,26 @@
         }
       ]
     },
+    "Mental": {
+      "advantages": [],
+      "flaws": [
+        {
+          "name": "Bitter",
+          "cost": 1,
+          "desc": "You struggle to let anything go. After your first point of Hauglosk every Hauglosk check after is done at +1 difficulty."
+        },
+        {
+          "name": "Morose",
+          "cost": 1,
+          "desc": "You struggle to care anymore. After your first point of Harano every Harano check after is done at +1 difficulty."
+        },
+        {
+          "name": "Tactile Learner",
+          "cost": 1,
+          "desc": "You struggle to learn skills from books alone. Any purchase of a skill or specialty requires you to have used that skill successfully in the last session."
+        }
+      ]
+    },
     "Mythic": {
       "advantages": [],
       "flaws": [
@@ -167,12 +187,49 @@
     "Shapeshifting": {
       "advantages": [
         {
+          "name": "Umbral Shift",
+          "cost": 1,
+          "desc": "When entering the umbra or your bawn you may freely shift to glabro or hispo, likewise when leaving you may return freely to your homid or lupus form."
+        },
+        {
+          "name": "Willful Crinos",
+          "cost": 1,
+          "desc": "The first time during each shift into crinos form that you need to spend Willpower to resist frenzy, you do not need to spend any Willpower to do so."
+        },
+        {
           "name": "Luna's Resilience",
           "cost": 2,
           "desc": "In glabro and hispo form you ain two additional health boxes. These carry over into crinos form."
+        },
+        {
+          "name": "Favored Form",
+          "cost": 3,
+          "desc": "Choose your favored form, from now on you may re-roll one rage check whenever you shift into that form."
         }
       ],
-      "flaws": []
+      "flaws": [
+        {
+          "name": "Painful Change",
+          "cost": 1,
+          "desc": "Shifting is agony for you, sustain a level of superficial damage on every change."
+        },
+        {
+          "name": "Wolven Retreat",
+          "cost": 1,
+          "desc": "Whenever you lose the wolf, you are forced into lupus form."
+        },
+        {
+          "name": "Limited Forms",
+          "cost": 1,
+          "maxCost": 2,
+          "desc": "You are unable to shift to certain forms, at one dot you lose access to hispo, at two dots you lose access to glabro."
+        },
+        {
+          "name": "Slow Shifter",
+          "cost": 2,
+          "desc": "Shifting now takes a full action in which you can do nothing but focus on shifting."
+        }
+      ]
     },
     "Substance Use": {
       "advantages": [],
@@ -201,6 +258,11 @@
           "name": "Moon-Quickened",
           "cost": 1,
           "desc": "Howl at the moon once per night to restore a point of superficial willpower."
+        },
+        {
+          "name": "Practiced Rite",
+          "cost": 2,
+          "desc": "Choose a rite you know, when leading it, ignore one brutal result treating it like a blank. You may take this multiple times."
         },
         {
           "name": "Moon-Riled",
@@ -259,12 +321,28 @@
     "Wild Heritage": {
       "advantages": [
         {
+          "name": "Tundra Wolf",
+          "cost": 1,
+          "desc": "Your bright white coat shows your frigid heritage. Halve all cold penalties."
+        },
+        {
+          "name": "Gray Wolf",
+          "cost": 2,
+          "desc": "A natural pack member, whenever you utilize teamwork assisted by two or more others gain an additional die to the test."
+        },
+        {
           "name": "Thick Hide",
           "cost": 3,
           "desc": "You are far more robust than other Garou. Your Health tracker equals 4 + your Stamina, rather than 3 + your Stamina."
         }
       ],
-      "flaws": []
+      "flaws": [
+        {
+          "name": "Distinctive Musk",
+          "cost": 1,
+          "desc": "Your scent is particularly strong, not unpleasant but uniquely yours. Any attempts to track or detect you are performed with a 2 die bonus."
+        }
+      ]
     }
   }
 }

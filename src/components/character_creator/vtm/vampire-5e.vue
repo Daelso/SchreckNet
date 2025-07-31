@@ -628,6 +628,7 @@ export default {
       zoomed: false,
       debug: false,
       saving: false,
+      discipline_flaw: false,
       homebrewDialog: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },

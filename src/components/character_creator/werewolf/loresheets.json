@@ -15,6 +15,13 @@
       "Reference": "SN 135"
     },
     {
+      "Name": "First Fortress",
+      "Type": "Place",
+      "Prerequisite": null,
+      "Description": "The First Fortress is a legendary, possibly mythical Garou stronghold that exists between the Umbra and the physical world. Protected by powerful spirits, it serves as a sanctuary, library, and meeting place, embodying the ancient glory of the Garou Nation.",
+      "Reference": "MLP 163"
+    },
+    {
       "Name": "Jonas Albrecht",
       "Type": "NPC",
       "Prerequisite": null,
@@ -57,6 +64,13 @@
       "Reference": "SN 139"
     },
     {
+      "Name": "Possessed Flesh",
+      "Type": "Spirit",
+      "Prerequisite": null,
+      "Description": "Garou are generally immune to spirit possession, but the rare Howling Insanity can possess them, leaving lasting effects even after being banished. Survivors of such possession carry an indelible mark and must work with their Storyteller to explore its impact.",
+      "Reference": "MLP 165"
+    },
+    {
       "Name": "Project Twilight",
       "Type": "NPC",
       "Prerequisite": null,
@@ -76,6 +90,13 @@
       "Prerequisite": null,
       "Description": "You have an interest in the Black Spiral and are able to understand some of it's many mysteries. You may also have contacts within the Black Spiral Dancer's. Perhaps, you may even be able to pull a Garou from the madness of the Wyrm.",
       "Reference": "WtA 299"
+    },
+    {
+      "Name": "The Moonlit Path",
+      "Type": "Path",
+      "Prerequisite": null,
+      "Description": "The Umbra is a chaotic and perilous realm where many Garou are lost forever, but a fortunate few survive, forever changed by their experience. These survivors share a common miracle: Luna's manifestation guided them safely home, granting them unique Gifts tied to the moon's phases.",
+      "Reference": "MLP 164"
     },
     {
       "Name": "The Skinner",

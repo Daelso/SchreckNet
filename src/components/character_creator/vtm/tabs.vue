@@ -1204,6 +1204,25 @@ export default defineComponent({
           case "Merits":
             arr = allMerits.Merits[this.meritCategory].advantages;
 
+            if (this.age.label !== "Ancillae") {
+              const advantages =
+                allMerits.Merits[this.meritCategory].advantages;
+              arr = advantages.filter((advantage) => !advantage.ancillaOnly);
+            }
+
+            if (
+              !this.disciplines ||
+              Object.keys(this.disciplines).length === 0 ||
+              Object.values(this.disciplines)
+                .filter((v) => typeof v === "number")
+                .every((level) => level < 3)
+            ) {
+              arr = arr.filter(
+                (merit) => merit.name !== "Ingrained Discipline"
+              );
+              console.log(arr);
+            }
+
             if (
               this.disciplines.Dominate === undefined ||
               this.disciplines.dominate < 1
@@ -1229,19 +1248,17 @@ export default defineComponent({
               this.clan === "Giovanni" ||
               this.clan === "Lamiae" ||
               this.clan === "Samedi" ||
-              this.clan === "Nagaraja"
+              this.clan === "Nagaraja" ||
+              this.clan === "Lasombra"
             ) {
               arr.forEach((merit, index) => {
-                if (merit.name === "Up All Night x2") {
+                if (
+                  merit.name === "Up All Night x2" ||
+                  merit.name === "Mystic of the Void"
+                ) {
                   arr.splice(index, 1);
                 }
               });
-            }
-
-            if (this.age.label !== "Ancillae") {
-              const advantages =
-                allMerits.Merits[this.meritCategory].advantages;
-              arr = advantages.filter((advantage) => !advantage.ancillaOnly);
             }
 
             break;

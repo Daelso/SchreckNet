@@ -255,11 +255,25 @@
       "Reference": "CbN 271"
     },
     {
+      "Name": "Descendant of the Ankou",
+      "Type": "Bloodline",
+      "Prerequisite": ["Malkavian"],
+      "Description": "A descendant of the Ankou, a figure who appeared throughout history as a vision of death. The Ankou was obsessed with spilling blood, visions and the vicious pursuit of death.",
+      "Reference": "Tattered Facade 171"
+    },
+    {
       "Name": "Descendant of Al-Ashrad",
       "Type": "Bloodline",
       "Prerequisite": ["Banu Haqim"],
       "Description": "A descendendant of the legendayr ur-Shulgi. Limitless potential for Blood Sorcery.",
       "Reference": "Blood Sigils 177"
+    },
+    {
+      "Name": "Descendant of Baron Vollgirre",
+      "Type": "Bloodline",
+      "Prerequisite": ["Toreador"],
+      "Description": "An icon of sadism, the Baron and his children are tireless in their purusit of inflicting pain and causing suffering. Your mere blood terrifies others of the clan of Roses.",
+      "Reference": "Tattered Facade 172"
     },
     {
       "Name": "Descendant of de Camden",

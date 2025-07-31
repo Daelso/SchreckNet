@@ -740,6 +740,22 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Inflame Desire":
+            if (
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Passion Leech":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Obeah":
             if (
               this.disciplines.Fortitude === undefined ||
@@ -772,10 +788,42 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Seclusion":
+            if (
+              this.disciplines.Dominate === undefined ||
+              this.disciplines.Dominate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Augury":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Doubletalk":
             if (
               this.disciplines.Auspex === undefined ||
               this.disciplines.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Haruspex":
+            if (
+              this.disciplines.Oblivion === undefined ||
+              this.disciplines.Oblivion < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Guise of the Departed":
+            if (
+              this.disciplines.Oblivion === undefined ||
+              this.disciplines.Oblivion < 1
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -809,6 +857,15 @@ export default defineComponent({
             if (
               this.disciplineSkillsObj.some((e) => e.skill !== "Mesmerize") ===
               false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Swarm":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Shapechange"
+              ) === false
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -1379,6 +1436,47 @@ export default defineComponent({
             if (
               this.disciplineSkillsObj.some(
                 (e) => e.skill !== "Aura of Decay"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Craft Flesh Golem":
+            if (
+              this.disciplineSkillsObj.every(
+                (e) =>
+                  e.skill === "Aura of Decay" || e.skill === "Necrotic Plague"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Bind to Mortal Form":
+            if (
+              this.disciplineSkillsObj.every(
+                (e) =>
+                  e.skill === "Skuld Fulfilled" || e.skill === "Necrotic Plague"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Gift of True Life":
+            if (
+              this.disciplineSkillsObj.every(
+                (e) =>
+                  e.skill === "Passion Feast" || e.skill === "Necrotic Plague"
+              ) === false
+            ) {
+              arr.splice(i, 1);
+            }
+            break;
+          case "Create Corpse Suit":
+            if (
+              this.disciplineSkillsObj.every(
+                (e) =>
+                  e.skill === "Shadow Perspective" ||
+                  e.skill === "Touch of Oblivion"
               ) === false
             ) {
               arr.splice(i, 1);

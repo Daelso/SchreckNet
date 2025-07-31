@@ -390,11 +390,22 @@
     "Mythic": {
       "advantages": [
         {
+          "name": "Ingrained Discipline",
+          "cost": 0,
+          "desc": "Expand your chosen discipline by 3 (8 slots total) at the cost of a debilitating drawback tied to that discipline."
+        },
+        {
           "name": "Object of Power",
           "cost": 1,
           "maxCost": 3,
           "desc": "You've acquired a rare object of power, 1 dot = 1 reroll per story, 2 dots = a grimoire that adds +1 die to all level 1 rituals, 3 dots = a premonition once per story that warns of harm.",
           "ancillaOnly": true
+        },
+        {
+          "name": "Mystic of the Void",
+          "cost": 1,
+          "maxCost": 2,
+          "desc": "Choose one Oblivion Power you do not know with a level equal to or less than your current dots in Oblivion. You count as knowing that Power for the purpose of prerequisites to learning Oblivion Ceremonies."
         },
         {
           "name": "Eat food",

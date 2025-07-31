@@ -2237,6 +2237,22 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Passion Leech":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Inflame Desire":
+            if (
+              this.finalDisciplineObj.Obfuscate === undefined ||
+              this.finalDisciplineObj.Obfuscate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Messenger's Command":
             if (
               this.skillsSelected.some(
@@ -2276,6 +2292,14 @@ export default defineComponent({
           case "Weaving":
             if (
               this.skillsSelected.some((e) => e.skill === "Rapid Reflexes") ===
+              false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Swarm":
+            if (
+              this.skillsSelected.some((e) => e.skill === "Shapechange") ===
               false
             ) {
               mergedOptions.splice(i, 1);

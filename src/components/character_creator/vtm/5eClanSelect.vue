@@ -1884,6 +1884,7 @@ export default defineComponent({
       return mergedOptions;
     },
 
+    //this is a fucking retarded way to do this but I'm too lazy to rewrite it into a sane loop
     disciplineOptions(data, points) {
       let mergedOptions = [];
       for (let i = 0; i < points; i++) {
@@ -1938,6 +1939,14 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Augury":
+            if (
+              this.finalDisciplineObj.Auspex === undefined ||
+              this.finalDisciplineObj.Auspex < 1
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -2003,6 +2012,14 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Haruspex":
+            if (
+              this.finalDisciplineObj.Oblivion === undefined ||
+              this.finalDisciplineObj.Oblivion < 1
             ) {
               mergedOptions.splice(i, 1);
             }
@@ -2200,6 +2217,22 @@ export default defineComponent({
             if (
               this.finalDisciplineObj.Auspex === undefined ||
               this.finalDisciplineObj.Auspex < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Guise of the Departed":
+            if (
+              this.finalDisciplineObj.Oblivion === undefined ||
+              this.finalDisciplineObj.Oblivion < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Seclusion":
+            if (
+              this.finalDisciplineObj.Dominate === undefined ||
+              this.finalDisciplineObj.Dominate < 1
             ) {
               mergedOptions.splice(i, 1);
             }

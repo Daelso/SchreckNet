@@ -1229,10 +1229,14 @@ export default defineComponent({
               this.clan === "Giovanni" ||
               this.clan === "Lamiae" ||
               this.clan === "Samedi" ||
-              this.clan === "Nagaraja"
+              this.clan === "Nagaraja" ||
+              this.clan === "Lasombra"
             ) {
               arr.forEach((merit, index) => {
-                if (merit.name === "Up All Night x2") {
+                if (
+                  merit.name === "Up All Night x2" ||
+                  merit.name === "Mystic of the Void"
+                ) {
                   arr.splice(index, 1);
                 }
               });

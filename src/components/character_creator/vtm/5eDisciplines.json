@@ -202,7 +202,13 @@
       "skills": [
         ["Fluent Strength", "Lethal Body", "Soaring Leap"],
         ["Prowess", "Relentless Grasp"],
-        ["Brutal Feed", "Spark of Rage", "Uncanny Grip", "Wrecker"],
+        [
+          "Brutal Feed",
+          "Exuberance",
+          "Spark of Rage",
+          "Uncanny Grip",
+          "Wrecker"
+        ],
         ["Draught of Might", "Crash Down"],
         ["Subtle Hammer", "Fist of Caine", "Earth Shock "]
       ]
@@ -218,10 +224,12 @@
           "Clear the Field",
           "Dread Gaze",
           "Entrancement",
+          "Passion Leech",
           "Thrown Voice",
           "True Love's Face"
         ],
         [
+          "Inflame Desire",
           "Irresistible Voice",
           "Magnum Opus",
           "Summon",
@@ -236,7 +244,7 @@
       "threat": 4,
       "resonance": "Animal Blood",
       "skills": [
-        ["Eyes of the Beast", "Weight of the Feather"],
+        ["Eyes of the Beast", "Squirm", "Weight of the Feather"],
         ["Feral Weapons", "Serpent's Kiss", "The False Sip", "Vicissitude"],
         ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
         ["Horrid Form", "Metamorphosis"],
@@ -245,6 +253,7 @@
           "One With the Land",
           "Master of Forms",
           "Mist Form",
+          "Swarm",
           "The Heart of Darkness",
           "The Unfettered Heart"
         ]

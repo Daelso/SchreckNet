@@ -740,6 +740,22 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Inflame Desire":
+            if (
+              this.disciplines.Obfuscate === undefined ||
+              this.disciplines.Obfuscate < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Passion Leech":
+            if (
+              this.disciplines.Auspex === undefined ||
+              this.disciplines.Auspex < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Obeah":
             if (
               this.disciplines.Fortitude === undefined ||
@@ -841,6 +857,15 @@ export default defineComponent({
             if (
               this.disciplineSkillsObj.some((e) => e.skill !== "Mesmerize") ===
               false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Swarm":
+            if (
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Shapechange"
+              ) === false
             ) {
               mergedOptions.splice(i, 1);
             }

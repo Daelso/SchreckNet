@@ -397,6 +397,12 @@
           "ancillaOnly": true
         },
         {
+          "name": "Mystic of the Void",
+          "cost": 1,
+          "maxCost": 2,
+          "desc": "Choose one Oblivion Power you do not know with a level equal to or less than your current dots in Oblivion. You count as knowing that Power for the purpose of prerequisites to learning Oblivion Ceremonies."
+        },
+        {
           "name": "Eat food",
           "cost": 2,
           "desc": "You can eat food, though it provides no nourishment and must be expelled before daysleep."

@@ -6,7 +6,13 @@
       "resonance": "Animal Blood",
       "skills": [
         ["Bond Famulus", "Sense the Beast"],
-        ["Feral Whispers", "Atavism", "Animal Messenger"],
+        [
+          "Animal Messenger",
+          "Atavism",
+          "Augury",
+          "Awaken the Parasite",
+          "Feral Whispers"
+        ],
         [
           "Animal Succulence",
           "Quell the Beast",
@@ -31,14 +37,15 @@
       "skills": [
         ["Heightened Senses", "Sense the Unseen"],
         [
-          "Premonition",
+          "Haruspex",
           "Obeah",
-          "Unerring Pursuit",
           "Panacea",
-          "Reveal Temperament"
+          "Premonition",
+          "Reveal Temperament",
+          "Unerring Pursuit"
         ],
-        ["Eyes of Beasts", "Scry the Soul", "Share the Senses", "Fatal Flaw"],
-        ["Spirit's Touch"],
+        ["Eyes of Beasts", "Fatal Flaw", "Scry the Soul", "Share the Senses"],
+        ["Heart Laid Bare", "Spirit's Touch"],
         ["Unburdening the Bestial Soul"]
       ]
     },
@@ -60,7 +67,7 @@
           "Scorpion's Touch",
           "Transitive Bond"
         ],
-        ["Blood Aegis", "Theft of Vitae"],
+        ["Blood Aegis", "Fulminating Vitae", "Marionette", "Theft of Vitae"],
         ["Baal's Caress", "Cauldron of Blood", "Reclamation of Vitae"]
       ]
     },
@@ -71,7 +78,7 @@
       "skills": [
         ["Cat's Grace", "Fluent Swiftness", "Rapid Reflexes"],
         ["Fleetness", "Rush Job"],
-        ["Blink", "Traversal", "Weaving"],
+        ["A Thousand Cuts", "Blink", "Traversal", "Weaving"],
         [
           "Draught of Elegance",
           "Unerring Aim",
@@ -87,7 +94,7 @@
       "resonance": "Phlegmatic",
       "skills": [
         ["Cloud Memory", "Compel", "Slavish Devotion"],
-        ["Mesmerize", "Dementation", "Domitor's Favor"],
+        ["Mesmerize", "Dementation", "Domitor's Favor", "The Stolen Voice"],
         ["The Forgetful Mind", "Submerged Directive"],
         [
           "Ancestral Dominion",
@@ -112,13 +119,14 @@
           "Invigorating Vitae"
         ],
         [
+          "Calloused Soul",
           "Defy Bane",
           "Fortify the Inner Facade",
           "Seal the Beast's Maw",
           "Valeren"
         ],
         ["Draught of Endurance", "Shatter", "Gorgon's Scales"],
-        ["Flesh of Marble", "Prowess from Pain"]
+        ["Flesh of Marble", "Meat Shields", "Prowess from Pain"]
       ]
     },
     "Obfuscate": {
@@ -139,12 +147,13 @@
         [
           "Fata Morgana",
           "Ghost in the Machine",
+          "Guise of the Departed",
           "Mask of a Thousand Faces",
           "Mask of Isolation",
           "Mental Maze",
           "Mind Masque"
         ],
-        ["Conceal", "Vanish"],
+        ["Conceal", "Seclusion", "Vanish"],
         ["Cloak the Gathering", "Imposter's Guise"]
       ]
     },
@@ -171,10 +180,16 @@
           "Shadow Perspective",
           "Touch of Oblivion"
         ],
-        ["Necrotic Plague", "Stygian Shroud", "Umbrous Clutch"],
+        [
+          "Necrotic Plague",
+          "Profane the Sanctified",
+          "Stygian Shroud",
+          "Umbrous Clutch"
+        ],
         [
           "Shadow Step",
           "Skuld Fulfilled",
+          "The Darkness Within",
           "Tenebrous Avatar",
           "Withering Spirit "
         ]

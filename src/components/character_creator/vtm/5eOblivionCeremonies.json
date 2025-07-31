@@ -47,6 +47,14 @@
     ],
     [
       {
+        "name": "Craft Flesh Golem",
+        "description": "Allows you to create a flesh golem from corpse parts."
+      },
+      {
+        "name": "Create Corpse Suit",
+        "description": "Create a semi-sentient pair of human-skin pants that will warn you of danger and ill-will."
+      },
+      {
         "name": "Fortezza Sindonica",
         "description": "Create a barrier that harms wraiths."
       },
@@ -85,6 +93,10 @@
         "description": "Turn a mortal's blood into poison for other vampires."
       },
       {
+        "name": "Bind to Mortal Form",
+        "description": "Allow a mortal to live on well-past the age they should without ghouling them."
+      },
+      {
         "name": "Bind the Spirit",
         "description": "Bind a wraith to a specific location or person."
       },
@@ -101,6 +113,10 @@
       {
         "name": "Ex Nihilo",
         "description": "Enter the Shadowlands."
+      },
+      {
+        "name": "Gift of True Life",
+        "description": "Transfer life from one mortal to another, prolonging the life of one while shortening the other."
       },
       {
         "name": "Lazarene Blessing",

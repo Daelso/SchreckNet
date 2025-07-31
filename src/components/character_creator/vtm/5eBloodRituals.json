@@ -159,6 +159,10 @@
     ],
     [
       {
+        "name": "Aapilu Awakening",
+        "description": "This ritual is used to awaken or summon a specific Aapilu spirit."
+      },
+      {
         "name": "Bladed Hands",
         "description": "Physically sharpens the caster's hands."
       },
@@ -210,6 +214,10 @@
       {
         "name": "Gentle Mind",
         "description": "Increases the frenzy resistance of the target's mind."
+      },
+      {
+        "name": "Grim Chrysalis",
+        "description": "Produce a large quantity of bloody keratin spit which forms a protective cocoon around you."
       },
       {
         "name": "Haunted House",
@@ -278,6 +286,10 @@
       }
     ],
     [
+      {
+        "name": "The Balm of Bathory",
+        "description": "The sorcerer creates a lotion or balm from the blood of a young mortal allowing them to appear temporarily decades younger and more perfect."
+      },
       {
         "name": "Compel the Inanimate",
         "description": "Issue a SIMPLE order that will be followed by an inanimate object (Fall over, erase data, crash)."

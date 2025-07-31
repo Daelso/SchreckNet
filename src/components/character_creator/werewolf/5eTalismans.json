@@ -18,6 +18,35 @@
       ],
       "flaws": []
     },
+    "Death's Head Brooch": {
+      "advantages": [
+        {
+          "name": "Death's Head Brooch (Talen)",
+          "desc": "A bejeweled trinket that makes the wearer appear as one of the undead, undetectable by Leeches. The wearer appears pallid, cool to the touch, heartless, and breathless, with blood that tastes and smells like the undead. It does not grant powers or weaknesses, only the appearance.",
+          "cost": 1,
+          "single_use": true
+        },
+        {
+          "name": "Death's Head Brooch (Talisman)",
+          "desc": "A bejeweled trinket that makes the wearer appear as one of the undead, undetectable by Leeches. The wearer appears pallid, cool to the touch, heartless, and breathless, with blood that tastes and smells like the undead. It does not grant powers or weaknesses, only the appearance.",
+          "cost": 2,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Electric Camouflage": {
+      "advantages": [
+        {
+          "name": "Electric Camouflage (Talen)",
+          "desc": "An ointment made of silver dust, riverbed clay, and oils applied to the face that blurs the wearer's visage from electronic records until sunrise. If the wearer shifts into Crinos under the effect, they take Aggravated damage from the silver.",
+          "cost": 3,
+          "single_use": true
+        }
+      ],
+      "flaws": []
+    },
+
     "Gaia's Tear": {
       "advantages": [
         {
@@ -29,6 +58,18 @@
       ],
       "flaws": []
     },
+    "Grand Klaive": {
+      "advantages": [
+        {
+          "name": "Grand Klaive (Talisman)",
+          "desc": "A massive silver sword bound with two spirits—a war spirit and another that grants additional effects like fire, frost, electricity, or Willpower damage. Requires a Rage Check when wielded; on failure, the wielder loses a point of Rage and drops the blade. Deals +3 silver-based Aggravated Health damage and can be used in homid or glabro form.",
+          "cost": 5,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+
     "Hammer of King Brennus": {
       "advantages": [
         {
@@ -107,6 +148,29 @@
       ],
       "flaws": []
     },
+    "Shadow Mirror": {
+      "advantages": [
+        {
+          "name": "Shadow Mirror (Talisman)",
+          "desc": "A glass mirror that reveals spirits, invisible creatures, and the true nature of beings for one scene when the user spends one Willpower. If the bound spirit acts independently, its attempts appear in the mirror. Grants a two-dice bonus when used with the Augur Gift.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Spider Box": {
+      "advantages": [
+        {
+          "name": "Spider Box (Talisman)",
+          "desc": "A pair of Weaver-spirits bound to communication devices that create an open channel between realities, allowing packmates to communicate across the Gauntlet. The boxes only work when separated by the Gauntlet and always come in pairs.",
+          "cost": 2,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+
     "Spirit Catcher": {
       "advantages": [
         {
@@ -124,6 +188,35 @@
       ],
       "flaws": []
     },
+    "Spirit Prison": {
+      "advantages": [
+        {
+          "name": "Spirit Prison (Gaffling)",
+          "desc": "A wish-granting item (often shaped like an oil lamp, ring, or jug) that can summon a bound spirit up to three times to perform tasks within its means. The owner spends one Willpower to summon the spirit, which carries out the task and returns until all wishes are used. The spirit may misinterpret commands intentionally.",
+          "cost": 2,
+          "single_use": true
+        },
+        {
+          "name": "Spirit Prison (Jaggling)",
+          "desc": "A wish-granting item (often shaped like an oil lamp, ring, or jug) that can summon a bound spirit up to three times to perform tasks within its means. The owner spends one Willpower to summon the spirit, which carries out the task and returns until all wishes are used. The spirit may misinterpret commands intentionally.",
+          "cost": 3,
+          "single_use": false
+        }
+      ],
+      "flaws": []
+    },
+    "Umbral Dust": {
+      "advantages": [
+        {
+          "name": "Umbral Dust",
+          "desc": "A chalky paste that, when applied to palms, eyelids, and feet, grants a one-die bonus to tests for the Rite of Shadow Passage. Highly valued by urban packs for facilitating entry into the Umbra.",
+          "cost": 1,
+          "single_use": true
+        }
+      ],
+      "flaws": []
+    },
+
     "Wind Whistle": {
       "advantages": [
         {
@@ -141,6 +234,18 @@
       ],
       "flaws": []
     },
+    "Wolf Musk": {
+      "advantages": [
+        {
+          "name": "Wolf Musk",
+          "desc": "A colorless liquid sprayed on two targets to swap their scents until one washes, allowing Garou to lay false trails or misdirect hunters.",
+          "cost": 1,
+          "single_use": true
+        }
+      ],
+      "flaws": []
+    },
+
     "Wyrm-Tainted Talismans": {
       "advantages": [
         {

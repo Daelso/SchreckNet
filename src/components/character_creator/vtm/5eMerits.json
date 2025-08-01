@@ -390,11 +390,6 @@
     "Mythic": {
       "advantages": [
         {
-          "name": "Ingrained Discipline",
-          "cost": 0,
-          "desc": "Expand your chosen discipline by 3 (8 slots total) at the cost of a debilitating drawback tied to that discipline."
-        },
-        {
           "name": "Object of Power",
           "cost": 1,
           "maxCost": 3,
@@ -435,6 +430,11 @@
         }
       ],
       "flaws": [
+        {
+          "name": "Ingrained Discipline",
+          "cost": 0,
+          "desc": "Expand your chosen discipline by 3 (8 slots total) at the cost of a debilitating drawback tied to that discipline."
+        },
         {
           "name": "Cursed Object",
           "cost": 1,

@@ -896,6 +896,7 @@ export default defineComponent({
     "edit",
     "altAncilla",
     "imgLink",
+    "discipline_flaw",
   ],
   emits: [
     "update:specialtiePoints",
@@ -910,6 +911,7 @@ export default defineComponent({
     "update:thinFlaws",
     "update:disciplineSkills",
     "update:xp",
+    "update:discipline_flaw",
     "update:specialties",
     "update:convictions",
     "update:touchstones",
@@ -950,6 +952,7 @@ export default defineComponent({
       tabArchetype: props.archetype,
       thinClanBane: "",
       filteredOptions: [],
+      tab_discipline_flaw: props.discipline_flaw,
       cultInput: this.cult,
       convictionInput: "",
       touchStoneInput: "",
@@ -1208,19 +1211,6 @@ export default defineComponent({
               const advantages =
                 allMerits.Merits[this.meritCategory].advantages;
               arr = advantages.filter((advantage) => !advantage.ancillaOnly);
-            }
-
-            if (
-              !this.disciplines ||
-              Object.keys(this.disciplines).length === 0 ||
-              Object.values(this.disciplines)
-                .filter((v) => typeof v === "number")
-                .every((level) => level < 3)
-            ) {
-              arr = arr.filter(
-                (merit) => merit.name !== "Ingrained Discipline"
-              );
-              console.log(arr);
             }
 
             if (
@@ -1714,6 +1704,7 @@ export default defineComponent({
         //true represents an advantage, false a flaw
         if (this.canPurchase(true) === true) {
           this.sortAdvantageChoice(this.advFlawChoice, true);
+
           this.clearFields();
         }
       }
@@ -1725,6 +1716,10 @@ export default defineComponent({
         }
         if (this.canPurchase(false) === true) {
           this.sortAdvantageChoice(this.advFlawChoice, false);
+          if (this.advFlawChoice.name === "Ingrained Discipline") {
+            this.tab_discipline_flaw = true;
+            this.$emit("update:discipline_flaw", this.tab_discipline_flaw);
+          }
           this.clearFields();
         }
       }

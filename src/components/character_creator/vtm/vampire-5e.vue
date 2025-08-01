@@ -4,7 +4,7 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          <p>Vampire: the Masquerade</p>
+          <p>Vampire: the Masquerade disc flaw: {{ discipline_flaw }}</p>
           <div v-if="imgLink">
             <q-img
               :src="imgLink"
@@ -476,6 +476,41 @@
               >
             </q-item-section>
           </q-item>
+          <q-item
+            v-if="this.discipline_flaw"
+            clickable
+            @click="manageDisciplineFlaw()"
+            :disable="
+              (!this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone ||
+                !this.discipline_flaw) &&
+              this.debug !== true
+            "
+          >
+            <q-tooltip
+              v-if="
+                !this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone ||
+                !this.discipline_flaw
+              "
+              class="bg-dark text-body2"
+              >Please set valid base attributes, skills and complete your
+              clan/discipline section.</q-tooltip
+            >
+            <q-item-section avatar>
+              <q-icon color="secondary" name="edit_attributes" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Manage Ingrained Discipline</q-item-label>
+              <q-item-label caption class="text-white"
+                >Select your discipline, flaw and purchase new
+                powers</q-item-label
+              >
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-card>
       <tabs
@@ -496,6 +531,7 @@
         v-model:imgLink="imgLink"
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
+        v-model:discipline_flaw="discipline_flaw"
         v-model:tab="tab"
         v-model:disciplines="disciplines"
         v-model:disciplineSkills="this.disciplineSkills"
@@ -590,6 +626,7 @@ import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";
 import attributes from "../vtm/5eAttributes.vue";
+import manageDisciplineFlaw from "../vtm/manageDisciplineFlaw.vue";
 import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
@@ -626,9 +663,9 @@ export default {
   data() {
     return {
       zoomed: false,
-      debug: false,
+      debug: true,
       saving: false,
-      discipline_flaw: false,
+      discipline_flaw: true,
       homebrewDialog: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },
@@ -1063,6 +1100,29 @@ export default {
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
+        });
+    },
+    manageDisciplineFlaw() {
+      this.$q
+        .dialog({
+          component: manageDisciplineFlaw,
+          persistent: true,
+          componentProps: {
+            info: {
+              clan: this.clan,
+              edit: this.edit,
+              disciplines: this.disciplines,
+              disciplineSkills: this.disciplineSkills,
+              advantagesObj: this.advantagesObj,
+              xp: this.xp,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.xp = data.xp;
+          this.advantagesObj = data.advantagesObj;
+          this.disciplines = data.disciplines;
+          this.disciplineSkills = data.disciplineSkillsObj;
         });
     },
     addModifiers() {

@@ -431,11 +431,6 @@
       ],
       "flaws": [
         {
-          "name": "Ingrained Discipline",
-          "cost": 0,
-          "desc": "Expand your chosen discipline by 3 (8 slots total) at the cost of a debilitating drawback tied to that discipline."
-        },
-        {
           "name": "Cursed Object",
           "cost": 1,
           "desc": "Something you own wants you dead. Once per session, at a time determined by the Storyteller, you must reroll a successful test, risking failure instead.",

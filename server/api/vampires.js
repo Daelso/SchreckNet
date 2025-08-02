@@ -55,6 +55,7 @@ router.route("/new").post(async (req, res) => {
       created_by: currentUser,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      dark_discipline: req.body.dark_discipline,
     });
 
     return res.status(200).json(newKindred.id);
@@ -147,6 +148,7 @@ router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
       created_by: kindred.created_by,
       createdAt: kindred.createdAt,
       updatedAt: Date.now(),
+      dark_discipline: req.body.dark_discipline,
     });
 
     return res.status(200).send("Kindred updated!");

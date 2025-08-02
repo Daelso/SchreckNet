@@ -375,17 +375,39 @@
         </div>
 
         <template v-slot:action>
-          <q-btn
-            flat
-            label="Update Character"
-            type="submit"
-            color="white"
-            :disable="this.saveGuard()"
-            @click="onSubmit()"
-          />
-          <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">{{
-            this.disableBlurb
-          }}</q-tooltip>
+          <div class="row items-center justify-between full-width">
+            <!-- Left-aligned checkbox -->
+            <q-checkbox
+              v-model="discipline_flaw"
+              label="Use Ingrained Discipline Flaw"
+              color="primary"
+              class="text-white"
+              dense
+            >
+              <q-tooltip
+                class="bg-dark text-body2"
+                style="max-width: 250px; white-space: normal"
+              >
+                This will allow you to take an ingrained discipline flaw,
+                expanding your maximum disciplines from 5 to 8. REQUIRES ST
+                APPROVAL
+              </q-tooltip>
+            </q-checkbox>
+
+            <!-- Right-aligned save button -->
+            <q-btn
+              :disable="this.saveGuard()"
+              flat
+              label="Update Character"
+              type="submit"
+              color="white"
+              @click="onSubmit()"
+            >
+              <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">
+                {{ this.disableBlurb }}
+              </q-tooltip>
+            </q-btn>
+          </div>
         </template>
       </q-banner>
     </div>
@@ -468,6 +490,41 @@
               <q-item-label caption class="text-white"
                 >Upgrade your abilities by spending your remaining
                 xp</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+          <q-item
+            v-if="this.discipline_flaw"
+            clickable
+            @click="manageDisciplineFlaw()"
+            :disable="
+              (!this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone ||
+                !this.discipline_flaw) &&
+              this.debug !== true
+            "
+          >
+            <q-tooltip
+              v-if="
+                !this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone ||
+                !this.discipline_flaw
+              "
+              class="bg-dark text-body2"
+              >Please set valid base attributes, skills and complete your
+              clan/discipline section.</q-tooltip
+            >
+            <q-item-section avatar>
+              <q-icon color="secondary" name="edit_attributes" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Manage Ingrained Discipline</q-item-label>
+              <q-item-label caption class="text-white"
+                >Select your discipline, flaw and purchase new
+                powers</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -607,6 +664,7 @@ import { useMeta } from "quasar";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 import notFound from "../../../pages/ErrorNotFound.vue";
+import manageDisciplineFlaw from "../vtm/manageDisciplineFlaw.vue";
 
 const metaData = {
   title: "SchreckNet",
@@ -676,6 +734,8 @@ export default {
     return {
       zoomed: false,
       debug: false,
+      discipline_flaw: this.kindred.dark_discipline,
+
       saving: false,
       imgLink: this.kindred.image_link,
       advantagesObj: this.kindred.advantages,
@@ -846,6 +906,32 @@ export default {
         return false;
       }
     },
+    manageDisciplineFlaw() {
+      this.$q
+        .dialog({
+          component: manageDisciplineFlaw,
+          persistent: true,
+          componentProps: {
+            info: {
+              edit: this.edit,
+              disciplines: this.disciplines,
+              disciplineSkills: this.disciplineSkills,
+              advantagesObj: this.advantagesObj,
+              xp: this.xp,
+              discipline_flaw: this.discipline_flaw,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.xp = data.xp;
+          this.disciplines = data.disciplines;
+          this.disciplineSkills = data.disciplineSkillsObj;
+          this.advantagesObj = data.advantagesObj;
+        })
+        .onDismiss((data) => {
+          this.discipline_flaw = data.discipline_flaw;
+        });
+    },
     onSubmit() {
       if (this.saving === true) {
         this.$q.notify({
@@ -904,6 +990,7 @@ export default {
         advantages: this.advantagesObj,
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
+        dark_discipline: this.discipline_flaw,
       };
       this.$api
         .put("/vampires/vampire/edit/" + this.kindred.id, character, {

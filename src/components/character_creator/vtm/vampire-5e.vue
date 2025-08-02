@@ -4,7 +4,7 @@
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
-          <p>Vampire: the Masquerade disc flaw: {{ discipline_flaw }}</p>
+          <p>Vampire: the Masquerade</p>
           <div v-if="imgLink">
             <q-img
               :src="imgLink"
@@ -383,16 +383,38 @@
         </q-dialog>
 
         <template v-slot:action>
-          <q-btn
-            :disable="this.saveGuard()"
-            flat
-            label="Save Character"
-            type="submit"
-            color="white"
-          />
-          <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">{{
-            this.disableBlurb
-          }}</q-tooltip>
+          <div class="row items-center justify-between full-width">
+            <!-- Left-aligned checkbox -->
+            <q-checkbox
+              v-model="discipline_flaw"
+              label="Use Ingrained Discipline Flaw"
+              color="primary"
+              class="text-white"
+              dense
+            >
+              <q-tooltip
+                class="bg-dark text-body2"
+                style="max-width: 250px; white-space: normal"
+              >
+                This will allow you to take an ingrained discipline flaw,
+                expanding your maximum disciplines from 5 to 8. REQUIRES ST
+                APPROVAL
+              </q-tooltip>
+            </q-checkbox>
+
+            <!-- Right-aligned save button -->
+            <q-btn
+              :disable="this.saveGuard()"
+              flat
+              label="Save Character"
+              type="submit"
+              color="white"
+            >
+              <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">
+                {{ this.disableBlurb }}
+              </q-tooltip>
+            </q-btn>
+          </div>
         </template>
       </q-banner>
     </div>
@@ -911,6 +933,7 @@ export default {
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
         homebrew: this.debug,
+        dark_discipline: this.discipline_flaw,
       };
 
       this.$api

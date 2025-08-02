@@ -191,7 +191,7 @@ export default defineComponent({
     },
     onCancelClick() {
       this.$emit("cancel");
-      this.$refs.dialogRef.hide(); // assuming you set ref="dialogRef"
+      this.$refs.dialogRef.hide();
     },
     choose_a_disc() {
       console.log(this.selected_disc);

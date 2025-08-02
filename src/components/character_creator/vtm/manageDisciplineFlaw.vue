@@ -244,6 +244,7 @@ export default defineComponent({
   },
   methods: {
     clear_fields() {
+      this.refundXp();
       this.chosen_discs = [];
       this.xp_to_spend = 15;
       this.selected_disc = "";
@@ -271,7 +272,7 @@ export default defineComponent({
     },
 
     choose_a_disc() {
-      const can_afford = this.local_xp - this.selected_disc.cost > 0;
+      const can_afford = this.local_xp - this.selected_disc.cost >= 0;
       if (!can_afford) {
         this.$q.notify({
           message: "You do not have enough XP to purchase this discipline yet!",

@@ -1,18 +1,25 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
-    <q-card class="q-pa-md bg-dark">
-      <q-card-section>
+    <q-card
+      class="q-pa-sm bg-dark text-white"
+      style="max-width: 600px; width: 95vw; max-height: 90vh"
+    >
+      <q-card-section class="q-pa-sm">
         <div class="text-h6">Select an Ingrained Discipline</div>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-section class="q-pa-none scroll" style="max-height: 60vh">
         <q-expansion-item
-          label="Blunt Ingrained Discipline (Example)"
           expand-icon="expand_more"
           default-opened
-          class="bg-grey-10 text-white rounded-borders shadow-2 q-mb-md"
+          class="bg-grey-10 text-white rounded-borders q-mb-md"
           header-class="bg-grey-9 text-white"
         >
           <!-- Custom icon slot -->
           <template v-slot:header>
-            <div class="row items-center q-gutter-sm">
+            <div class="row items-center q-gutter-sm q-pa-sm">
               <img
                 :src="nosImage"
                 alt="Nosferatu"
@@ -25,13 +32,15 @@
               </div>
             </div>
           </template>
-          <div class="q-pa-md">
+
+          <div class="q-pa-sm">
             <p class="q-mb-md">
               <strong>What's that?</strong> An ingrained discipline allows you
               to take up to 3 more discipline powers above the normal cap of 5.
-              With this extra power comes a flaw. It is suggested that you
-              already have 3 dots in a discipline <em>and</em> Storyteller
-              approval before selecting this option.
+              With this extra power comes a flaw. Select one of your disciplines
+              below to see what awaits you. It is suggested that you already
+              have 3 dots in a discipline <em>and</em> Storyteller approval
+              before selecting this option.
             </p>
 
             <q-separator size="1px" color="red" class="q-my-md" />
@@ -51,9 +60,62 @@
           </div>
         </q-expansion-item>
       </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn flat label="OK" color="white" @click="onOKClick" />
+      <q-card-section class="q-pa-none scroll">
+        <div>
+          <q-select
+            v-model="ingrained_disc"
+            color="secondary"
+            label="Select your discipline"
+            popup-content-style="background-color:#222831; color:white"
+            :options="disciplineOptions"
+            bg-color="grey-3"
+            filled
+            emit-value
+            style="margin-bottom: 20px; width: 100%"
+            class="select"
+            label-color="primary"
+            @update:model-value="clear_fields()"
+          />
+        </div>
+        <div v-if="ingrained_disc">
+          <div class="text-subtitle1">
+            Ingrained {{ ingrained_disc }} Flaw:
+            {{ disc_flaws[ingrained_disc].name }}
+          </div>
+          <div>
+            {{ disc_flaws[ingrained_disc].description }}
+          </div>
+          <div class="q-my-md text-subtitle1">
+            Ingrained Discipline XP Cap Remaining: {{ this.xp_to_spend }}
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section
+        class="q-pa-none q-my-md scroll"
+        v-if="this.ingrained_disc"
+      >
+        <div>
+          <q-select
+            v-model="selected_disc"
+            color="secondary"
+            label="Select your discipline power"
+            popup-content-style="background-color:#222831; color:white"
+            :options="powerOptions"
+            map-options
+            option-label="full_name"
+            bg-color="grey-3"
+            filled
+            style="margin-bottom: 20px; width: 100%"
+            class="select"
+            label-color="primary"
+          />
+        </div>
+      </q-card-section>
+      <q-card-actions class="q-pa-sm">
+        <div class="row full-width justify-between items-center">
+          <q-btn flat label="Cancel" color="white" @click="onCancelClick()" />
+          <q-btn flat label="Confirm" color="white" @click="onOKClick()" />
+        </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -64,6 +126,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import disc_flaws from "../vtm/5eDisciplineFlaws.json";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
+import disciplines from "./5eDisciplines.json";
 
 export default defineComponent({
   name: "ManageDisciplineFlaw",
@@ -71,7 +134,18 @@ export default defineComponent({
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   created() {
-    console.log(this.disc_flaws);
+    this.my_discs = this.info.disciplines;
+    this.my_disc_skills = this.info.disciplineSkills;
+    this.local_advantages = this.info.advantagesObj;
+    console.log(this.my_disc_skills);
+    console.log(this.local_advantages);
+
+    this.disciplineOptions = Object.entries(this.my_discs).map(
+      ([key, value]) => ({
+        label: key,
+        value: key,
+      })
+    );
   },
   setup(props, { emit }) {
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
@@ -79,22 +153,79 @@ export default defineComponent({
 
     return {
       emit,
-      onCancelClick: onDialogCancel,
+
       dialogRef,
       onDialogHide,
       onOKClick() {
         onDialogOK({
-          advantages: advantagePoints,
-          disciplines: disciplines,
-          disciplineSkillsObj: disciplineSkillsObj,
-          potency: potency,
-          xp: localXP,
+          disciplines: my_discs,
+          disciplineSkillsObj: my_disc_skills,
+          xp: local_xp,
+          advantagesObj: local_advantages,
         });
       },
     };
   },
   data() {
-    return { disc_flaws, nosImage };
+    return {
+      disc_flaws,
+      nosImage,
+      disciplines: disciplines.Disciplines,
+      my_discs: null,
+      my_disc_skills: null,
+      selected_disc: "",
+      ingrained_disc: "",
+      disciplineOptions: [],
+      chosen_discs: [],
+      xp_to_spend: 15,
+      local_xp: this.info.xp,
+      local_advantages: null,
+    };
+  },
+  methods: {
+    clear_fields() {
+      this.chosen_discs = [];
+      this.xp_to_spend = 15;
+    },
+    onCancelClick() {
+      this.$emit("cancel");
+      this.$refs.dialogRef.hide(); // assuming you set ref="dialogRef"
+    },
+  },
+  computed: {
+    powerOptions() {
+      const selectedDiscipline = this.disciplines[this.ingrained_disc];
+      if (!selectedDiscipline) return [];
+
+      const skills = selectedDiscipline.skills;
+
+      const xp = this.xp_to_spend;
+      const skillLevels = {
+        5: [0],
+        10: [0, 1],
+        15: [0, 1, 2],
+      };
+
+      const indexes = skillLevels[xp] || [];
+
+      const options = [];
+
+      indexes.forEach((levelIdx) => {
+        const levelSkills = skills[levelIdx] || [];
+        const cost = (levelIdx + 1) * 5;
+        levelSkills.forEach((skill) => {
+          options.push({
+            skill,
+            discipline: this.ingrained_disc,
+            dark_disc: true,
+            cost: cost,
+            full_name: `${skill} - (${cost} xp)`,
+          });
+        });
+      });
+
+      return options;
+    },
   },
 });
 </script>

@@ -1109,20 +1109,23 @@ export default {
           persistent: true,
           componentProps: {
             info: {
-              clan: this.clan,
               edit: this.edit,
               disciplines: this.disciplines,
               disciplineSkills: this.disciplineSkills,
               advantagesObj: this.advantagesObj,
               xp: this.xp,
+              discipline_flaw: this.discipline_flaw,
             },
           },
         })
         .onOk((data) => {
           this.xp = data.xp;
-          this.advantagesObj = data.advantagesObj;
           this.disciplines = data.disciplines;
           this.disciplineSkills = data.disciplineSkillsObj;
+          this.advantagesObj = data.advantagesObj;
+        })
+        .onDismiss(() => {
+          this.discipline_flaw = false;
         });
     },
     addModifiers() {

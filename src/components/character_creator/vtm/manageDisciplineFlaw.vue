@@ -40,7 +40,7 @@
               With this extra power comes a flaw. Select one of your disciplines
               below to see what awaits you. It is suggested that you already
               have 3 dots in a discipline <em>and</em> Storyteller approval
-              before selecting this option.
+              before selecting this option. You may only select one discipline.
             </p>
 
             <q-separator size="1px" color="red" class="q-my-md" />
@@ -111,6 +111,49 @@
             @update:model-value="choose_a_disc()"
           />
         </div>
+      </q-card-section>
+      <q-card-section
+        class="q-pa-none q-my-md scroll"
+        v-if="this.ingrained_disc && chosen_discs.length > 0"
+      >
+        <q-card class="q-pa-md bg-grey-10 text-white shadow-2">
+          <div class="row items-center justify-between q-mb-sm">
+            <div class="text-subtitle1 text-bold">Chosen Discipline Powers</div>
+            <q-btn
+              flat
+              dense
+              color="red"
+              icon="restart_alt"
+              label="Reset"
+              @click="resetChosenDiscs"
+            />
+          </div>
+
+          <q-separator color="white" class="q-my-sm" />
+
+          <div v-if="chosen_discs.length > 0" class="q-mt-sm">
+            <q-list dense bordered class="rounded-borders bg-grey-9">
+              <q-item
+                v-for="(disc, index) in chosen_discs"
+                :key="index"
+                class="q-py-sm q-mb-xs"
+              >
+                <q-item-section>
+                  <q-item-label class="text-white">
+                    {{ disc.skill }}
+                  </q-item-label>
+                  <q-item-label caption class="text-grey-4">
+                    {{ disc.discipline }} — {{ disc.cost }} XP
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </div>
+
+          <div v-else class="q-mt-sm text-italic text-grey-5">
+            No disciplines selected yet.
+          </div>
+        </q-card>
       </q-card-section>
       <q-card-actions class="q-pa-sm">
         <div class="row full-width justify-between items-center">
@@ -199,6 +242,10 @@ export default defineComponent({
       console.log(this.chosen_discs);
       this.xp_to_spend = this.xp_to_spend - this.selected_disc.cost;
       this.selected_disc = "";
+    },
+    resetChosenDiscs() {
+      this.chosen_discs = [];
+      this.xp_to_spend = 15;
     },
   },
   computed: {

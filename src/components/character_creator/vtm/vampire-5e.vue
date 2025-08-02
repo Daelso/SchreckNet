@@ -383,16 +383,38 @@
         </q-dialog>
 
         <template v-slot:action>
-          <q-btn
-            :disable="this.saveGuard()"
-            flat
-            label="Save Character"
-            type="submit"
-            color="white"
-          />
-          <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">{{
-            this.disableBlurb
-          }}</q-tooltip>
+          <div class="row items-center justify-between full-width">
+            <!-- Left-aligned checkbox -->
+            <q-checkbox
+              v-model="discipline_flaw"
+              label="Use Ingrained Discipline Flaw"
+              color="primary"
+              class="text-white"
+              dense
+            >
+              <q-tooltip
+                class="bg-dark text-body2"
+                style="max-width: 250px; white-space: normal"
+              >
+                This will allow you to take an ingrained discipline flaw,
+                expanding your maximum disciplines from 5 to 8. REQUIRES ST
+                APPROVAL
+              </q-tooltip>
+            </q-checkbox>
+
+            <!-- Right-aligned save button -->
+            <q-btn
+              :disable="this.saveGuard()"
+              flat
+              label="Save Character"
+              type="submit"
+              color="white"
+            >
+              <q-tooltip v-if="this.saveGuard()" class="bg-dark text-body2">
+                {{ this.disableBlurb }}
+              </q-tooltip>
+            </q-btn>
+          </div>
         </template>
       </q-banner>
     </div>
@@ -476,6 +498,41 @@
               >
             </q-item-section>
           </q-item>
+          <q-item
+            v-if="this.discipline_flaw"
+            clickable
+            @click="manageDisciplineFlaw()"
+            :disable="
+              (!this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone ||
+                !this.discipline_flaw) &&
+              this.debug !== true
+            "
+          >
+            <q-tooltip
+              v-if="
+                !this.skillsDone ||
+                !this.attributesDone ||
+                !this.disciplinesDone ||
+                !this.discipline_flaw
+              "
+              class="bg-dark text-body2"
+              >Please set valid base attributes, skills and complete your
+              clan/discipline section.</q-tooltip
+            >
+            <q-item-section avatar>
+              <q-icon color="secondary" name="edit_attributes" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>Manage Ingrained Discipline</q-item-label>
+              <q-item-label caption class="text-white"
+                >Select your discipline, flaw and purchase new
+                powers</q-item-label
+              >
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-card>
       <tabs
@@ -496,6 +553,7 @@
         v-model:imgLink="imgLink"
         v-model:advantagesObj="advantagesObj"
         v-model:cult="cult"
+        v-model:discipline_flaw="discipline_flaw"
         v-model:tab="tab"
         v-model:disciplines="disciplines"
         v-model:disciplineSkills="this.disciplineSkills"
@@ -590,6 +648,7 @@ import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
 import spendXp from "../vtm/spendXp.vue";
 import attributes from "../vtm/5eAttributes.vue";
+import manageDisciplineFlaw from "../vtm/manageDisciplineFlaw.vue";
 import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
@@ -874,6 +933,7 @@ export default {
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
         homebrew: this.debug,
+        dark_discipline: this.discipline_flaw,
       };
 
       this.$api
@@ -1063,6 +1123,32 @@ export default {
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
+        });
+    },
+    manageDisciplineFlaw() {
+      this.$q
+        .dialog({
+          component: manageDisciplineFlaw,
+          persistent: true,
+          componentProps: {
+            info: {
+              edit: this.edit,
+              disciplines: this.disciplines,
+              disciplineSkills: this.disciplineSkills,
+              advantagesObj: this.advantagesObj,
+              xp: this.xp,
+              discipline_flaw: this.discipline_flaw,
+            },
+          },
+        })
+        .onOk((data) => {
+          this.xp = data.xp;
+          this.disciplines = data.disciplines;
+          this.disciplineSkills = data.disciplineSkillsObj;
+          this.advantagesObj = data.advantagesObj;
+        })
+        .onDismiss((data) => {
+          this.discipline_flaw = data.discipline_flaw;
         });
     },
     addModifiers() {

@@ -151,6 +151,10 @@ const Vampires = db.sequelize.define("vampires", {
     type: Sequelize.DATE,
     allowNull: false,
   },
+  dark_discipline: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
 });
 
 module.exports = Vampires;

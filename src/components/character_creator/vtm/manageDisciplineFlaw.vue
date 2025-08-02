@@ -108,6 +108,7 @@
             style="margin-bottom: 20px; width: 100%"
             class="select"
             label-color="primary"
+            @update:model-value="choose_a_disc()"
           />
         </div>
       </q-card-section>
@@ -186,10 +187,18 @@ export default defineComponent({
     clear_fields() {
       this.chosen_discs = [];
       this.xp_to_spend = 15;
+      this.selected_disc = "";
     },
     onCancelClick() {
       this.$emit("cancel");
       this.$refs.dialogRef.hide(); // assuming you set ref="dialogRef"
+    },
+    choose_a_disc() {
+      console.log(this.selected_disc);
+      this.chosen_discs.push(this.selected_disc);
+      console.log(this.chosen_discs);
+      this.xp_to_spend = this.xp_to_spend - this.selected_disc.cost;
+      this.selected_disc = "";
     },
   },
   computed: {

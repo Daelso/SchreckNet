@@ -86,7 +86,8 @@
             {{ disc_flaws[ingrained_disc].description }}
           </div>
           <div class="q-my-md text-subtitle1">
-            Ingrained Discipline XP Cap Remaining: {{ this.xp_to_spend }}
+            Ingrained Discipline XP Cap Remaining: {{ this.xp_to_spend }} --
+            Your XP: {{ this.local_xp }}
           </div>
         </div>
       </q-card-section>
@@ -157,8 +158,30 @@
       </q-card-section>
       <q-card-actions class="q-pa-sm">
         <div class="row full-width justify-between items-center">
-          <q-btn flat label="Cancel" color="white" @click="onCancelClick()" />
-          <q-btn flat label="Confirm" color="white" @click="onOKClick()" />
+          <q-btn
+            flat
+            label="Remove Flaw"
+            color="white"
+            @click="
+              () => {
+                local_disc_flaw = false;
+                cleanupFlaw();
+                onOKClick();
+              }
+            "
+          />
+          <q-btn
+            flat
+            label="Confirm"
+            color="white"
+            @click="
+              () => {
+                distributeDiscs();
+
+                onOKClick();
+              }
+            "
+          />
         </div>
       </q-card-actions>
     </q-card>
@@ -190,6 +213,7 @@ export default defineComponent({
         value: key,
       })
     );
+    this.restoreDarkDiscSelections();
   },
   setup(props, { emit }) {
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
@@ -200,14 +224,7 @@ export default defineComponent({
 
       dialogRef,
       onDialogHide,
-      onOKClick() {
-        onDialogOK({
-          disciplines: my_discs,
-          disciplineSkillsObj: my_disc_skills,
-          xp: local_xp,
-          advantagesObj: local_advantages,
-        });
-      },
+      onDialogOK,
     };
   },
   data() {
@@ -224,6 +241,7 @@ export default defineComponent({
       xp_to_spend: 15,
       local_xp: this.info.xp,
       local_advantages: null,
+      local_disc_flaw: this.info.discipline_flaw,
     };
   },
   methods: {
@@ -232,20 +250,123 @@ export default defineComponent({
       this.xp_to_spend = 15;
       this.selected_disc = "";
     },
-    onCancelClick() {
-      this.$emit("cancel");
-      this.$refs.dialogRef.hide();
+
+    restoreDarkDiscSelections() {
+      // Restore dark discipline powers
+      const restoredDiscs =
+        this.my_disc_skills?.filter((item) => item.dark_disc) || [];
+
+      console.log("RESTORED:", restoredDiscs);
+
+      if (restoredDiscs.length > 0) {
+        this.chosen_discs = restoredDiscs;
+        this.ingrained_disc = restoredDiscs[0].discipline || "";
+
+        // Recalculate XP based on restored selections
+        const totalXpUsed = restoredDiscs.reduce(
+          (sum, disc) => sum + (disc.cost || 0),
+          0
+        );
+        this.xp_to_spend = Math.max(15 - totalXpUsed, 0);
+      } else {
+        this.chosen_discs = [];
+        this.xp_to_spend = 15;
+      }
     },
+
     choose_a_disc() {
+      // const can_afford = this.local_xp - this.selected_disc.cost > 0;
+      // if (!can_afford) {
+      //   this.$q.notify({
+      //     message: "You do not have enough XP to purchase this discipline yet!",
+      //     color: "primary",
+      //     avatar: nosImage,
+      //   });
+      //   this.selected_disc = "";
+      //   return;
+      // }
+
       console.log(this.selected_disc);
       this.chosen_discs.push(this.selected_disc);
       console.log(this.chosen_discs);
       this.xp_to_spend = this.xp_to_spend - this.selected_disc.cost;
+      this.local_xp = this.local_xp - this.selected_disc.cost;
       this.selected_disc = "";
     },
+    cleanupFlaw() {
+      // Filter out any dark discipline entries
+      this.my_disc_skills = this.my_disc_skills.filter(
+        (item) => !item.dark_disc
+      );
+
+      // Same for flaws in local_advantages
+      if (
+        this.local_advantages &&
+        this.local_advantages.merits &&
+        Array.isArray(this.local_advantages.merits.flaws)
+      ) {
+        this.local_advantages.merits.flaws =
+          this.local_advantages.merits.flaws.filter((item) => !item.dark_disc);
+      }
+    },
+    refundXp() {
+      this.chosen_discs.forEach((disc) => {
+        this.local_xp += disc.cost;
+      });
+    },
     resetChosenDiscs() {
+      this.refundXp();
+      this.cleanupFlaw();
       this.chosen_discs = [];
       this.xp_to_spend = 15;
+    },
+
+    distributeDiscs() {
+      if (this.chosen_discs.length === 0) {
+        return;
+      }
+      const base_disc = this.ingrained_disc;
+      console.log(base_disc);
+      this.chosen_discs.forEach((disc) => {
+        this.my_disc_skills.push(disc);
+      });
+      this.local_advantages.merits.flaws.push({
+        cost: 0,
+        desc: this.disc_flaws[base_disc].description,
+        name: `Ingrained ${base_disc} Flaw:
+      ${this.disc_flaws[base_disc].name}`,
+        dark_disc: true,
+      });
+    },
+    onOKClick() {
+      this.cleanupFlaw(); //prevents duping
+
+      //readds stuff
+      this.chosen_discs.forEach((disc) => {
+        this.my_disc_skills.push(disc);
+      });
+
+      if (
+        this.local_disc_flaw &&
+        this.ingrained_disc &&
+        this.chosen_discs.length > 0
+      ) {
+        this.local_advantages.merits.flaws.push({
+          cost: 0,
+          desc: this.disc_flaws[this.ingrained_disc].description,
+          name: `Ingrained ${this.ingrained_disc} Flaw: ${
+            this.disc_flaws[this.ingrained_disc].name
+          }`,
+          dark_disc: true,
+        });
+      }
+      this.onDialogOK({
+        disciplines: this.my_discs,
+        disciplineSkillsObj: this.my_disc_skills,
+        xp: this.local_xp,
+        advantagesObj: this.local_advantages,
+        discipline_flaw: this.local_disc_flaw,
+      });
     },
   },
   computed: {

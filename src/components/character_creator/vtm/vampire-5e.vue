@@ -685,9 +685,9 @@ export default {
   data() {
     return {
       zoomed: false,
-      debug: true,
+      debug: false,
       saving: false,
-      discipline_flaw: true,
+      discipline_flaw: false,
       homebrewDialog: false,
       advantagesObj: {
         merits: { advantages: [], flaws: [] },

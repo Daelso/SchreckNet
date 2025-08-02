@@ -204,8 +204,6 @@ export default defineComponent({
     this.my_discs = this.info.disciplines;
     this.my_disc_skills = this.info.disciplineSkills;
     this.local_advantages = this.info.advantagesObj;
-    console.log(this.my_disc_skills);
-    console.log(this.local_advantages);
 
     this.disciplineOptions = Object.entries(this.my_discs).map(
       ([key, value]) => ({
@@ -256,8 +254,6 @@ export default defineComponent({
       const restoredDiscs =
         this.my_disc_skills?.filter((item) => item.dark_disc) || [];
 
-      console.log("RESTORED:", restoredDiscs);
-
       if (restoredDiscs.length > 0) {
         this.chosen_discs = restoredDiscs;
         this.ingrained_disc = restoredDiscs[0].discipline || "";
@@ -275,20 +271,18 @@ export default defineComponent({
     },
 
     choose_a_disc() {
-      // const can_afford = this.local_xp - this.selected_disc.cost > 0;
-      // if (!can_afford) {
-      //   this.$q.notify({
-      //     message: "You do not have enough XP to purchase this discipline yet!",
-      //     color: "primary",
-      //     avatar: nosImage,
-      //   });
-      //   this.selected_disc = "";
-      //   return;
-      // }
+      const can_afford = this.local_xp - this.selected_disc.cost > 0;
+      if (!can_afford) {
+        this.$q.notify({
+          message: "You do not have enough XP to purchase this discipline yet!",
+          color: "primary",
+          avatar: nosImage,
+        });
+        this.selected_disc = "";
+        return;
+      }
 
-      console.log(this.selected_disc);
       this.chosen_discs.push(this.selected_disc);
-      console.log(this.chosen_discs);
       this.xp_to_spend = this.xp_to_spend - this.selected_disc.cost;
       this.local_xp = this.local_xp - this.selected_disc.cost;
       this.selected_disc = "";
@@ -326,7 +320,6 @@ export default defineComponent({
         return;
       }
       const base_disc = this.ingrained_disc;
-      console.log(base_disc);
       this.chosen_discs.forEach((disc) => {
         this.my_disc_skills.push(disc);
       });

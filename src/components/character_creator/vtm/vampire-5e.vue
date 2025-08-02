@@ -1124,8 +1124,8 @@ export default {
           this.disciplineSkills = data.disciplineSkillsObj;
           this.advantagesObj = data.advantagesObj;
         })
-        .onDismiss(() => {
-          this.discipline_flaw = false;
+        .onDismiss((data) => {
+          this.discipline_flaw = data.discipline_flaw;
         });
     },
     addModifiers() {

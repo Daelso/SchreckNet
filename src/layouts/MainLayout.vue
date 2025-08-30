@@ -233,16 +233,8 @@ export default defineComponent({
   },
 
   async mounted() {
-    const axios = require("axios");
-
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-    this.currentUser = await axios
-      .get(baseUrl + "/user/currentUser", {
+    this.currentUser = await this.$api
+      .get("/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {

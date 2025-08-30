@@ -18,12 +18,22 @@
           <router-link to="/" class="titleLogo">SchreckNet</router-link>
         </q-toolbar-title>
 
-        <q-item v-if="!logInCheck" clickable style="align-items: center">
-          <router-link to="/login">Login</router-link>
+        <q-item
+          v-if="!logInCheck"
+          clickable
+          to="/login"
+          style="align-items: center"
+        >
+          <q-item-section>Login</q-item-section>
         </q-item>
 
-        <q-item v-if="!logInCheck" clickable style="align-items: center">
-          <router-link to="/register">Register</router-link>
+        <q-item
+          v-if="!logInCheck"
+          clickable
+          to="/register"
+          style="align-items: center"
+        >
+          <q-item-section>Register</q-item-section>
         </q-item>
 
         <q-item

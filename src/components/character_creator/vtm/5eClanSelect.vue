@@ -1076,13 +1076,13 @@ export default defineComponent({
         },
         {
           label: "9th",
-          potency: 2,
+          potency: 3,
           maxPotency: 5,
           info: "You have no starting advantages and must take five points of flaws. You may gain two advantage dots by sacrificing a level of humanity",
         },
         {
           label: "8th",
-          potency: 2,
+          potency: 3,
           maxPotency: 6,
           info: "You have no starting advantages and must take five points of flaws. You may gain two advantage dots by sacrificing a level of humanity",
         },

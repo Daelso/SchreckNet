@@ -155,12 +155,12 @@
 
           <q-select
             filled
-            bg-color="grey-3"
             v-model="driveInput"
             :options="driveOptions"
             option-label="name"
             label="Drive *"
             class="select"
+            bg-color="grey-3"
             color="secondary"
             label-color="primary"
             popup-content-style="background-color:#222831; color:white"

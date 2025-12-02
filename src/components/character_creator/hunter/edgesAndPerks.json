@@ -5,6 +5,11 @@
         "desc": "The Hunter has access to or can create a wide variety of weaponry",
         "perks": [
           {
+            "name": "Backup Piece",
+            "desc": "You have a way to conceal a weapon on your person. Once a scene you can declare you have a hidden light gunshot weapon on your person.",
+            "parent": "Arsenal"
+          },
+          {
             "name": "Team Requisition",
             "desc": "The Hunter can provide copies of the same weapon up to the margin of the win.",
             "parent": "Arsenal"
@@ -60,6 +65,11 @@
             "parent": "Fleet"
           },
           {
+            "name": "Hidden Cache",
+            "desc": "The vehicle comes with hidden compartments for concealing weapons.",
+            "parent": "Fleet"
+          },
+          {
             "name": "Performance",
             "desc": "Vehicles provided come with enhanced handling and driving, providing a bonus equal to the win amount. Provides bonuses to driving tests.",
             "parent": "Fleet"
@@ -72,6 +82,11 @@
           {
             "name": "Untraceable",
             "desc": "Any vehicles procured are completely untraceable and will never lead back to the Cell.",
+            "parent": "Fleet"
+          },
+          {
+            "name": "Wagon Train",
+            "desc": "You have access to many vehicles, though of questionable quality. More easily replace a lost vehicle",
             "parent": "Fleet"
           }
         ]
@@ -107,6 +122,11 @@
           {
             "name": "Pattern Analysis",
             "desc": "You can discern, fairly easily, whether the phenomenon you're studying has occurred before, allowing you to identify a specific monster's behavior",
+            "parent": "Library"
+          },
+          {
+            "name": "Where they Go",
+            "desc": "You can discern a targets favored hunting grounds, targets and maybe even who might be next.",
             "parent": "Library"
           }
         ]
@@ -162,6 +182,11 @@
             "name": "Incognito",
             "desc": "The animal can masterfully stay out of sight.",
             "parent": "Beast Whisperer"
+          },
+          {
+            "name": "Supernatural Scent",
+            "desc": "Your animal is trained to detect the scent of particular supernaturals within a close vicinity.",
+            "parent": "Beast Whisperer"
           }
         ]
       },
@@ -191,6 +216,11 @@
           {
             "name": "Payload",
             "desc": "The drone can carry a unit of cargo many times what its size suggests.",
+            "parent": "Drone Jockey"
+          },
+          {
+            "name": "Electronic Shield",
+            "desc": "Your drone has some kind of shielding against electronic interference or hacking.",
             "parent": "Drone Jockey"
           }
         ]
@@ -222,6 +252,16 @@
             "name": "The Letter of the Law",
             "desc": "The Hunter can manipulate criminal records, both national and international.",
             "parent": "Global Access"
+          },
+          {
+            "name": "Intranet Insertion",
+            "desc": "Gain access to non-networked or airgapped systems.",
+            "parent": "Global Access"
+          },
+          {
+            "name": "Spoof",
+            "desc": "Manipulate server data and logs to point towards a non-existant person or perhaps someone in particular.",
+            "parent": "Global Access"
           }
         ]
       },
@@ -231,6 +271,11 @@
           {
             "name": "Frugal",
             "desc": "The Hunter is able to construct most items out of the trinkets and tools they carry, no matter how bare their location.",
+            "parent": "Improvised Gear"
+          },
+          {
+            "name": "Made to Last",
+            "desc": "Improvised items are more resilient and last for additional scenes equal to the margin of success.",
             "parent": "Improvised Gear"
           },
           {
@@ -407,6 +452,16 @@
             "name": "Handsfree",
             "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge.",
             "parent": "Sense the Unnatural"
+          },
+          {
+            "name": "Horrid Detail",
+            "desc": "The Hunter is able to see through the supernatural disguises of a quarry, seeing its true form for better or worse.",
+            "parent": "Sense the Unnatural"
+          },
+          {
+            "name": "Network",
+            "desc": "The Hunter can tell if anyone close by is under the influence of a supernatural creature.",
+            "parent": "Sense the Unnatural"
           }
         ]
       },
@@ -432,6 +487,36 @@
             "name": "Handsfree",
             "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge.",
             "parent": "Thwart the Unnatural"
+          },
+          {
+            "name": "Redirection",
+            "desc": "On resisting an ability, you may spend 1 superficial WP to turn the ability back on its user.",
+            "parent": "Thwart the Unnatural"
+          }
+        ]
+      },
+      "Unnatural Changes": {
+        "desc": "The hunters body has been warped unnaturally by constant exposure to the supernatural.",
+        "perks": [
+          {
+            "name": "Breadth",
+            "desc": "Select a secondary attribute to enhance gaining 1 die to all pools using it. You may select this perk 2 times.",
+            "parent": "Unnatural Changes"
+          },
+          {
+            "name": "Neuropathway Practice",
+            "desc": "This edges difficulty is reduced from 4 to 3.",
+            "parent": "Unnatural Changes"
+          },
+          {
+            "name": "Maximized Neuropathways",
+            "desc": "Activating this edge takes no time at all, it does not cost an action.",
+            "parent": "Unnatural Changes"
+          },
+          {
+            "name": "Handsfree",
+            "desc": "The Hunter no longer needs to rely on an object of focus to use this Edge.",
+            "parent": "Unnatural Changes"
           }
         ]
       }

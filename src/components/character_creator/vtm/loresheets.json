@@ -871,6 +871,13 @@
       "Reference": "CbN 266"
     },
     {
+      "Name": "The Church of Set",
+      "Type": "Cult",
+      "Prerequisite": null,
+      "Description": "Dedicated to the rites of Setite Orthodoxy, the Church of Set's members believe they must conspire to weaken all other clans and their founders in order to pave the way for the resurretion of their founder.",
+      "Reference": "Anarchs 193"
+    },
+    {
       "Name": "The Eternal Arena",
       "Type": "Other",
       "Prerequisite": null,

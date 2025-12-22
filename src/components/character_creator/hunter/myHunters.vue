@@ -12,6 +12,24 @@
       height: 100%;
     "
   >
+    <q-select
+      v-model="selectedFolder"
+      :options="folderOptions"
+      option-label="folder_name"
+      option-value="folder_id"
+      bg-color="grey-3"
+      filled
+      color="secondary"
+      label-color="primary"
+      clearable
+      map-options
+      emit-value
+      dense
+      popup-content-style="background-color:#222831; color:white"
+      label="Filter by folder"
+      class="q-mb-md"
+      style="min-width: 250px"
+    />
     <div>
       <q-btn
         v-if="this.is_selected"
@@ -22,7 +40,7 @@
       ></q-btn>
     </div>
     <q-card
-      v-for="hunt in this.hunter"
+      v-for="hunt in this.filteredHunters"
       :key="hunt"
       class="my-card"
       flat
@@ -202,8 +220,6 @@
 }
 </style>
 <script>
-import { useRouter } from "vue-router";
-
 export default {
   props: ["currentUser"],
   async created() {
@@ -222,34 +238,27 @@ export default {
     this.hunter.forEach((hunt) => {
       hunt.checked = false;
     });
+
+    // build unique folder list
+    const seen = new Map();
+    this.hunter.forEach((v) => {
+      (v.folders || []).forEach((f) => {
+        if (!seen.has(f.folder_id)) {
+          seen.set(f.folder_id, f);
+        }
+      });
+    });
+
+    this.folderOptions = [...seen.values()];
   },
 
   data() {
     return {
       hunter: [],
       selected: [],
+      selectedFolder: null,
+      folderOptions: [],
     };
-  },
-
-  async mounted() {
-    let kindredId = window.location.href.split("/")[6];
-
-    this.$q.loading.show({
-      delay: 150, // ms
-    });
-
-    this.kindred = await this.$api
-      .get("/hunters/myHunter/" + kindredId, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        this.$q.loading.hide();
-        return resp.data;
-      })
-      .catch((err) => {
-        console.log(err);
-        return "Not found!";
-      });
   },
 
   methods: {
@@ -356,6 +365,15 @@ export default {
         return true;
       }
       return false;
+    },
+    filteredHunters() {
+      if (!this.selectedFolder) {
+        return this.hunter || [];
+      }
+
+      return (this.hunter || []).filter((v) =>
+        (v.folders || []).some((f) => f.folder_id === this.selectedFolder)
+      );
     },
   },
 };

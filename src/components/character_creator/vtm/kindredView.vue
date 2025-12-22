@@ -397,6 +397,56 @@
         type="submit"
         color="red"
       />
+      <div
+        v-if="
+          this.currentUser !== false &&
+          this.currentUser.username === this.creator
+        "
+        class="q-gutter-sm items-center"
+      >
+        <q-input
+          v-model="newFolderName"
+          bg-color="grey-3"
+          filled
+          color="secondary"
+          label-color="primary"
+          label="New folder"
+          @keyup.enter="createFolder"
+          maxlength="75"
+          counter
+        >
+          <template v-slot:hint>
+            <span style="color: white"> Type a name and hint enter</span>
+          </template>
+        </q-input>
+        <q-select
+          label="Add to folder"
+          bg-color="grey-3"
+          filled
+          color="secondary"
+          label-color="primary"
+          v-model="folder_choice"
+          :options="folder_options"
+          use-chips
+          multiple
+          popup-content-style="background-color:#222831; color:white"
+          option-label="folder_name"
+          option-value="folder_id"
+          @update:model-value="sync_folders"
+        >
+          <template v-slot:selected-item="scope">
+            <q-chip
+              dense
+              removable
+              color="grey-9"
+              text-color="white"
+              @remove="scope.removeAtIndex(scope.index)"
+            >
+              {{ scope.opt.folder_name }}
+            </q-chip>
+          </template>
+        </q-select>
+      </div>
     </div>
   </div>
 </template>
@@ -490,6 +540,8 @@
 <script>
 import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
+import nosImage from "../../../assets/images/Nosfer_logo.png";
+
 import skillInfo from "../vtm/5eSkills.json";
 import { degrees, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
@@ -683,7 +735,21 @@ export default defineComponent({
         console.log(err);
       });
 
-    return {};
+    const folder_res = await this.$api.get(
+      "/char_folders/my_folders?game_line=1",
+      {
+        withCredentials: true,
+      }
+    );
+    this.folder_options = folder_res.data;
+
+    const char_id = window.location.href.split("/")[5];
+
+    const chars_folders = await this.$api.get(
+      `/char_folders/this_char?game_line=1&char_id=${char_id}`
+    );
+    this.folder_choice = chars_folders.data.map((f) => f);
+    this.previous_folder = [...this.folder_choice];
   },
   data() {
     return {
@@ -694,6 +760,11 @@ export default defineComponent({
       clanCompulsion: "",
       smallX,
       zoomed: false,
+      newFolderName: "",
+      folder_options: [],
+      folder_choice: [],
+      previous_folder: [],
+      nosImage,
     };
   },
   async mounted() {
@@ -711,6 +782,80 @@ export default defineComponent({
       });
   },
   methods: {
+    async createFolder() {
+      const name = this.newFolderName.trim();
+      if (!name) return;
+
+      try {
+        const res = await this.$api.post(
+          "/char_folders/add",
+          { name, game_line: 1 },
+          { withCredentials: true }
+        );
+
+        // add to options
+        this.folder_options.push(res.data);
+
+        // optionally auto-select it
+        this.previous_folder = [...this.folder_choice];
+        this.folder_choice.push(res.data);
+
+        this.newFolderName = "";
+
+        this.sync_folders(this.folder_choice);
+        this.$q.notify({
+          message: `${name} added to folder`,
+          color: "primary",
+          avatar: nosImage,
+          timeout: 15000,
+        });
+      } catch (err) {
+        this.$q.notify({
+          color: "red-5",
+          icon: "warning",
+          message: "Failed to create folder",
+        });
+      }
+    },
+
+    async sync_folders(newSelection) {
+      const current = new Set(this.folder_choice);
+      const previous = new Set(this.previous_folder);
+
+      const added = [...current].filter((id) => !previous.has(id));
+      const removed = [...previous].filter((id) => !current.has(id));
+
+      if (!added.length && !removed.length) return;
+
+      try {
+        for (const folder of added) {
+          await this.$api.post("/char_folders/add_character", {
+            folder_id: folder.folder_id,
+            character_id: this.kindredId,
+          });
+        }
+
+        for (const folder of removed) {
+          console.log(folder);
+          await this.$api.post("/char_folders/remove_character", {
+            entry_id: folder.entry_id,
+            folder_id: folder.folder_id,
+          });
+        }
+
+        this.previous_folder = [...newSelection];
+      } catch (err) {
+        console.error(err);
+
+        this.$q.notify({
+          color: "red-5",
+          icon: "warning",
+          message: "Failed to update folders",
+        });
+
+        this.folder_choice = [...this.previous_folder];
+      }
+    },
     isValidImageUrl(url) {
       try {
         const parsed = new URL(url);

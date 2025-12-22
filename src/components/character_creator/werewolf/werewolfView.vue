@@ -786,8 +786,8 @@ export default defineComponent({
         this.folder_options.push(res.data);
 
         // optionally auto-select it
-        this.folder_choice.push(res.data);
         this.previous_folder = [...this.folder_choice];
+        this.folder_choice.push(res.data);
 
         this.newFolderName = "";
 

@@ -18,14 +18,16 @@
       :options="folderOptions"
       option-label="folder_name"
       option-value="folder_id"
+      bg-color="grey-3"
+      filled
+      color="secondary"
+      label-color="primary"
       clearable
       map-options
       emit-value
-      filled
       dense
+      popup-content-style="background-color:#222831; color:white"
       label="Filter by folder"
-      color="secondary"
-      label-color="primary"
       class="q-mb-md"
       style="min-width: 250px"
     />
@@ -392,9 +394,6 @@ export default {
       if (!this.selectedFolder) {
         return this.kindred || [];
       }
-
-      console.log(this.selectedFolder);
-      console.log(this.kindred);
 
       return (this.kindred || []).filter((v) =>
         (v.folders || []).some((f) => f.folder_id === this.selectedFolder)

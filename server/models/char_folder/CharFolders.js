@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
-const db = require("../database");
+const db = require("../../database");
+const Vampires = require("../vampires");
 
 const CharFolders = db.sequelize.define(
   "char_folders",
@@ -25,14 +26,12 @@ const CharFolders = db.sequelize.define(
     created_at: {
       type: Sequelize.DATE,
       allowNull: false,
+      defaultValue: Date.now(),
     },
     updated_at: {
       type: Sequelize.DATE,
       allowNull: false,
-    },
-    deleted: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
+      defaultValue: Date.now(),
     },
   },
   { timestamps: true, underscored: true }

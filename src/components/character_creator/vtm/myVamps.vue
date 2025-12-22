@@ -2,6 +2,7 @@
   <div v-if="this.kindred === null || this.kindred.length === 0" class="banner">
     No characters created yet!
   </div>
+
   <div
     style="
       display: flex;
@@ -12,6 +13,23 @@
       height: 100%;
     "
   >
+    <q-select
+      v-model="selectedFolder"
+      :options="folderOptions"
+      option-label="folder_name"
+      option-value="folder_id"
+      clearable
+      map-options
+      emit-value
+      filled
+      dense
+      label="Filter by folder"
+      color="secondary"
+      label-color="primary"
+      class="q-mb-md"
+      style="min-width: 250px"
+    />
+
     <div>
       <q-btn
         v-if="this.is_selected"
@@ -23,7 +41,7 @@
 
     <div class="container">
       <q-card
-        v-for="vamp in this.kindred"
+        v-for="vamp in filteredKindred"
         :key="vamp"
         class="my-card q-my-lg"
         flat
@@ -263,6 +281,8 @@ export default {
       kindred: null,
       selected: [],
       kindred_id: 0,
+      selectedFolder: null,
+      folderOptions: [],
     };
   },
 
@@ -288,6 +308,18 @@ export default {
         this.kindred.forEach((vamp) => {
           vamp.checked = false;
         });
+
+        // build unique folder list
+        const seen = new Map();
+        this.kindred.forEach((v) => {
+          (v.folders || []).forEach((f) => {
+            if (!seen.has(f.folder_id)) {
+              seen.set(f.folder_id, f);
+            }
+          });
+        });
+
+        this.folderOptions = [...seen.values()];
       } catch (err) {
         console.log(err);
       }
@@ -354,6 +386,19 @@ export default {
         return true;
       }
       return false;
+    },
+
+    filteredKindred() {
+      if (!this.selectedFolder) {
+        return this.kindred || [];
+      }
+
+      console.log(this.selectedFolder);
+      console.log(this.kindred);
+
+      return (this.kindred || []).filter((v) =>
+        (v.folders || []).some((f) => f.folder_id === this.selectedFolder)
+      );
     },
   },
 };

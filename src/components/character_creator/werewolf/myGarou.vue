@@ -12,6 +12,24 @@
       height: 100%;
     "
   >
+    <q-select
+      v-model="selectedFolder"
+      :options="folderOptions"
+      option-label="folder_name"
+      option-value="folder_id"
+      bg-color="grey-3"
+      filled
+      color="secondary"
+      label-color="primary"
+      clearable
+      map-options
+      emit-value
+      dense
+      popup-content-style="background-color:#222831; color:white"
+      label="Filter by folder"
+      class="q-mb-md"
+      style="min-width: 250px"
+    />
     <div>
       <q-btn
         v-if="this.is_selected"
@@ -23,7 +41,7 @@
 
     <div class="card-container">
       <q-card
-        v-for="wolf in this.garou"
+        v-for="wolf in this.filteredGarou"
         :key="wolf"
         class="my-card"
         flat
@@ -258,7 +276,7 @@ export default {
   },
 
   data() {
-    return { selected: [], garou: [] };
+    return { selected: [], garou: [], selectedFolder: null, folderOptions: [] };
   },
   async mounted() {
     let kindredId = window.location.href.split("/")[6];
@@ -281,6 +299,18 @@ export default {
     this.garou.forEach((wolf) => {
       wolf.checked = false;
     });
+
+    // build unique folder list
+    const seen = new Map();
+    this.garou.forEach((v) => {
+      (v.folders || []).forEach((f) => {
+        if (!seen.has(f.folder_id)) {
+          seen.set(f.folder_id, f);
+        }
+      });
+    });
+
+    this.folderOptions = [...seen.values()];
   },
 
   methods: {
@@ -434,6 +464,15 @@ export default {
         return true;
       }
       return false;
+    },
+    filteredGarou() {
+      if (!this.selectedFolder) {
+        return this.garou || [];
+      }
+
+      return (this.garou || []).filter((v) =>
+        (v.folders || []).some((f) => f.folder_id === this.selectedFolder)
+      );
     },
   },
 };

@@ -1,14 +1,9 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
-require("dotenv").config();
-const app = express();
-
 let router = express.Router();
-router.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 const Vampires = require("../models/vampires");
 const lib = require("../lib");
+const CharFolders = require("../models/char_folder/CharFolders");
+const CharsInFolders = require("../models/char_folder/CharsInFolders");
 
 //Route is base/vampires/
 router.route("/new").post(async (req, res) => {
@@ -76,12 +71,41 @@ router.route("/vampire/:id").get(async (req, res) => {
 
 router.route("/myVampire/:id").get(async (req, res) => {
   try {
-    const kindred = await Vampires.findAll({
-      where: {
-        created_by: req.params.id,
-      },
+    const owner = req.params.id;
+    const vampires = await Vampires.findAll({
+      where: { created_by: owner },
+      raw: true,
     });
-    return res.status(200).send(kindred);
+
+    const folderLinks = await CharsInFolders.findAll({
+      include: [
+        {
+          model: CharFolders,
+          where: { owner },
+          attributes: ["folder_id", "folder_name"],
+          required: false,
+        },
+      ],
+      raw: true,
+    });
+
+    // merge in JS
+    const foldersByChar = {};
+    for (const row of folderLinks) {
+      if (!row.char_id) continue;
+      foldersByChar[row.char_id] ??= [];
+      foldersByChar[row.char_id].push({
+        folder_id: row["char_folder.folder_id"],
+        folder_name: row["char_folder.folder_name"],
+      });
+    }
+
+    const result = vampires.map((v) => ({
+      ...v,
+      folders: foldersByChar[v.id] || [],
+    }));
+
+    return res.json(result);
   } catch (err) {
     console.log(err);
     return res.status(404).send("Not found");

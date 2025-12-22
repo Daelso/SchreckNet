@@ -135,6 +135,8 @@ const gameFinderRoutes = require("./server/api/game_finder");
 app.use("/game_finder", gameFinderRoutes);
 const gameRoutes = require("./server/api/games");
 app.use("/games", lib.authenticateToken, gameRoutes);
+const charFolders = require("./server/api/char_folders");
+app.use("/char_folders", lib.authenticateToken, charFolders);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

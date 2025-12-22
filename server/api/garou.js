@@ -106,7 +106,7 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
 
     res.status(200).send("Garou updated!");
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -116,7 +116,7 @@ router.route("/garou/:id").get(lib.getLimiter, async (req, res) => {
     const garou = await Garou.findByPk(req.params.id);
     return res.json(garou);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -159,7 +159,7 @@ router.route("/myGarou/:id").get(async (req, res) => {
 
     return res.json(result);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -176,7 +176,7 @@ router.route("/tribes").get(lib.getLimiter, async (req, res) => {
     });
     return res.json(tribes);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -186,7 +186,7 @@ router.route("/auspices").get(lib.getLimiter, async (req, res) => {
     const auspices = await Auspices.findAll();
     return res.json(auspices);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -196,7 +196,7 @@ router.route("/renown_types").get(lib.getLimiter, async (req, res) => {
     const renown_types = await RenownTypes.findAll();
     return res.json(renown_types);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -220,7 +220,7 @@ router
       });
       return res.json(native_gifts);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return res.status(404).send("Not found");
     }
   });
@@ -255,7 +255,7 @@ router
       });
       return res.json(gifts);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return res.status(404).send("Not found");
     }
   });
@@ -286,7 +286,7 @@ router
 
       return res.status(200).json(gifts);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return res.status(404).send("Not found");
     }
   });
@@ -296,7 +296,7 @@ router.route("/rites").get(lib.getLimiter, async (req, res) => {
     const rites = await Rites.findAll();
     return res.json(rites);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -309,7 +309,7 @@ router.route("/card").get(async (req, res) => {
     });
     return res.json(garou);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });
@@ -326,7 +326,7 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
     await garou.destroy();
     return res.status(200).send("Deletion successful");
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(404).send("Not found");
   }
 });

@@ -41,7 +41,7 @@
 
     <div class="card-container">
       <q-card
-        v-for="wolf in this.garou"
+        v-for="wolf in this.filteredGarou"
         :key="wolf"
         class="my-card"
         flat

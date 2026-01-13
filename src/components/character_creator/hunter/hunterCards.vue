@@ -221,7 +221,7 @@ export default {
         baseUrl = window.location.origin;
       }
       const payload = {
-        game_id: 2,
+        game_id: 3,
         sheet_id: sheet_id,
       };
       this.$axios

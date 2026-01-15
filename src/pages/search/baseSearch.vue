@@ -169,7 +169,7 @@
             View Full Character
           </q-btn>
           <q-btn
-            @click="this.favoriteChar(vamp.id, vamp.charName)"
+            @click="this.favoriteChar(vamp.id, vamp.charName, 1)"
             style="margin: auto"
             flat
             v-if="
@@ -319,7 +319,7 @@
             View Full Character
           </q-btn>
           <q-btn
-            @click="this.favoriteChar(hunt.id, hunt.charName)"
+            @click="this.favoriteChar(hunt.id, hunt.charName, 3)"
             style="margin: auto"
             flat
             v-if="
@@ -481,6 +481,16 @@
           >
             View Full Character
           </q-btn>
+          <q-btn
+            @click="this.favoriteChar(wolf.id, wolf.charName, 2)"
+            style="margin: auto"
+            flat
+            v-if="
+              this.currentUser !== false &&
+              vamp.created_by !== this.currentUser.id
+            "
+            >Favorite</q-btn
+          >
         </q-card-actions>
       </q-card>
     </div>
@@ -595,9 +605,9 @@ export default defineComponent({
       }
     },
 
-    favoriteChar(sheet_id, charName) {
+    favoriteChar(sheet_id, charName, game_id) {
       const payload = {
-        game_id: 1,
+        game_id: game_id,
         sheet_id: sheet_id,
       };
       this.$axios

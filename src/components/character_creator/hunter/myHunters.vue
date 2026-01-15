@@ -326,7 +326,7 @@ export default {
 
     favoriteChar(sheet_id, charName) {
       const payload = {
-        game_id: 2,
+        game_id: 3,
         sheet_id: sheet_id,
       };
       this.$api

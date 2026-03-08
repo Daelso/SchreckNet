@@ -11,7 +11,8 @@
           "Atavism",
           "Augury",
           "Awaken the Parasite",
-          "Feral Whispers"
+          "Feral Whispers",
+          "Leash the Beast"
         ],
         [
           "Animal Succulence",
@@ -81,6 +82,7 @@
         ["A Thousand Cuts", "Blink", "Traversal", "Weaving"],
         [
           "Draught of Elegance",
+          "Faster Than Light",
           "Unerring Aim",
           "Blurred Momentum",
           "Unseen Strike"
@@ -116,7 +118,8 @@
           "Obdurate",
           "Toughness",
           "Earth's Perseverance",
-          "Invigorating Vitae"
+          "Invigorating Vitae",
+          "Self-Assurance"
         ],
         [
           "Calloused Soul",
@@ -134,7 +137,7 @@
       "threat": 3,
       "resonance": "Empty",
       "skills": [
-        ["Cloak of Shadows", "Ensconce", "Silence of Death"],
+        ["Cloak of Shadows", "Ensconce", "Mask of Ages", "Silence of Death"],
         [
           "Cache",
           "Chimerstry",
@@ -226,7 +229,8 @@
           "Entrancement",
           "Passion Leech",
           "Thrown Voice",
-          "True Love's Face"
+          "True Love's Face",
+          "Invigorating Display"
         ],
         [
           "Inflame Desire",
@@ -246,11 +250,18 @@
       "skills": [
         ["Eyes of the Beast", "Squirm", "Weight of the Feather"],
         ["Feral Weapons", "Serpent's Kiss", "The False Sip", "Vicissitude"],
-        ["Earth Meld", "Flesh Crafting", "Shapechange", "Visceral Absorption"],
+        [
+          "Earth Meld",
+          "Flesh Crafting",
+          "Masque of Death",
+          "Shapechange",
+          "Visceral Absorption"
+        ],
         ["Horrid Form", "Metamorphosis"],
         [
           "Bloodform",
           "One With the Land",
+          "Face of the Victim",
           "Master of Forms",
           "Mist Form",
           "Swarm",

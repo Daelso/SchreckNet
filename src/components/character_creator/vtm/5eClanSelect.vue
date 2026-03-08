@@ -2184,7 +2184,60 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
-
+          case "Face of the Victim":
+            if (
+              this.finalDisciplineObj.Protean === undefined ||
+              this.finalDisciplineObj.Protean < 5 ||
+              this.skillsSelected.some((e) => e.skill === "Vicissitude") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Masque of Death":
+            if (
+              this.finalDisciplineObj.Oblivion === undefined ||
+              this.finalDisciplineObj.Oblivion < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Invigorating Display":
+            if (
+              this.finalDisciplineObj.Presence === undefined ||
+              this.finalDisciplineObj.Presence < 3 ||
+              this.skillsSelected.some((e) => e.skill === "Awe") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Self-Assurance":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 2 ||
+              this.skillsSelected.some((e) => e.skill === "Unswayable Mind") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Faster Than Light":
+            if (
+              this.finalDisciplineObj.Celerity === undefined ||
+              this.finalDisciplineObj.Celerity < 2 ||
+              this.skillsSelected.some((e) => e.skill === "Blink") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Leash the Beast":
+            if (
+              this.finalDisciplineObj.Fortitude === undefined ||
+              this.finalDisciplineObj.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Visceral Absorption":
             if (
               this.finalDisciplineObj["Blood Sorcery"] === undefined ||

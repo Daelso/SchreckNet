@@ -227,12 +227,18 @@
         }
       ]
     },
+
     "Feeding": {
       "advantages": [
         {
           "name": "Blood Hound",
           "cost": 1,
           "desc": "You can smell the resonance on your prey without tasting it."
+        },
+        {
+          "name": "Drive-thru",
+          "cost": 1,
+          "desc": "Once per session, by adding +1 to the Difficulty, you can safely complete a hunt within minutes."
         },
         {
           "name": "Iron Gullet",
@@ -246,6 +252,11 @@
         }
       ],
       "flaws": [
+        {
+          "name": "Resonance Sensitivity",
+          "cost": 1,
+          "desc": "Pick a resonance to be especially sensitive to, when feeding upon it your ST will create a unique compulsion for you based on the resonance."
+        },
         {
           "name": "Farmer",
           "cost": 2,
@@ -261,6 +272,16 @@
           "desc": "Actions earlier in your life led to your being banned from this city:",
           "cost": 2,
           "ancillaOnly": true
+        },
+        {
+          "name": "Resonance Mimic",
+          "cost": 2,
+          "desc": "You get more than just the resonance of a person from their blood, experience vivid and distracting visions of their memories during the next scene after feeding."
+        },
+        {
+          "name": "Sloppy Feeder",
+          "cost": 2,
+          "desc": "You have a clear and obvious tell when feeding. If caught by authorities or hunters they will have sufficient evidence to pin the attacks on you."
         },
         {
           "name": "Methuselah's Thirst",
@@ -339,6 +360,11 @@
           "desc": "You have some kind of memorable facial feature. 2 die bonus to social interactions with strangers, 1 die penalty to disguising yourself."
         },
         {
+          "name": "Scene Kid",
+          "desc": "You perfectly embody the look and aesthetic of a particular subculture. While the general public may not notice, those within that scene immediately recognize you as one of their own. Add one die to all appropriate Social pools when dealing with that subculture.",
+          "cost": 1
+        },
+        {
           "name": "Beautiful",
           "cost": 2,
           "desc": "You are considered beautiful."
@@ -390,6 +416,11 @@
     "Mythic": {
       "advantages": [
         {
+          "name": "Ley Line Leech",
+          "desc": "Through instinct, occult knowledge, or careful mapping, you travel along ancient lines of mystical power. After spending several hours travelling to a new city or locale, your Blood becomes charged with energy, allowing you to rise the following night without making a Rouse Check.",
+          "cost": 1
+        },
+        {
           "name": "Object of Power",
           "cost": 1,
           "maxCost": 3,
@@ -424,6 +455,11 @@
           "desc": "You've gained mastery over your hunger. Add two die to your rolls to resist hunger frenzy."
         },
         {
+          "name": "Persistent Blush",
+          "desc": "Your dead flesh is unusually receptive to the Blood when imitating life. Your lifelike demeanor and biological responses last far longer than normal. A single activation of Blush of Life persists for one week.",
+          "cost": 3
+        },
+        {
           "name": "Luck of the Devil",
           "cost": 4,
           "desc": "Once per session you can pass an attack, blame or misfortune towards another person present."
@@ -435,6 +471,21 @@
           "cost": 1,
           "desc": "Something you own wants you dead. Once per session, at a time determined by the Storyteller, you must reroll a successful test, risking failure instead.",
           "ancillaOnly": true
+        },
+        {
+          "name": "Land Locked",
+          "desc": "You cannot tolerate leaving the land. Any journey over air or sea enrages your Beast to the point of madness. You must make a Fear Frenzy test (Difficulty 3) to board a boat or plane.",
+          "cost": 1
+        },
+        {
+          "name": "Resistant Blush",
+          "desc": "Your dead flesh accepts the Blood in every way except for mimicking life. When making a Rouse Check to activate Blush of Life, roll twice and take the lowest result.",
+          "cost": 1
+        },
+        {
+          "name": "Corpse Flesh",
+          "desc": "Your body is completely and irrevocably dead. You are incapable of using Blush of Life.",
+          "cost": 2
         },
         {
           "name": "Stake Bait",

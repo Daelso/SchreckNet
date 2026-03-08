@@ -40,6 +40,16 @@
           "desc": "You are a known and liked name in your community. Each dot increases the scale of your fame and reach.",
           "cost": 0,
           "maxCost": 5
+        },
+        {
+          "name": "Influencer",
+          "cost": 1,
+          "desc": "Once per story, with the Storyteller’s approval, you have the equivalent of an Influence rating equal to your Fame minus one towards a single fan or a field related to your stardom."
+        },
+        {
+          "name": "Enduring Fame",
+          "cost": 1,
+          "desc": "When you lose points of Fame during a story, they return to full value at the start of the next story with no effort necessary."
         }
       ],
       "flaws": [
@@ -228,6 +238,11 @@
         {
           "name": "Suspect",
           "desc": "You're disliked by your local sect. Suffer a two-die penalty to social tests with your faction.",
+          "cost": 1
+        },
+        {
+          "name": "Mortal Pretender",
+          "desc": "You attempt to live as though you were still mortal, blending into human society far more deeply than most Kindred. This unsettles vampires dedicated to enforcing the Masquerade. You suffer a two-dice penalty on all Social tests involving vampires such as Sheriffs, Hounds, Archons, Justicars, and others strongly devoted to Masquerade enforcement.",
           "cost": 1
         }
       ]

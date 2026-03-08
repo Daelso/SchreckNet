@@ -1064,6 +1064,32 @@ export default defineComponent({
               mergedOptions.splice(i, 1);
             }
             break;
+          case "Masque of Death":
+            if (
+              this.disciplines.Oblivion === undefined ||
+              this.disciplines.Oblivion < 2
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Leash the Beast":
+            if (
+              this.disciplines.Fortitude === undefined ||
+              this.disciplines.Fortitude < 1
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Faster Than Light":
+            if (
+              this.disciplines.Celerity === undefined ||
+              this.disciplines.Celerity < 2 ||
+              this.disciplineSkillsObj.some((e) => e.skill === "Blink") ===
+                false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
           case "Lethe's Call":
             if (
               this.disciplines.Dominate === undefined ||
@@ -1084,6 +1110,37 @@ export default defineComponent({
               this.disciplines.Dominate < 2 ||
               this.disciplineSkillsObj.some(
                 (e) => e.skill !== "Vicissitude"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Face of the Victim":
+            if (
+              this.disciplines.Protean === undefined ||
+              this.disciplines.Protean < 5 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Vicissitude"
+              ) === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Invigorating Display":
+            if (
+              this.disciplines.Presence === undefined ||
+              this.disciplines.Presence < 3 ||
+              this.disciplineSkillsObj.some((e) => e.skill !== "Awe") === false
+            ) {
+              mergedOptions.splice(i, 1);
+            }
+            break;
+          case "Self-Assurance":
+            if (
+              this.disciplines.Fortitude === undefined ||
+              this.disciplines.Fortitude < 2 ||
+              this.disciplineSkillsObj.some(
+                (e) => e.skill !== "Unswayable Mind"
               ) === false
             ) {
               mergedOptions.splice(i, 1);

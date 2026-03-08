@@ -304,6 +304,13 @@
       "Reference": "V5 391"
     },
     {
+      "Name": "Descendant of the Idder",
+      "Type": "Bloodline",
+      "Prerequisite": ["Banu Haqim"],
+      "Description": "You share a nomadic lineage originating in northern and sub-saharan Africa. Tracing back to the second city itself, your siblings are foundational autarkis.",
+      "Reference": "SC 157"
+    },
+    {
       "Name": "Descendant of Lodin",
       "Type": "Bloodline",
       "Prerequisite": ["Ventrue"],
@@ -330,6 +337,27 @@
       "Prerequisite": ["Tremere"],
       "Description": "Connected to Karl Schrekt. Different levels grant the character information regarding House Tremere, bonuses for working towards Schrekt's goals, reduce the effort needed for a ritual, find aid in an unlikely ally, or gain information on those same allies.",
       "Reference": "V5 405"
+    },
+    {
+      "Name": "Descendant of the Kerwiya",
+      "Type": "Bloodline",
+      "Prerequisite": ["Gangrel"],
+      "Description": "Unlike other Gangrel, your blood doesn't yearn for nature. You and your siblings thrive in urban environments, some would even call you City Gangrel.",
+      "Reference": "SC 159"
+    },
+    {
+      "Name": "Descendant of the Fallen Lord",
+      "Type": "Bloodline",
+      "Prerequisite": ["Salubri"],
+      "Description": "A violent and brutal brood of warriors who have escaped the Sabbat.",
+      "Reference": "SC 161"
+    },
+    {
+      "Name": "Descendant of Phaedyme",
+      "Type": "Bloodline",
+      "Prerequisite": ["Ravnos"],
+      "Description": "Your lineage is one of honor and duty, Phaedyme fought alongside Alexander and established herself as one of the great knights of antiquity.",
+      "Reference": "SC 160"
     },
     {
       "Name": "Descendant of Tyler",
@@ -836,6 +864,13 @@
       "Reference": "Blood Sigils 178"
     },
     {
+      "Name": "Succubus Club Copycat",
+      "Type": "Other",
+      "Prerequisite": null,
+      "Description": "You run an off-shoot or mimicry of the Succubus Club, how successful is up to you.",
+      "Reference": "SC 162"
+    },
+    {
       "Name": "Talley",
       "Type": "NPC",
       "Prerequisite": null,
@@ -904,6 +939,13 @@
       "Prerequisite": null,
       "Description": "Once kindred of low humanity, Repentants have clawed back their humanity and seek to atone for their vile deeds. Always conscious of the beast raging within.",
       "Reference": "IM 152"
+    },
+    {
+      "Name": "The Pony Express",
+      "Type": "Cult",
+      "Prerequisite": null,
+      "Description": "You have access to the Pony Express and its rapid delivery/mailing capabilities.",
+      "Reference": "SC 163"
     },
     {
       "Name": "The Pyramid",

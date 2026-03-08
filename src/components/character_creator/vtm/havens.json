@@ -46,6 +46,31 @@
           "maxCost": 5
         },
         {
+          "name": "Haven: Mobile",
+          "desc": "Your haven is mobile, such as a van or large RV. Each dot grows the size and capability of your haven. You can exceed 2 dots when pooling with your coterie.",
+          "cost": 0,
+          "maxCost": 2
+        },
+        {
+          "name": "Haven: Mobile (Armored)",
+          "desc": "Your mobile haven is well-armored. With reinforced glass, stronger locks and secure panels you are well-equipped to take a threat head on.",
+          "cost": 0,
+          "maxCost": 1
+        },
+        {
+          "name": "Haven: Smugglers Stash",
+          "desc": "You’ve dedicated a hidden section of your mobile Haven to conceal cargo — or even yourself. At one dot the compartment can hide one person. At two dots it is large enough to hide your entire coterie. Searches for the compartment are made at +2 Difficulty.",
+          "cost": 0,
+          "maxCost": 2,
+          "prereq": "Haven: Mobile"
+        },
+        {
+          "name": "Haven: Spare Plates",
+          "desc": "Vehicles are easy to trace, so you maintain a rotating set of license plates, stickers and identifiers. With a turn’s worth of activity you can swap them out, helping you avoid all but the most invasive searches for your vehicle.",
+          "cost": 2,
+          "prereq": "Haven: Mobile"
+        },
+        {
           "name": "Haven: Business Establishment",
           "desc": "You rent out your Haven from 9-5, maybe its a local coffee shop or popular salon. Adds to ones resources.",
           "cost": 0,
@@ -144,6 +169,18 @@
           "name": "Haven: Creepy",
           "desc": "You own the haunted mansion on the block. Your haven discomforts most who visit it. Any dice pools to seduce or put others at ease suffer a two-die penalty.",
           "cost": 1
+        },
+        {
+          "name": "Haven: On the Rails",
+          "desc": "Your mobile haven does not move entirely under your control. It may be part of a train, ship, or other fixed route. You may delay or slightly alter travel, but the general destinations remain fixed. Work with your Storyteller to determine where your haven travels.",
+          "cost": 1,
+          "prereq": "Haven: Mobile"
+        },
+        {
+          "name": "Haven: Temperamental",
+          "desc": "Your vehicle is unreliable and prone to breaking down at the worst moments. Any failed Drive test causes the vehicle to grind to a halt and it cannot be restarted without a successful repair test. If you replace the vehicle, this Flaw follows you unless bought off with Experience.",
+          "cost": 1,
+          "prereq": "Haven: Mobile"
         },
         {
           "name": "Haven: Haunted",

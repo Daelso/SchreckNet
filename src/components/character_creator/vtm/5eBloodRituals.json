@@ -10,6 +10,10 @@
         "description": "Embed messages into Blood or vessels."
       },
       {
+        "name": "Blood Missive",
+        "description": "Embed messages into Blood or vessels."
+      },
+      {
         "name": "Blood to Water",
         "description": "A ritual to turn all spilled blood in an area into water."
       },
@@ -60,6 +64,10 @@
       {
         "name": "Revealing the Crimson Trail",
         "description": "A ritual to reveal any traces of spilled blood, no matter how old or insignificant."
+      },
+      {
+        "name": "Sanguine Tidings",
+        "description": "Embed a message into the surface that will display when an individual of the chosen type passes it by."
       },
       {
         "name": "Seal the Brand",
@@ -345,6 +353,10 @@
       {
         "name": "Riding the Earth's Veins",
         "description": "A last-ditch escape hatch. The caster turns into red smoke, and appears again twenty minutes later at a random location of the ST's choosing."
+      },
+      {
+        "name": "Seek the Gathered Vitae",
+        "description": "The sorcerer makes the Ritual test and learns of any concentration of Kindred within a one-block radius that has a total Blood Potency of over 13 or higher (a large gathering of neonates, or a few elders) within 3 miles (5km), plus one mile (1.5km) per point of the margin.."
       },
       {
         "name": "Ward against Kindred",

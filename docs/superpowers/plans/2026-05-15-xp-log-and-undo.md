@@ -438,3 +438,496 @@ git commit -m "Garou routes: accept and persist xp_log"
 ---
 
 **Chunk 2 done.** The server now round-trips `xp_log` for all three game lines. The frontend still doesn't send the field, so no behavior changes user-visibly yet — but a future GET will surface `[]` for legacy characters and whatever was persisted for any character touched after Chunk 5.
+
+---
+
+## Chunk 3: Shared frontend lib + handler registries (TDD)
+
+This is the only chunk with automated tests. We test the pure helpers in `xpLog.js` and the per-line handler `record`/`undo` round-trips. The Vue component (Chunk 4) and per-line integration glue (Chunk 5) are verified manually.
+
+### Task 3.1: Vitest configuration
+
+**Files:**
+- Create: `vitest.config.js`
+
+- [ ] **Step 3.1.1: Write `vitest.config.js`**
+
+Minimal config. The project uses webpack-based Quasar; vitest runs independently and only over plain `.js` files for now.
+
+```js
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    include: ["src/lib/**/*.test.js"],
+    environment: "node",
+  },
+});
+```
+
+- [ ] **Step 3.1.2: Verify vitest discovers no tests yet**
+
+```bash
+npm run test:unit
+```
+
+Expected: exits 0 with "No test files found, exiting with code 0" or similar. Vitest is wired but has nothing to run yet.
+
+- [ ] **Step 3.1.3: Commit**
+
+```bash
+git add vitest.config.js
+git commit -m "Vitest config (pure helpers only)"
+```
+
+### Task 3.2: Pure log helpers — TDD
+
+**Files:**
+- Create: `src/lib/xp/xpLog.js`
+- Create: `src/lib/xp/__tests__/xpLog.test.js`
+
+The helpers we're building:
+
+- `newId()` — returns a string id unique enough for in-memory + JSON storage. Use `crypto.randomUUID()` (available in Node 18+ and modern browsers).
+- `appendEntry(log, partialEntry, currentXp)` — returns a new log array with the entry appended. Fills `id`, `ts`, and `balanceAfter`. **Does not mutate inputs.**
+- `undoLast(log)` — returns `{ log: <new array with tail popped>, entry: <the popped entry or null> }`. Does not mutate inputs.
+
+- [ ] **Step 3.2.1: Write the failing tests**
+
+Create `src/lib/xp/__tests__/xpLog.test.js`:
+
+```js
+import { describe, it, expect } from "vitest";
+import { appendEntry, undoLast, newId } from "../xpLog.js";
+
+describe("newId", () => {
+  it("returns a distinct string each call", () => {
+    const a = newId();
+    const b = newId();
+    expect(typeof a).toBe("string");
+    expect(a.length).toBeGreaterThan(0);
+    expect(a).not.toBe(b);
+  });
+});
+
+describe("appendEntry", () => {
+  it("appends a fully-formed entry and fills id/ts/balanceAfter", () => {
+    const partial = { cost: 6, type: "smoke", payload: {} };
+    const result = appendEntry([], partial, /*currentXp*/ 30);
+
+    expect(result).toHaveLength(1);
+    const entry = result[0];
+    expect(entry.id).toMatch(/.+/);
+    expect(entry.ts).toMatch(/^\d{4}-\d{2}-\d{2}T/); // ISO 8601
+    expect(entry.cost).toBe(6);
+    expect(entry.type).toBe("smoke");
+    expect(entry.balanceAfter).toBe(24); // 30 - 6, since cost is positive (spent)
+    expect(entry.note ?? "").toBe("");
+  });
+
+  it("does not mutate the input log", () => {
+    const log = [];
+    appendEntry(log, { cost: 1, type: "x", payload: {} }, 10);
+    expect(log).toHaveLength(0);
+  });
+
+  it("handles negative cost (refund) by increasing balanceAfter", () => {
+    const result = appendEntry([], { cost: -3, type: "refund", payload: {} }, 10);
+    expect(result[0].balanceAfter).toBe(13);
+  });
+
+  it("preserves provided note if any", () => {
+    const result = appendEntry([], { cost: 1, type: "x", payload: {}, note: "hello" }, 5);
+    expect(result[0].note).toBe("hello");
+  });
+});
+
+describe("undoLast", () => {
+  it("pops the tail and returns it", () => {
+    const log = [
+      { id: "a", cost: 1, type: "x", payload: {} },
+      { id: "b", cost: 2, type: "y", payload: {} },
+    ];
+    const { log: next, entry } = undoLast(log);
+    expect(entry.id).toBe("b");
+    expect(next).toHaveLength(1);
+    expect(next[0].id).toBe("a");
+  });
+
+  it("returns null entry and empty log when called on an empty log", () => {
+    const { log, entry } = undoLast([]);
+    expect(entry).toBeNull();
+    expect(log).toEqual([]);
+  });
+
+  it("does not mutate the input log", () => {
+    const log = [{ id: "a", cost: 1, type: "x", payload: {} }];
+    undoLast(log);
+    expect(log).toHaveLength(1);
+  });
+});
+```
+
+- [ ] **Step 3.2.2: Run tests — verify they fail with "module not found" or similar**
+
+```bash
+npm run test:unit -- src/lib/xp/__tests__/xpLog.test.js
+```
+
+Expected: FAIL. The import resolves to a non-existent file.
+
+- [ ] **Step 3.2.3: Write the minimal implementation**
+
+Create `src/lib/xp/xpLog.js`:
+
+```js
+// globalThis.crypto.randomUUID is available in browsers and Node >= 19 as a
+// global. The project requires Node >= 22.12 (see CLAUDE.md), so no fallback
+// is needed; this works identically in the Quasar bundle and in vitest.
+export function newId() {
+  return globalThis.crypto.randomUUID();
+}
+
+export function appendEntry(log, partial, currentXp) {
+  const entry = {
+    id: newId(),
+    ts: new Date().toISOString(),
+    note: "",
+    ...partial,
+    balanceAfter: currentXp - partial.cost,
+  };
+  return [...log, entry];
+}
+
+export function undoLast(log) {
+  if (log.length === 0) {
+    return { log: [], entry: null };
+  }
+  const next = log.slice(0, -1);
+  const entry = log[log.length - 1];
+  return { log: next, entry };
+}
+```
+
+- [ ] **Step 3.2.4: Re-run tests — verify they pass**
+
+```bash
+npm run test:unit -- src/lib/xp/__tests__/xpLog.test.js
+```
+
+Expected: PASS. All tests green.
+
+- [ ] **Step 3.2.5: Commit**
+
+```bash
+git add src/lib/xp/xpLog.js src/lib/xp/__tests__/xpLog.test.js
+git commit -m "Add pure XP log helpers (appendEntry, undoLast, newId)"
+```
+
+### Task 3.3: VtM handler registry — TDD
+
+**Files:**
+- Create: `src/lib/xp/handlers/vtm.js`
+- Create: `src/lib/xp/handlers/__tests__/vtm.test.js`
+
+The registry shape (per spec):
+
+```js
+export default {
+  <type>: {
+    label: (entry) => "human-readable description",
+    record: (charState, input) => ({ type, cost, payload }),  // does NOT touch xp/xp_log itself
+    undo:   (charState, entry) => void,                        // mutates charState back
+  },
+  // ...
+}
+```
+
+**Important separation:** `record` produces the entry envelope minus `id`/`ts`/`balanceAfter` (those are filled by `appendEntry`). `record` does not mutate `charState` — the existing `spendXp.vue` purchase logic still mutates the character. `record` only describes *what was changed*. `undo` is the only function that mutates `charState` (to reverse the change).
+
+The VtM types (from the spec):
+
+`attribute_raise`, `skill_raise`, `specialty`, `clan_discipline`, `caitiff_discipline`, `out_of_clan_discipline`, `blood_potency`, `blood_ritual`, `oblivion_ceremony`, `advantage_point`, `flaw_point`.
+
+**Verification before coding:** before writing the registry, the executor must read [src/components/character_creator/vtm/spendXp.vue](../../src/components/character_creator/vtm/spendXp.vue) — specifically the big switch in `purchaseMade()` (around line 446) — and the `±3xp` button handlers in [src/components/character_creator/vtm/edit-vampire-5e.vue](../../src/components/character_creator/vtm/edit-vampire-5e.vue) (around lines 1280–1330). The registry is a structured rewrite of what those switches already do.
+
+**On charState shape:** the `record(charState, input)` API is an adapter, not a source of truth. The handler should accept whatever the existing `spendXp.vue` already has on hand (attribute object, skill key, discipline name + power, etc.) and read from `charState` in the same shape `spendXp.vue` reads it. If a field is shaped differently than the test example below (e.g. `attributes` happens to be a Map instead of an array in some flow), match the real shape — don't normalize charState. The handler's only job is to describe the change and reverse it.
+
+- [ ] **Step 3.3.1: Write the failing tests**
+
+Create `src/lib/xp/handlers/__tests__/vtm.test.js`. Cover *every* type with a record-then-undo round trip. Pattern:
+
+```js
+import { describe, it, expect } from "vitest";
+import handlers from "../vtm.js";
+
+describe("vtm handlers — record/undo round trip", () => {
+  it("attribute_raise: record then undo restores prior points", () => {
+    const charState = {
+      attributes: [{ name: "Strength", points: 2 }],
+    };
+    const input = { attributeName: "Strength" }; // the data spendXp.vue has on hand
+    const entry = handlers.attribute_raise.record(charState, input);
+
+    // record describes the change; spendXp.vue applies it
+    expect(entry.type).toBe("attribute_raise");
+    expect(entry.cost).toBe(15); // (2+1)*5 per spec table
+    expect(entry.payload).toEqual({
+      attribute: "Strength",
+      priorValue: 2,
+      newValue: 3,
+    });
+
+    // simulate the mutation spendXp.vue would do
+    charState.attributes[0].points = 3;
+
+    // ... then undo restores
+    handlers.attribute_raise.undo(charState, entry);
+    expect(charState.attributes[0].points).toBe(2);
+  });
+
+  it("skill_raise: record then undo restores prior level", () => {
+    const charState = { skills: { brawl: 1 } };
+    const entry = handlers.skill_raise.record(charState, { skillName: "Brawl" });
+    expect(entry.cost).toBe(6); // (1+1)*3
+    expect(entry.payload).toEqual({ skill: "brawl", priorValue: 1, newValue: 2 });
+    charState.skills.brawl = 2;
+    handlers.skill_raise.undo(charState, entry);
+    expect(charState.skills.brawl).toBe(1);
+  });
+
+  it("specialty: record adds an entryId, undo removes the matching item", () => {
+    const charState = { specialtiesFromXp: [] };
+    const entry = handlers.specialty.record(charState, {
+      skill: "Streetwise",
+      specialty: "Pickpocket",
+    });
+    expect(entry.cost).toBe(3);
+    expect(entry.payload.entryId).toMatch(/.+/);
+    // simulate spendXp.vue pushing the specialty (it must include the entryId)
+    charState.specialtiesFromXp.push({
+      entryId: entry.payload.entryId,
+      skill: "Streetwise",
+      specialty: "Pickpocket",
+    });
+    handlers.specialty.undo(charState, entry);
+    expect(charState.specialtiesFromXp).toEqual([]);
+  });
+
+  it("clan_discipline: record then undo restores level and removes the power", () => {
+    const charState = {
+      disciplines: { Dominate: 1 },
+      disciplineSkillsObj: [],
+    };
+    const entry = handlers.clan_discipline.record(charState, {
+      discipline: "Dominate",
+      power: "Mesmerize",
+    });
+    expect(entry.cost).toBe(10); // (1+1)*5
+    expect(entry.payload).toMatchObject({
+      discipline: "Dominate",
+      priorValue: 1,
+      newValue: 2,
+      power: "Mesmerize",
+    });
+    expect(entry.payload.entryId).toMatch(/.+/);
+
+    // simulate spendXp.vue mutation
+    charState.disciplines.Dominate = 2;
+    charState.disciplineSkillsObj.push({
+      entryId: entry.payload.entryId,
+      discipline: "Dominate",
+      skill: "Mesmerize",
+    });
+
+    handlers.clan_discipline.undo(charState, entry);
+    expect(charState.disciplines.Dominate).toBe(1);
+    expect(charState.disciplineSkillsObj).toEqual([]);
+  });
+
+  // Cover the remaining types with one round-trip each. Use the cost formulas
+  // from the current spendXp.vue switch as ground truth:
+  //   caitiff_discipline:    first dot = 6; subsequent = (lvl+1)*6
+  //   out_of_clan_discipline: (lvl+1)*7
+  //   blood_potency:         (potency+1)*10
+  //   blood_ritual:          ritualLevel * 3       (no scalar change; push into disciplineSkillsObj)
+  //   oblivion_ceremony:     ceremonyLevel * 3     (same shape as blood_ritual)
+  //   advantage_point:       3 each (positive when adding, negative when refunding via the - button)
+  //   flaw_point:            3 each (positive when adding, negative when refunding)
+  //
+  // For advantage_point/flaw_point, the input includes a sign:
+  //   { delta: +1 }  -> cost +3, payload { counter: "advantages_remaining", priorValue, delta: +1 }
+  //   { delta: -1 }  -> cost -3, payload { ... delta: -1 }  (the "Remove" button)
+
+  it.todo("caitiff_discipline first-dot");
+  it.todo("caitiff_discipline subsequent-dot");
+  it.todo("out_of_clan_discipline new-to-clan");
+  it.todo("out_of_clan_discipline already-known");
+  it.todo("blood_potency");
+  it.todo("blood_ritual");
+  it.todo("oblivion_ceremony");
+  it.todo("advantage_point add");
+  it.todo("advantage_point remove");
+  it.todo("flaw_point add");
+  it.todo("flaw_point remove");
+});
+```
+
+(The `.todo` items are flagged so the test runner reports them as pending — they must be replaced with real tests in the same pattern as the four examples above before this task is considered done.)
+
+- [ ] **Step 3.3.2: Run tests, expect failure**
+
+```bash
+npm run test:unit -- src/lib/xp/handlers/__tests__/vtm.test.js
+```
+
+Expected: module-not-found.
+
+- [ ] **Step 3.3.3: Write the registry**
+
+Create `src/lib/xp/handlers/vtm.js`. Implement each type as `{ label, record, undo }`. Reference the cost formulas from the existing `spendXp.vue` switch and the payload conventions from the spec. Skeleton:
+
+```js
+import { newId } from "../xpLog.js";
+
+const handlers = {
+  attribute_raise: {
+    label: (e) => `Raised ${e.payload.attribute} to ${e.payload.newValue}`,
+    record: (state, input) => {
+      const attr = state.attributes.find((a) => a.name === input.attributeName);
+      const priorValue = attr.points;
+      const newValue = priorValue + 1;
+      return {
+        type: "attribute_raise",
+        cost: newValue * 5,
+        payload: { attribute: input.attributeName, priorValue, newValue },
+      };
+    },
+    undo: (state, entry) => {
+      const attr = state.attributes.find((a) => a.name === entry.payload.attribute);
+      attr.points = entry.payload.priorValue;
+    },
+  },
+  // ... implement skill_raise, specialty, clan_discipline, caitiff_discipline,
+  //     out_of_clan_discipline, blood_potency, blood_ritual, oblivion_ceremony,
+  //     advantage_point, flaw_point following the same pattern.
+};
+
+export default handlers;
+```
+
+For array-pushing types (`specialty`, `clan_discipline`, `caitiff_discipline`, `out_of_clan_discipline`, `blood_ritual`, `oblivion_ceremony`), generate `entryId` inside `record` and surface it on the payload; `undo` filters the target array by that `entryId`.
+
+- [ ] **Step 3.3.4: Replace each `.todo` test with a real round-trip test, then re-run**
+
+```bash
+npm run test:unit -- src/lib/xp/handlers/__tests__/vtm.test.js
+```
+
+Expected: all tests pass, no `.todo` remaining. **Do not commit with `.todo` placeholders in the test file.**
+
+- [ ] **Step 3.3.5: Commit**
+
+```bash
+git add src/lib/xp/handlers/vtm.js src/lib/xp/handlers/__tests__/vtm.test.js
+git commit -m "Add VtM XP handler registry with record/undo round-trip tests"
+```
+
+### Task 3.4: Werewolf handler registry — TDD
+
+**Files:**
+- Create: `src/lib/xp/handlers/werewolf.js`
+- Create: `src/lib/xp/handlers/__tests__/werewolf.test.js`
+
+- [ ] **Step 3.4.1: Enumerate Werewolf types**
+
+Read [src/components/character_creator/werewolf/spendXp.vue](../../src/components/character_creator/werewolf/spendXp.vue) — specifically its `purchaseMade()` switch — and list every case. Likely set (verify): `attribute_raise`, `skill_raise`, `specialty`, `gift`, `rite`, plus any renown- or merit-related cases.
+
+Also note: the Garou model has both `xp` and `spent_xp` columns. If `werewolf/spendXp.vue` updates `spent_xp` on purchase, the handler's `undo` must reverse that too. Confirm by reading the file.
+
+- [ ] **Step 3.4.2: Write the failing tests**
+
+Same pattern as Task 3.3 — one round-trip test per type. Stub the rest as `.todo` and fill them in step 3.4.4.
+
+If `spent_xp` is touched by any purchase in `werewolf/spendXp.vue`, include an explicit assertion in that type's round-trip test that `charState.spent_xp` returns to its pre-record value after `undo`.
+
+- [ ] **Step 3.4.3: Run, expect failure**
+
+```bash
+npm run test:unit -- src/lib/xp/handlers/__tests__/werewolf.test.js
+```
+
+- [ ] **Step 3.4.4: Implement the registry, fill remaining tests, run**
+
+```bash
+npm run test:unit -- src/lib/xp/handlers/__tests__/werewolf.test.js
+```
+
+Expected: PASS, no `.todo` left.
+
+- [ ] **Step 3.4.5: Commit**
+
+```bash
+git add src/lib/xp/handlers/werewolf.js src/lib/xp/handlers/__tests__/werewolf.test.js
+git commit -m "Add Werewolf XP handler registry with record/undo round-trip tests"
+```
+
+### Task 3.5: Hunter handler registry — TDD
+
+**Files:**
+- Create: `src/lib/xp/handlers/hunter.js`
+- Create: `src/lib/xp/handlers/__tests__/hunter.test.js`
+
+- [ ] **Step 3.5.1: Enumerate Hunter types**
+
+Read [src/components/character_creator/hunter/spendXp.vue](../../src/components/character_creator/hunter/spendXp.vue). Likely set (verify): `attribute_raise`, `skill_raise`, `specialty`, `edge`, `perk`, plus any drives/loresheets cases.
+
+- [ ] **Step 3.5.2: Write the failing tests**
+
+Same pattern as 3.3.
+
+- [ ] **Step 3.5.3: Run, expect failure**
+
+```bash
+npm run test:unit -- src/lib/xp/handlers/__tests__/hunter.test.js
+```
+
+- [ ] **Step 3.5.4: Implement the registry, fill remaining tests, run**
+
+```bash
+npm run test:unit -- src/lib/xp/handlers/__tests__/hunter.test.js
+```
+
+Expected: PASS, no `.todo` left.
+
+- [ ] **Step 3.5.5: Commit**
+
+```bash
+git add src/lib/xp/handlers/hunter.js src/lib/xp/handlers/__tests__/hunter.test.js
+git commit -m "Add Hunter XP handler registry with record/undo round-trip tests"
+```
+
+### Task 3.6: Run the full suite + guard against leftover .todo
+
+- [ ] **Step 3.6.1: Run all unit tests**
+
+```bash
+npm run test:unit
+```
+
+Expected: every file under `src/lib/xp/**/*.test.js` passes. No `.todo`, no skipped tests.
+
+- [ ] **Step 3.6.2: Fail loudly if any `.todo` is still in the test files**
+
+```bash
+if grep -RE "(^|\s)it\.todo\(" src/lib/xp; then
+  echo "Leftover .todo in tests — fill these in before declaring Chunk 3 done." >&2
+  exit 1
+fi
+```
+
+Expected: no output and exit 0. Any matches mean a type wasn't tested — go back and write the test.
+
+---
+
+**Chunk 3 done.** Pure helpers + three registries exist with full round-trip coverage. Nothing is wired into the actual Vue components yet — that's Chunk 4 (dialog) and Chunk 5 (per-line glue).

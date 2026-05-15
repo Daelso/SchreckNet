@@ -209,7 +209,7 @@ const handlers = {
     },
   },
 
-  advantage_point: {
+  advantage: {
     label: (e) =>
       e.payload.delta > 0
         ? `Added ${e.payload.delta} advantage point(s)`
@@ -218,7 +218,7 @@ const handlers = {
       const counter = "advantages_remaining";
       const priorValue = state[counter];
       return {
-        type: "advantage_point",
+        type: "advantage",
         cost: input.delta * 3,
         payload: { counter, priorValue, delta: input.delta },
       };
@@ -229,7 +229,7 @@ const handlers = {
     },
   },
 
-  flaw_point: {
+  flaw: {
     label: (e) =>
       e.payload.delta > 0
         ? `Added ${e.payload.delta} flaw point(s)`
@@ -238,7 +238,7 @@ const handlers = {
       const counter = "flaws_remaining";
       const priorValue = state[counter];
       return {
-        type: "flaw_point",
+        type: "flaw",
         cost: input.delta * 3,
         payload: { counter, priorValue, delta: input.delta },
       };

@@ -455,7 +455,7 @@ export default defineComponent({
       }
       switch (this.categoryInput) {
         case "Advantage": {
-          const partialAdv = handlers.advantage_point.record(this, {
+          const partialAdv = handlers.advantage.record(this, {
             delta: this.dotsInput,
           });
           this.localLog = appendEntry(this.localLog, partialAdv, this.localXP);
@@ -570,7 +570,7 @@ export default defineComponent({
           break;
         }
         case "Flaw": {
-          const partialFlaw = handlers.flaw_point.record(this, {
+          const partialFlaw = handlers.flaw.record(this, {
             delta: this.dotsInput,
           });
           this.localLog = appendEntry(this.localLog, partialFlaw, this.localXP);

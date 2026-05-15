@@ -282,10 +282,10 @@ describe("vtm handlers — record/undo round trip", () => {
     expect(entry.cost).toBe(6); // 2*3
   });
 
-  it("advantage_point add (delta: +1): cost +3, undo restores priorValue", () => {
+  it("advantage add (delta: +1): cost +3, undo restores priorValue", () => {
     const charState = { advantages_remaining: 5 };
-    const entry = handlers.advantage_point.record(charState, { delta: 1 });
-    expect(entry.type).toBe("advantage_point");
+    const entry = handlers.advantage.record(charState, { delta: 1 });
+    expect(entry.type).toBe("advantage");
     expect(entry.cost).toBe(3);
     expect(entry.payload).toEqual({
       counter: "advantages_remaining",
@@ -296,14 +296,14 @@ describe("vtm handlers — record/undo round trip", () => {
     // simulate: advantagePoints increases (separate from advantages_remaining)
     // but the handler tracks advantages_remaining
     charState.advantages_remaining = 6;
-    handlers.advantage_point.undo(charState, entry);
+    handlers.advantage.undo(charState, entry);
     expect(charState.advantages_remaining).toBe(5);
   });
 
-  it("advantage_point remove (delta: -1): cost -3, undo restores priorValue", () => {
+  it("advantage remove (delta: -1): cost -3, undo restores priorValue", () => {
     const charState = { advantages_remaining: 3 };
-    const entry = handlers.advantage_point.record(charState, { delta: -1 });
-    expect(entry.type).toBe("advantage_point");
+    const entry = handlers.advantage.record(charState, { delta: -1 });
+    expect(entry.type).toBe("advantage");
     expect(entry.cost).toBe(-3);
     expect(entry.payload).toEqual({
       counter: "advantages_remaining",
@@ -312,14 +312,14 @@ describe("vtm handlers — record/undo round trip", () => {
     });
 
     charState.advantages_remaining = 2;
-    handlers.advantage_point.undo(charState, entry);
+    handlers.advantage.undo(charState, entry);
     expect(charState.advantages_remaining).toBe(3);
   });
 
-  it("flaw_point add (delta: +1): cost +3, undo restores priorValue", () => {
+  it("flaw add (delta: +1): cost +3, undo restores priorValue", () => {
     const charState = { flaws_remaining: 2 };
-    const entry = handlers.flaw_point.record(charState, { delta: 1 });
-    expect(entry.type).toBe("flaw_point");
+    const entry = handlers.flaw.record(charState, { delta: 1 });
+    expect(entry.type).toBe("flaw");
     expect(entry.cost).toBe(3);
     expect(entry.payload).toEqual({
       counter: "flaws_remaining",
@@ -328,14 +328,14 @@ describe("vtm handlers — record/undo round trip", () => {
     });
 
     charState.flaws_remaining = 3;
-    handlers.flaw_point.undo(charState, entry);
+    handlers.flaw.undo(charState, entry);
     expect(charState.flaws_remaining).toBe(2);
   });
 
-  it("flaw_point remove (delta: -1): cost -3, undo restores priorValue", () => {
+  it("flaw remove (delta: -1): cost -3, undo restores priorValue", () => {
     const charState = { flaws_remaining: 4 };
-    const entry = handlers.flaw_point.record(charState, { delta: -1 });
-    expect(entry.type).toBe("flaw_point");
+    const entry = handlers.flaw.record(charState, { delta: -1 });
+    expect(entry.type).toBe("flaw");
     expect(entry.cost).toBe(-3);
     expect(entry.payload).toEqual({
       counter: "flaws_remaining",
@@ -344,31 +344,31 @@ describe("vtm handlers — record/undo round trip", () => {
     });
 
     charState.flaws_remaining = 3;
-    handlers.flaw_point.undo(charState, entry);
+    handlers.flaw.undo(charState, entry);
     expect(charState.flaws_remaining).toBe(4);
   });
 
-  it("advantage_point undo: malicious counter key is silently ignored", () => {
+  it("advantage undo: malicious counter key is silently ignored", () => {
     const charState = { advantages_remaining: 5 };
     const maliciousEntry = {
-      type: "advantage_point",
+      type: "advantage",
       cost: 3,
       payload: { counter: "__proto__", priorValue: { isAdmin: true }, delta: 1 },
     };
     // Should not throw and should not modify state
-    handlers.advantage_point.undo(charState, maliciousEntry);
+    handlers.advantage.undo(charState, maliciousEntry);
     expect(charState.advantages_remaining).toBe(5);
     expect(({}).isAdmin).toBeUndefined();
   });
 
-  it("flaw_point undo: malicious counter key is silently ignored", () => {
+  it("flaw undo: malicious counter key is silently ignored", () => {
     const charState = { flaws_remaining: 2 };
     const maliciousEntry = {
-      type: "flaw_point",
+      type: "flaw",
       cost: 3,
       payload: { counter: "constructor", priorValue: {}, delta: 1 },
     };
-    handlers.flaw_point.undo(charState, maliciousEntry);
+    handlers.flaw.undo(charState, maliciousEntry);
     expect(charState.flaws_remaining).toBe(2);
   });
 });

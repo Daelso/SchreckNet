@@ -1423,7 +1423,7 @@ export default {
       if (this.xp >= 3) {
         this.xp_log = appendEntry(
           this.xp_log,
-          vtmHandlers.flaw_point.record(this, { delta: +1 }),
+          vtmHandlers.flaw.record(this, { delta: +1 }),
           this.xp
         );
         ++this.flaws;
@@ -1441,7 +1441,7 @@ export default {
       if (this.flaws !== 0) {
         this.xp_log = appendEntry(
           this.xp_log,
-          vtmHandlers.flaw_point.record(this, { delta: -1 }),
+          vtmHandlers.flaw.record(this, { delta: -1 }),
           this.xp
         );
         --this.flaws;
@@ -1459,7 +1459,7 @@ export default {
       if (this.xp >= 3) {
         this.xp_log = appendEntry(
           this.xp_log,
-          vtmHandlers.advantage_point.record(this, { delta: +1 }),
+          vtmHandlers.advantage.record(this, { delta: +1 }),
           this.xp
         );
         ++this.advantages;
@@ -1477,7 +1477,7 @@ export default {
       if (this.advantages !== 0) {
         this.xp_log = appendEntry(
           this.xp_log,
-          vtmHandlers.advantage_point.record(this, { delta: -1 }),
+          vtmHandlers.advantage.record(this, { delta: -1 }),
           this.xp
         );
         --this.advantages;

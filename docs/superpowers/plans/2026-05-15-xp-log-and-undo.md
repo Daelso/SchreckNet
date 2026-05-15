@@ -1034,3 +1034,231 @@ git commit -m "Add shared XpLogDialog component (newest-first, LIFO undo, editab
 ---
 
 **Chunk 4 done.** The dialog exists, satisfies the interface contract, and visually fits the project. It still has no per-line wiring — that's Chunk 5.
+
+---
+
+## Chunk 5: Per-game-line integration
+
+Same recipe applied three times — VtM, Werewolf, Hunter. Read the recipe first; the per-line tasks (5.2, 5.3, 5.4) substitute file paths and handler imports.
+
+### The recipe (read once, apply to each line)
+
+For a given game line with handler module `H` (e.g. `../../lib/xp/handlers/vtm.js`), `spendXp.vue` at `S`, and `edit-*.vue` at `E`:
+
+**1. In `S` (the spendXp dialog):**
+
+- Import the handler registry and the helper: `import handlers from "<H>"; import { appendEntry } from "../../lib/xp/xpLog.js";` (adjust relative path per file location).
+- In each branch of the `purchaseMade()` switch where a purchase succeeds, *after* the existing state mutation (`this.disciplines[name]++`, push, etc.) and *before* `this.localXP -= this.cost`:
+  - Compute the entry: `const partial = handlers[<type>].record(this, <input>);`
+    - `<type>` is the snake_case type from the handler registry, mapped from the existing switch case label (e.g. `"Clan Discipline"` → `"clan_discipline"`).
+    - `<input>` is whatever the existing branch already has on hand (e.g. for clan discipline: `{ discipline: this.clanDiscInput, power: this.disciplinePower }`).
+  - Append it to the dialog's local log: `this.localLog = appendEntry(this.localLog, partial, this.localXP);`
+  - For array-pushing types (specialty, discipline, ritual, ceremony), the existing push must include `entryId: partial.payload.entryId` so undo can find the item later. Add that field to the push.
+- Add `localLog` to the component's reactive state, seeded from `props.info.xp_log` (`localLog: ref(props.info.xp_log ?? [])`).
+- Add `localLog` to the `onOKClick` payload so it flows back to the parent.
+
+**2. In `E` (the edit page):**
+
+- Import `handlers from "<H>"`, `XpLogDialog from "../../lib/xp/XpLogDialog.vue"`, and `{ appendEntry, undoLast } from "../../lib/xp/xpLog.js"`.
+- Add `xp_log` to the reactive state, seeded from `this.kindred.xp_log ?? []` (or the line-equivalent: `garou`, `hunter`).
+- Pass `xp_log` into the `spendXp` dialog props: `xp_log: this.xp_log`.
+- In the `spendXp` callback that receives `data`, replace `this.xp_log` with `data.xp_log` (which the dialog returns alongside xp, attributes, etc.).
+- Convert the existing `±3xp` button handlers (the buttons whose tooltips say `Add an advantage point (-3xp)` / `Remove an advantage point (+3xp)` and the matching pair for flaws):
+  - Sign convention: **adding a point costs 3 XP** (the player spends), **removing a point refunds 3 XP**. The handler's `cost` follows the spec's "positive = spent, negative = refunded" rule, so `record` returns `cost: +3` for an add and `cost: -3` for a remove.
+  - Before the existing `this.xp -= 3` / `this.xp += 3` math, call:
+    - **Add an advantage point** (the `-3 XP` button — spends 3 XP, gains a point): `this.xp_log = appendEntry(this.xp_log, handlers.advantage_point.record(this, { delta: +1 }), this.xp);` — handler returns `cost: +3`.
+    - **Remove an advantage point** (the `+3 XP` button — refunds 3 XP, loses a point): `this.xp_log = appendEntry(this.xp_log, handlers.advantage_point.record(this, { delta: -1 }), this.xp);` — handler returns `cost: -3`.
+    - Mirror exactly for `flaw_point`.
+  - The existing `this.xp ± 3` math is left in place; `appendEntry` only records.
+- Add a new `q-item` to the action list immediately below the existing "Spend XP" item:
+
+  ```vue
+  <q-item clickable @click="xpLogOpen = true" :disable="!skillsDone || !attributesDone || !disciplinesDone">
+    <q-item-section avatar><q-icon color="secondary" name="history" /></q-item-section>
+    <q-item-section>
+      <q-item-label>XP Log</q-item-label>
+      <q-item-label caption class="text-white">Review and undo recent XP transactions</q-item-label>
+    </q-item-section>
+  </q-item>
+  ```
+
+  (For Werewolf/Hunter, use the equivalent gating conditions that already apply to that line's "Spend XP" item.)
+
+- Mount the dialog as a sibling element in the edit page's template (mirroring how `manageDisciplineFlaw` is wired today):
+
+  ```vue
+  <XpLogDialog
+    v-model="xpLogOpen"
+    :log="xp_log"
+    :handlers="handlers"
+    :remaining-xp="xp"
+    @undo="onUndo"
+    @note-edit="onNoteEdit"
+  />
+  ```
+
+  Add `xpLogOpen = ref(false)` (Composition setup) or `xpLogOpen: false` (Options API `data()`) to the component's reactive state, matching whichever style the existing edit page uses.
+
+- Add the two emit handlers (Options API form; convert to Composition if the page uses it):
+
+  ```js
+  onUndo(entry) {
+    const { log: next } = undoLast(this.xp_log);
+    handlers[entry.type].undo(this, entry);
+    this.xp += entry.cost;
+    this.xp_log = next;
+  },
+  onNoteEdit({ id, note }) {
+    this.xp_log = this.xp_log.map((e) => (e.id === id ? { ...e, note } : e));
+  },
+  ```
+
+  Do **not** invoke the dialog via the imperative `$q.dialog({ component: ... })` plugin — that contradicts the v-model-based emit contract Chunk 4 defines for the component.
+
+- **Do not** wire any logging into the existing "Set XP" input. Per spec it is intentionally out of scope (it represents an out-of-band ST grant, not a purchase). Leave that input untouched.
+
+- Update the axios save body (both the create and edit calls) to include `xp_log: this.xp_log` alongside the existing `xp: this.xp` field. There are typically 2–4 axios calls in each edit page; grep for `xp:` to find them and add the sibling field in each.
+
+**3. Manual smoke for the line:**
+
+- Run the dev stack (`quasar dev` + `npm run devStart`).
+- Open an existing character in the editor.
+- Spend XP via the dialog on at least three different categories. After saving, the log persists across reload.
+- Open the XP Log dialog. Undo the top entry. Confirm: XP refunds, the touched character field returns to its prior value, the entry disappears.
+- Trigger a refund event (Remove an advantage point). Open the log — a `cost: -3` entry appears. Undo it — XP drops by 3 and the advantage_remaining counter goes back up.
+- Edit a note. Save the character. Reload. The note persists.
+
+### Task 5.1: VtM integration
+
+**Files:**
+- Modify: `src/components/character_creator/vtm/spendXp.vue`
+- Modify: `src/components/character_creator/vtm/edit-vampire-5e.vue`
+
+Apply the recipe with:
+
+- `H` = `src/lib/xp/handlers/vtm.js`
+- `S` = [src/components/character_creator/vtm/spendXp.vue](../../src/components/character_creator/vtm/spendXp.vue) — `purchaseMade()` switch starts at line 446.
+- `E` = [src/components/character_creator/vtm/edit-vampire-5e.vue](../../src/components/character_creator/vtm/edit-vampire-5e.vue) — `spendXp` method at line 1167, `±3xp` button handlers near line 1280–1330, character-load axios call around line 882, character-save axios calls around lines 920, 971, 1074, 1122, 1192.
+
+VtM-specific notes:
+
+- **Label → type mapping** (from the existing `purchaseMade()` switch in `spendXp.vue`):
+
+  | spendXp switch label | Registry type |
+  |---|---|
+  | `"Advantage"` | `advantage_point` (with `delta: +1`) |
+  | `"Attributes"` | `attribute_raise` |
+  | `"Blood Potency"` | `blood_potency` |
+  | `"Blood Sorcery Ritual"` | `blood_ritual` |
+  | `"Caitiff Discipline"` | `caitiff_discipline` |
+  | `"Clan Discipline"` | `clan_discipline` |
+  | `"Flaw"` | `flaw_point` (with `delta: +1`) |
+  | `"Oblivion Ceremony"` | `oblivion_ceremony` |
+  | `"Out of Clan Discipline"` | `out_of_clan_discipline` |
+  | `"Skills"` | `skill_raise` |
+  | `"Specialty"` | `specialty` |
+
+  `Thin-Blood Alchemy` is an empty branch in the current switch — skip it. The two `±3xp` button handlers in the edit page map to `advantage_point` / `flaw_point` with `delta: -1` (the "Remove" buttons).
+
+- The dialog already does `disciplineSkillsObj.push({ discipline, skill })`; extend each such push with the `entryId` from the registered entry.
+- Advantage/flaw `±3xp` are wired to buttons in the edit page's clan/coterie card header.
+
+Steps:
+
+- [ ] **Step 5.1.1: Read both files end-to-end and map every existing purchase branch to its registry type.** Make a list (in your head or scratch file). Do not start editing until the mapping is complete.
+
+- [ ] **Step 5.1.2: Apply the recipe to `spendXp.vue`.** One purchase branch at a time, in switch order. After each branch, save and reload the page; the dialog should still work for that category (the log just isn't surfaced yet).
+
+- [ ] **Step 5.1.3: Apply the recipe to `edit-vampire-5e.vue`** — load/save axios bodies, ±3xp button handlers, new "XP Log" menu item, `<XpLogDialog>` mount, `onUndo` / `onNoteEdit` handlers.
+
+- [ ] **Step 5.1.4: Run the manual smoke for VtM.** Use the checklist under "Manual smoke for the line" above.
+
+- [ ] **Step 5.1.5: Commit**
+
+```bash
+git add src/components/character_creator/vtm/spendXp.vue \
+        src/components/character_creator/vtm/edit-vampire-5e.vue
+git commit -m "VtM: record XP transactions and surface the XP Log dialog"
+```
+
+### Task 5.2: Werewolf integration
+
+**Files:**
+- Modify: `src/components/character_creator/werewolf/spendXp.vue`
+- Modify: `src/components/character_creator/werewolf/edit-garou-5e.vue`
+
+Apply the recipe with:
+
+- `H` = `src/lib/xp/handlers/werewolf.js`
+- `S` = [src/components/character_creator/werewolf/spendXp.vue](../../src/components/character_creator/werewolf/spendXp.vue)
+- `E` = [src/components/character_creator/werewolf/edit-garou-5e.vue](../../src/components/character_creator/werewolf/edit-garou-5e.vue)
+
+Werewolf-specific notes:
+
+- The Garou model has both `xp` and `spent_xp`. If any purchase branch in `werewolf/spendXp.vue` increments `spent_xp` (or any equivalent), the corresponding handler entry's `undo` (already covered in Chunk 3 Task 3.4) must reverse that — and the recipe's axios-body update must include `spent_xp` if the existing code persists it. Grep for `spent_xp` in the edit page to confirm.
+- All other notes from VtM apply.
+
+Steps:
+
+- [ ] **Step 5.2.1: Produce the label→type mapping and the axios-save-site list as written artifacts before editing.** Reuse the type enumeration from Chunk 3 Task 3.4. Grep `edit-garou-5e.vue` for `xp:` and `xp,` to surface every place a save body is built — there are typically 2–4 such sites. Note them inline at the top of the file or in a scratch note.
+- [ ] **Step 5.2.2: Apply the recipe to `werewolf/spendXp.vue`.**
+- [ ] **Step 5.2.3: Apply the recipe to `edit-garou-5e.vue`.** Make sure every axios-save site you listed in 5.2.1 now includes `xp_log: this.xp_log`. If the file also persists `spent_xp`, propagate it the same way (the column is already in the model).
+- [ ] **Step 5.2.4: Run the manual smoke for Werewolf.**
+- [ ] **Step 5.2.5: Commit**
+
+```bash
+git add src/components/character_creator/werewolf/spendXp.vue \
+        src/components/character_creator/werewolf/edit-garou-5e.vue
+git commit -m "Werewolf: record XP transactions and surface the XP Log dialog"
+```
+
+### Task 5.3: Hunter integration
+
+**Files:**
+- Modify: `src/components/character_creator/hunter/spendXp.vue`
+- Modify: `src/components/character_creator/hunter/edit-hunter-5e.vue`
+
+Apply the recipe with:
+
+- `H` = `src/lib/xp/handlers/hunter.js`
+- `S` = [src/components/character_creator/hunter/spendXp.vue](../../src/components/character_creator/hunter/spendXp.vue)
+- `E` = [src/components/character_creator/hunter/edit-hunter-5e.vue](../../src/components/character_creator/hunter/edit-hunter-5e.vue) — `±3xp` buttons at lines 57–80.
+
+Hunter-specific notes: Hunter's categories include Edges and Perks (instead of Disciplines). The handler types from Chunk 3 Task 3.5 already cover these.
+
+Steps:
+
+- [ ] **Step 5.3.1: Produce the label→type mapping and the axios-save-site list as written artifacts before editing.** Reuse the type enumeration from Chunk 3 Task 3.5. Grep `edit-hunter-5e.vue` for `xp:` and `xp,` to surface every save site.
+- [ ] **Step 5.3.2: Apply the recipe to `hunter/spendXp.vue`.**
+- [ ] **Step 5.3.3: Apply the recipe to `edit-hunter-5e.vue`.** Make sure every axios-save site you listed in 5.3.1 now includes `xp_log: this.xp_log`.
+- [ ] **Step 5.3.4: Run the manual smoke for Hunter.**
+- [ ] **Step 5.3.5: Commit**
+
+```bash
+git add src/components/character_creator/hunter/spendXp.vue \
+        src/components/character_creator/hunter/edit-hunter-5e.vue
+git commit -m "Hunter: record XP transactions and surface the XP Log dialog"
+```
+
+### Task 5.4: Cross-line consistency check
+
+- [ ] **Step 5.4.1: Run the full unit test suite one more time**
+
+```bash
+npm run test:unit
+```
+
+Expected: PASS, no `.todo`.
+
+- [ ] **Step 5.4.2: Spot-check each of the three edit pages**
+
+For each of `edit-vampire-5e.vue`, `edit-garou-5e.vue`, `edit-hunter-5e.vue`, confirm:
+
+- An "XP Log" item appears in the side action list.
+- The Spend XP flow records entries; the log dialog shows them; LIFO undo works.
+- Reload after save preserves the log; the round-trip through the API works.
+- Manual XP edits via the "Set XP" input do not produce log entries (per spec, those are explicitly out of scope).
+
+---
+
+**Chunk 5 done.** All three game lines now record purchases, surface the log, and support LIFO undo.

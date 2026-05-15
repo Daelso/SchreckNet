@@ -937,6 +937,79 @@ export default {
         this.flaws = v;
       },
     },
+    xpState() {
+      const self = this;
+      const ATTR_NAMES = [
+        "Charisma",
+        "Composure",
+        "Dexterity",
+        "Intelligence",
+        "Manipulation",
+        "Resolve",
+        "Stamina",
+        "Strength",
+        "Wits",
+      ];
+      return {
+        attributes: ATTR_NAMES.map((name) => ({
+          name,
+          get points() {
+            return self[name.toLowerCase()];
+          },
+          set points(v) {
+            self[name.toLowerCase()] = v;
+          },
+        })),
+        skills: new Proxy(
+          {},
+          {
+            get(_, prop) {
+              return self.trueSkills[prop];
+            },
+            set(_, prop, value) {
+              self.trueSkills = { ...self.trueSkills, [prop]: value };
+              return true;
+            },
+          }
+        ),
+        get disciplines() {
+          return self.disciplines;
+        },
+        set disciplines(v) {
+          self.disciplines = v;
+        },
+        get disciplineSkillsObj() {
+          return self.disciplineSkills;
+        },
+        set disciplineSkillsObj(v) {
+          self.disciplineSkills = v;
+        },
+        get potency() {
+          return self.generation.potency;
+        },
+        set potency(v) {
+          self.generation.potency = v;
+        },
+        get specialtiesFromXp() {
+          return self.specialtiesFromXp;
+        },
+        set specialtiesFromXp(v) {
+          self.specialtiesFromXp = v;
+        },
+        get advantages_remaining() {
+          return self.advantages;
+        },
+        set advantages_remaining(v) {
+          self.advantages = v;
+        },
+        get flaws_remaining() {
+          return self.flaws;
+        },
+        set flaws_remaining(v) {
+          self.flaws = v;
+        },
+      };
+    },
   },
   methods: {
     isValidImageUrl(url) {
@@ -1330,7 +1403,7 @@ export default {
 
     onUndo(entry) {
       const { log: next } = undoLast(this.xp_log);
-      vtmHandlers[entry.type].undo(this, entry);
+      vtmHandlers[entry.type].undo(this.xpState, entry);
       this.xp += entry.cost;
       this.xp_log = next;
     },

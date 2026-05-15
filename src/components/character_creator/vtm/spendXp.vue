@@ -250,6 +250,8 @@ import clanDisciplines from "../vtm/5eClanDiscs.json";
 import disciplineSkills from "../vtm/5eDisciplines.json";
 import bloodRituals from "../vtm/5eBloodRituals.json";
 import oblivionCeremonies from "../vtm/5eOblivionCeremonies.json";
+import handlers from "../../../lib/xp/handlers/vtm.js";
+import { appendEntry } from "../../../lib/xp/xpLog.js";
 
 export default defineComponent({
   name: "spendXP",
@@ -263,6 +265,8 @@ export default defineComponent({
       return [...Array(size).keys()].map((i) => i + startAt);
     }
     let localXP = ref(props.info.xp);
+    // Seed from real character state so undo captures the correct priorValue.
+    const initialFlaws = props.info.flaws_remaining ?? 0;
     let advantagePoints = ref(0);
     let localAttributes = ref(props.info.attributes);
     let potency = ref(props.info.potency);
@@ -270,13 +274,21 @@ export default defineComponent({
     let disciplineSkillsObj = ref(props.info.disciplineSkills);
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
-    let flaws_remaining = ref(0);
+    let flaws_remaining = ref(initialFlaws);
+    let localLog = ref(props.info.xp_log ?? []);
+    let advantages_remaining = ref(props.info.advantages_remaining ?? 0);
 
     return {
       dialogRef,
       cult: props.info.cult,
       onDialogHide,
       onOKClick() {
+        // Most values are returned as raw refs. Vue's Options API reactive()
+        // proxy auto-unwraps nested refs on assignment (this.xp = data.xp works
+        // even though data.xp is a Ref). Callers that need the raw value use
+        // .value explicitly (e.g. data.xp_log.value, data.attributes.value).
+        // advantages and flaws_remaining are deltas — edit pages add them to
+        // the existing totals.
         onDialogOK({
           advantages: advantagePoints,
           attributes: localAttributes,
@@ -286,7 +298,8 @@ export default defineComponent({
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
-          flaws_remaining: flaws_remaining,
+          flaws_remaining: ref(flaws_remaining.value - initialFlaws),
+          xp_log: localLog,
         });
       },
       range,
@@ -297,6 +310,8 @@ export default defineComponent({
       //Begin actual vars below
       advantagePoints,
       flaws_remaining,
+      localLog,
+      advantages_remaining,
       oblivionCeremonies,
       cost: ref(0),
       localXP,
@@ -317,6 +332,10 @@ export default defineComponent({
       specialtyDefinition: ref(""),
       dotsInput: ref(1),
       localAttributes,
+      // Alias for handlers.attribute_raise (`state.attributes.find(...)`). Without
+      // this the handler crashes when buying an attribute via Spend XP — see PR #281
+      // smoke test defect #1.
+      attributes: localAttributes,
       specialtiesFromXp,
       edit: ref(props.info.edit),
       attributeOptions: ref(props.info.attributes),
@@ -444,20 +463,33 @@ export default defineComponent({
         return;
       }
       switch (this.categoryInput) {
-        case "Advantage":
+        case "Advantage": {
+          const partialAdv = handlers.advantage.record(this, {
+            delta: this.dotsInput,
+          });
+          this.localLog = appendEntry(this.localLog, partialAdv, this.localXP);
           this.advantagePoints = this.advantagePoints + this.dotsInput;
           break;
-        case "Attributes":
+        }
+        case "Attributes": {
+          const partialAttr = handlers.attribute_raise.record(this, {
+            attributeName: this.attributeInput.name,
+          });
+          this.localLog = appendEntry(this.localLog, partialAttr, this.localXP);
           let index = this.localAttributes.findIndex(
             (x) => x.name == this.attributeInput.name
           );
           this.attributeInput.points++;
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
-        case "Blood Potency":
+        }
+        case "Blood Potency": {
+          const partialBP = handlers.blood_potency.record(this, {});
+          this.localLog = appendEntry(this.localLog, partialBP, this.localXP);
           this.potency = this.potency + this.dotsInput;
           break;
-        case "Blood Sorcery Ritual":
+        }
+        case "Blood Sorcery Ritual": {
           if (
             this.disciplineSkillsObj.filter(
               (e) => e.skill === this.disciplinePower
@@ -471,14 +503,20 @@ export default defineComponent({
             });
             return;
           }
-
+          const partialBR = handlers.blood_ritual.record(this, {
+            ritualLevel: this.ritualLevel,
+            ritualName: this.ritualInput.name,
+          });
+          this.localLog = appendEntry(this.localLog, partialBR, this.localXP);
           this.disciplineSkillsObj.push({
             discipline: "Blood Sorcery",
             skill: "Ritual: " + this.ritualInput.name,
+            entryId: partialBR.payload.entryId,
           });
 
           break;
-        case "Caitiff Discipline":
+        }
+        case "Caitiff Discipline": {
           if (
             this.disciplineSkillsObj.filter(
               (e) => e.skill === this.disciplinePower
@@ -492,14 +530,24 @@ export default defineComponent({
             });
             return;
           }
-
+          const partialCait = handlers.caitiff_discipline.record(this, {
+            discipline: this.clanDiscInput,
+            power: this.disciplinePower,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialCait,
+            this.localXP
+          );
           this.disciplines[this.clanDiscInput]++;
           this.disciplineSkillsObj.push({
             discipline: this.clanDiscInput,
             skill: this.disciplinePower,
+            entryId: partialCait.payload.entryId,
           });
           break;
-        case "Clan Discipline":
+        }
+        case "Clan Discipline": {
           if (
             this.disciplineSkillsObj.filter(
               (e) => e.skill === this.disciplinePower
@@ -513,18 +561,33 @@ export default defineComponent({
             });
             return;
           }
-
+          const partialClan = handlers.clan_discipline.record(this, {
+            discipline: this.clanDiscInput,
+            power: this.disciplinePower,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialClan,
+            this.localXP
+          );
           this.disciplines[this.clanDiscInput]++;
           this.disciplineSkillsObj.push({
             discipline: this.clanDiscInput,
             skill: this.disciplinePower,
+            entryId: partialClan.payload.entryId,
           });
           break;
-        case "Flaw":
+        }
+        case "Flaw": {
+          const partialFlaw = handlers.flaw.record(this, {
+            delta: this.dotsInput,
+          });
+          this.localLog = appendEntry(this.localLog, partialFlaw, this.localXP);
           this.flaws_remaining = this.flaws_remaining + this.dotsInput;
 
           break;
-        case "Oblivion Ceremony":
+        }
+        case "Oblivion Ceremony": {
           if (
             this.disciplineSkillsObj.filter(
               (e) => e.skill === this.disciplinePower
@@ -538,14 +601,20 @@ export default defineComponent({
             });
             return;
           }
-
+          const partialOC = handlers.oblivion_ceremony.record(this, {
+            ceremonyLevel: this.ceremonyLevel,
+            ceremonyName: this.oblivionInput.name,
+          });
+          this.localLog = appendEntry(this.localLog, partialOC, this.localXP);
           this.disciplineSkillsObj.push({
             discipline: "Oblivion",
             skill: "Ceremony: " + this.oblivionInput.name,
+            entryId: partialOC.payload.entryId,
           });
 
           break;
-        case "Out of Clan Discipline":
+        }
+        case "Out of Clan Discipline": {
           if (
             this.disciplineSkillsObj.filter(
               (e) => e.skill === this.disciplinePower
@@ -559,7 +628,15 @@ export default defineComponent({
             });
             return;
           }
-
+          const partialOOC = handlers.out_of_clan_discipline.record(this, {
+            discipline: this.clanDiscInput,
+            power: this.disciplinePower,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialOOC,
+            this.localXP
+          );
           if (typeof this.disciplines[this.clanDiscInput] !== "undefined") {
             this.disciplines[this.clanDiscInput]++;
           } else {
@@ -569,17 +646,39 @@ export default defineComponent({
           this.disciplineSkillsObj.push({
             discipline: this.clanDiscInput,
             skill: this.disciplinePower,
+            entryId: partialOOC.payload.entryId,
           });
           break;
-        case "Skills":
+        }
+        case "Skills": {
+          const partialSkill = handlers.skill_raise.record(this, {
+            skillName: this.skillCategory,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialSkill,
+            this.localXP
+          );
           this.skills[this.skillCategory.toLowerCase()]++;
           break;
-        case "Specialty":
-          this.specialtiesFromXp.push({
+        }
+        case "Specialty": {
+          const partialSpec = handlers.specialty.record(this, {
             skill: this.specialtyInput,
             specialty: this.specialtyDefinition,
           });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialSpec,
+            this.localXP
+          );
+          this.specialtiesFromXp.push({
+            skill: this.specialtyInput,
+            specialty: this.specialtyDefinition,
+            entryId: partialSpec.payload.entryId,
+          });
           break;
+        }
         case "Thin-Blood Alchemy":
           // code block
           break;

@@ -171,6 +171,8 @@
 import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import edgesList from "../hunter/edgesAndPerks.json";
+import handlers from "../../../lib/xp/handlers/hunter.js";
+import { appendEntry } from "../../../lib/xp/xpLog.js";
 
 export default defineComponent({
   name: "spendXP",
@@ -184,26 +186,36 @@ export default defineComponent({
       return [...Array(size).keys()].map((i) => i + startAt);
     }
     let localXP = ref(props.info.xp);
-    let advantagePoints = ref(0);
+    // Seed from real character state so undo captures the correct priorValue.
+    const initialAdvantages = props.info.advantagePoints ?? 0;
+    const initialFlaws = props.info.flaws_remaining ?? 0;
+    let advantagePoints = ref(initialAdvantages);
     let localAttributes = ref(props.info.attributes);
-    let flaws_remaining = ref(0);
+    let flaws_remaining = ref(initialFlaws);
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     let localSpentXp = ref(props.info.spentXp);
     let localEdgeArr = ref(props.info.edgeArr);
+    let localLog = ref(props.info.xp_log ?? []);
     return {
       dialogRef,
       onDialogHide,
       onOKClick() {
+        // Most values are returned as raw refs; Vue's Options API reactive()
+        // proxy auto-unwraps them on assignment in the edit page.  Callers
+        // that need the raw value use .value explicitly (data.xp_log.value,
+        // data.attributes.value).  advantages and flaws_remaining are deltas
+        // — the edit page adds them to the existing totals.
         onDialogOK({
-          advantages: advantagePoints,
+          advantages: ref(advantagePoints.value - initialAdvantages),
           attributes: localAttributes,
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
           spentXp: localSpentXp,
           edgeArr: localEdgeArr,
-          flaws_remaining: flaws_remaining,
+          flaws_remaining: ref(flaws_remaining.value - initialFlaws),
+          xp_log: localLog,
         });
       },
       range,
@@ -216,6 +228,7 @@ export default defineComponent({
       cost: ref(0),
       localXP,
       localSpentXp,
+      localLog,
       flaws_remaining,
       edgeCat: ref(""),
       edge: ref(""),
@@ -318,41 +331,116 @@ export default defineComponent({
         });
         return;
       }
+      // Build a state proxy matching what hunter handlers expect
+      const handlerState = {
+        attributes: this.localAttributes,
+        skills: this.skills,
+        spentXp: this.localSpentXp,
+        specialtiesFromXp: this.specialtiesFromXp,
+        edgeArr: this.localEdgeArr,
+        advantagePoints: this.advantagePoints,
+        flaws_remaining: this.flaws_remaining,
+      };
       switch (this.categoryInput) {
-        case "Advantage":
+        case "Advantage": {
+          const partialAdv = handlers.advantage.record(handlerState, {
+            delta: this.dotsInput,
+          });
+          this.localLog = appendEntry(this.localLog, partialAdv, this.localXP);
           this.advantagePoints = this.advantagePoints + this.dotsInput;
           break;
-        case "Attributes":
+        }
+        case "Attributes": {
+          const partialAttr = handlers.attribute_raise.record(handlerState, {
+            attributeName: this.attributeInput.name,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialAttr,
+            this.localXP
+          );
           let index = this.localAttributes.findIndex(
             (x) => x.name == this.attributeInput.name
           );
           this.attributeInput.points++;
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
-        case "Edge":
-          this.localEdgeArr.edges.push({
+        }
+        case "Edge": {
+          const partialEdge = handlers.edge.record(handlerState, {
             category: this.edgeCat,
             edge: this.edge,
           });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialEdge,
+            this.localXP
+          );
+          this.localEdgeArr.edges.push({
+            category: this.edgeCat,
+            edge: this.edge,
+            entryId: partialEdge.payload.entryId,
+          });
           break;
-        case "Flaw":
+        }
+        case "Flaw": {
+          const partialFlaw = handlers.flaw.record(handlerState, {
+            delta: this.dotsInput,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialFlaw,
+            this.localXP
+          );
           this.flaws_remaining = this.flaws_remaining + this.dotsInput;
           break;
-        case "Perk":
-          this.localEdgeArr.perks.push({
+        }
+        case "Perk": {
+          const partialPerk = handlers.perk.record(handlerState, {
             category: this.perk.parent,
             perk: this.perk.name,
           });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialPerk,
+            this.localXP
+          );
+          this.localEdgeArr.perks.push({
+            category: this.perk.parent,
+            perk: this.perk.name,
+            entryId: partialPerk.payload.entryId,
+          });
           break;
-        case "Skills":
+        }
+        case "Skills": {
+          const partialSkill = handlers.skill_raise.record(handlerState, {
+            skillName: this.skillCategory,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialSkill,
+            this.localXP
+          );
           this.skills[this.skillCategory.toLowerCase()]++;
           break;
-        case "Specialty":
-          this.specialtiesFromXp.push({
+        }
+        case "Specialty": {
+          const partialSpec = handlers.specialty.record(handlerState, {
             skill: this.specialtyInput,
             specialty: this.specialtyDefinition,
           });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialSpec,
+            this.localXP
+          );
+          this.specialtiesFromXp.push({
+            skill: this.specialtyInput,
+            specialty: this.specialtyDefinition,
+            entryId: partialSpec.payload.entryId,
+          });
           break;
+        }
       }
       this.localXP = this.localXP - this.cost;
       this.localSpentXp = this.localSpentXp + this.cost;

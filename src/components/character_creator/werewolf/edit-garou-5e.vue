@@ -436,6 +436,25 @@
               >
             </q-item-section>
           </q-item>
+          <q-item
+            clickable
+            @click="xpLogOpen = true"
+            :disable="
+              (!this.skillsDone || !this.attributesDone || !this.tribesDone) &&
+              this.debug !== true
+            "
+          >
+            <q-item-section avatar>
+              <q-icon color="secondary" name="history" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>XP Log</q-item-label>
+              <q-item-label caption class="text-white"
+                >Review and undo recent XP transactions</q-item-label
+              >
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-card>
       <tabs
@@ -456,6 +475,15 @@
         :debug="this.debug"
       />
     </div>
+
+    <XpLogDialog
+      v-model="xpLogOpen"
+      :log="xp_log"
+      :handlers="handlers"
+      :remaining-xp="xp"
+      @undo="onUndo"
+      @note-edit="onNoteEdit"
+    />
   </q-form>
 </template>
 
@@ -577,6 +605,9 @@ import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
 import tribeComponent from "../werewolf/tribes.vue";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
+import werewolfHandlers from "../../../lib/xp/handlers/werewolf.js";
+import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
+import { appendEntry, undoLast } from "../../../lib/xp/xpLog.js";
 
 const metaData = {
   title: "SchreckNet",
@@ -595,6 +626,7 @@ const metaData = {
 export default {
   components: {
     tabs,
+    XpLogDialog,
   },
   async setup() {
     const router = useRouter();
@@ -740,6 +772,9 @@ export default {
       touchstones: this.garou.touchstones,
       xp: this.garou.xp,
       spentXp: this.garou.spent_xp,
+      xp_log: this.garou.xp_log ?? [],
+      xpLogOpen: false,
+      handlers: werewolfHandlers,
       skillsDone: true,
       tribesDone: true,
       saving: false,
@@ -818,6 +853,7 @@ export default {
         purchased_renown: this.purchased_renown,
         bonus_renown: this.bonus_renown,
         imgLink: this.imgLink,
+        xp_log: this.xp_log,
       };
 
       axios
@@ -962,6 +998,7 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
               spentXp: this.spentXp,
+              xp_log: this.xp_log,
               tribe_renown: this.tribe_renown,
               purchased_renown: this.purchased_renown,
               tribe: this.tribe,
@@ -969,6 +1006,7 @@ export default {
               gift_count: this.getGiftAmount,
               purchased_gifts: this.purchased_gifts,
               flaws_remaining: this.flaws,
+              advantagePoints: this.advantages,
             },
           },
         })
@@ -982,6 +1020,7 @@ export default {
           this.tribe_renown = data.tribe_renown;
           this.purchased_gifts = data.purchased_gifts;
           this.flaws = this.flaws + data.flaws_remaining.value;
+          this.xp_log = data.xp_log.value;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
@@ -1027,8 +1066,22 @@ export default {
       return optionsArr;
     },
 
+    onUndo(entry) {
+      const { log: next } = undoLast(this.xp_log);
+      werewolfHandlers[entry.type].undo(this.xpState, entry);
+      this.xp += entry.cost;
+      this.xp_log = next;
+    },
+    onNoteEdit({ id, note }) {
+      this.xp_log = this.xp_log.map((e) => (e.id === id ? { ...e, note } : e));
+    },
     add_flaw() {
       if (this.xp >= 3) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          werewolfHandlers.flaw.record(this, { delta: +1 }),
+          this.xp
+        );
         ++this.flaws;
         this.xp = this.xp - 3;
       } else {
@@ -1042,6 +1095,11 @@ export default {
     },
     subtract_flaw() {
       if (this.flaws !== 0) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          werewolfHandlers.flaw.record(this, { delta: -1 }),
+          this.xp
+        );
         --this.flaws;
         this.xp = this.xp + 3;
       } else {
@@ -1055,6 +1113,11 @@ export default {
     },
     add_advantage() {
       if (this.xp >= 3) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          werewolfHandlers.advantage.record(this, { delta: +1 }),
+          this.xp
+        );
         ++this.advantages;
         this.xp = this.xp - 3;
       } else {
@@ -1068,6 +1131,11 @@ export default {
     },
     subtract_advantage() {
       if (this.advantages !== 0) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          werewolfHandlers.advantage.record(this, { delta: -1 }),
+          this.xp
+        );
         --this.advantages;
         this.xp = this.xp + 3;
       } else {
@@ -1081,6 +1149,116 @@ export default {
     },
   },
   computed: {
+    // These aliases are required: handler.record/undo functions read state keys
+    // that differ from this component's reactive property names.
+    // - spent_xp: handlers read state.spent_xp; this component stores spentXp.
+    // - advantagePoints / flaws_remaining: add_advantage / add_flaw pass `this`
+    //   to handler.record(), which reads state.advantagePoints / state.flaws_remaining.
+    //   Removing them without refactoring those ±3xp button paths would break recording.
+    spent_xp: {
+      get() {
+        return this.spentXp;
+      },
+      set(v) {
+        this.spentXp = v;
+      },
+    },
+    advantagePoints: {
+      get() {
+        return this.advantages;
+      },
+      set(v) {
+        this.advantages = v;
+      },
+    },
+    flaws_remaining: {
+      get() {
+        return this.flaws;
+      },
+      set(v) {
+        this.flaws = v;
+      },
+    },
+    xpState() {
+      const self = this;
+      const ATTR_NAMES = [
+        "Charisma",
+        "Composure",
+        "Dexterity",
+        "Intelligence",
+        "Manipulation",
+        "Resolve",
+        "Stamina",
+        "Strength",
+        "Wits",
+      ];
+      return {
+        attributes: ATTR_NAMES.map((name) => ({
+          name,
+          get points() {
+            return self[name.toLowerCase()];
+          },
+          set points(v) {
+            self[name.toLowerCase()] = v;
+          },
+        })),
+        skills: new Proxy(
+          {},
+          {
+            get(_, prop) {
+              return self.trueSkills[prop];
+            },
+            set(_, prop, value) {
+              self.trueSkills = { ...self.trueSkills, [prop]: value };
+              return true;
+            },
+          }
+        ),
+        get specialtiesFromXp() {
+          return self.specialtiesFromXp;
+        },
+        set specialtiesFromXp(v) {
+          self.specialtiesFromXp = v;
+        },
+        get spent_xp() {
+          return self.spentXp;
+        },
+        set spent_xp(v) {
+          self.spentXp = v;
+        },
+        get purchased_gifts() {
+          return self.purchased_gifts;
+        },
+        set purchased_gifts(v) {
+          self.purchased_gifts = v;
+        },
+        get gift_total() {
+          return self.getGiftAmount;
+        },
+        // gift_total is reconstructed from purchased_gifts after splices;
+        // the setter is a no-op because getGiftAmount recomputes it.
+        // eslint-disable-next-line no-unused-vars
+        set gift_total(_v) {},
+        get purchased_renown() {
+          return self.purchased_renown;
+        },
+        set purchased_renown(v) {
+          self.purchased_renown = v;
+        },
+        get advantagePoints() {
+          return self.advantages;
+        },
+        set advantagePoints(v) {
+          self.advantages = v;
+        },
+        get flaws_remaining() {
+          return self.flaws;
+        },
+        set flaws_remaining(v) {
+          self.flaws = v;
+        },
+      };
+    },
     renownTotal() {
       let trueRenown = { glory: 0, honor: 0, wisdom: 0 };
       trueRenown.glory = this.tribe_renown.glory + this.purchased_renown.glory;

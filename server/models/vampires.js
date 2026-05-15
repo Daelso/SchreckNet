@@ -116,6 +116,11 @@ const Vampires = db.sequelize.define("vampires", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
+  xp_log: {
+    type: Sequelize.JSON,
+    allowNull: false,
+    defaultValue: [],
+  },
   specialties: {
     type: Sequelize.JSON,
     allowNull: false,

@@ -234,6 +234,51 @@ describe("hunter handlers — record/undo round trip", () => {
     expect(charState.spentXp).toBe(0);
   });
 
+  // ── multi-record dialog session ─────────────────────────────────────────
+  // The undo math should be robust against stale priorValue — reversing only
+  // this entry's delta — regardless of dialog mutation order.
+  it("advantage multi-record (stale priorValue): undoing the top entry only reverses its own delta", () => {
+    const charState = { advantagePoints: 2, spentXp: 6 };
+    const e1 = handlers.advantage.record(charState, { delta: 2 });
+    charState.spentXp = 12;
+    const e2 = handlers.advantage.record(charState, { delta: 3 });
+    expect(e1.payload.priorValue).toBe(2);
+    expect(e2.payload.priorValue).toBe(2);
+    expect(e1.payload.priorSpentXp).toBe(6);
+    expect(e2.payload.priorSpentXp).toBe(12);
+
+    charState.advantagePoints = 7;
+    charState.spentXp = 21;
+
+    handlers.advantage.undo(charState, e2);
+    expect(charState.advantagePoints).toBe(4);
+    expect(charState.spentXp).toBe(12);
+    handlers.advantage.undo(charState, e1);
+    expect(charState.advantagePoints).toBe(2);
+    expect(charState.spentXp).toBe(6);
+  });
+
+  it("flaw multi-record (stale priorValue): undoing the top entry only reverses its own delta", () => {
+    const charState = { flaws_remaining: 1, spentXp: 3 };
+    const e1 = handlers.flaw.record(charState, { delta: 1 });
+    charState.spentXp = 6;
+    const e2 = handlers.flaw.record(charState, { delta: 2 });
+    expect(e1.payload.priorValue).toBe(1);
+    expect(e2.payload.priorValue).toBe(1);
+    expect(e1.payload.priorSpentXp).toBe(3);
+    expect(e2.payload.priorSpentXp).toBe(6);
+
+    charState.flaws_remaining = 4;
+    charState.spentXp = 12;
+
+    handlers.flaw.undo(charState, e2);
+    expect(charState.flaws_remaining).toBe(2);
+    expect(charState.spentXp).toBe(6);
+    handlers.flaw.undo(charState, e1);
+    expect(charState.flaws_remaining).toBe(1);
+    expect(charState.spentXp).toBe(3);
+  });
+
   // ── allowlist guards ────────────────────────────────────────────────────
   it("advantage undo: malicious counter key is silently ignored", () => {
     const charState = { advantagePoints: 3, spentXp: 6 };

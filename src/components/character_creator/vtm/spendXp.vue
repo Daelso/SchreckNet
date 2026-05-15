@@ -200,7 +200,7 @@
                 {{ this.skills[this.skillCategory.toLowerCase()] }}</q-badge
               >
 
-              <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
+              <q-badge>Cost to Purchase: {{ this.displayCost() }}</q-badge>
               <div
                 v-if="this.oblivionInput"
                 class="q-my-md"
@@ -347,6 +347,12 @@ export default defineComponent({
     };
   },
   methods: {
+    // Show "—" when the category is picked but the sub-selection (attribute,
+    // skill, discipline, etc.) isn't ready yet, avoiding "Cost to Purchase: NaN".
+    displayCost() {
+      const c = this.calculateUpgrade();
+      return Number.isFinite(c) ? c : typeof c === "string" ? c : "—";
+    },
     calculateUpgrade() {
       switch (this.categoryInput) {
         case "Advantage":
@@ -469,6 +475,10 @@ export default defineComponent({
           });
           this.localLog = appendEntry(this.localLog, partialAdv, this.localXP);
           this.advantagePoints = this.advantagePoints + this.dotsInput;
+          // Keep advantages_remaining in sync so a subsequent record() in this
+          // session captures an accurate priorValue.
+          this.advantages_remaining =
+            this.advantages_remaining + this.dotsInput;
           break;
         }
         case "Attributes": {

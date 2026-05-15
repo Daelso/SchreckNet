@@ -223,9 +223,12 @@ const handlers = {
         payload: { counter, priorValue, delta: input.delta },
       };
     },
+    // Reverse by delta — robust against stale priorValue from log entries
+    // recorded before the spendXp dialog was fixed to mutate the counter
+    // between record calls.
     undo: (state, entry) => {
       if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
-      state[entry.payload.counter] = entry.payload.priorValue;
+      state[entry.payload.counter] -= entry.payload.delta;
     },
   },
 
@@ -245,7 +248,7 @@ const handlers = {
     },
     undo: (state, entry) => {
       if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
-      state[entry.payload.counter] = entry.payload.priorValue;
+      state[entry.payload.counter] -= entry.payload.delta;
     },
   },
 };

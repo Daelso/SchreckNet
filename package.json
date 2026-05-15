@@ -16,7 +16,8 @@
     "db:migrate": "sequelize-cli db:migrate",
     "db:migrate:undo": "sequelize-cli db:migrate:undo",
     "migration:create": "sequelize-cli migration:generate --name",
-    "test:unit": "vitest run"
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",
+    "@playwright/test": "^1.60.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",

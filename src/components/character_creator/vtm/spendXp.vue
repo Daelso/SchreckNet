@@ -265,6 +265,8 @@ export default defineComponent({
       return [...Array(size).keys()].map((i) => i + startAt);
     }
     let localXP = ref(props.info.xp);
+    // Seed from real character state so undo captures the correct priorValue.
+    const initialFlaws = props.info.flaws_remaining ?? 0;
     let advantagePoints = ref(0);
     let localAttributes = ref(props.info.attributes);
     let potency = ref(props.info.potency);
@@ -272,7 +274,7 @@ export default defineComponent({
     let disciplineSkillsObj = ref(props.info.disciplineSkills);
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
-    let flaws_remaining = ref(0);
+    let flaws_remaining = ref(initialFlaws);
     let localLog = ref(props.info.xp_log ?? []);
     let advantages_remaining = ref(props.info.advantages_remaining ?? 0);
 
@@ -281,6 +283,7 @@ export default defineComponent({
       cult: props.info.cult,
       onDialogHide,
       onOKClick() {
+        // Return deltas only — edit pages add these to the existing totals.
         onDialogOK({
           advantages: advantagePoints,
           attributes: localAttributes,
@@ -290,7 +293,7 @@ export default defineComponent({
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
-          flaws_remaining: flaws_remaining,
+          flaws_remaining: ref(flaws_remaining.value - initialFlaws),
           xp_log: localLog,
         });
       },

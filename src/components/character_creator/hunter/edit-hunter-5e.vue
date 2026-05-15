@@ -973,6 +973,7 @@ export default {
               xp_log: this.xp_log,
               edgeArr: this.edgeArr,
               flaws_remaining: this.flaws,
+              advantagePoints: this.advantages,
             },
           },
         })

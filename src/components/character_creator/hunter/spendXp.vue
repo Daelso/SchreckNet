@@ -186,9 +186,12 @@ export default defineComponent({
       return [...Array(size).keys()].map((i) => i + startAt);
     }
     let localXP = ref(props.info.xp);
-    let advantagePoints = ref(0);
+    // Seed from real character state so undo captures the correct priorValue.
+    const initialAdvantages = props.info.advantagePoints ?? 0;
+    const initialFlaws = props.info.flaws_remaining ?? 0;
+    let advantagePoints = ref(initialAdvantages);
     let localAttributes = ref(props.info.attributes);
-    let flaws_remaining = ref(0);
+    let flaws_remaining = ref(initialFlaws);
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     let localSpentXp = ref(props.info.spentXp);
@@ -198,15 +201,16 @@ export default defineComponent({
       dialogRef,
       onDialogHide,
       onOKClick() {
+        // Return deltas only — edit pages add these to the existing totals.
         onDialogOK({
-          advantages: advantagePoints,
+          advantages: ref(advantagePoints.value - initialAdvantages),
           attributes: localAttributes,
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
           spentXp: localSpentXp,
           edgeArr: localEdgeArr,
-          flaws_remaining: flaws_remaining,
+          flaws_remaining: ref(flaws_remaining.value - initialFlaws),
           xp_log: localLog,
         });
       },

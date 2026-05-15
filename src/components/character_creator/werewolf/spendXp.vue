@@ -258,7 +258,10 @@ export default defineComponent({
       return [...Array(size).keys()].map((i) => i + startAt);
     }
     let localXP = ref(props.info.xp);
-    let advantagePoints = ref(0);
+    // Seed from real character state so undo captures the correct priorValue.
+    const initialAdvantages = props.info.advantagePoints ?? 0;
+    const initialFlaws = props.info.flaws_remaining ?? 0;
+    let advantagePoints = ref(initialAdvantages);
     let localAttributes = ref(props.info.attributes);
 
     let skills = ref(props.info.skills);
@@ -268,7 +271,7 @@ export default defineComponent({
     let baseUrl = "";
     let purchased_renown = ref(props.info.purchased_renown);
     let tribe_renown = ref(props.info.tribe_renown);
-    let flaws_remaining = ref(0);
+    let flaws_remaining = ref(initialFlaws);
 
     const tribe = ref(props.info.tribe);
     const auspice = ref(props.info.auspice);
@@ -293,14 +296,15 @@ export default defineComponent({
       tribe_renown,
       purchased_gifts,
       onOKClick() {
+        // Return deltas only — edit pages add these to the existing totals.
         onDialogOK({
-          advantages: advantagePoints,
+          advantages: ref(advantagePoints.value - initialAdvantages),
           attributes: localAttributes,
           xp: localXP,
           specialtiesFromXp: specialtiesFromXp,
           skills: skills,
           spentXp: localSpentXp,
-          flaws_remaining: flaws_remaining,
+          flaws_remaining: ref(flaws_remaining.value - initialFlaws),
           purchased_renown: purchased_renown,
           tribe_renown: tribe_renown,
           purchased_gifts: purchased_gifts,

@@ -1006,6 +1006,7 @@ export default {
               gift_count: this.getGiftAmount,
               purchased_gifts: this.purchased_gifts,
               flaws_remaining: this.flaws,
+              advantagePoints: this.advantages,
             },
           },
         })

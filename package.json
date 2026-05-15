@@ -12,7 +12,11 @@
     "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "build": "quasar build",
-    "start": "node server.js"
+    "start": "node server.js",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo",
+    "migration:create": "sequelize-cli migration:generate --name",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
@@ -51,7 +55,9 @@
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
     "nodemon": "^2.0.20",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "sequelize-cli": "^6.6.5",
+    "vitest": "^1.6.1"
   },
   "browserslist": [
     "last 10 Chrome versions",

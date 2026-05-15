@@ -34,3 +34,6 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# Local git worktrees
+.worktrees/

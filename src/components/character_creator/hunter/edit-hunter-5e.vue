@@ -431,6 +431,25 @@
               >
             </q-item-section>
           </q-item>
+          <q-item
+            clickable
+            @click="xpLogOpen = true"
+            :disable="
+              (!this.skillsDone || !this.attributesDone || !this.edgeDone) &&
+              this.debug !== true
+            "
+          >
+            <q-item-section avatar>
+              <q-icon color="secondary" name="history" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>XP Log</q-item-label>
+              <q-item-label caption class="text-white"
+                >Review and undo recent XP transactions</q-item-label
+              >
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-card>
       <tabs
@@ -458,6 +477,15 @@
         :debug="this.debug"
       />
     </div>
+
+    <XpLogDialog
+      v-model="xpLogOpen"
+      :log="xp_log"
+      :handlers="handlers"
+      :remaining-xp="xp"
+      @undo="onUndo"
+      @note-edit="onNoteEdit"
+    />
   </q-form>
 </template>
 
@@ -543,6 +571,9 @@ import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
 import edgeComponent from "./edges.vue";
 import notFound from "../../../pages/ErrorNotFound.vue";
+import hunterHandlers from "../../../lib/xp/handlers/hunter.js";
+import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
+import { appendEntry, undoLast } from "../../../lib/xp/xpLog.js";
 
 const metaData = {
   title: "SchreckNet",
@@ -562,6 +593,7 @@ export default {
   components: {
     tabs,
     notFound,
+    XpLogDialog,
   },
   async setup() {
     const router = useRouter();
@@ -719,6 +751,9 @@ export default {
       touchstones: this.hunter.touchstones,
       xp: this.hunter.xp,
       spentXp: 0,
+      xp_log: this.hunter.xp_log ?? [],
+      xpLogOpen: false,
+      handlers: hunterHandlers,
       skillsDone: true,
       edgeDone: true,
       saving: false,
@@ -798,6 +833,7 @@ export default {
         advantages: this.advantagesObj,
         advantages_remaining: this.advantages,
         flaws_remaining: this.flaws,
+        xp_log: this.xp_log,
       };
 
       axios
@@ -934,8 +970,10 @@ export default {
               specialtiesFromXp: this.specialtiesFromXp,
               xp: this.xp,
               spentXp: this.spentXp,
+              xp_log: this.xp_log,
               edgeArr: this.edgeArr,
               flaws_remaining: this.flaws,
+              advantagePoints: this.advantages,
             },
           },
         })
@@ -950,6 +988,7 @@ export default {
           });
           this.edgeArr = data.edgeArr;
           this.flaws = this.flaws + data.flaws_remaining.value;
+          this.xp_log = data.xp_log.value;
         });
     },
 
@@ -1001,8 +1040,22 @@ export default {
       return optionsArr;
     },
 
+    onUndo(entry) {
+      const { log: next } = undoLast(this.xp_log);
+      hunterHandlers[entry.type].undo(this.xpState, entry);
+      this.xp += entry.cost;
+      this.xp_log = next;
+    },
+    onNoteEdit({ id, note }) {
+      this.xp_log = this.xp_log.map((e) => (e.id === id ? { ...e, note } : e));
+    },
     add_flaw() {
       if (this.xp >= 3) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          hunterHandlers.flaw.record(this, { delta: +1 }),
+          this.xp
+        );
         ++this.flaws;
         this.xp = this.xp - 3;
       } else {
@@ -1016,6 +1069,11 @@ export default {
     },
     subtract_flaw() {
       if (this.flaws !== 0) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          hunterHandlers.flaw.record(this, { delta: -1 }),
+          this.xp
+        );
         --this.flaws;
         this.xp = this.xp + 3;
       } else {
@@ -1029,6 +1087,11 @@ export default {
     },
     add_advantage() {
       if (this.xp >= 3) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          hunterHandlers.advantage.record(this, { delta: +1 }),
+          this.xp
+        );
         ++this.advantages;
         this.xp = this.xp - 3;
       } else {
@@ -1042,6 +1105,11 @@ export default {
     },
     subtract_advantage() {
       if (this.advantages !== 0) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          hunterHandlers.advantage.record(this, { delta: -1 }),
+          this.xp
+        );
         --this.advantages;
         this.xp = this.xp + 3;
       } else {
@@ -1052,6 +1120,94 @@ export default {
           timeout: 1500,
         });
       }
+    },
+  },
+  computed: {
+    // These aliases are required: add_advantage / add_flaw pass `this` to
+    // handler.record(), which reads state.advantagePoints / state.flaws_remaining.
+    // Removing them without refactoring those ±3xp button paths would break recording.
+    advantagePoints: {
+      get() {
+        return this.advantages;
+      },
+      set(v) {
+        this.advantages = v;
+      },
+    },
+    flaws_remaining: {
+      get() {
+        return this.flaws;
+      },
+      set(v) {
+        this.flaws = v;
+      },
+    },
+    xpState() {
+      const self = this;
+      const ATTR_NAMES = [
+        "Charisma",
+        "Composure",
+        "Dexterity",
+        "Intelligence",
+        "Manipulation",
+        "Resolve",
+        "Stamina",
+        "Strength",
+        "Wits",
+      ];
+      return {
+        attributes: ATTR_NAMES.map((name) => ({
+          name,
+          get points() {
+            return self[name.toLowerCase()];
+          },
+          set points(v) {
+            self[name.toLowerCase()] = v;
+          },
+        })),
+        skills: new Proxy(
+          {},
+          {
+            get(_, prop) {
+              return self.trueSkills[prop];
+            },
+            set(_, prop, value) {
+              self.trueSkills = { ...self.trueSkills, [prop]: value };
+              return true;
+            },
+          }
+        ),
+        get specialtiesFromXp() {
+          return self.specialtiesFromXp;
+        },
+        set specialtiesFromXp(v) {
+          self.specialtiesFromXp = v;
+        },
+        get spentXp() {
+          return self.spentXp;
+        },
+        set spentXp(v) {
+          self.spentXp = v;
+        },
+        get edgeArr() {
+          return self.edgeArr;
+        },
+        set edgeArr(v) {
+          self.edgeArr = v;
+        },
+        get advantagePoints() {
+          return self.advantages;
+        },
+        set advantagePoints(v) {
+          self.advantages = v;
+        },
+        get flaws_remaining() {
+          return self.flaws;
+        },
+        set flaws_remaining(v) {
+          self.flaws = v;
+        },
+      };
     },
   },
 };

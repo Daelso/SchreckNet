@@ -1067,7 +1067,7 @@ export default {
 
     onUndo(entry) {
       const { log: next } = undoLast(this.xp_log);
-      werewolfHandlers[entry.type].undo(this, entry);
+      werewolfHandlers[entry.type].undo(this.xpState, entry);
       this.xp += entry.cost;
       this.xp_log = next;
     },
@@ -1173,6 +1173,86 @@ export default {
       set(v) {
         this.flaws = v;
       },
+    },
+    xpState() {
+      const self = this;
+      const ATTR_NAMES = [
+        "Charisma",
+        "Composure",
+        "Dexterity",
+        "Intelligence",
+        "Manipulation",
+        "Resolve",
+        "Stamina",
+        "Strength",
+        "Wits",
+      ];
+      return {
+        attributes: ATTR_NAMES.map((name) => ({
+          name,
+          get points() {
+            return self[name.toLowerCase()];
+          },
+          set points(v) {
+            self[name.toLowerCase()] = v;
+          },
+        })),
+        skills: new Proxy(
+          {},
+          {
+            get(_, prop) {
+              return self.trueSkills[prop];
+            },
+            set(_, prop, value) {
+              self.trueSkills = { ...self.trueSkills, [prop]: value };
+              return true;
+            },
+          }
+        ),
+        get specialtiesFromXp() {
+          return self.specialtiesFromXp;
+        },
+        set specialtiesFromXp(v) {
+          self.specialtiesFromXp = v;
+        },
+        get spent_xp() {
+          return self.spentXp;
+        },
+        set spent_xp(v) {
+          self.spentXp = v;
+        },
+        get purchased_gifts() {
+          return self.purchased_gifts;
+        },
+        set purchased_gifts(v) {
+          self.purchased_gifts = v;
+        },
+        get gift_total() {
+          return self.getGiftAmount;
+        },
+        // gift_total is reconstructed from purchased_gifts after splices;
+        // the setter is a no-op because getGiftAmount recomputes it.
+        // eslint-disable-next-line no-unused-vars
+        set gift_total(_v) {},
+        get purchased_renown() {
+          return self.purchased_renown;
+        },
+        set purchased_renown(v) {
+          self.purchased_renown = v;
+        },
+        get advantagePoints() {
+          return self.advantages;
+        },
+        set advantagePoints(v) {
+          self.advantages = v;
+        },
+        get flaws_remaining() {
+          return self.flaws;
+        },
+        set flaws_remaining(v) {
+          self.flaws = v;
+        },
+      };
     },
     renownTotal() {
       let trueRenown = { glory: 0, honor: 0, wisdom: 0 };

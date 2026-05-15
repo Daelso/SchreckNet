@@ -1,6 +1,20 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
-  <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
+  <div
+    v-if="
+      !this.pageFound ||
+      !this.currentUser ||
+      this.currentUser.id !== this.garou.created_by
+    "
+  >
+    <notFound />
+  </div>
+  <q-form
+    v-else
+    @submit="onSubmit"
+    class="q-gutter-md"
+    style="max-width: 880px"
+  >
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">
@@ -608,6 +622,7 @@ import nosImage from "../../../assets/images/Nosfer_logo.png";
 import werewolfHandlers from "../../../lib/xp/handlers/werewolf.js";
 import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
 import { appendEntry, undoLast, isValidEntry } from "../../../lib/xp/xpLog.js";
+import notFound from "../../../pages/ErrorNotFound.vue";
 
 const metaData = {
   title: "SchreckNet",
@@ -627,6 +642,7 @@ export default {
   components: {
     tabs,
     XpLogDialog,
+    notFound,
   },
   async setup() {
     const router = useRouter();
@@ -640,6 +656,8 @@ export default {
       baseUrl = window.location.origin;
     }
 
+    let pageFound = ref(false);
+
     const url = window.location.href;
     const regex = /\/edit\/(\d+)$/; // Match "/edit/" followed by one or more digits at the end of the string
     const match = url.match(regex);
@@ -651,16 +669,24 @@ export default {
           baseUrl + `/garou/garou/${capturedNumber}`
         );
         garou = garouResponse.data;
+        pageFound.value = true;
       } catch (err) {
         garou = null;
       }
     }
+
+    const currentUser = await axios
+      .get(baseUrl + "/user/currentUser", { withCredentials: true })
+      .then((resp) => resp.data)
+      .catch(() => null);
 
     return {
       tab: ref("coreConcept"),
       layout: ref(false),
       baseUrl: ref(baseUrl),
       garou: ref(garou),
+      pageFound,
+      currentUser: ref(currentUser),
     };
   },
 

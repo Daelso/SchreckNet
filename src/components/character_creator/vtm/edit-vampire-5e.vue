@@ -494,6 +494,22 @@
             </q-item-section>
           </q-item>
           <q-item
+            clickable
+            @click="xpLogOpen = true"
+            :disable="!skillsDone || !attributesDone || !disciplinesDone"
+          >
+            <q-item-section avatar>
+              <q-icon color="secondary" name="history" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label>XP Log</q-item-label>
+              <q-item-label caption class="text-white"
+                >Review and undo recent XP transactions</q-item-label
+              >
+            </q-item-section>
+          </q-item>
+          <q-item
             v-if="this.discipline_flaw"
             clickable
             @click="manageDisciplineFlaw()"
@@ -581,6 +597,15 @@
         :edit="this.edit"
       />
     </div>
+
+    <XpLogDialog
+      v-model="xpLogOpen"
+      :log="xp_log"
+      :handlers="handlers"
+      :remaining-xp="xp"
+      @undo="onUndo"
+      @note-edit="onNoteEdit"
+    />
   </div>
 </template>
 
@@ -665,6 +690,9 @@ import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 import notFound from "../../../pages/ErrorNotFound.vue";
 import manageDisciplineFlaw from "../vtm/manageDisciplineFlaw.vue";
+import vtmHandlers from "../../../lib/xp/handlers/vtm.js";
+import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
+import { appendEntry, undoLast } from "../../../lib/xp/xpLog.js";
 
 const metaData = {
   title: "SchreckNet",
@@ -684,6 +712,7 @@ export default {
   components: {
     tabs,
     notFound,
+    XpLogDialog,
   },
   async setup() {
     const axios = require("axios");
@@ -880,6 +909,9 @@ export default {
       },
       touchstones: this.kindred.touchstones,
       xp: this.kindred.xp,
+      xp_log: this.kindred.xp_log ?? [],
+      xpLogOpen: false,
+      handlers: vtmHandlers,
       skillsDone: true,
       tooltips: ref([
         "Supernatural quickness and reflexes",
@@ -887,6 +919,24 @@ export default {
         "The ability to attract, sway, and control emotions",
       ]),
     };
+  },
+  computed: {
+    advantages_remaining: {
+      get() {
+        return this.advantages;
+      },
+      set(v) {
+        this.advantages = v;
+      },
+    },
+    flaws_remaining: {
+      get() {
+        return this.flaws;
+      },
+      set(v) {
+        this.flaws = v;
+      },
+    },
   },
   methods: {
     isValidImageUrl(url) {
@@ -969,6 +1019,7 @@ export default {
         maxPotency: this.generation.maxPotency,
         sireName: this.sire,
         xp: this.xp,
+        xp_log: this.xp_log,
         convictions: this.convictions,
         touchstones: this.touchstones,
         disciplines: this.disciplines,
@@ -1192,6 +1243,8 @@ export default {
               xp: this.xp,
               edit: this.edit,
               flaws_remaining: this.flaws,
+              xp_log: this.xp_log,
+              advantages_remaining: this.advantages,
             },
           },
         })
@@ -1204,6 +1257,7 @@ export default {
           this.disciplineSkills = data.disciplineSkillsObj;
           this.specialtiesFromXp = data.specialtiesFromXp;
           this.trueSkills = data.skills;
+          this.xp_log = data.xp_log.value;
           data.attributes.value.forEach((attribute) => {
             this[attribute.name.toLowerCase()] = attribute.points;
           });
@@ -1274,6 +1328,15 @@ export default {
       return false;
     },
 
+    onUndo(entry) {
+      const { log: next } = undoLast(this.xp_log);
+      vtmHandlers[entry.type].undo(this, entry);
+      this.xp += entry.cost;
+      this.xp_log = next;
+    },
+    onNoteEdit({ id, note }) {
+      this.xp_log = this.xp_log.map((e) => (e.id === id ? { ...e, note } : e));
+    },
     sortSkills() {
       let optionsArr = [];
       for (const skill in this.trueSkills) {
@@ -1285,6 +1348,11 @@ export default {
     },
     add_flaw() {
       if (this.xp >= 3) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          vtmHandlers.flaw_point.record(this, { delta: +1 }),
+          this.xp
+        );
         ++this.flaws;
         this.xp = this.xp - 3;
       } else {
@@ -1298,6 +1366,11 @@ export default {
     },
     subtract_flaw() {
       if (this.flaws !== 0) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          vtmHandlers.flaw_point.record(this, { delta: -1 }),
+          this.xp
+        );
         --this.flaws;
         this.xp = this.xp + 3;
       } else {
@@ -1311,6 +1384,11 @@ export default {
     },
     add_advantage() {
       if (this.xp >= 3) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          vtmHandlers.advantage_point.record(this, { delta: +1 }),
+          this.xp
+        );
         ++this.advantages;
         this.xp = this.xp - 3;
       } else {
@@ -1324,6 +1402,11 @@ export default {
     },
     subtract_advantage() {
       if (this.advantages !== 0) {
+        this.xp_log = appendEntry(
+          this.xp_log,
+          vtmHandlers.advantage_point.record(this, { delta: -1 }),
+          this.xp
+        );
         --this.advantages;
         this.xp = this.xp + 3;
       } else {

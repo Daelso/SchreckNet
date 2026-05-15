@@ -201,7 +201,11 @@ export default defineComponent({
       dialogRef,
       onDialogHide,
       onOKClick() {
-        // Return deltas only — edit pages add these to the existing totals.
+        // Most values are returned as raw refs; Vue's Options API reactive()
+        // proxy auto-unwraps them on assignment in the edit page.  Callers
+        // that need the raw value use .value explicitly (data.xp_log.value,
+        // data.attributes.value).  advantages and flaws_remaining are deltas
+        // — the edit page adds them to the existing totals.
         onDialogOK({
           advantages: ref(advantagePoints.value - initialAdvantages),
           attributes: localAttributes,

@@ -283,7 +283,12 @@ export default defineComponent({
       cult: props.info.cult,
       onDialogHide,
       onOKClick() {
-        // Return deltas only — edit pages add these to the existing totals.
+        // Most values are returned as raw refs. Vue's Options API reactive()
+        // proxy auto-unwraps nested refs on assignment (this.xp = data.xp works
+        // even though data.xp is a Ref). Callers that need the raw value use
+        // .value explicitly (e.g. data.xp_log.value, data.attributes.value).
+        // advantages and flaws_remaining are deltas — edit pages add them to
+        // the existing totals.
         onDialogOK({
           advantages: advantagePoints,
           attributes: localAttributes,

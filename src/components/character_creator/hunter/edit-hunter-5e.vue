@@ -9,7 +9,12 @@
   >
     <notFound />
   </div>
-  <q-form @submit="onSubmit" class="q-gutter-md" style="max-width: 880px">
+  <q-form
+    v-else
+    @submit="onSubmit"
+    class="q-gutter-md"
+    style="max-width: 880px"
+  >
     <div class="q-pa-md row justify-center text-center">
       <q-banner class="bg-primary text-white" rounded dark>
         <div class="container">

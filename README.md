@@ -59,6 +59,24 @@ npm run format
 quasar build
 ```
 
+## Database migrations
+
+Schema changes go through sequelize-cli (introduced 2026-05). The flow:
+
+```bash
+npm run migration:create -- some-name   # scaffolds server/migrations/<ts>-some-name.js
+# edit the generated file
+npm run db:migrate                       # apply
+npm run db:migrate:undo                  # undo the most recent migration
+```
+
+The CLI reads connection info from `server/config/config.js`, which reuses
+the same `.env` keys the app uses at runtime. Migration history is tracked
+in a `SequelizeMeta` table created on first run.
+
+Migrations started tracking from the `add-xp-log` migration forward;
+prior schema is implicit (defined directly by the Sequelize models).
+
 ### Customize the configuration
 
 See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js).

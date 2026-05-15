@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { appendEntry, undoLast, newId } from "../xpLog.js";
+import { appendEntry, undoLast, newId, isValidEntry } from "../xpLog.js";
 
 describe("newId", () => {
   it("returns a distinct string each call", () => {
@@ -40,6 +40,90 @@ describe("appendEntry", () => {
   it("preserves provided note if any", () => {
     const result = appendEntry([], { cost: 1, type: "x", payload: {}, note: "hello" }, 5);
     expect(result[0].note).toBe("hello");
+  });
+});
+
+describe("isValidEntry", () => {
+  it("accepts a well-formed entry with finite cost", () => {
+    expect(
+      isValidEntry({ type: "attribute_raise", cost: 15, payload: {} })
+    ).toBe(true);
+  });
+
+  it("accepts an advantage entry with finite cost and delta", () => {
+    expect(
+      isValidEntry({
+        type: "advantage",
+        cost: 6,
+        payload: { counter: "advantages_remaining", priorValue: 0, delta: 2 },
+      })
+    ).toBe(true);
+  });
+
+  it("accepts a flaw entry with finite cost and delta", () => {
+    expect(
+      isValidEntry({
+        type: "flaw",
+        cost: 3,
+        payload: { counter: "flaws_remaining", priorValue: 0, delta: 1 },
+      })
+    ).toBe(true);
+  });
+
+  it("rejects null / undefined / non-object", () => {
+    expect(isValidEntry(null)).toBe(false);
+    expect(isValidEntry(undefined)).toBe(false);
+    expect(isValidEntry(42)).toBe(false);
+    expect(isValidEntry("entry")).toBe(false);
+  });
+
+  it("rejects when cost is non-finite (NaN, Infinity, string)", () => {
+    expect(
+      isValidEntry({ type: "attribute_raise", cost: NaN, payload: {} })
+    ).toBe(false);
+    expect(
+      isValidEntry({ type: "attribute_raise", cost: Infinity, payload: {} })
+    ).toBe(false);
+    expect(
+      isValidEntry({ type: "attribute_raise", cost: "junk", payload: {} })
+    ).toBe(false);
+    expect(
+      isValidEntry({ type: "attribute_raise", payload: {} })
+    ).toBe(false); // missing cost
+  });
+
+  it("rejects advantage/flaw with non-finite delta", () => {
+    expect(
+      isValidEntry({
+        type: "advantage",
+        cost: 6,
+        payload: { counter: "advantages_remaining", delta: NaN },
+      })
+    ).toBe(false);
+    expect(
+      isValidEntry({
+        type: "flaw",
+        cost: 3,
+        payload: { counter: "flaws_remaining", delta: "junk" },
+      })
+    ).toBe(false);
+    expect(
+      isValidEntry({
+        type: "advantage",
+        cost: 6,
+        payload: { counter: "advantages_remaining" }, // missing delta
+      })
+    ).toBe(false);
+  });
+
+  it("does not require delta on non-advantage/flaw entries", () => {
+    expect(
+      isValidEntry({
+        type: "skill_raise",
+        cost: 3,
+        payload: { skill: "brawl" }, // no delta — fine
+      })
+    ).toBe(true);
   });
 });
 

@@ -573,7 +573,7 @@ import edgeComponent from "./edges.vue";
 import notFound from "../../../pages/ErrorNotFound.vue";
 import hunterHandlers from "../../../lib/xp/handlers/hunter.js";
 import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
-import { appendEntry, undoLast } from "../../../lib/xp/xpLog.js";
+import { appendEntry, undoLast, isValidEntry } from "../../../lib/xp/xpLog.js";
 
 const metaData = {
   title: "SchreckNet",
@@ -1041,6 +1041,17 @@ export default {
     },
 
     onUndo(entry) {
+      // Atomic guard: skip log pop, XP refund, and handler call together if
+      // the entry is structurally invalid.  Prevents partial-undo state on a
+      // corrupted xp_log row.
+      if (!isValidEntry(entry)) {
+        this.$q.notify({
+          message: "Cannot undo this entry — log data is corrupted.",
+          color: "negative",
+          timeout: 2500,
+        });
+        return;
+      }
       const { log: next } = undoLast(this.xp_log);
       hunterHandlers[entry.type].undo(this.xpState, entry);
       this.xp += entry.cost;

@@ -348,6 +348,94 @@ describe("vtm handlers — record/undo round trip", () => {
     expect(charState.flaws_remaining).toBe(4);
   });
 
+  it("advantage multi-record (stale priorValue): undoing the top entry only reverses its own delta", () => {
+    // Reproduces the spendXp dialog session bug: two record() calls inside one
+    // dialog read the same advantages_remaining (the dialog never mutates it
+    // between record calls), so both entries share priorValue.  The undo for
+    // the top entry must reverse only its own delta — not snap state back to
+    // the shared priorValue.
+    const charState = { advantages_remaining: 5 };
+    const e1 = handlers.advantage.record(charState, { delta: 2 });
+    const e2 = handlers.advantage.record(charState, { delta: 3 });
+    // Both entries captured the same priorValue (the dialog bug):
+    expect(e1.payload.priorValue).toBe(5);
+    expect(e2.payload.priorValue).toBe(5);
+
+    // Parent applied both purchases: 5 + 2 + 3 = 10
+    charState.advantages_remaining = 10;
+
+    handlers.advantage.undo(charState, e2);
+    expect(charState.advantages_remaining).toBe(7);
+    handlers.advantage.undo(charState, e1);
+    expect(charState.advantages_remaining).toBe(5);
+  });
+
+  it("flaw multi-record (stale priorValue): undoing the top entry only reverses its own delta", () => {
+    const charState = { flaws_remaining: 2 };
+    const e1 = handlers.flaw.record(charState, { delta: 1 });
+    const e2 = handlers.flaw.record(charState, { delta: 2 });
+    expect(e1.payload.priorValue).toBe(2);
+    expect(e2.payload.priorValue).toBe(2);
+
+    // Parent applied both: 2 + 1 + 2 = 5
+    charState.flaws_remaining = 5;
+
+    handlers.flaw.undo(charState, e2);
+    expect(charState.flaws_remaining).toBe(3);
+    handlers.flaw.undo(charState, e1);
+    expect(charState.flaws_remaining).toBe(2);
+  });
+
+  it("advantage undo: non-finite delta (NaN, Infinity) is silently ignored", () => {
+    const charState = { advantages_remaining: 5 };
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: { counter: "advantages_remaining", priorValue: 0, delta: NaN },
+    });
+    expect(charState.advantages_remaining).toBe(5);
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: { counter: "advantages_remaining", priorValue: 0, delta: Infinity },
+    });
+    expect(charState.advantages_remaining).toBe(5);
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: { counter: "advantages_remaining", priorValue: 0, delta: "junk" },
+    });
+    expect(charState.advantages_remaining).toBe(5);
+  });
+
+  it("flaw undo: non-finite delta is silently ignored", () => {
+    const charState = { flaws_remaining: 3 };
+    handlers.flaw.undo(charState, {
+      type: "flaw",
+      cost: 0,
+      payload: { counter: "flaws_remaining", priorValue: 0, delta: NaN },
+    });
+    expect(charState.flaws_remaining).toBe(3);
+  });
+
+  it("advantage undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.advantage.undoEffect({ payload: { delta: 3 } })
+    ).toBe("3 advantage dot(s) will be removed");
+    expect(
+      handlers.advantage.undoEffect({ payload: { delta: -2 } })
+    ).toBe("2 advantage dot(s) will be restored");
+  });
+
+  it("flaw undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.flaw.undoEffect({ payload: { delta: 1 } })
+    ).toBe("1 flaw dot(s) will be removed");
+    expect(
+      handlers.flaw.undoEffect({ payload: { delta: -2 } })
+    ).toBe("2 flaw dot(s) will be restored");
+  });
+
   it("advantage undo: malicious counter key is silently ignored", () => {
     const charState = { advantages_remaining: 5 };
     const maliciousEntry = {

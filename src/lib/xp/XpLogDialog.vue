@@ -132,14 +132,19 @@ export default {
     },
     confirmUndo(entry) {
       const label = this.labelFor(entry);
-      const tail =
+      const xpTail =
         entry.cost >= 0
           ? `you'll get ${entry.cost} XP back`
           : `you'll re-spend ${-entry.cost} XP`;
+      const handler = this.handlers[entry.type];
+      const effect = handler?.undoEffect ? handler.undoEffect(entry) : null;
+      const message = effect
+        ? `${label} — ${xpTail}, and ${effect}.`
+        : `${label} — ${xpTail}.`;
       this.$q
         .dialog({
           title: "Undo this purchase?",
-          message: `${label} — ${tail}.`,
+          message,
           ok: { label: "Undo", color: "secondary", unelevated: true },
           cancel: { flat: true, color: "white" },
           persistent: true,

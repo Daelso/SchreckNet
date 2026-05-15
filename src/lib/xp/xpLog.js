@@ -16,6 +16,21 @@ export function appendEntry(log, partial, currentXp) {
   return [...log, entry];
 }
 
+// Structural validity gate for `onUndo` callers.  A corrupted entry (hostile
+// or hand-edited xp_log) must not be partially undone — refunding cost while
+// skipping the counter, or vice versa, leaves character state inconsistent.
+// Callers should check this BEFORE popping the log, refunding XP, or invoking
+// the type handler.
+const DELTA_BEARING_TYPES = new Set(["advantage", "flaw"]);
+export function isValidEntry(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  if (!Number.isFinite(entry.cost)) return false;
+  if (DELTA_BEARING_TYPES.has(entry.type)) {
+    if (!Number.isFinite(Number(entry.payload?.delta))) return false;
+  }
+  return true;
+}
+
 export function undoLast(log) {
   if (log.length === 0) {
     return { log: [], entry: null };

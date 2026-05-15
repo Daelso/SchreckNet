@@ -321,6 +321,100 @@ describe("werewolf handlers — record/undo round trip", () => {
     expect(charState.spent_xp).toBe(0);
   });
 
+  // ── multi-record dialog session ─────────────────────────────────────────
+  // The undo math should be robust against stale priorValue — i.e., reversing
+  // only this entry's delta — regardless of whether the dialog updated the
+  // counter between record calls.  Simulates a dialog session that updates
+  // spent_xp between calls (priorSpentXp progresses normally) but does NOT
+  // update the counter (priorValue stays at the dialog-open snapshot).
+  it("advantage multi-record (stale priorValue): undoing the top entry only reverses its own delta", () => {
+    const charState = { advantagePoints: 2, spent_xp: 6 };
+    const e1 = handlers.advantage.record(charState, { delta: 2 });
+    charState.spent_xp = 12; // dialog: localSpentXp += cost (6)
+    const e2 = handlers.advantage.record(charState, { delta: 3 });
+    expect(e1.payload.priorValue).toBe(2);
+    expect(e2.payload.priorValue).toBe(2); // stale — counter wasn't updated
+    expect(e1.payload.priorSpentXp).toBe(6);
+    expect(e2.payload.priorSpentXp).toBe(12); // progressed correctly
+
+    // Parent applied both purchases: advantagePoints 2 + 2 + 3 = 7, spent_xp 12 + 9 = 21
+    charState.advantagePoints = 7;
+    charState.spent_xp = 21;
+
+    handlers.advantage.undo(charState, e2);
+    expect(charState.advantagePoints).toBe(4);
+    expect(charState.spent_xp).toBe(12);
+    handlers.advantage.undo(charState, e1);
+    expect(charState.advantagePoints).toBe(2);
+    expect(charState.spent_xp).toBe(6);
+  });
+
+  it("flaw multi-record (stale priorValue): undoing the top entry only reverses its own delta", () => {
+    const charState = { flaws_remaining: 1, spent_xp: 3 };
+    const e1 = handlers.flaw.record(charState, { delta: 1 });
+    charState.spent_xp = 6; // dialog: localSpentXp += cost (3)
+    const e2 = handlers.flaw.record(charState, { delta: 2 });
+    expect(e1.payload.priorValue).toBe(1);
+    expect(e2.payload.priorValue).toBe(1);
+    expect(e1.payload.priorSpentXp).toBe(3);
+    expect(e2.payload.priorSpentXp).toBe(6);
+
+    charState.flaws_remaining = 4;
+    charState.spent_xp = 12;
+
+    handlers.flaw.undo(charState, e2);
+    expect(charState.flaws_remaining).toBe(2);
+    expect(charState.spent_xp).toBe(6);
+    handlers.flaw.undo(charState, e1);
+    expect(charState.flaws_remaining).toBe(1);
+    expect(charState.spent_xp).toBe(3);
+  });
+
+  // ── delta validation ────────────────────────────────────────────────────
+  it("advantage undo: non-finite delta is silently ignored", () => {
+    const charState = { advantagePoints: 4, spent_xp: 12 };
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: {
+        counter: "advantagePoints",
+        priorValue: 0,
+        delta: NaN,
+        priorSpentXp: 0,
+      },
+    });
+    expect(charState.advantagePoints).toBe(4);
+    expect(charState.spent_xp).toBe(12);
+  });
+
+  it("flaw undo: non-finite delta is silently ignored", () => {
+    const charState = { flaws_remaining: 2, spent_xp: 6 };
+    handlers.flaw.undo(charState, {
+      type: "flaw",
+      cost: 0,
+      payload: {
+        counter: "flaws_remaining",
+        priorValue: 0,
+        delta: Infinity,
+        priorSpentXp: 0,
+      },
+    });
+    expect(charState.flaws_remaining).toBe(2);
+    expect(charState.spent_xp).toBe(6);
+  });
+
+  it("advantage undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.advantage.undoEffect({ payload: { delta: 2 } })
+    ).toBe("2 advantage dot(s) will be removed");
+  });
+
+  it("flaw undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.flaw.undoEffect({ payload: { delta: 1 } })
+    ).toBe("1 flaw dot(s) will be removed");
+  });
+
   // ── allowlist guards ────────────────────────────────────────────────────
   it("advantage undo: malicious counter key is silently ignored", () => {
     const charState = { advantagePoints: 3, spent_xp: 6 };

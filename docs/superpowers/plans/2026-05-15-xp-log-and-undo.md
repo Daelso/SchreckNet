@@ -1262,3 +1262,100 @@ For each of `edit-vampire-5e.vue`, `edit-garou-5e.vue`, `edit-hunter-5e.vue`, co
 ---
 
 **Chunk 5 done.** All three game lines now record purchases, surface the log, and support LIFO undo.
+
+---
+
+## Chunk 6: End-to-end verification + PR prep
+
+### Task 6.1: Full manual verification checklist
+
+Run through this list against the dev stack (`quasar dev` + `npm run devStart`) with a real account. Tick each item.
+
+- [ ] **6.1.1 — VtM:** Create a new vampire. Confirm `xp_log` saves as `[]`.
+- [ ] **6.1.2 — VtM:** Spend XP on each of: attribute, skill, specialty, clan discipline (with a power), out-of-clan discipline, blood potency. Each appears in the log dialog with the right cost and label.
+- [ ] **6.1.3 — VtM:** Add and remove an advantage point with the ±3xp buttons. Verify the log shows `cost: +3` for add and `cost: -3` for remove.
+- [ ] **6.1.4 — VtM:** Edit a log entry's note. Save the character. Reload. The note persists.
+- [ ] **6.1.5 — VtM:** Click Undo on the top log entry. The confirmation dialog shows the correct label and XP refund/re-spend wording. Confirm. Both XP and the touched field revert; the entry disappears. Save and reload — the change persists.
+- [ ] **6.1.6 — VtM:** Verify the Undo button appears only on the *new* top entry, never on lower entries.
+- [ ] **6.1.7 — VtM:** Verify the manual "Set XP" input does NOT create a log entry.
+- [ ] **6.1.8 — Werewolf:** Repeat 6.1.1 through 6.1.7 against a Garou character. Substitute the line's purchase categories (gift, rite, etc.). If the line touches `spent_xp`, verify it reverts on undo too.
+- [ ] **6.1.9 — Hunter:** Repeat 6.1.1 through 6.1.7 against a Hunter character. Substitute the line's purchase categories (edge, perk, etc.).
+- [ ] **6.1.10 — Legacy characters:** Open an existing character created before this PR. Confirm the editor loads, `xp_log` defaults to `[]`, and a new purchase populates the log normally.
+
+### Task 6.2: Confirm the unit test suite is clean
+
+- [ ] **Step 6.2.1: Run all tests**
+
+```bash
+npm run test:unit
+```
+
+Expected: PASS, no `.todo`, no skipped tests.
+
+- [ ] **Step 6.2.2: Re-run the leftover-todo guard**
+
+```bash
+if grep -RE "(^|\s)it\.todo\(" src/lib/xp; then
+  echo "Leftover .todo found" >&2; exit 1
+fi
+```
+
+Expected: exit 0.
+
+### Task 6.3: Confirm the migration is reversible
+
+- [ ] **Step 6.3.1: Undo and re-apply the migration on the local dev DB**
+
+```bash
+npm run db:migrate:undo   # rolls back add-xp-log
+npm run db:migrate        # re-applies
+npx sequelize-cli db:migrate:status
+```
+
+Expected: `add-xp-log` cycles `up → down → up` cleanly.
+
+Note: rolling back drops the data in `xp_log`. After the cycle, refresh a character page to confirm the editor still loads (with `xp_log` re-defaulted to `[]`).
+
+### Task 6.4: PR description
+
+- [ ] **Step 6.4.1: Push the branch**
+
+```bash
+git push -u origin xp_log
+```
+
+- [ ] **Step 6.4.2: Open the PR**
+
+Use the gh CLI from inside the worktree:
+
+```bash
+gh pr create --title "XP log + undo for VtM / Werewolf / Hunter" --body "$(cat <<'EOF'
+## Summary
+- Adds a per-character XP transaction log to all three game lines, with strict LIFO undo.
+- Introduces sequelize-cli migrations infrastructure; the new `xp_log` JSON column is added via a real migration rather than implicit-model + raw SQL.
+- Introduces vitest for pure-helper tests; component/integration layers remain manually verified per the spec.
+
+## Migration
+After pulling this branch, run `npm install && npm run db:migrate` to apply the new column to vampires/hunters/garou tables. Rollback: `npm run db:migrate:undo`.
+
+## Manual verification (run before merging)
+- [ ] Create a new VtM/Werewolf/Hunter character; spend XP on every category; log entries appear with correct cost + label.
+- [ ] LIFO undo works (XP refunds, touched character field reverts).
+- [ ] Undo button appears **only** on the top (most recent) log entry; lower entries have no Undo affordance.
+- [ ] ±3xp advantage/flaw buttons produce `cost: +3` (add) or `cost: -3` (remove) entries.
+- [ ] Editable notes persist across save/reload.
+- [ ] Manual "Set XP" input does not create a log entry.
+- [ ] Legacy characters (created before this PR) open cleanly with `xp_log` defaulting to `[]`, and adding new entries works normally.
+
+## Links
+- Spec: docs/superpowers/specs/2026-05-15-xp-log-and-undo-design.md
+- Plan: docs/superpowers/plans/2026-05-15-xp-log-and-undo.md
+EOF
+)"
+```
+
+- [ ] **Step 6.4.3: Confirm the PR URL is returned and the CI (if any) starts.**
+
+---
+
+**Plan complete.** All chunks done; PR is open against `main` for review.

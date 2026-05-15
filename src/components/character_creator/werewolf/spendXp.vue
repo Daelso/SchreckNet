@@ -243,6 +243,8 @@
 <script>
 import { ref, defineComponent } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import handlers from "../../../lib/xp/handlers/werewolf.js";
+import { appendEntry } from "../../../lib/xp/xpLog.js";
 
 export default defineComponent({
   name: "spendXP",
@@ -262,6 +264,7 @@ export default defineComponent({
     let skills = ref(props.info.skills);
     let specialtiesFromXp = ref(props.info.specialtiesFromXp);
     let localSpentXp = ref(props.info.spentXp);
+    let localLog = ref(props.info.xp_log ?? []);
     let baseUrl = "";
     let purchased_renown = ref(props.info.purchased_renown);
     let tribe_renown = ref(props.info.tribe_renown);
@@ -301,6 +304,7 @@ export default defineComponent({
           purchased_renown: purchased_renown,
           tribe_renown: tribe_renown,
           purchased_gifts: purchased_gifts,
+          xp_log: localLog,
         });
       },
       range,
@@ -314,6 +318,7 @@ export default defineComponent({
       localXP,
       flaws_remaining,
       localSpentXp,
+      localLog,
       canBuy: ref(true),
       attributeInput: ref(""),
       categoryInput: ref(""),
@@ -522,52 +527,138 @@ export default defineComponent({
         return;
       }
       switch (this.categoryInput) {
-        case "Advantage":
+        case "Advantage": {
+          const partialAdv = handlers.advantage.record(this, {
+            delta: this.dotsInput,
+          });
+          this.localLog = appendEntry(this.localLog, partialAdv, this.localXP);
           this.advantagePoints = this.advantagePoints + this.dotsInput;
           break;
-        case "Attributes":
+        }
+        case "Attributes": {
+          const partialAttr = handlers.attribute_raise.record(this, {
+            attributeName: this.attributeInput.name,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialAttr,
+            this.localXP
+          );
           let index = this.localAttributes.findIndex(
             (x) => x.name == this.attributeInput.name
           );
           this.attributeInput.points++;
           this.localAttributes[index] = { ...{}, ...this.attributeInput };
           break;
-        case "Auspice Gift":
-          this.purchased_gifts.auspice.push(this.giftSelection);
+        }
+        case "Auspice Gift": {
+          const partialAG = handlers.auspice_gift.record(this, {
+            giftSelection: this.giftSelection,
+          });
+          this.localLog = appendEntry(this.localLog, partialAG, this.localXP);
+          this.purchased_gifts.auspice.push({
+            ...this.giftSelection,
+            entryId: partialAG.payload.entryId,
+          });
           this.gift_total++;
           break;
-        case "Flaw":
+        }
+        case "Flaw": {
+          const partialFlaw = handlers.flaw.record(this, {
+            delta: this.dotsInput,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialFlaw,
+            this.localXP
+          );
           this.flaws_remaining = this.flaws_remaining + this.dotsInput;
           break;
-        case "Native Gift":
-          this.purchased_gifts.native.push(this.giftSelection);
+        }
+        case "Native Gift": {
+          const partialNG = handlers.native_gift.record(this, {
+            giftSelection: this.giftSelection,
+          });
+          this.localLog = appendEntry(this.localLog, partialNG, this.localXP);
+          this.purchased_gifts.native.push({
+            ...this.giftSelection,
+            entryId: partialNG.payload.entryId,
+          });
           this.gift_total++;
           break;
-
-        case "Renown":
-          this.purchased_renown[
-            this.renownCategory.renown_name.toLowerCase()
-          ]++;
+        }
+        case "Renown": {
+          const renownKey = this.renownCategory.renown_name.toLowerCase();
+          const renownTotal = this.renownTotal[renownKey];
+          const partialRenown = handlers.renown.record(this, {
+            renownName: this.renownCategory.renown_name,
+            renownTotal,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialRenown,
+            this.localXP
+          );
+          this.purchased_renown[renownKey]++;
           this.generateGifts();
           break;
-
-        case "Rite":
-          this.purchased_gifts.rite.push(this.riteSelection);
+        }
+        case "Rite": {
+          const partialRite = handlers.rite.record(this, {
+            riteSelection: this.riteSelection,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialRite,
+            this.localXP
+          );
+          this.purchased_gifts.rite.push({
+            ...this.riteSelection,
+            entryId: partialRite.payload.entryId,
+          });
           break;
-
-        case "Skills":
+        }
+        case "Skills": {
+          const partialSkill = handlers.skill_raise.record(this, {
+            skillName: this.skillCategory,
+          });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialSkill,
+            this.localXP
+          );
           this.skills[this.skillCategory.toLowerCase()]++;
           break;
-        case "Specialty":
-          this.specialtiesFromXp.push({
+        }
+        case "Specialty": {
+          const partialSpec = handlers.specialty.record(this, {
             skill: this.specialtyInput,
             specialty: this.specialtyDefinition,
           });
+          this.localLog = appendEntry(
+            this.localLog,
+            partialSpec,
+            this.localXP
+          );
+          this.specialtiesFromXp.push({
+            skill: this.specialtyInput,
+            specialty: this.specialtyDefinition,
+            entryId: partialSpec.payload.entryId,
+          });
           break;
-        case "Tribe Gift":
-          this.purchased_gifts.tribe.push(this.giftSelection);
+        }
+        case "Tribe Gift": {
+          const partialTG = handlers.tribe_gift.record(this, {
+            giftSelection: this.giftSelection,
+          });
+          this.localLog = appendEntry(this.localLog, partialTG, this.localXP);
+          this.purchased_gifts.tribe.push({
+            ...this.giftSelection,
+            entryId: partialTG.payload.entryId,
+          });
           this.gift_total++;
           break;
+        }
       }
       this.localXP = this.localXP - this.cost;
       this.localSpentXp = this.localSpentXp + this.cost;
@@ -582,6 +673,24 @@ export default defineComponent({
   },
 
   computed: {
+    // Aliases so handler functions (which read state.spent_xp / state.attributes)
+    // work against this component's differently-named refs.
+    spent_xp: {
+      get() {
+        return this.localSpentXp;
+      },
+      set(v) {
+        this.localSpentXp = v;
+      },
+    },
+    attributes: {
+      get() {
+        return this.localAttributes;
+      },
+      set(v) {
+        this.localAttributes = v;
+      },
+    },
     categoryOptions() {
       const arr = [
         "Advantage",

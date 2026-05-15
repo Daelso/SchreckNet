@@ -320,4 +320,43 @@ describe("werewolf handlers — record/undo round trip", () => {
     expect(charState.flaws_remaining).toBe(0);
     expect(charState.spent_xp).toBe(0);
   });
+
+  // ── allowlist guards ────────────────────────────────────────────────────
+  it("advantage undo: malicious counter key is silently ignored", () => {
+    const charState = { advantagePoints: 3, spent_xp: 6 };
+    const maliciousEntry = {
+      type: "advantage",
+      cost: 3,
+      payload: { counter: "__proto__", priorValue: { isAdmin: true }, delta: 1, priorSpentXp: 3 },
+    };
+    handlers.advantage.undo(charState, maliciousEntry);
+    expect(charState.advantagePoints).toBe(3);
+    expect(({}).isAdmin).toBeUndefined();
+  });
+
+  it("flaw undo: malicious counter key is silently ignored", () => {
+    const charState = { flaws_remaining: 2, spent_xp: 6 };
+    const maliciousEntry = {
+      type: "flaw",
+      cost: 3,
+      payload: { counter: "constructor", priorValue: {}, delta: 1, priorSpentXp: 3 },
+    };
+    handlers.flaw.undo(charState, maliciousEntry);
+    expect(charState.flaws_remaining).toBe(2);
+  });
+
+  it("renown undo: malicious counter key is silently ignored", () => {
+    const charState = {
+      purchased_renown: { glory: 2, honor: 0, wisdom: 0 },
+      spent_xp: 15,
+    };
+    const maliciousEntry = {
+      type: "renown",
+      cost: 15,
+      payload: { counter: "__proto__", priorValue: { isAdmin: true }, priorSpentXp: 0 },
+    };
+    handlers.renown.undo(charState, maliciousEntry);
+    expect(charState.purchased_renown.glory).toBe(2);
+    expect(({}).isAdmin).toBeUndefined();
+  });
 });

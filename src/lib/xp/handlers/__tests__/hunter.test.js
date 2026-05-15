@@ -233,4 +233,28 @@ describe("hunter handlers — record/undo round trip", () => {
     expect(charState.flaws_remaining).toBe(0);
     expect(charState.spentXp).toBe(0);
   });
+
+  // ── allowlist guards ────────────────────────────────────────────────────
+  it("advantage undo: malicious counter key is silently ignored", () => {
+    const charState = { advantagePoints: 3, spentXp: 6 };
+    const maliciousEntry = {
+      type: "advantage",
+      cost: 3,
+      payload: { counter: "__proto__", priorValue: { isAdmin: true }, delta: 1, priorSpentXp: 3 },
+    };
+    handlers.advantage.undo(charState, maliciousEntry);
+    expect(charState.advantagePoints).toBe(3);
+    expect(({}).isAdmin).toBeUndefined();
+  });
+
+  it("flaw undo: malicious counter key is silently ignored", () => {
+    const charState = { flaws_remaining: 2, spentXp: 6 };
+    const maliciousEntry = {
+      type: "flaw",
+      cost: 3,
+      payload: { counter: "constructor", priorValue: {}, delta: 1, priorSpentXp: 3 },
+    };
+    handlers.flaw.undo(charState, maliciousEntry);
+    expect(charState.flaws_remaining).toBe(2);
+  });
 });

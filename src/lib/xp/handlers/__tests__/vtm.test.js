@@ -347,4 +347,28 @@ describe("vtm handlers — record/undo round trip", () => {
     handlers.flaw_point.undo(charState, entry);
     expect(charState.flaws_remaining).toBe(4);
   });
+
+  it("advantage_point undo: malicious counter key is silently ignored", () => {
+    const charState = { advantages_remaining: 5 };
+    const maliciousEntry = {
+      type: "advantage_point",
+      cost: 3,
+      payload: { counter: "__proto__", priorValue: { isAdmin: true }, delta: 1 },
+    };
+    // Should not throw and should not modify state
+    handlers.advantage_point.undo(charState, maliciousEntry);
+    expect(charState.advantages_remaining).toBe(5);
+    expect(({}).isAdmin).toBeUndefined();
+  });
+
+  it("flaw_point undo: malicious counter key is silently ignored", () => {
+    const charState = { flaws_remaining: 2 };
+    const maliciousEntry = {
+      type: "flaw_point",
+      cost: 3,
+      payload: { counter: "constructor", priorValue: {}, delta: 1 },
+    };
+    handlers.flaw_point.undo(charState, maliciousEntry);
+    expect(charState.flaws_remaining).toBe(2);
+  });
 });

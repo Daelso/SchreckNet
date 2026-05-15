@@ -1,5 +1,8 @@
 import { newId } from "../xpLog.js";
 
+// Allowlist of valid counter keys to prevent prototype pollution via crafted log entries.
+const ADVANTAGE_FLAW_COUNTERS = new Set(["advantages_remaining", "flaws_remaining"]);
+
 const handlers = {
   attribute_raise: {
     label: (e) => `Raised ${e.payload.attribute} to ${e.payload.newValue}`,
@@ -221,6 +224,7 @@ const handlers = {
       };
     },
     undo: (state, entry) => {
+      if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
       state[entry.payload.counter] = entry.payload.priorValue;
     },
   },
@@ -240,6 +244,7 @@ const handlers = {
       };
     },
     undo: (state, entry) => {
+      if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
       state[entry.payload.counter] = entry.payload.priorValue;
     },
   },

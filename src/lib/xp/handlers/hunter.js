@@ -2,6 +2,9 @@ import { newId } from "../xpLog.js";
 
 // Hunter tracks spentXp (camelCase) — see spendXp.vue's localSpentXp / spentXp prop.
 
+// Allowlist of valid counter keys to prevent prototype pollution via crafted log entries.
+const ADVANTAGE_FLAW_COUNTERS = new Set(["advantagePoints", "flaws_remaining"]);
+
 const handlers = {
   attribute_raise: {
     label: (e) => `Raised ${e.payload.attribute} to ${e.payload.newValue}`,
@@ -146,6 +149,7 @@ const handlers = {
       };
     },
     undo: (state, entry) => {
+      if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
       state[entry.payload.counter] = entry.payload.priorValue;
       state.spentXp = entry.payload.priorSpentXp;
     },
@@ -172,6 +176,7 @@ const handlers = {
       };
     },
     undo: (state, entry) => {
+      if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
       state[entry.payload.counter] = entry.payload.priorValue;
       state.spentXp = entry.payload.priorSpentXp;
     },

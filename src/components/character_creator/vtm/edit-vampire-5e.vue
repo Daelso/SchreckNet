@@ -1222,7 +1222,13 @@ export default {
     },
 
     finalSpecialties() {
-      return this.kindred.specialties;
+      let specialties = [];
+      specialties = this.specialties.concat(
+        this.specialtiesFromPred,
+        this.specialtiesFromXp
+      );
+
+      return specialties;
     },
 
     saveGuard() {

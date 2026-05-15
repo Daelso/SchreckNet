@@ -386,6 +386,56 @@ describe("vtm handlers — record/undo round trip", () => {
     expect(charState.flaws_remaining).toBe(2);
   });
 
+  it("advantage undo: non-finite delta (NaN, Infinity) is silently ignored", () => {
+    const charState = { advantages_remaining: 5 };
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: { counter: "advantages_remaining", priorValue: 0, delta: NaN },
+    });
+    expect(charState.advantages_remaining).toBe(5);
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: { counter: "advantages_remaining", priorValue: 0, delta: Infinity },
+    });
+    expect(charState.advantages_remaining).toBe(5);
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: { counter: "advantages_remaining", priorValue: 0, delta: "junk" },
+    });
+    expect(charState.advantages_remaining).toBe(5);
+  });
+
+  it("flaw undo: non-finite delta is silently ignored", () => {
+    const charState = { flaws_remaining: 3 };
+    handlers.flaw.undo(charState, {
+      type: "flaw",
+      cost: 0,
+      payload: { counter: "flaws_remaining", priorValue: 0, delta: NaN },
+    });
+    expect(charState.flaws_remaining).toBe(3);
+  });
+
+  it("advantage undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.advantage.undoEffect({ payload: { delta: 3 } })
+    ).toBe("3 advantage dot(s) will be removed");
+    expect(
+      handlers.advantage.undoEffect({ payload: { delta: -2 } })
+    ).toBe("2 advantage dot(s) will be restored");
+  });
+
+  it("flaw undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.flaw.undoEffect({ payload: { delta: 1 } })
+    ).toBe("1 flaw dot(s) will be removed");
+    expect(
+      handlers.flaw.undoEffect({ payload: { delta: -2 } })
+    ).toBe("2 flaw dot(s) will be restored");
+  });
+
   it("advantage undo: malicious counter key is silently ignored", () => {
     const charState = { advantages_remaining: 5 };
     const maliciousEntry = {

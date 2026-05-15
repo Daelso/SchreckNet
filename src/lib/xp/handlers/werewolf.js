@@ -212,6 +212,10 @@ const handlers = {
       e.payload.delta > 0
         ? `Added ${e.payload.delta} advantage point(s)`
         : `Removed ${Math.abs(e.payload.delta)} advantage point(s)`,
+    undoEffect: (e) =>
+      e.payload.delta > 0
+        ? `${e.payload.delta} advantage dot(s) will be removed`
+        : `${Math.abs(e.payload.delta)} advantage dot(s) will be restored`,
     record: (state, input) => {
       const counter = "advantagePoints";
       const priorValue = state[counter];
@@ -232,7 +236,9 @@ const handlers = {
     // reflects the state just before that purchase).
     undo: (state, entry) => {
       if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
-      state[entry.payload.counter] -= entry.payload.delta;
+      const delta = Number(entry.payload.delta);
+      if (!Number.isFinite(delta)) return;
+      state[entry.payload.counter] -= delta;
       state.spent_xp = entry.payload.priorSpentXp;
     },
   },
@@ -242,6 +248,10 @@ const handlers = {
       e.payload.delta > 0
         ? `Added ${e.payload.delta} flaw point(s)`
         : `Removed ${Math.abs(e.payload.delta)} flaw point(s)`,
+    undoEffect: (e) =>
+      e.payload.delta > 0
+        ? `${e.payload.delta} flaw dot(s) will be removed`
+        : `${Math.abs(e.payload.delta)} flaw dot(s) will be restored`,
     record: (state, input) => {
       const counter = "flaws_remaining";
       const priorValue = state[counter];
@@ -258,7 +268,9 @@ const handlers = {
     },
     undo: (state, entry) => {
       if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
-      state[entry.payload.counter] -= entry.payload.delta;
+      const delta = Number(entry.payload.delta);
+      if (!Number.isFinite(delta)) return;
+      state[entry.payload.counter] -= delta;
       state.spent_xp = entry.payload.priorSpentXp;
     },
   },

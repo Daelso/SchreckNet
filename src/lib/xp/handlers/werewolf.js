@@ -226,9 +226,13 @@ const handlers = {
         },
       };
     },
+    // Reverse the counter by delta — robust against stale priorValue from old
+    // log entries.  spent_xp is restored from priorSpentXp because the dialog
+    // mutates localSpentXp between record calls (each entry's priorSpentXp
+    // reflects the state just before that purchase).
     undo: (state, entry) => {
       if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
-      state[entry.payload.counter] = entry.payload.priorValue;
+      state[entry.payload.counter] -= entry.payload.delta;
       state.spent_xp = entry.payload.priorSpentXp;
     },
   },
@@ -254,7 +258,7 @@ const handlers = {
     },
     undo: (state, entry) => {
       if (!ADVANTAGE_FLAW_COUNTERS.has(entry.payload.counter)) return;
-      state[entry.payload.counter] = entry.payload.priorValue;
+      state[entry.payload.counter] -= entry.payload.delta;
       state.spent_xp = entry.payload.priorSpentXp;
     },
   },

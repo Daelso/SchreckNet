@@ -148,7 +148,7 @@
                 {{ this.skills[this.skillCategory.toLowerCase()] }}</q-badge
               >
 
-              <q-badge>Cost to Purchase: {{ this.calculateUpgrade() }}</q-badge>
+              <q-badge>Cost to Purchase: {{ this.displayCost() }}</q-badge>
 
               <div class="q-mt-sm" v-if="this.cost > 0">
                 <q-btn
@@ -249,6 +249,12 @@ export default defineComponent({
     };
   },
   methods: {
+    // Show "—" when the category is picked but the sub-selection isn't ready
+    // yet, avoiding "Cost to Purchase: NaN".
+    displayCost() {
+      const c = this.calculateUpgrade();
+      return Number.isFinite(c) ? c : typeof c === "string" ? c : "—";
+    },
     calculateUpgrade() {
       switch (this.categoryInput) {
         case "Advantage":

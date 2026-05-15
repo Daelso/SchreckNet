@@ -370,6 +370,51 @@ describe("werewolf handlers — record/undo round trip", () => {
     expect(charState.spent_xp).toBe(3);
   });
 
+  // ── delta validation ────────────────────────────────────────────────────
+  it("advantage undo: non-finite delta is silently ignored", () => {
+    const charState = { advantagePoints: 4, spent_xp: 12 };
+    handlers.advantage.undo(charState, {
+      type: "advantage",
+      cost: 0,
+      payload: {
+        counter: "advantagePoints",
+        priorValue: 0,
+        delta: NaN,
+        priorSpentXp: 0,
+      },
+    });
+    expect(charState.advantagePoints).toBe(4);
+    expect(charState.spent_xp).toBe(12);
+  });
+
+  it("flaw undo: non-finite delta is silently ignored", () => {
+    const charState = { flaws_remaining: 2, spent_xp: 6 };
+    handlers.flaw.undo(charState, {
+      type: "flaw",
+      cost: 0,
+      payload: {
+        counter: "flaws_remaining",
+        priorValue: 0,
+        delta: Infinity,
+        priorSpentXp: 0,
+      },
+    });
+    expect(charState.flaws_remaining).toBe(2);
+    expect(charState.spent_xp).toBe(6);
+  });
+
+  it("advantage undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.advantage.undoEffect({ payload: { delta: 2 } })
+    ).toBe("2 advantage dot(s) will be removed");
+  });
+
+  it("flaw undoEffect: describes the dot reversal", () => {
+    expect(
+      handlers.flaw.undoEffect({ payload: { delta: 1 } })
+    ).toBe("1 flaw dot(s) will be removed");
+  });
+
   // ── allowlist guards ────────────────────────────────────────────────────
   it("advantage undo: malicious counter key is silently ignored", () => {
     const charState = { advantagePoints: 3, spent_xp: 6 };

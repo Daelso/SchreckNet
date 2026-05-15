@@ -327,3 +327,114 @@ git commit -m "Document database migration workflow"
 ---
 
 **Chunk 1 done.** At this point: sequelize-cli is wired in, the column exists in the live DB, the models reflect it, and the migration workflow is documented. The frontend still doesn't know about `xp_log` — that comes in Chunk 3+.
+
+---
+
+## Chunk 2: Server API — accept and persist xp_log
+
+Three near-identical changes to the routers. Each route family has the same shape: a POST `/new` that creates a character row, a PUT edit route that updates it, plus GETs that return all fields (no change needed — `findByPk(...).dataValues` already includes new columns).
+
+### Task 2.1: Vampires routes
+
+**Files:**
+- Modify: `server/api/vampires.js`
+
+- [ ] **Step 2.1.1: Add `xp_log` to the create payload**
+
+In [server/api/vampires.js](../../server/api/vampires.js), find the `Vampires.create({...})` call (around line 16). Locate the `xp: req.body.xp,` line (around line 44). Add immediately after it:
+
+```js
+xp_log: req.body.xp_log || [],
+```
+
+The `|| []` fallback keeps the route compatible with older clients that don't send the field yet (and matches the column's default value).
+
+- [ ] **Step 2.1.2: Add `xp_log` to the edit payload**
+
+In the same file, find the `kindred.update({...})` call inside the `/vampire/edit/:id` route (around line 138). Locate the `xp: req.body.xp,` line (around line 166). Add immediately after it:
+
+```js
+xp_log: req.body.xp_log || [],
+```
+
+- [ ] **Step 2.1.3: Smoke-test with curl** *(optional but recommended — confirms the round-trip works before you wire the frontend)*
+
+Start the server (`npm run devStart` in a separate shell). From the worktree:
+
+```bash
+# Replace <id> with a real vampire id owned by your dev account, and <cookie>
+# with a valid `access` cookie from a logged-in browser session.
+curl -s -X PUT http://localhost:5000/vampires/vampire/edit/<id> \
+  -H "Content-Type: application/json" \
+  -H "Cookie: access=<cookie>" \
+  -d '{"xp_log": [{"id":"smoke","ts":"2026-05-15T00:00:00Z","cost":1,"balanceAfter":0,"note":"","type":"smoke","payload":{}}], "xp": 0, "name": "<existing name>"}'
+```
+
+Then GET the character and confirm `xp_log` round-trips:
+
+```bash
+curl -s http://localhost:5000/vampires/vampire/<id> | jq .xp_log
+```
+
+Expected: the smoke array you just sent comes back. (This step is a one-time sanity check — you can revert the smoke entry by issuing another PUT with `xp_log: []`.)
+
+- [ ] **Step 2.1.4: Commit**
+
+```bash
+git add server/api/vampires.js
+git commit -m "Vampires routes: accept and persist xp_log"
+```
+
+### Task 2.2: Hunters routes
+
+**Files:**
+- Modify: `server/api/hunters.js`
+
+- [ ] **Step 2.2.1: Locate the create and edit payloads**
+
+In [server/api/hunters.js](../../server/api/hunters.js), find the two places that read from `req.body` to write character fields — typically a `Hunters.create({...})` in the POST `/new` route and a `hunter.update({...})` in a PUT edit route. The exact structure mirrors vampires.js.
+
+- [ ] **Step 2.2.2: Add `xp_log` to both payloads**
+
+In each place, after the existing `xp: req.body.xp,` line, add:
+
+```js
+xp_log: req.body.xp_log || [],
+```
+
+If there is any divergence from the vampires.js shape (e.g. the edit route uses a different verb or path), document it inline as a code comment but make the same body-field addition.
+
+- [ ] **Step 2.2.3: Commit**
+
+```bash
+git add server/api/hunters.js
+git commit -m "Hunters routes: accept and persist xp_log"
+```
+
+### Task 2.3: Garou routes
+
+**Files:**
+- Modify: `server/api/garou.js`
+
+- [ ] **Step 2.3.1: Locate the create and edit payloads**
+
+In [server/api/garou.js](../../server/api/garou.js), find the equivalent create and update payloads. Garou's model has both `xp` and `spent_xp` columns — leave both untouched and add `xp_log` next to `xp` (or wherever feels structurally consistent in that file).
+
+- [ ] **Step 2.3.2: Add `xp_log` to both payloads**
+
+Same one-liner:
+
+```js
+xp_log: req.body.xp_log || [],
+```
+
+- [ ] **Step 2.3.3: Commit**
+
+```bash
+git add server/api/garou.js
+git commit -m "Garou routes: accept and persist xp_log"
+```
+
+---
+
+**Chunk 2 done.** The server now round-trips `xp_log` for all three game lines. The frontend still doesn't send the field, so no behavior changes user-visibly yet — but a future GET will surface `[]` for legacy characters and whatever was persisted for any character touched after Chunk 5.

@@ -1041,7 +1041,7 @@ export default {
 
     onUndo(entry) {
       const { log: next } = undoLast(this.xp_log);
-      hunterHandlers[entry.type].undo(this, entry);
+      hunterHandlers[entry.type].undo(this.xpState, entry);
       this.xp += entry.cost;
       this.xp_log = next;
     },
@@ -1139,6 +1139,73 @@ export default {
       set(v) {
         this.flaws = v;
       },
+    },
+    xpState() {
+      const self = this;
+      const ATTR_NAMES = [
+        "Charisma",
+        "Composure",
+        "Dexterity",
+        "Intelligence",
+        "Manipulation",
+        "Resolve",
+        "Stamina",
+        "Strength",
+        "Wits",
+      ];
+      return {
+        attributes: ATTR_NAMES.map((name) => ({
+          name,
+          get points() {
+            return self[name.toLowerCase()];
+          },
+          set points(v) {
+            self[name.toLowerCase()] = v;
+          },
+        })),
+        skills: new Proxy(
+          {},
+          {
+            get(_, prop) {
+              return self.trueSkills[prop];
+            },
+            set(_, prop, value) {
+              self.trueSkills = { ...self.trueSkills, [prop]: value };
+              return true;
+            },
+          }
+        ),
+        get specialtiesFromXp() {
+          return self.specialtiesFromXp;
+        },
+        set specialtiesFromXp(v) {
+          self.specialtiesFromXp = v;
+        },
+        get spentXp() {
+          return self.spentXp;
+        },
+        set spentXp(v) {
+          self.spentXp = v;
+        },
+        get edgeArr() {
+          return self.edgeArr;
+        },
+        set edgeArr(v) {
+          self.edgeArr = v;
+        },
+        get advantagePoints() {
+          return self.advantages;
+        },
+        set advantagePoints(v) {
+          self.advantages = v;
+        },
+        get flaws_remaining() {
+          return self.flaws;
+        },
+        set flaws_remaining(v) {
+          self.flaws = v;
+        },
+      };
     },
   },
 };

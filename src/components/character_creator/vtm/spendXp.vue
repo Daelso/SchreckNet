@@ -332,6 +332,10 @@ export default defineComponent({
       specialtyDefinition: ref(""),
       dotsInput: ref(1),
       localAttributes,
+      // Alias for handlers.attribute_raise (`state.attributes.find(...)`). Without
+      // this the handler crashes when buying an attribute via Spend XP — see PR #281
+      // smoke test defect #1.
+      attributes: localAttributes,
       specialtiesFromXp,
       edit: ref(props.info.edit),
       attributeOptions: ref(props.info.attributes),

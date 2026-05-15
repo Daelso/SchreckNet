@@ -79,6 +79,16 @@ The exact list is read from each `spendXp.vue` during planning, but the v1 set i
 - For purchases that **push into an array** (specialties, discipline skills, rituals, ceremonies): payload stores an `entryId` generated at purchase time and written onto the pushed item. Undo removes the item with that id rather than popping the array tail (which is unsafe if non-XP code also touched the array).
 - For purchases that **increment a counter** (advantage/flaw remaining): payload stores `{ counter, priorValue }`. Undo restores the prior value.
 
+### Cost sign convention
+
+`cost` is signed: **positive = XP spent**, **negative = XP refunded**.
+
+- Spend XP dialog purchases — `cost > 0`.
+- "Add a flaw/advantage point" button — `cost: +3`.
+- "Remove a flaw/advantage point" button — `cost: -3` (this is a refund event; it produces a log entry whose undo *re-adds* the point at cost +3).
+- Recording an entry — applies `xp -= cost` (positive cost decreases the balance; negative cost increases it).
+- Undoing an entry — removes the entry and applies `xp += cost`, the exact inverse. A positive cost refunds; a negative cost re-spends.
+
 ### Database
 
 Add an `xp_log` column to each game-line model:
@@ -111,7 +121,6 @@ Pure functions:
 
 - `appendEntry(log, partialEntry, currentXp) → updatedLog` — fills `id`, `ts`, `balanceAfter`.
 - `undoLast(log) → { log, entry }` — pops the tail; caller applies the per-type undo.
-- `computeBalance(initialXp, log) → number` — utility for sanity checks.
 
 ### `handlers/<line>.js`
 
@@ -175,9 +184,9 @@ Visual treatment matches the existing list items: same dark theme, same `q-icon`
 
 ### Interactions
 
-- **Undo** appears only on the top entry. Click → confirmation dialog ("Undo *X*? You'll get N XP back.") → on confirm, the entry pops, the registered `undo` handler mutates the character state, and `xp += entry.cost`. The newly-revealed top entry gains an Undo button on next render.
-- **Note** is an inline editable text input per row. Saves on blur. Editing a note does not require confirmation, does not touch XP, and is not itself undoable.
-- **Empty state**: friendly message — "No XP transactions logged yet. Purchases made through Spend XP will appear here."
+- **Undo** appears only on the top entry. Click → confirmation dialog whose body is rendered from `handlers[entry.type].label(entry)` ("Undo *Raised Dominate to 2 (Mesmerize)*? You'll get 6 XP back.") → on confirm, the entry pops, the registered `undo` handler mutates the character state, and `xp += entry.cost`. The newly-revealed top entry gains an Undo button on next render.
+- **Note** is an inline editable text input per row. On blur, the new text is committed to **local reactive state** (no per-keystroke API calls, no separate save action). Notes persist to the server on the next character Save, like any other field. Editing a note does not require confirmation, does not touch XP, and is not itself undoable.
+- **Empty state**: friendly message — "No XP transactions logged yet. Purchases made through Spend XP will appear here." No synthetic "starting balance" row is rendered in v1 — consistent with the "no backfill" stance, and `balanceAfter` is meaningful only relative to the XP total at the time each entry was recorded.
 - **Persistence**: undo and note edits stage a change to local reactive state. They persist only when the user clicks the existing edit-screen Save button — same lifecycle as every other field on the character.
 
 ### Implementation note (binding)
@@ -253,4 +262,3 @@ The repo has no test suite (`npm test` is a stub). Verification is manual, captu
 
 - Confirm the exact Werewolf table name (URL slug is `werewolf`, code says `garou`).
 - Enumerate the full Werewolf and Hunter `spendXp.vue` switch cases to finalize their per-line type sets.
-- Decide whether the dialog should also display the **initial** XP grant (character creation XP) as a synthetic "starting balance" row, or just show empty until the first transaction.

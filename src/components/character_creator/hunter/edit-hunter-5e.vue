@@ -1123,8 +1123,9 @@ export default {
     },
   },
   computed: {
-    // Aliases so hunterHandlers record/undo functions work against this page's
-    // differently-named reactive state.
+    // These aliases are required: add_advantage / add_flaw pass `this` to
+    // handler.record(), which reads state.advantagePoints / state.flaws_remaining.
+    // Removing them without refactoring those ±3xp button paths would break recording.
     advantagePoints: {
       get() {
         return this.advantages;

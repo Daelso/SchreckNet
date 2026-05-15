@@ -1149,8 +1149,12 @@ export default {
     },
   },
   computed: {
-    // Aliases so werewolfHandlers record/undo functions work against this page's
-    // differently-named reactive state.
+    // These aliases are required: handler.record/undo functions read state keys
+    // that differ from this component's reactive property names.
+    // - spent_xp: handlers read state.spent_xp; this component stores spentXp.
+    // - advantagePoints / flaws_remaining: add_advantage / add_flaw pass `this`
+    //   to handler.record(), which reads state.advantagePoints / state.flaws_remaining.
+    //   Removing them without refactoring those ±3xp button paths would break recording.
     spent_xp: {
       get() {
         return this.spentXp;

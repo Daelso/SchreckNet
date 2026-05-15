@@ -921,6 +921,10 @@ export default {
     };
   },
   computed: {
+    // These aliases are required: add_advantage / subtract_advantage and
+    // add_flaw / subtract_flaw pass `this` to handler.record(), which reads
+    // state.advantages_remaining / state.flaws_remaining.  Removing them would
+    // break those ±3xp button paths without a larger refactor.
     advantages_remaining: {
       get() {
         return this.advantages;

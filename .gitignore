@@ -37,3 +37,6 @@ yarn-error.log*
 
 # Local git worktrees
 .worktrees/
+
+# Local reference material (WoD rulebooks, etc. — see CLAUDE.md)
+/resources

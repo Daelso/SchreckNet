@@ -931,3 +931,106 @@ Expected: no output and exit 0. Any matches mean a type wasn't tested — go bac
 ---
 
 **Chunk 3 done.** Pure helpers + three registries exist with full round-trip coverage. Nothing is wired into the actual Vue components yet — that's Chunk 4 (dialog) and Chunk 5 (per-line glue).
+
+---
+
+## Chunk 4: XpLogDialog component
+
+> **Required first step:** Before authoring any of the component code in this chunk, **invoke the `frontend-design` skill**. This is a binding instruction in user memory (file: `feedback_frontend_design_skill.md`). The skill produces the visual design and structure; the steps below give you the *interface contract* (props/emits/behavior) it must satisfy, but the layout, copy, colors, and visual polish are the skill's job.
+
+### Task 4.1: Invoke frontend-design and produce a design artifact
+
+- [ ] **Step 4.1.1: Invoke the `frontend-design` skill**
+
+Provide it with this context:
+
+- **Component:** `src/lib/xp/XpLogDialog.vue` (new Quasar `q-dialog`).
+- **Aesthetic anchor:** the existing `spendXp.vue` dialog for any of the three game lines — `bg-primary` header, `bg-dark` page body, `q-toolbar` with title and a Save button on the right. Match this voice.
+- **Reference mockup from the spec:**
+  ```
+  ┌─ XP Log — 27 XP Remaining ──────────────────────┐
+  │  May 15, 2026 · 18:42                  [Undo]   │
+  │  Raised Dominate to 2 (Mesmerize)               │
+  │  Cost: 6 XP    Balance after: 27                │
+  │  [editable note ...]                            │
+  ├─────────────────────────────────────────────────┤
+  │  ...                                            │
+  └─────────────────────────────────────────────────┘
+  ```
+- **Constraints:**
+  - Entries listed **newest first**.
+  - The top entry (only) shows an "Undo" button. All other entries: no undo affordance.
+  - Each entry has a per-row inline note input. Commits to local state on blur.
+  - Empty state copy: "No XP transactions logged yet. Purchases made through Spend XP will appear here."
+- **Interface contract:** see Step 4.2.1 below — frontend-design must respect the props/emits there.
+
+Produce a design artifact (the skill's output) before moving to 4.2.
+
+### Task 4.2: Implement XpLogDialog.vue against the design
+
+**Files:**
+- Create: `src/lib/xp/XpLogDialog.vue`
+
+- [ ] **Step 4.2.1: Define the component interface**
+
+```
+Props:
+  modelValue        Boolean              // open/closed (v-model)
+  log               Array<LogEntry>      // chronological (oldest first); reverse for display
+  handlers          Object               // { [type]: { label, record, undo } }
+  remainingXp       Number               // current xp total, for the header
+
+Emits:
+  update:modelValue (bool)               // close-on-cancel
+  undo              (entry: LogEntry)    // parent applies handlers[type].undo + xp += cost + removes the entry
+  note-edit         ({ id, note })       // parent finds entry by id and replaces note in local reactive state
+```
+
+The dialog does **not** call the registry's `undo` itself, and does **not** mutate the `log` array. It emits intent; the parent mutates and persists.
+
+- [ ] **Step 4.2.2: Author the component**
+
+Implement against the frontend-design output. Key behavioral details:
+
+1. Header reads `"XP Log — {{ remainingXp }} XP Remaining"` (mirrors `spendXp.vue`'s pattern).
+2. Render `[...log].reverse()` so newest is on top.
+3. For each row: `handlers[entry.type]?.label(entry)` for the main line. Defensive `?.` — if a row's type is unknown (legacy data, future versioning), render `entry.type` literally and skip undo.
+4. The top row shows an `Undo` button. Clicking opens a Quasar `$q.dialog({...})` confirm (the imperative API, accessed inside the component via `useQuasar()` → `$q.dialog`): title `Undo this purchase?`, body `${handlers[entry.type].label(entry)} — you'll get ${entry.cost} XP back.` when `entry.cost > 0`, or `${label} — you'll re-spend ${-entry.cost} XP.` when `entry.cost < 0`. On `ok`, emit `undo(entry)`.
+5. The note input is a Quasar `q-input` `dense` `borderless` `:debounce="300"` (native debounce — avoids a lodash import) with `@blur` emitting `note-edit({ id: entry.id, note: newValue })`. Pre-fill `:model-value="entry.note ?? ''"`.
+6. Empty state: when `log.length === 0`, render the empty-state copy in place of the list.
+
+- [ ] **Step 4.2.3: Manual smoke**
+
+Add a temporary import + `<XpLogDialog>` instance to one of the existing edit pages (e.g. `edit-vampire-5e.vue`) with stub data:
+
+```js
+const stubLog = [
+  { id: "1", ts: "2026-05-15T18:42:11Z", cost: 6, balanceAfter: 27, note: "", type: "smoke", payload: {} },
+];
+```
+
+Stub `handlers = { smoke: { label: (e) => `Smoke entry (${e.cost} XP)` } }`. Wire a temporary parent-side handler:
+
+```js
+function onUndoSmoke(entry)   { console.log("UNDO EMITTED", entry); }
+function onNoteEditSmoke(payload) { console.log("NOTE EDIT EMITTED", payload); }
+```
+
+Verify (with the browser console open):
+- Dialog opens, renders the row.
+- Undo button appears only on the top row; clicking it opens the confirm; confirming logs `UNDO EMITTED` with the full entry object.
+- Editing the note input and blurring logs `NOTE EDIT EMITTED { id, note }`.
+- Empty state renders when `log = []`.
+
+**Revert the stub (and the two console handlers) before committing.** The dialog ships with no temporary scaffolding in the parent.
+
+- [ ] **Step 4.2.4: Commit**
+
+```bash
+git add src/lib/xp/XpLogDialog.vue
+git commit -m "Add shared XpLogDialog component (newest-first, LIFO undo, editable notes)"
+```
+
+---
+
+**Chunk 4 done.** The dialog exists, satisfies the interface contract, and visually fits the project. It still has no per-line wiring — that's Chunk 5.

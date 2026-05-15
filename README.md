@@ -67,7 +67,7 @@ Schema changes go through sequelize-cli (introduced 2026-05). The flow:
 npm run migration:create -- some-name   # scaffolds server/migrations/<ts>-some-name.js
 # edit the generated file
 npm run db:migrate                       # apply
-npm run db:migrate:undo                  # undo the most recent migration
+npm run db:migrate:undo                  # undo the most recent migration — stop the app first; the model declares xp_log NOT NULL, so the app will crash on the column's absence until db:migrate is re-applied
 ```
 
 The CLI reads connection info from `server/config/config.js`, which reuses

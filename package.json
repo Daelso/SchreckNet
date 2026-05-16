@@ -59,7 +59,7 @@
     "nodemon": "^2.0.20",
     "prettier": "^2.5.1",
     "sequelize-cli": "^6.6.5",
-    "vitest": "^1.6.1"
+    "vitest": "^4.1.6"
   },
   "browserslist": [
     "last 10 Chrome versions",

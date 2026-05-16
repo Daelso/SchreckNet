@@ -40,3 +40,9 @@ yarn-error.log*
 
 # Local reference material (WoD rulebooks, etc. — see CLAUDE.md)
 /resources
+
+# Playwright e2e artifacts
+/playwright-report
+/test-results
+/playwright/.cache
+/.playwright-mcp

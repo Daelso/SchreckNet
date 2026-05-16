@@ -37,14 +37,6 @@ const AuspiceGifts = db.sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    page: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    short_desc: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
   },
   { timestamps: false }
 );

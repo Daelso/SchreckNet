@@ -97,12 +97,6 @@ export default {
   },
   async mounted() {
     try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error("AdSense error:", e);
-    }
-
-    try {
       const resp = await this.$api.get("/user/currentUser", {
         withCredentials: true,
       });

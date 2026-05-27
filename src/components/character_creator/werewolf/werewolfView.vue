@@ -915,11 +915,9 @@ export default defineComponent({
         nameField.updateAppearances(supportFont);
         chronicleField.updateAppearances(supportFont);
         conceptField.updateAppearances(supportFont);
-        touchstoneField.updateAppearances(supportFont);
         tribeField.updateAppearances(supportFont);
         patronField.updateAppearances(supportFont);
         auspiceField.updateAppearances(supportFont);
-        favorAndBans.updateAppearances(supportFont);
 
         conceptField.setFontSize(10);
 
@@ -932,10 +930,12 @@ export default defineComponent({
           touchstones += mergedString;
         }
         touchstoneField.setText(touchstones);
+        touchstoneField.updateAppearances(supportFont);
 
         let mergedFavorString = "Favor: " + this.garou.tribe.favor + "\n\n";
         mergedFavorString += "Ban: " + this.garou.tribe.ban;
         favorAndBans.setText(mergedFavorString);
+        favorAndBans.updateAppearances(supportFont);
 
         // health boxes
         for (let i = 1; i < this.garou.attributes.stamina + 3 + 1; i++) {

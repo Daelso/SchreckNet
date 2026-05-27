@@ -1177,8 +1177,8 @@ export default defineComponent({
               let rowField = form.getTextField(
                 `Disc${curIndex}_Ability${index + 1}`
               );
-              rowField.updateAppearances(supportFont);
               rowField.setText(`${x.skill}`);
+              rowField.updateAppearances(supportFont);
             }
           });
 
@@ -1204,8 +1204,8 @@ export default defineComponent({
             continue;
           }
           let advTextBox = form.getTextField(`Merit${i + 1}`);
-          advTextBox.updateAppearances(supportFont);
           advTextBox.setText(`${meritArr[i].name}`);
+          advTextBox.updateAppearances(supportFont);
 
           for (let j = 1; j < meritArr[i].cost + 1; j++) {
             let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);

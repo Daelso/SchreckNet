@@ -1217,17 +1217,19 @@ export default defineComponent({
           giftName.setText(
             gifts[i].gift_name ? gifts[i].gift_name : gifts[i].rite_name
           );
-          giftPool.setText(gifts[i].pool);
+          giftPool.setText(gifts[i].pool || "");
           giftCost.setText(gifts[i].cost ? gifts[i].cost : "Free");
           if (gifts[i].short_desc) {
             giftNotes.setText(gifts[i].short_desc);
-          } else if (!gifts[i].short_desc && gifts[i].gift_description) {
+          } else if (gifts[i].gift_description) {
             giftNotes.setText(gifts[i].gift_description);
-          } else {
+          } else if (gifts[i].rite_description) {
             giftNotes.setText(gifts[i].rite_description);
           }
 
-          giftPage.setText(gifts[i].page.toString());
+          if (gifts[i].page != null) {
+            giftPage.setText(gifts[i].page.toString());
+          }
 
           giftName.updateAppearances(supportFont);
           giftPool.updateAppearances(supportFont);

@@ -872,7 +872,6 @@ export default defineComponent({
         driveField.updateAppearances(supportFont);
         cellField.updateAppearances(supportFont);
         redemptionField.updateAppearances(supportFont);
-        touchstoneField.updateAppearances(supportFont);
 
         conceptField.setFontSize(10);
 
@@ -885,6 +884,7 @@ export default defineComponent({
           touchstones += mergedString;
         }
         touchstoneField.setText(touchstones);
+        touchstoneField.updateAppearances(supportFont);
 
         // health boxes
         for (let i = 1; i < this.hunter.attributes.stamina + 3 + 1; i++) {

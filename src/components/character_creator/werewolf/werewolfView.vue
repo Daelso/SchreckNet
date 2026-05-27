@@ -916,6 +916,10 @@ export default defineComponent({
         chronicleField.updateAppearances(supportFont);
         conceptField.updateAppearances(supportFont);
         touchstoneField.updateAppearances(supportFont);
+        tribeField.updateAppearances(supportFont);
+        patronField.updateAppearances(supportFont);
+        auspiceField.updateAppearances(supportFont);
+        favorAndBans.updateAppearances(supportFont);
 
         conceptField.setFontSize(10);
 
@@ -1111,6 +1115,7 @@ export default defineComponent({
         const fillSpecs = (skill, spec) => {
           let specField = form.getTextField(skill);
           specField.setText(spec);
+          specField.updateAppearances(supportFont);
         };
 
         this.garou.specialties.forEach((spec) => {
@@ -1223,6 +1228,12 @@ export default defineComponent({
           }
 
           giftPage.setText(gifts[i].page.toString());
+
+          giftName.updateAppearances(supportFont);
+          giftPool.updateAppearances(supportFont);
+          giftCost.updateAppearances(supportFont);
+          giftNotes.updateAppearances(supportFont);
+          giftPage.updateAppearances(supportFont);
         }
 
         // Advantages/flaws
@@ -1236,6 +1247,7 @@ export default defineComponent({
         for (let i = 0; i < meritArr.length; i++) {
           let advTextBox = form.getTextField(`Merit${i + 1}`);
           advTextBox.setText(`${meritArr[i].name}`);
+          advTextBox.updateAppearances(supportFont);
 
           for (let j = 1; j < meritArr[i].cost + 1; j++) {
             let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);

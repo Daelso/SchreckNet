@@ -8,7 +8,9 @@
     >
       <div class="pbn-ad__fog"></div>
       <div class="pbn-ad__accent"></div>
-      <div class="pbn-ad__badge">✦ The City Hungers ✦</div>
+      <div class="pbn-ad__badge">
+        <span aria-hidden="true">✦ </span>The City Hungers<span aria-hidden="true"> ✦</span>
+      </div>
       <div class="pbn-ad__title">Philadelphia by Night</div>
       <div class="pbn-ad__hook">
         Three sects share these streets — bound by tradition, torn by ambition,
@@ -192,13 +194,19 @@ export default {
   margin-bottom: 1.5em;
   text-decoration: none;
   overflow: hidden;
-  transition: border-color 0.4s ease;
   animation: pbn-border-breathe 4s ease-in-out infinite;
 }
 
-.pbn-ad:hover {
+.pbn-ad:hover,
+.pbn-ad:focus-visible {
   border-color: #e31c25;
   animation: none;
+  transition: border-color 0.4s ease;
+}
+
+.pbn-ad:focus-visible {
+  outline: 2px solid #e31c25;
+  outline-offset: 2px;
 }
 
 .pbn-ad__fog {
@@ -294,6 +302,13 @@ export default {
   }
   50% {
     opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pbn-ad,
+  .pbn-ad__accent {
+    animation: none;
   }
 }
 

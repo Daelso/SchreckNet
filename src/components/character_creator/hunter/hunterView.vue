@@ -864,6 +864,15 @@ export default defineComponent({
 
         nameField.updateAppearances(supportFont);
         chronicleField.updateAppearances(supportFont);
+        conceptField.updateAppearances(supportFont);
+        ambitionField.updateAppearances(supportFont);
+        creedField.updateAppearances(supportFont);
+        creedDescField.updateAppearances(supportFont);
+        desireField.updateAppearances(supportFont);
+        driveField.updateAppearances(supportFont);
+        cellField.updateAppearances(supportFont);
+        redemptionField.updateAppearances(supportFont);
+        touchstoneField.updateAppearances(supportFont);
 
         conceptField.setFontSize(10);
 
@@ -1031,6 +1040,7 @@ export default defineComponent({
         const fillSpecs = (skill, spec) => {
           let specField = form.getTextField(skill);
           specField.setText(spec);
+          specField.updateAppearances(supportFont);
         };
 
         this.hunter.specialties.forEach((spec) => {
@@ -1135,6 +1145,7 @@ export default defineComponent({
         for (let i = 0; i < edgeLength; i++) {
           let edgeField = form.getTextField(edgeArr[i]);
           edgeField.setText(combinedEdges[i]);
+          edgeField.updateAppearances(supportFont);
         }
 
         // Advantages/flaws
@@ -1148,6 +1159,7 @@ export default defineComponent({
         for (let i = 0; i < meritArr.length; i++) {
           let advTextBox = form.getTextField(`Merit${i + 1}`);
           advTextBox.setText(`${meritArr[i].name}`);
+          advTextBox.updateAppearances(supportFont);
 
           for (let j = 1; j < meritArr[i].cost + 1; j++) {
             let advCheckBox = form.getCheckBox(`Merit${i + 1}-${j}`);

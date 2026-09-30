@@ -24,7 +24,7 @@
     "@quasar/app-webpack": "^4.4.5",
     "@quasar/extras": "^1.16.13",
     "autoprefixer": "^10.5.0",
-    "axios": "^1.15.2",
+    "axios": "^1.18.0",
     "bcrypt": "^5.1.0",
     "compression": "^1.8.1",
     "connect-history-api-fallback": "^2.0.0",
@@ -37,10 +37,10 @@
     "express-rate-limit": "^6.6.0",
     "helmet": "^6.0.0",
     "jsonwebtoken": "^9.0.0",
-    "mysql2": "^3.9.8",
-    "nodemailer": "^8.0.5",
+    "mysql2": "^3.23.1",
+    "nodemailer": "^10.0.9",
     "pdf-lib": "^1.17.1",
-    "quasar": "^2.17.4",
+    "quasar": "^2.34.0",
     "raw-loader": "^4.0.2",
     "sequelize": "^6.37.8",
     "serve-static": "^1.15.0",
@@ -59,7 +59,7 @@
     "nodemon": "^2.0.20",
     "prettier": "^2.5.1",
     "sequelize-cli": "^6.6.5",
-    "vitest": "^1.6.1"
+    "vitest": "^5.0.2"
   },
   "browserslist": [
     "last 10 Chrome versions",

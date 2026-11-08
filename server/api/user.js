@@ -10,10 +10,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const Users = require("../models/Users");
 const validator = require("validator");
-const { Op } = require("sequelize");
 const { sequelize } = require("../database");
 const lib = require("../lib");
 const mailer = require("../mailer");
+
+// Compared against when the email is unknown; never matches a real login.
+const DUMMY_HASH = bcrypt.hashSync("not-a-real-password", 10);
 
 //Route is base/user/
 
@@ -86,18 +88,35 @@ router.route("/register").post(lib.emailLimiter, async (req, res) => {
     }
     req.body.username = req.body.username.trim();
 
-    const existing = await Users.findOne({
-      where: {
-        [Op.or]: [{ username: req.body.username }, { email: req.body.email }],
-      },
-    });
-    if (existing) {
-      return res.status(409).send("Email or username already taken");
-    }
-
-    //Encrypts the password.
+    // Hash first so every path below takes about the same time.
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    // Usernames are public, so saying one is taken leaks nothing.
+    const nameTaken = await Users.findOne({
+      where: { username: req.body.username },
+      attributes: ["user_id"],
+    });
+    if (nameTaken) {
+      return res.status(409).send("Username already taken");
+    }
+
+    // Emails are private: answer as if it worked and tell the owner instead.
+    const emailOwner = await Users.findOne({
+      where: { email: req.body.email },
+      attributes: ["username", "email"],
+    });
+    if (emailOwner) {
+      mailer.sendAccountExistsEmail(
+        emailOwner.email,
+        emailOwner.username,
+        process.env.ENV === "DEV"
+          ? "http://localhost:8080/passwordForgot"
+          : "https://www.schrecknet.live/passwordForgot"
+      );
+      return res.status(200).send("User created successfully!");
+    }
+
     const newUser = await Users.create({
       username: req.body.username,
       email: req.body.email,
@@ -140,8 +159,13 @@ router.route("/login").post(lib.limiter, async (req, res) => {
       return res.status(401).send("Incorrect email or password!");
     }
     const user = await Users.findOne({ where: { email: req.body.email } });
+    // Always run one bcrypt compare so unknown emails aren't faster to reject.
+    const matches = await bcrypt.compare(
+      req.body.password,
+      user ? user.password : DUMMY_HASH
+    );
     // Same answer for unknown email and wrong password.
-    if (user && (await bcrypt.compare(req.body.password, user.password))) {
+    if (user && matches) {
       const userInfo = {
         id: user.user_id,
         username: user.username,

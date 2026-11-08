@@ -146,19 +146,22 @@ export default {
                 color: "green-4",
                 textColor: "white",
                 icon: "cloud_done",
-                message:
-                  "Account successfully created, an activation email has been sent!",
+                message: "Check your email to activate your account!",
               })
             )
             .then(() => {
               router.push({ name: "login" });
             })
-            .catch(() =>
+            .catch((err) =>
               $q.notify({
                 color: "red-5",
                 textColor: "white",
                 icon: "warning",
-                message: "Email or username already taken!",
+                // Server sends a readable reason (e.g. "Username already taken").
+                message:
+                  typeof err.response?.data === "string"
+                    ? err.response.data
+                    : "Registration failed, please try again.",
               })
             );
         }

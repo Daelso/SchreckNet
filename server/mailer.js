@@ -596,4 +596,45 @@ const sendContactForm = (content) => {
   }
 };
 
-module.exports = { sendResetEmail, sendActivationEmail, sendContactForm };
+// Sent instead of a second account when someone registers with an email
+// that's already in use, so the register form can't reveal who has an account.
+const sendAccountExistsEmail = (target, username, forgotLink) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.MAILER_USER,
+        pass: process.env.MAILER_PASSWORD,
+      },
+    });
+
+    transporter.sendMail(
+      {
+        from: `SchreckNet <${process.env.MAILER_USER}>`,
+        to: target,
+        subject: "Elysium: you already have an account",
+        html: `<html><body style="font-family: sans-serif; font-size: 14px;">
+          <p>Good evening ${esc(username)},</p>
+          <p>Someone tried to create a new SchreckNet account with this email address. You already have one, so nothing was changed.</p>
+          <p>If that was you and you can't log in, reset your password here: <a href="${esc(
+            forgotLink
+          )}">${esc(forgotLink)}</a></p>
+          <p>If it wasn't you, you can ignore this email.</p>
+        </body></html>`,
+      },
+      (err) => {
+        if (err) console.log(err);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports = {
+  sendResetEmail,
+  sendActivationEmail,
+  sendAccountExistsEmail,
+  sendContactForm,
+};

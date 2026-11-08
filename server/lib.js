@@ -67,59 +67,83 @@ const authenticateToken = async (req, res, next) => {
   });
 };
 
+// Limits routes that send email (register, forgot password, resend activation).
+const emailLimiter = rateLimit({
+  windowMs: 900000, //15 min
+  max: 10,
+  message: "Too many requests, please wait 15 minutes and try again!",
+});
+
+const setAccessCookie = (res, user) => {
+  const token = jwt.sign(
+    {
+      username: user.username,
+      email: user.email,
+      id: user.id,
+      activated: user.activated,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "5m" }
+  );
+  res.cookie("access", token, {
+    maxAge: 300000,
+    secure: true,
+    httpOnly: true,
+    sameSite: "None",
+  });
+};
+
+// Returns the logged-in user, or null. Never sends a response, so routes that
+// allow anonymous traffic can call it safely. Falls back to the refresh cookie
+// and reissues the access cookie when needed.
 const getCurrentUser = (req, res) => {
-  let token = req.cookies.access;
+  const { access, refresh } = req.cookies || {};
 
-  if (token == null) {
-    const refreshToken = req.cookies.refresh;
-    if (refreshToken == null) {
-      return null;
-    } else {
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET,
-        async (err, user) => {
-          if (err) {
-            req.currentUser = null;
-          }
-          token = jwt.sign(
-            {
-              username: user.username,
-              email: user.email,
-              id: user.id,
-              activated: user.activated,
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "5m" }
-          );
-
-          const newCookie = await res.cookie("access", token, {
-            maxAge: 300000,
-            secure: true,
-            httpOnly: true,
-            sameSite: "None",
-          });
-          req.currentUser = user;
-        }
-      );
+  if (access) {
+    try {
+      return jwt.verify(access, process.env.ACCESS_TOKEN_SECRET);
+    } catch (err) {
+      // Expired or invalid: try the refresh token below.
     }
   }
 
-  let currentUser = "";
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      console.log(err);
-      return res.sendStatus(500);
+  if (!refresh) return null;
+
+  try {
+    const user = jwt.verify(refresh, process.env.REFRESH_TOKEN_SECRET);
+    setAccessCookie(res, user);
+    return user;
+  } catch (err) {
+    return null;
+  }
+};
+
+const ALLOWED_IMAGE_HOSTS = ["i.imgur.com", "imgur.com"];
+
+// Character portraits: https imgur image links only, anything else is dropped.
+const sanitizeImageLink = (urlString) => {
+  try {
+    const url = new URL(urlString);
+    const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname);
+    if (
+      url.protocol === "https:" &&
+      ALLOWED_IMAGE_HOSTS.includes(url.hostname) &&
+      isImageFile
+    ) {
+      return url.toString();
     }
-    currentUser = user;
-  });
-  return currentUser;
+    return null;
+  } catch (err) {
+    return null;
+  }
 };
 
 module.exports = {
   authenticateToken,
   getCurrentUser,
+  sanitizeImageLink,
   limiter,
   postLimiter,
   getLimiter,
+  emailLimiter,
 };

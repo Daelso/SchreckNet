@@ -68,7 +68,8 @@ export default {
               color: "green-4",
               textColor: "white",
               icon: "cloud_done",
-              message: "Recovery email sent!",
+              message:
+                "If that email has an account, a recovery email is on its way.",
             })
           )
           .catch(() =>
@@ -76,7 +77,7 @@ export default {
               color: "red-5",
               textColor: "white",
               icon: "warning",
-              message: "Email not found!",
+              message: "Something went wrong, please try again later.",
             })
           );
       },

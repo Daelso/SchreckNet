@@ -9,6 +9,8 @@ router.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const Users = require("../models/Users");
+const validator = require("validator");
+const { Op } = require("sequelize");
 const { sequelize } = require("../database");
 const lib = require("../lib");
 const mailer = require("../mailer");
@@ -50,8 +52,49 @@ router.route("/users").get(async (req, res) => {
 });
 
 //Below are various controller links
-router.route("/register").post(async (req, res) => {
+// Limits match the register / reset forms on the frontend.
+const validateRegistration = ({ username, email, password }) => {
+  if (typeof username !== "string" || typeof email !== "string") {
+    return "Username and email are required";
+  }
+  const name = username.trim();
+  if (name.length < 4 || name.length > 15) {
+    return "Username must be 4 to 15 characters";
+  }
+  if (email.length > 64 || !validator.isEmail(email)) {
+    return "Enter a valid email address";
+  }
+  return validatePassword(password);
+};
+
+const validatePassword = (password) => {
+  if (typeof password !== "string" || password.length < 8) {
+    return "Password must be at least 8 characters";
+  }
+  // bcrypt ignores everything past 72 bytes.
+  if (Buffer.byteLength(password, "utf8") > 72) {
+    return "Password is too long";
+  }
+  return null;
+};
+
+router.route("/register").post(lib.emailLimiter, async (req, res) => {
   try {
+    const problem = validateRegistration(req.body);
+    if (problem) {
+      return res.status(400).send(problem);
+    }
+    req.body.username = req.body.username.trim();
+
+    const existing = await Users.findOne({
+      where: {
+        [Op.or]: [{ username: req.body.username }, { email: req.body.email }],
+      },
+    });
+    if (existing) {
+      return res.status(409).send("Email or username already taken");
+    }
+
     //Encrypts the password.
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -70,9 +113,13 @@ router.route("/register").post(async (req, res) => {
 
     let activateLink = null;
     if (process.env.ENV === "DEV") {
-      activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${req.body.username}`;
+      activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${encodeURIComponent(
+        req.body.username
+      )}`;
     } else {
-      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${req.body.username}`;
+      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${encodeURIComponent(
+        req.body.username
+      )}`;
     }
 
     mailer.sendActivationEmail(req.body.email, req.body.username, activateLink);
@@ -85,13 +132,16 @@ router.route("/register").post(async (req, res) => {
 });
 
 router.route("/login").post(lib.limiter, async (req, res) => {
-  //Authenticate users
-  const user = await Users.findOne({ where: { email: req.body.email } });
-  if (user == null) {
-    return res.status(400).send("Cannot find user!");
-  }
   try {
-    if (await bcrypt.compare(req.body.password, user.password)) {
+    if (
+      typeof req.body.email !== "string" ||
+      typeof req.body.password !== "string"
+    ) {
+      return res.status(401).send("Incorrect email or password!");
+    }
+    const user = await Users.findOne({ where: { email: req.body.email } });
+    // Same answer for unknown email and wrong password.
+    if (user && (await bcrypt.compare(req.body.password, user.password))) {
       const userInfo = {
         id: user.user_id,
         username: user.username,
@@ -170,10 +220,14 @@ router.route("/logout").post((req, res) => {
   return res.sendStatus(204);
 });
 
-router.route("/passwordForgot").post(async (req, res) => {
+router.route("/passwordForgot").post(lib.emailLimiter, async (req, res) => {
+  if (typeof req.body.email !== "string") {
+    return res.sendStatus(400);
+  }
   const resetUser = await Users.findOne({ where: { email: req.body.email } });
+  // Always 200, so this can't be used to check which emails have accounts.
   if (resetUser === null) {
-    return res.sendStatus(404);
+    return res.sendStatus(200);
   }
   const secret = process.env.RESET_TOKEN_SECRET + resetUser.get("password"); //generates a new secret unique to a user.
   const payload = { username: resetUser.get("user_id") };
@@ -190,7 +244,11 @@ router.route("/passwordForgot").post(async (req, res) => {
     )}?token=${token}`;
   }
 
-  mailer.sendResetEmail(req.body.email, resetUser.get("username"), resetLink);
+  mailer.sendResetEmail(
+    resetUser.get("email"),
+    resetUser.get("username"),
+    resetLink
+  );
   return res.sendStatus(200);
 });
 
@@ -203,6 +261,11 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
     return res.sendStatus(404);
   }
 
+  const problem = validatePassword(req.body.password);
+  if (problem) {
+    return res.status(400).send(problem);
+  }
+
   const secret = process.env.RESET_TOKEN_SECRET + resetUser.get("password");
   try {
     const payload = jwt.verify(req.params.token, secret);
@@ -213,30 +276,6 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
     console.log(err.message);
     return res.status(400).send("Missing");
   }
-  return res.sendStatus(200);
-});
-
-router.route("/passwordForgot").post(async (req, res) => {
-  const resetUser = await Users.findOne({ where: { email: req.body.email } });
-  if (resetUser === null) {
-    return res.sendStatus(404);
-  }
-  const secret = process.env.RESET_TOKEN_SECRET + resetUser.get("password"); //generates a new secret unique to a user.
-  const payload = { username: resetUser.get("user_id") };
-  const token = jwt.sign(payload, secret, { expiresIn: "30m" }); //users get 30 mins to reset their account
-
-  let resetLink = null;
-  if (process.env.ENV === "DEV") {
-    resetLink = `http://localhost:8080/passwordReset/${resetUser.get(
-      "user_id"
-    )}?token=${token}`;
-  } else {
-    resetLink = `https://www.schrecknet.live/passwordReset/${resetUser.get(
-      "user_id"
-    )}?token=${token}`;
-  }
-
-  mailer.sendResetEmail(req.body.email, resetUser.get("username"), resetLink);
   return res.sendStatus(200);
 });
 
@@ -274,7 +313,7 @@ router.route("/sendContactEmail").post(lib.limiter, async (req, res) => {
 
 router
   .route("/resendActivation")
-  .post(lib.authenticateToken, async (req, res) => {
+  .post(lib.emailLimiter, lib.authenticateToken, async (req, res) => {
     const activationUser = await Users.findOne({
       where: { username: req.currentUser.username },
     });
@@ -284,9 +323,13 @@ router
     const token = jwt.sign(payload, secret, { expiresIn: "7d" }); //activation good for a week
     let activateLink = null;
     if (process.env.ENV === "DEV") {
-      activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${req.currentUser.username}`;
+      activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${encodeURIComponent(
+        req.currentUser.username
+      )}`;
     } else {
-      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${req.currentUser.username}`;
+      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${encodeURIComponent(
+        req.currentUser.username
+      )}`;
     }
     try {
       mailer.sendActivationEmail(

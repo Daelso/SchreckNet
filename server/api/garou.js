@@ -24,11 +24,7 @@ const CharsInFolders = require("../models/char_folder/CharsInFolders.js");
 
 router.route("/new").post(lib.postLimiter, async (req, res) => {
   try {
-    let currentUser = lib.getCurrentUser(req, res);
-
-    if (currentUser !== null) {
-      currentUser = currentUser.id;
-    }
+    const currentUser = lib.getCurrentUser(req, res)?.id ?? null;
 
     const newGarou = await Garou.create({
       charName: req.body.name,
@@ -44,7 +40,9 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
       willpower: req.body.willpower,
       remaining_specialties: req.body.remainingSpecialties,
       xp: req.body.xp,
-      xp_log: Array.isArray(req.body.xp_log) ? req.body.xp_log.slice(0, 1000) : [],
+      xp_log: Array.isArray(req.body.xp_log)
+        ? req.body.xp_log.slice(0, 1000)
+        : [],
       spent_xp: req.body.spent_xp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
@@ -54,7 +52,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
       purchased_gifts: req.body.purchased_gifts,
       tribe_renown: req.body.tribe_renown,
       purchased_renown: req.body.purchased_renown,
-      image_link: sanitizeImageLink(req.body.imgLink),
+      image_link: lib.sanitizeImageLink(req.body.imgLink),
       created_by: currentUser,
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -72,7 +70,7 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
 
     const garou = await Garou.findByPk(req.params.id);
 
-    if (currentUser.id !== garou.created_by) {
+    if (!currentUser || currentUser.id !== garou.created_by) {
       res.status(403).send("Access Denied");
       return;
     }
@@ -91,7 +89,9 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
       willpower: req.body.willpower,
       remaining_specialties: req.body.remainingSpecialties,
       xp: req.body.xp,
-      xp_log: Array.isArray(req.body.xp_log) ? req.body.xp_log.slice(0, 1000) : [],
+      xp_log: Array.isArray(req.body.xp_log)
+        ? req.body.xp_log.slice(0, 1000)
+        : [],
       spent_xp: req.body.spent_xp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
@@ -100,7 +100,7 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
       tribe_gifts: req.body.tribe_gifts,
       purchased_gifts: req.body.purchased_gifts,
       tribe_renown: req.body.tribe_renown,
-      image_link: sanitizeImageLink(req.body.imgLink),
+      image_link: lib.sanitizeImageLink(req.body.imgLink),
       purchased_renown: req.body.purchased_renown,
       updatedAt: Date.now(),
       updatedBy: currentUser,
@@ -322,8 +322,8 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
 
     const garou = await Garou.findByPk(req.params.id);
 
-    if (currentUser.id !== garou.created_by) {
-      return;
+    if (!currentUser || currentUser.id !== garou.created_by) {
+      return res.status(403).send("Access Denied");
     }
     await garou.destroy();
     return res.status(200).send("Deletion successful");
@@ -332,25 +332,5 @@ router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
     return res.status(404).send("Not found");
   }
 });
-
-function sanitizeImageLink(urlString) {
-  try {
-    const url = new URL(urlString);
-    const allowedHosts = ["i.imgur.com", "imgur.com"];
-    const isHostAllowed = allowedHosts.some((host) =>
-      url.hostname.includes(host)
-    );
-
-    const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname);
-
-    if (isHostAllowed && isImageFile) {
-      return url.toString();
-    }
-
-    return null;
-  } catch (err) {
-    return null;
-  }
-}
 
 module.exports = router; //Exports our routes

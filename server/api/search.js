@@ -3,8 +3,6 @@ const sequelize = require("../database");
 const { QueryTypes } = require("sequelize");
 let router = express.Router();
 
-const SCHEMA = "ey140u9j4rs9xcib";
-
 /**
  * Generic search function for different tables with pagination (most recent first)
  */
@@ -35,7 +33,7 @@ async function searchTable(table, conditions, page = 1, res) {
     const offset = (page - 1) * limit;
 
     const query = `
-      SELECT * FROM ${SCHEMA}.${table}
+      SELECT * FROM ${table}
       ${queryConditions.length ? "WHERE " + queryConditions.join(" AND ") : ""}
       ORDER BY createdAt DESC
       LIMIT :limit OFFSET :offset
@@ -51,7 +49,7 @@ async function searchTable(table, conditions, page = 1, res) {
 
     // Query to fetch total count for pagination
     const countQuery = `
-      SELECT COUNT(*) AS totalCount FROM ${SCHEMA}.${table}
+      SELECT COUNT(*) AS totalCount FROM ${table}
       ${queryConditions.length ? "WHERE " + queryConditions.join(" AND ") : ""}
     `;
 
@@ -73,7 +71,7 @@ async function searchTable(table, conditions, page = 1, res) {
 // Search Routes with pagination support (most recent first)
 router.post("/vampires", async (req, res) => {
   const params = req.body.searchParams || {};
-  const page = parseInt(req.body.searchParams.page) || 1;
+  const page = Math.max(parseInt(params.page) || 1, 1);
 
   return searchTable(
     "vampires",
@@ -89,7 +87,7 @@ router.post("/vampires", async (req, res) => {
 
 router.post("/hunters", async (req, res) => {
   const params = req.body.searchParams || {};
-  const page = parseInt(req.body.searchParams.page) || 1;
+  const page = Math.max(parseInt(params.page) || 1, 1);
   return searchTable(
     "hunters",
     {
@@ -104,7 +102,7 @@ router.post("/hunters", async (req, res) => {
 
 router.post("/garou", async (req, res) => {
   const params = req.body.searchParams || {};
-  const page = parseInt(req.body.searchParams.page) || 1;
+  const page = Math.max(parseInt(params.page) || 1, 1);
   return searchTable(
     "garou",
     {

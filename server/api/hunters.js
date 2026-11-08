@@ -9,7 +9,7 @@ const CharsInFolders = require("../models/char_folder/CharsInFolders");
 //Route is base/hunters/
 router.route("/new").post(lib.postLimiter, async (req, res) => {
   try {
-    const currentUser = lib.getCurrentUser(req, res)?.id ?? null;
+    const currentUser = (await lib.getCurrentUser(req, res))?.id ?? null;
     const newHunter = await Hunters.create({
       charName: req.body.name,
       cell: req.body.cell,
@@ -118,7 +118,7 @@ router.route("/card").get(async (req, res) => {
 
 router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
   try {
-    const currentUser = lib.getCurrentUser(req, res);
+    const currentUser = await lib.getCurrentUser(req, res);
 
     const hunter = await Hunters.findByPk(req.params.id);
 
@@ -166,7 +166,7 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
 
 router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
   try {
-    let currentUser = lib.getCurrentUser(req, res);
+    let currentUser = await lib.getCurrentUser(req, res);
 
     const hunter = await Hunters.findByPk(req.params.id);
 

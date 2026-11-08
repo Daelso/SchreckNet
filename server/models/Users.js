@@ -36,6 +36,11 @@ const Users = db.sequelize.define("users", {
     type: Sequelize.INTEGER,
     allowNull: true,
   },
+  token_version: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });
 
 module.exports = Users;

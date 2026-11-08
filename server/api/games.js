@@ -12,8 +12,11 @@ const validator = require("validator");
 const Games = require("../models/game_finder/games.js");
 const lib = require("../lib");
 
+// Posting, editing and bumping listings need an activated account.
+const listingWrite = [lib.postLimiter, lib.requireActivated];
+
 //Route is base/games/
-router.route("/new_game").post(lib.postLimiter, async (req, res) => {
+router.route("/new_game").post(listingWrite, async (req, res) => {
   try {
     const sanitizedBody = sanitizeStrings(req.body);
 
@@ -55,7 +58,7 @@ router.route("/new_game").post(lib.postLimiter, async (req, res) => {
   }
 });
 
-router.route("/:id/bump").post(lib.postLimiter, async (req, res) => {
+router.route("/:id/bump").post(listingWrite, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -87,7 +90,7 @@ router.route("/:id/bump").post(lib.postLimiter, async (req, res) => {
   }
 });
 
-router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
+router.route("/:id/edit").put(listingWrite, async (req, res) => {
   try {
     const game_id = req.params.id;
     const sanitizedBody = sanitizeStrings(req.body);

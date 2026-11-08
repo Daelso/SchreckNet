@@ -32,6 +32,27 @@ const authenticateToken = async (req, res, next) => {
   return next();
 };
 
+// Use after authenticateToken. Reads the DB rather than the token, because a
+// token issued before activation still says activated: 0.
+const requireActivated = async (req, res, next) => {
+  try {
+    const row = await Users.findByPk(req.currentUser.id, {
+      attributes: ["activated"],
+    });
+    if (!row || row.activated !== 1) {
+      return res
+        .status(403)
+        .send(
+          "Activate your account to post or update game listings. Use the link we emailed you, or re-send it from the homepage."
+        );
+    }
+    return next();
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Server Error");
+  }
+};
+
 // Limits routes that send email (register, forgot password, resend activation).
 const emailLimiter = rateLimit({
   windowMs: 900000, //15 min
@@ -128,6 +149,7 @@ const sanitizeImageLink = (urlString) => {
 
 module.exports = {
   authenticateToken,
+  requireActivated,
   getCurrentUser,
   sanitizeImageLink,
   limiter,

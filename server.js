@@ -76,7 +76,22 @@ app.use(
 app.use(cookieParser());
 
 app.use(history());
-app.use(serveStatic(__dirname + "/dist/spa"));
+// Built files with a content hash in the name (app.1068dbee.js) never change,
+// so browsers and Cloudflare can keep them for a year. index.html must be
+// rechecked on every load so a deploy is picked up right away.
+const HASHED_ASSET =
+  /[\\/](js|css|fonts|img)[\\/][^\\/]+\.[0-9a-f]{8}\.[a-z0-9]+$/;
+app.use(
+  serveStatic(__dirname + "/dist/spa", {
+    setHeaders(res, filePath) {
+      if (HASHED_ASSET.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      } else if (filePath.endsWith("index.html")) {
+        res.setHeader("Cache-Control", "no-cache");
+      }
+    },
+  })
+);
 app.use(express.json());
 
 const lib = require("./server/lib"); //This is all custom functions

@@ -1143,9 +1143,11 @@ export default {
             icon: "warning",
             message: err.message,
           })
-        );
-      this.saving = false;
-      this.$q.loading.hide();
+        )
+        .finally(() => {
+          this.saving = false;
+          this.$q.loading.hide();
+        });
     },
 
     confirmClanSelect() {

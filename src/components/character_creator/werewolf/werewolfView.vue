@@ -381,7 +381,7 @@
             "
             flat
             label="Favorite Character"
-            @click="this.favoriteChar(this.hunterId, this.garou.charName)"
+            @click="this.favoriteChar(this.garouId, this.garou.charName)"
             type="submit"
             color="white"
           />
@@ -753,7 +753,7 @@ export default defineComponent({
   },
   async mounted() {
     this.favCount = await this.$api
-      .get("/favorites/favCount/" + this.garouId)
+      .get("/favorites/favCount/" + this.garouId, { params: { game_id: 2 } })
       .then((resp) => {
         return resp.data;
       });

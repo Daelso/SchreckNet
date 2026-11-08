@@ -59,12 +59,12 @@ router.route("/my").get(lib.authenticateToken, async (req, res) => {
     );
 
     const [hunters] = await sequelize.sequelize.query(
-      "SELECT favs.id as favId, favs.game_id, favs.sheet_id, hunters.* FROM favorites as favs INNER JOIN hunters hunters ON favs.sheet_id = hunters.id WHERE favs.game_id = 2 AND favs.favorited_by = ?",
+      "SELECT favs.id as favId, favs.game_id, favs.sheet_id, hunters.* FROM favorites as favs INNER JOIN hunters hunters ON favs.sheet_id = hunters.id WHERE favs.game_id = 3 AND favs.favorited_by = ?",
       { replacements: [userId] }
     );
 
     const [garou] = await sequelize.sequelize.query(
-      "SELECT favs.id as favId, favs.game_id, favs.sheet_id, garou.* FROM favorites as favs INNER JOIN garou garou ON favs.sheet_id = garou.id WHERE favs.game_id = 3 AND favs.favorited_by = ?",
+      "SELECT favs.id as favId, favs.game_id, favs.sheet_id, garou.* FROM favorites as favs INNER JOIN garou garou ON favs.sheet_id = garou.id WHERE favs.game_id = 2 AND favs.favorited_by = ?",
       { replacements: [userId] }
     );
 
@@ -77,11 +77,13 @@ router.route("/my").get(lib.authenticateToken, async (req, res) => {
 
 router.route("/favCount/:id").get(async (req, res) => {
   try {
-    const count = await Favorites.findAndCountAll({
-      where: {
-        sheet_id: req.params.id,
-      },
-    });
+    const where = { sheet_id: req.params.id };
+    // Sheet ids are only unique within a game line (1 = VtM, 2 = WtA, 3 = HtR).
+    // game_id is optional so older cached clients keep working.
+    if (req.query.game_id !== undefined) {
+      where.game_id = req.query.game_id;
+    }
+    const count = await Favorites.findAndCountAll({ where });
 
     return res.status(200).send(count);
   } catch (err) {

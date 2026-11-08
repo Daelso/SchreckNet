@@ -543,17 +543,12 @@ import attributeInfo from "../vtm/5eAttributes.json";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 import skillInfo from "../vtm/5eSkills.json";
-import { degrees, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
-import download from "downloadjs";
-import charSheet from "raw-loader!./sheetbase64.txt";
 import smallX from "../../../assets/images/small_x.png";
 
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 import clanBanes from "../vtm/5eClanBanes.json";
 import clanCompulsions from "../vtm/5eClanCompulsions.json";
-
-import fontkit from "@pdf-lib/fontkit";
 
 import { ref } from "vue";
 
@@ -709,7 +704,6 @@ export default defineComponent({
       predatorType: kindred.predator_type,
       remaining_specialties: kindred.remaining_specialties,
       pageFound,
-      charSheet,
       imgLink: kindred.image_link,
       spentXp: 0,
       baneseverity: 0,
@@ -883,7 +877,19 @@ export default defineComponent({
         this.bloodPotencyModifiers();
         this.setClanBane();
         this.setClanCompulsion();
-        const pdfDoc = await PDFDocument.load(this.charSheet);
+        // PDF libraries and the sheet template are large; load them on demand.
+        const [
+          { PDFDocument },
+          { default: fontkit },
+          { default: download },
+          { default: charSheet },
+        ] = await Promise.all([
+          import("pdf-lib"),
+          import("@pdf-lib/fontkit"),
+          import("downloadjs"),
+          import("raw-loader!./sheetbase64.txt"),
+        ]);
+        const pdfDoc = await PDFDocument.load(charSheet);
         const form = pdfDoc.getForm();
         const ubuntuFontBytes = await fetch(ubuntuFont).then((res) =>
           res.arrayBuffer()

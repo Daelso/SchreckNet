@@ -763,7 +763,7 @@ export default defineComponent({
   },
   async mounted() {
     this.favCount = await this.$api
-      .get("/favorites/favCount/" + this.kindredId)
+      .get("/favorites/favCount/" + this.kindredId, { params: { game_id: 1 } })
       .then((resp) => {
         return resp.data;
       });

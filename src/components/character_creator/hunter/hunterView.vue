@@ -695,7 +695,7 @@ export default defineComponent({
   },
   async mounted() {
     this.favCount = await this.$api
-      .get("/favorites/favCount/" + this.hunterId)
+      .get("/favorites/favCount/" + this.hunterId, { params: { game_id: 3 } })
       .then((resp) => {
         return resp.data;
       });

@@ -49,6 +49,21 @@ export default defineConfig(function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
 
+      // Quasar's default splitChunks gives the "common" cache group a fixed
+      // name, which merges every module shared by 2+ chunks into a single
+      // chunk-common.js. The layout and home page share one tiny module
+      // (Nosfer_logo.png) with the creators, so that whole chunk (all the
+      // creator code) was loaded on every page. Without the fixed name,
+      // webpack emits a shared chunk per combination of routes instead, so
+      // each page only loads what it uses.
+      chainWebpack(chain) {
+        const splitChunks = chain.optimization.splitChunks.values();
+        const common = splitChunks?.cacheGroups?.common;
+        if (common) {
+          delete common.name;
+        }
+      },
+
       // transpile: false,
       // publicPath: '/',
 

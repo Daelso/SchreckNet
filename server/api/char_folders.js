@@ -118,6 +118,10 @@ router.route("/remove_character").post(async (req, res) => {
       return res.sendStatus(404);
     }
 
+    if (folder_entry.parent_folder !== check.folder_id) {
+      return res.sendStatus(403);
+    }
+
     await folder_entry.destroy();
 
     return res.status(200).send("Character added to folder!");

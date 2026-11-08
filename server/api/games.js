@@ -65,6 +65,10 @@ router.route("/:id/bump").post(lib.postLimiter, async (req, res) => {
       return res.status(404).send("Game not found.");
     }
 
+    if (game.created_by !== req.currentUser.id) {
+      return res.status(403).send("Access Denied");
+    }
+
     const now = new Date();
     const lastUpdated = new Date(game.updated_at);
     const diffInMs = now - lastUpdated;
@@ -107,7 +111,11 @@ router.route("/:id/edit").put(lib.postLimiter, async (req, res) => {
       return res.status(404).send("Game not found.");
     }
 
-    game.update({
+    if (game.created_by !== req.currentUser.id) {
+      return res.status(403).send("Access Denied");
+    }
+
+    await game.update({
       game_title: title,
       game_style: style,
       game_line: game_line.line_id,
@@ -140,7 +148,11 @@ router.route("/:id/delete").put(lib.postLimiter, async (req, res) => {
       return res.status(404).send("Game not found.");
     }
 
-    game.update({
+    if (game.created_by !== req.currentUser.id) {
+      return res.status(403).send("Access Denied");
+    }
+
+    await game.update({
       active: 0,
     });
 

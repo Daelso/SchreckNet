@@ -129,8 +129,6 @@ const searchRoutes = require("./server/api/search");
 app.use("/search", searchRoutes);
 const garouRoutes = require("./server/api/garou");
 app.use("/garou", garouRoutes);
-const ladRoutes = require("./server/api/showlads");
-app.use("/showlads", ladRoutes); /////dead and gonneeee, dead and goneeee
 const gameFinderRoutes = require("./server/api/game_finder");
 app.use("/game_finder", gameFinderRoutes);
 const gameRoutes = require("./server/api/games");
@@ -140,6 +138,12 @@ app.use("/char_folders", lib.authenticateToken, charFolders);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links
+
+// Express 4 doesn't catch errors thrown in async route handlers, and Node
+// exits on an unhandled rejection by default. Log it instead of going down.
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled rejection:", err);
+});
 
 app.listen(process.env.PORT || 5000, function () {
   console.log(`Server started on port ${port}`);

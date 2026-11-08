@@ -523,14 +523,10 @@
 import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
-import { degrees, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
 import notfound from "../../../pages/ErrorNotFound.vue";
-import download from "downloadjs";
-import charSheet from "raw-loader!./sheetbase64.txt";
 
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 import clanBanes from "../vtm/5eClanBanes.json";
-import fontkit from "@pdf-lib/fontkit";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 import { ref } from "vue";
@@ -642,7 +638,6 @@ export default defineComponent({
       creator,
       pageFound,
       deleteConfirm,
-      charSheet,
       spentXp: 0,
       baneseverity: 0,
       powerBonus: 0,
@@ -811,7 +806,19 @@ export default defineComponent({
           delay: 400, // ms
         });
 
-        const pdfDoc = await PDFDocument.load(this.charSheet);
+        // PDF libraries and the sheet template are large; load them on demand.
+        const [
+          { PDFDocument },
+          { default: fontkit },
+          { default: download },
+          { default: charSheet },
+        ] = await Promise.all([
+          import("pdf-lib"),
+          import("@pdf-lib/fontkit"),
+          import("downloadjs"),
+          import("raw-loader!./sheetbase64.txt"),
+        ]);
+        const pdfDoc = await PDFDocument.load(charSheet);
 
         const form = await pdfDoc.getForm();
 

@@ -65,6 +65,23 @@ export default defineConfig(function (ctx) {
 
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
+
+      // Quasar's default vendor group pulls every node_modules import into
+      // vendor.js, including ones that are only loaded via dynamic import().
+      // Keep the PDF export libraries in their own async chunk so they are
+      // only downloaded when a user exports a character sheet.
+      extendWebpack(cfg) {
+        const cacheGroups = cfg.optimization?.splitChunks?.cacheGroups;
+        if (cacheGroups) {
+          cacheGroups.pdfExport = {
+            name: "pdf-export",
+            test: /[\\/]node_modules[\\/](pdf-lib|@pdf-lib|pako|downloadjs)[\\/]/,
+            chunks: "async",
+            priority: 10,
+            enforce: true,
+          };
+        }
+      },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer

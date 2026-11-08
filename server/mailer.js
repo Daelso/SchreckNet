@@ -1,4 +1,8 @@
 const nodemailer = require("nodemailer");
+const validator = require("validator");
+
+// Everything user-supplied goes through this before it lands in email HTML.
+const esc = (value) => validator.escape(String(value ?? ""));
 
 const sendResetEmail = (target, username, resetLink) => {
   try {
@@ -132,7 +136,9 @@ const sendResetEmail = (target, username, resetLink) => {
                       <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
                         <tr>
                           <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
-                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Good evening ${username},</p>
+                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Good evening ${esc(
+                              username
+                            )},</p>
                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Please use this link to reset your password.</p>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%;" width="100%">
                               <tbody>
@@ -141,7 +147,9 @@ const sendResetEmail = (target, username, resetLink) => {
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
                                       <tbody>
                                         <tr>
-                                          <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;" valign="top" align="center" bgcolor="#3498db"> <a href="${resetLink}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">Reset my password</a> </td>
+                                          <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;" valign="top" align="center" bgcolor="#3498db"> <a href="${esc(
+                                            resetLink
+                                          )}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">Reset my password</a> </td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -325,7 +333,9 @@ const sendActivationEmail = (target, username, activationLink) => {
                       <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
                         <tr>
                           <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
-                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Good evening ${username},</p>
+                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Good evening ${esc(
+                              username
+                            )},</p>
                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Please use this link to activate your account and enter the SchreckNet Database (Inquisition free - we swear)</p>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%;" width="100%">
                               <tbody>
@@ -334,7 +344,9 @@ const sendActivationEmail = (target, username, activationLink) => {
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
                                       <tbody>
                                         <tr>
-                                          <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;" valign="top" align="center" bgcolor="#3498db"> <a href="${activationLink}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">Activate my account</a> </td>
+                                          <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;" valign="top" align="center" bgcolor="#3498db"> <a href="${esc(
+                                            activationLink
+                                          )}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;">Activate my account</a> </td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -402,7 +414,10 @@ const sendContactForm = (content) => {
     let mailOptions = {
       from: `SchreckNet <${process.env.MAILER_USER}>`,
       to: process.env.OWNER_EMAIL,
-      subject: `Elysium Contact Form: ${content.reason}`,
+      subject: `Elysium Contact Form: ${String(content.reason ?? "").slice(
+        0,
+        100
+      )}`,
       html: `<html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -518,8 +533,12 @@ const sendContactForm = (content) => {
                       <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
                         <tr>
                           <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
-                          <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">From:${content.email}</p>
-                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">${content.text}</p>
+                          <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">From: ${esc(
+                            content.email
+                          )}</p>
+                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">${esc(
+                              content.text
+                            )}</p>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%;" width="100%">
                               <tbody>
                                 <tr>
@@ -577,4 +596,45 @@ const sendContactForm = (content) => {
   }
 };
 
-module.exports = { sendResetEmail, sendActivationEmail, sendContactForm };
+// Sent instead of a second account when someone registers with an email
+// that's already in use, so the register form can't reveal who has an account.
+const sendAccountExistsEmail = (target, username, forgotLink) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.MAILER_USER,
+        pass: process.env.MAILER_PASSWORD,
+      },
+    });
+
+    transporter.sendMail(
+      {
+        from: `SchreckNet <${process.env.MAILER_USER}>`,
+        to: target,
+        subject: "Elysium: you already have an account",
+        html: `<html><body style="font-family: sans-serif; font-size: 14px;">
+          <p>Good evening ${esc(username)},</p>
+          <p>Someone tried to create a new SchreckNet account with this email address. You already have one, so nothing was changed.</p>
+          <p>If that was you and you can't log in, reset your password here: <a href="${esc(
+            forgotLink
+          )}">${esc(forgotLink)}</a></p>
+          <p>If it wasn't you, you can ignore this email.</p>
+        </body></html>`,
+      },
+      (err) => {
+        if (err) console.log(err);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports = {
+  sendResetEmail,
+  sendActivationEmail,
+  sendAccountExistsEmail,
+  sendContactForm,
+};

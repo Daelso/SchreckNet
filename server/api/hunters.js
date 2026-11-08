@@ -7,13 +7,9 @@ const CharFolders = require("../models/char_folder/CharFolders");
 const CharsInFolders = require("../models/char_folder/CharsInFolders");
 
 //Route is base/hunters/
-router.route("/new").post(async (req, res) => {
+router.route("/new").post(lib.postLimiter, async (req, res) => {
   try {
-    let currentUser = lib.getCurrentUser(req, res);
-
-    if (currentUser !== null) {
-      currentUser = currentUser.id;
-    }
+    const currentUser = lib.getCurrentUser(req, res)?.id ?? null;
     const newHunter = await Hunters.create({
       charName: req.body.name,
       cell: req.body.cell,
@@ -32,11 +28,13 @@ router.route("/new").post(async (req, res) => {
       remaining_specialties: req.body.remainingSpecialties,
       edges: req.body.edgeArr,
       xp: req.body.xp,
-      xp_log: Array.isArray(req.body.xp_log) ? req.body.xp_log.slice(0, 1000) : [],
+      xp_log: Array.isArray(req.body.xp_log)
+        ? req.body.xp_log.slice(0, 1000)
+        : [],
       spentXp: req.body.spentXp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
-      image_link: sanitizeImageLink(req.body.imgLink),
+      image_link: lib.sanitizeImageLink(req.body.imgLink),
       advantages_remaining: req.body.advantages_remaining,
       flaws_remaining: req.body.flaws_remaining,
       created_by: currentUser,
@@ -124,7 +122,7 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
 
     const hunter = await Hunters.findByPk(req.params.id);
 
-    if (currentUser.id !== hunter.created_by) {
+    if (!currentUser || currentUser.id !== hunter.created_by) {
       return res.status(403).send("Access Denied");
     }
 
@@ -143,11 +141,13 @@ router.route("/hunter/edit/:id").put(lib.postLimiter, async (req, res) => {
       skills: req.body.skills,
       health: req.body.health,
       willpower: req.body.willpower,
-      image_link: sanitizeImageLink(req.body.imgLink),
+      image_link: lib.sanitizeImageLink(req.body.imgLink),
       remaining_specialties: req.body.remainingSpecialties,
       edges: req.body.edgeArr,
       xp: req.body.xp,
-      xp_log: Array.isArray(req.body.xp_log) ? req.body.xp_log.slice(0, 1000) : [],
+      xp_log: Array.isArray(req.body.xp_log)
+        ? req.body.xp_log.slice(0, 1000)
+        : [],
       spentXp: req.body.spentXp,
       specialties: req.body.specialties,
       advantages: req.body.advantages,
@@ -170,8 +170,8 @@ router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
 
     const hunter = await Hunters.findByPk(req.params.id);
 
-    if (currentUser.id !== hunter.created_by) {
-      return;
+    if (!currentUser || currentUser.id !== hunter.created_by) {
+      return res.status(403).send("Access Denied");
     }
     await hunter.destroy();
     return res.status(200).send("Deletion successful");
@@ -180,25 +180,5 @@ router.route("/delete/:id").delete(lib.limiter, async (req, res) => {
     return res.status(404).send("Not found");
   }
 });
-
-function sanitizeImageLink(urlString) {
-  try {
-    const url = new URL(urlString);
-    const allowedHosts = ["i.imgur.com", "imgur.com"];
-    const isHostAllowed = allowedHosts.some((host) =>
-      url.hostname.includes(host)
-    );
-
-    const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(url.pathname);
-
-    if (isHostAllowed && isImageFile) {
-      return url.toString();
-    }
-
-    return null;
-  } catch (err) {
-    return null;
-  }
-}
 
 module.exports = router; //Exports our routes

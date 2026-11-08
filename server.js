@@ -78,17 +78,12 @@ app.use(cookieParser());
 app.use(history());
 app.use(serveStatic(__dirname + "/dist/spa"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-const bodyParser = require("body-parser");
 const lib = require("./server/lib"); //This is all custom functions
 //for dev use only, very insecure in a prod env, this is just to prevent CORS errors. Origin is your vue clients port
 
 const allowedOriginsDev = ["http://localhost:8080"];
-const allowedOriginsProd = [
-  "https://schrecknet-live.herokuapp.com",
-  "https://daelso.github.io",
-];
+const allowedOriginsProd = ["https://schrecknet-live.herokuapp.com"];
 
 app.use(lib.getLimiter);
 app.set("trust proxy", 1);
@@ -110,6 +105,12 @@ if (process.env.ENV !== "prod") {
     })
   );
 }
+
+app.use(
+  lib.rejectCrossSiteWrites(
+    process.env.ENV !== "prod" ? allowedOriginsDev : allowedOriginsProd
+  )
+);
 
 //Above is library imports, below begin route imports
 

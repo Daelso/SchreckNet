@@ -1,13 +1,10 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
-const app = express();
 const { Op } = require("sequelize");
 
 let router = express.Router();
 router.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 const Tribes = require("../models/werewolf/Tribes.js");
 const Auspices = require("../models/werewolf/Auspices.js");
 

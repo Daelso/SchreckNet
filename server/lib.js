@@ -47,7 +47,8 @@ const activationLimiter = rateLimit({
 });
 
 // Same options on set and clear, or browsers keep the old cookie.
-const COOKIE_OPTIONS = { secure: true, httpOnly: true, sameSite: "None" };
+// Lax keeps the cookies off cross-site POSTs (form CSRF); the SPA is same-site.
+const COOKIE_OPTIONS = { secure: true, httpOnly: true, sameSite: "Lax" };
 
 const setAccessCookie = (res, user) => {
   const token = jwt.sign(
@@ -106,6 +107,24 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// CSRF backstop for cookies issued before SameSite=Lax: browsers send Origin
+// on cross-site POSTs, so refuse writes from any site that isn't us.
+const SAFE_METHODS = ["GET", "HEAD", "OPTIONS"];
+const rejectCrossSiteWrites = (allowedOrigins) => (req, res, next) => {
+  const origin = req.headers.origin;
+  if (SAFE_METHODS.includes(req.method) || !origin) return next();
+  let host;
+  try {
+    host = new URL(origin).host;
+  } catch (err) {
+    return res.status(403).send("Cross-site request blocked");
+  }
+  if (host === req.headers.host || allowedOrigins.includes(origin)) {
+    return next();
+  }
+  return res.status(403).send("Cross-site request blocked");
+};
+
 const ALLOWED_IMAGE_HOSTS = ["i.imgur.com", "imgur.com"];
 
 // Character portraits: https imgur image links only, anything else is dropped.
@@ -138,4 +157,5 @@ module.exports = {
   COOKIE_OPTIONS,
   setAccessCookie,
   clearAuthCookies,
+  rejectCrossSiteWrites,
 };

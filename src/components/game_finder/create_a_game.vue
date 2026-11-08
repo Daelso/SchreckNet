@@ -396,7 +396,10 @@ export default defineComponent({
           color: "primary",
           avatar: nosImage,
           textColor: "white",
-          message: `Failed to create game, try again...`,
+          message:
+            err.response?.status === 403
+              ? err.response.data
+              : `Failed to create game, try again...`,
         });
       } finally {
         this.$q.loading.hide();

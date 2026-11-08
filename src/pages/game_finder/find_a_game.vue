@@ -483,7 +483,10 @@ export default defineComponent({
       } catch (err) {
         console.error(err);
         this.$q.notify({
-          message: "Failed to bump the game.",
+          message:
+            err.response?.status === 403
+              ? err.response.data
+              : "Failed to bump the game.",
           color: "primary",
           avatar: nosImage,
           textColor: "white",

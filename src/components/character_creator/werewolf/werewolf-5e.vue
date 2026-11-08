@@ -813,9 +813,11 @@ export default {
             icon: "warning",
             message: err.message,
           })
-        );
-      this.$q.loading.hide();
-      this.saving = false;
+        )
+        .finally(() => {
+          this.saving = false;
+          this.$q.loading.hide();
+        });
     },
 
     handleSpecialties(data) {

@@ -790,6 +790,7 @@ export default {
           icon: "warning",
           message: "Saving...",
         });
+        return;
       }
       this.saving = true;
       this.$q.loading.show({
@@ -864,9 +865,11 @@ export default {
             icon: "warning",
             message: err.message,
           })
-        );
-      this.$q.loading.hide();
-      this.saving = false;
+        )
+        .finally(() => {
+          this.saving = false;
+          this.$q.loading.hide();
+        });
     },
     handleSpecialties(data) {
       this.specialties = data;

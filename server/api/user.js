@@ -117,7 +117,7 @@ router.route("/register").post(lib.emailLimiter, async (req, res) => {
     });
 
     // Usernames are public, so saying one is taken leaks nothing. A pending
-    // row with the same username and email is the same person retrying.
+    // row with the same username and email is treated as a retry below.
     const nameTaken =
       (await Users.findOne({ where: { username }, attributes: ["user_id"] })) ||
       (await PendingRegistrations.findOne({
@@ -128,16 +128,22 @@ router.route("/register").post(lib.emailLimiter, async (req, res) => {
       return res.status(409).send("Username already taken");
     }
 
-    await PendingRegistrations.destroy({ where: { username, email } });
-    const pending = await PendingRegistrations.create({
-      username,
-      email,
-      password: hashedPassword,
-      terms_accepted: req.body.acceptance ? 1 : 0,
-      expires_at: new Date(now.getTime() + PENDING_LIFETIME_MS),
-      createdAt: now,
-      updatedAt: now,
-    });
+    // A retry re-sends the link for the existing row and keeps its password.
+    // Replacing it would let anyone who knows the username and email swap in
+    // their own password before the real owner clicks the link.
+    const pending =
+      (await PendingRegistrations.findOne({
+        where: { username, email, expires_at: { [Op.gt]: now } },
+      })) ||
+      (await PendingRegistrations.create({
+        username,
+        email,
+        password: hashedPassword,
+        terms_accepted: req.body.acceptance ? 1 : 0,
+        expires_at: new Date(now.getTime() + PENDING_LIFETIME_MS),
+        createdAt: now,
+        updatedAt: now,
+      }));
 
     const emailOwner = await Users.findOne({
       where: { email },
@@ -155,7 +161,7 @@ router.route("/register").post(lib.emailLimiter, async (req, res) => {
     } else {
       const token = jwt.sign(
         { pending_id: pending.pending_id },
-        process.env.ACTIVATION_TOKEN_SECRET + hashedPassword,
+        process.env.ACTIVATION_TOKEN_SECRET + pending.password,
         { expiresIn: "7d" }
       );
       mailer.sendActivationEmail(
@@ -292,82 +298,95 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
   return res.sendStatus(200);
 });
 
-router.route("/activateAccount/:username/:token").post(async (req, res) => {
-  try {
-    const { username, token } = req.params;
+router
+  .route("/activateAccount/:username/:token")
+  .post(lib.activationLimiter, async (req, res) => {
+    try {
+      const { username, token } = req.params;
 
-    // Accounts created before pending_registrations existed.
-    const legacyUser = await Users.findOne({ where: { username } });
-    if (legacyUser) {
-      try {
-        jwt.verify(
-          token,
-          process.env.ACTIVATION_TOKEN_SECRET + legacyUser.get("password")
-        );
-      } catch (err) {
+      // Accounts created before pending_registrations existed.
+      const legacyUser = await Users.findOne({ where: { username } });
+      if (legacyUser) {
+        try {
+          jwt.verify(
+            token,
+            process.env.ACTIVATION_TOKEN_SECRET + legacyUser.get("password")
+          );
+        } catch (err) {
+          return res.status(400).send("Missing");
+        }
+        await legacyUser.update({ activated: 1 });
+        lib.clearAuthCookies(res);
+        return res.sendStatus(200);
+      }
+
+      const candidates = await PendingRegistrations.findAll({
+        where: { username, expires_at: { [Op.gt]: new Date() } },
+      });
+      const pending = candidates.find((row) => {
+        try {
+          const payload = jwt.verify(
+            token,
+            process.env.ACTIVATION_TOKEN_SECRET + row.password
+          );
+          return payload.pending_id === row.pending_id;
+        } catch (err) {
+          return false;
+        }
+      });
+      if (!pending) {
         return res.status(400).send("Missing");
       }
-      await legacyUser.update({ activated: 1 });
+
+      // Only the person who chose the password can turn the sign-up into an
+      // account, so an emailed link alone isn't enough.
+      const passwordMatches =
+        typeof req.body.password === "string" &&
+        (await bcrypt.compare(req.body.password, pending.password));
+      if (!passwordMatches) {
+        return res
+          .status(401)
+          .send("That password doesn't match this sign-up.");
+      }
+
+      const emailTaken = await Users.findOne({
+        where: { email: pending.email },
+        attributes: ["user_id"],
+      });
+      if (emailTaken) {
+        await pending.destroy();
+        return res.status(400).send("Missing");
+      }
+
+      await sequelize.transaction(async (transaction) => {
+        const now = new Date();
+        await Users.create(
+          {
+            username: pending.username,
+            email: pending.email,
+            password: pending.password,
+            terms_accepted: pending.terms_accepted,
+            activated: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          { transaction }
+        );
+        await PendingRegistrations.destroy({
+          where: {
+            [Op.or]: [{ username: pending.username }, { email: pending.email }],
+          },
+          transaction,
+        });
+      });
+
       lib.clearAuthCookies(res);
       return res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Activation failed");
     }
-
-    const candidates = await PendingRegistrations.findAll({
-      where: { username, expires_at: { [Op.gt]: new Date() } },
-    });
-    const pending = candidates.find((row) => {
-      try {
-        const payload = jwt.verify(
-          token,
-          process.env.ACTIVATION_TOKEN_SECRET + row.password
-        );
-        return payload.pending_id === row.pending_id;
-      } catch (err) {
-        return false;
-      }
-    });
-    if (!pending) {
-      return res.status(400).send("Missing");
-    }
-
-    const emailTaken = await Users.findOne({
-      where: { email: pending.email },
-      attributes: ["user_id"],
-    });
-    if (emailTaken) {
-      await pending.destroy();
-      return res.status(400).send("Missing");
-    }
-
-    await sequelize.transaction(async (transaction) => {
-      const now = new Date();
-      await Users.create(
-        {
-          username: pending.username,
-          email: pending.email,
-          password: pending.password,
-          terms_accepted: pending.terms_accepted,
-          activated: 1,
-          createdAt: now,
-          updatedAt: now,
-        },
-        { transaction }
-      );
-      await PendingRegistrations.destroy({
-        where: {
-          [Op.or]: [{ username: pending.username }, { email: pending.email }],
-        },
-        transaction,
-      });
-    });
-
-    lib.clearAuthCookies(res);
-    return res.sendStatus(200);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send("Activation failed");
-  }
-});
+  });
 
 router.route("/sendContactEmail").post(lib.limiter, async (req, res) => {
   try {

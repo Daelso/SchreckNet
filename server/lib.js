@@ -39,6 +39,13 @@ const emailLimiter = rateLimit({
   message: "Too many requests, please wait 15 minutes and try again!",
 });
 
+// Activation asks for the sign-up password; this caps guessing.
+const activationLimiter = rateLimit({
+  windowMs: 900000, //15 min
+  max: 10,
+  message: "Too many attempts, please wait 15 minutes and try again!",
+});
+
 // Same options on set and clear, or browsers keep the old cookie.
 const COOKIE_OPTIONS = { secure: true, httpOnly: true, sameSite: "None" };
 
@@ -127,6 +134,7 @@ module.exports = {
   postLimiter,
   getLimiter,
   emailLimiter,
+  activationLimiter,
   COOKIE_OPTIONS,
   setAccessCookie,
   clearAuthCookies,

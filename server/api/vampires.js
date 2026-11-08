@@ -8,7 +8,7 @@ const CharsInFolders = require("../models/char_folder/CharsInFolders");
 //Route is base/vampires/
 router.route("/new").post(lib.postLimiter, async (req, res) => {
   try {
-    const currentUser = lib.getCurrentUser(req, res)?.id ?? null;
+    const currentUser = (await lib.getCurrentUser(req, res))?.id ?? null;
     const newKindred = await Vampires.create({
       charName: req.body.name,
       alt_bane: req.body.altBane,
@@ -126,7 +126,7 @@ router.route("/card").get(async (req, res) => {
 
 router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
   try {
-    const currentUser = lib.getCurrentUser(req, res);
+    const currentUser = await lib.getCurrentUser(req, res);
 
     const kindred = await Vampires.findByPk(req.params.id);
 
@@ -186,7 +186,7 @@ router.route("/vampire/edit/:id").put(lib.postLimiter, async (req, res) => {
 
 router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
   try {
-    let currentUser = lib.getCurrentUser(req, res);
+    let currentUser = await lib.getCurrentUser(req, res);
 
     const kindred = await Vampires.findByPk(req.params.id);
 

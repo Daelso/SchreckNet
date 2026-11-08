@@ -9,6 +9,8 @@ router.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const Users = require("../models/Users");
+const PendingRegistrations = require("../models/PendingRegistrations");
+const { Op } = require("sequelize");
 const validator = require("validator");
 const { sequelize } = require("../database");
 const lib = require("../lib");
@@ -80,33 +82,75 @@ const validatePassword = (password) => {
   return null;
 };
 
+const activationLinkFor = (username, token) => {
+  const base =
+    process.env.ENV === "DEV"
+      ? "http://localhost:8080"
+      : "https://www.schrecknet.live";
+  return `${base}/activateAccount?token=${token}&username=${encodeURIComponent(
+    username
+  )}`;
+};
+
+const PENDING_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000; // matches the 7d token
+
+// New sign-ups go to pending_registrations and become users when the emailed
+// link is clicked. A pending row is created whether or not the email already
+// has an account, so nothing the caller can observe afterwards (this
+// response, a retry with the same username, the public user list) reveals
+// which emails are registered.
 router.route("/register").post(lib.emailLimiter, async (req, res) => {
   try {
     const problem = validateRegistration(req.body);
     if (problem) {
       return res.status(400).send(problem);
     }
-    req.body.username = req.body.username.trim();
+    const username = req.body.username.trim();
+    const email = req.body.email;
 
-    // Hash first so every path below takes about the same time.
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const now = new Date();
 
-    // Usernames are public, so saying one is taken leaks nothing.
-    const nameTaken = await Users.findOne({
-      where: { username: req.body.username },
-      attributes: ["user_id"],
+    await PendingRegistrations.destroy({
+      where: { expires_at: { [Op.lt]: now } },
     });
+
+    // Usernames are public, so saying one is taken leaks nothing. A pending
+    // row with the same username and email is treated as a retry below.
+    const nameTaken =
+      (await Users.findOne({ where: { username }, attributes: ["user_id"] })) ||
+      (await PendingRegistrations.findOne({
+        where: { username, email: { [Op.ne]: email } },
+        attributes: ["pending_id"],
+      }));
     if (nameTaken) {
       return res.status(409).send("Username already taken");
     }
 
-    // Emails are private: answer as if it worked and tell the owner instead.
+    // A retry re-sends the link for the existing row and keeps its password.
+    // Replacing it would let anyone who knows the username and email swap in
+    // their own password before the real owner clicks the link.
+    const pending =
+      (await PendingRegistrations.findOne({
+        where: { username, email, expires_at: { [Op.gt]: now } },
+      })) ||
+      (await PendingRegistrations.create({
+        username,
+        email,
+        password: hashedPassword,
+        terms_accepted: req.body.acceptance ? 1 : 0,
+        expires_at: new Date(now.getTime() + PENDING_LIFETIME_MS),
+        createdAt: now,
+        updatedAt: now,
+      }));
+
     const emailOwner = await Users.findOne({
-      where: { email: req.body.email },
+      where: { email },
       attributes: ["username", "email"],
     });
     if (emailOwner) {
+      // No activation link: this pending row can never become an account.
       mailer.sendAccountExistsEmail(
         emailOwner.email,
         emailOwner.username,
@@ -114,39 +158,23 @@ router.route("/register").post(lib.emailLimiter, async (req, res) => {
           ? "http://localhost:8080/passwordForgot"
           : "https://www.schrecknet.live/passwordForgot"
       );
-      return res.status(200).send("User created successfully!");
-    }
-
-    const newUser = await Users.create({
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-      terms_accepted: req.body.acceptance,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    });
-
-    const secret = process.env.ACTIVATION_TOKEN_SECRET + hashedPassword; //generates a new secret unique to a user.
-    const payload = { username: req.body.username };
-    const token = jwt.sign(payload, secret, { expiresIn: "7d" }); //activation good for a week
-
-    let activateLink = null;
-    if (process.env.ENV === "DEV") {
-      activateLink = `http://localhost:8080/activateAccount?token=${token}&username=${encodeURIComponent(
-        req.body.username
-      )}`;
     } else {
-      activateLink = `https://www.schrecknet.live/activateAccount?token=${token}&username=${encodeURIComponent(
-        req.body.username
-      )}`;
+      const token = jwt.sign(
+        { pending_id: pending.pending_id },
+        process.env.ACTIVATION_TOKEN_SECRET + pending.password,
+        { expiresIn: "7d" }
+      );
+      mailer.sendActivationEmail(
+        email,
+        username,
+        activationLinkFor(username, token)
+      );
     }
 
-    mailer.sendActivationEmail(req.body.email, req.body.username, activateLink);
-
-    return res.status(200).send("User created successfully!");
+    return res.status(200).send("Check your email to finish signing up");
   } catch (err) {
     console.log(err);
-    return res.status(403).send("Forbidden");
+    return res.status(500).send("Registration failed, please try again.");
   }
 });
 
@@ -172,28 +200,15 @@ router.route("/login").post(lib.limiter, async (req, res) => {
         email: user.email,
         activated: user.activated,
       };
-      const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "5m",
-      });
-
       const refreshToken = jwt.sign(
-        userInfo,
+        { ...userInfo, tv: user.token_version },
         process.env.REFRESH_TOKEN_SECRET,
-        {
-          expiresIn: "90d",
-        }
+        { expiresIn: "90d" }
       );
-      const accessCookie = await res.cookie("access", accessToken, {
-        maxAge: 300000,
-        secure: true,
-        httpOnly: true,
-        sameSite: "None",
-      });
-      const refreshCookie = await res.cookie("refresh", refreshToken, {
+      lib.setAccessCookie(res, userInfo);
+      res.cookie("refresh", refreshToken, {
+        ...lib.COOKIE_OPTIONS,
         maxAge: 7.884e9,
-        secure: true,
-        httpOnly: true,
-        sameSite: "None",
       });
       return res.status(200).send("Logged in!");
     } else {
@@ -206,41 +221,18 @@ router.route("/login").post(lib.limiter, async (req, res) => {
 });
 
 router.route("/token").post(async (req, res) => {
-  res.clearCookie("access");
-  const refreshToken = req.cookies.refresh;
-
-  if (refreshToken == null) return res.sendStatus(401);
-
-  jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET,
-    async (err, user) => {
-      if (err) return res.status(403).send("Invalid refresh token!");
-      let newToken = jwt.sign(
-        {
-          username: user.username,
-          email: user.email,
-          id: user.id,
-          activated: user.activated,
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "5m" }
-      );
-
-      const newCookie = await res.cookie("access", newToken, {
-        maxAge: 300000,
-        secure: true,
-        httpOnly: true,
-        sameSite: "None",
-      });
-      return res.status(200).send(`Token refreshed`);
-    }
+  if (!req.cookies.refresh) return res.sendStatus(401);
+  // Drop any access cookie so getCurrentUser goes through the refresh check.
+  const user = await lib.getCurrentUser(
+    { cookies: { refresh: req.cookies.refresh } },
+    res
   );
+  if (!user) return res.status(403).send("Invalid refresh token!");
+  return res.status(200).send("Token refreshed");
 });
 
 router.route("/logout").post((req, res) => {
-  res.clearCookie("refresh");
-  res.clearCookie("access");
+  lib.clearAuthCookies(res);
   return res.sendStatus(204);
 });
 
@@ -277,8 +269,7 @@ router.route("/passwordForgot").post(lib.emailLimiter, async (req, res) => {
 });
 
 router.route("/passwordReset/:user/:token").post(async (req, res) => {
-  res.clearCookie("access");
-  res.clearCookie("refresh");
+  lib.clearAuthCookies(res);
 
   const resetUser = await Users.findByPk(req.params.user);
   if (resetUser === null) {
@@ -295,7 +286,11 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
     const payload = jwt.verify(req.params.token, secret);
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    await resetUser.update({ password: hashedPassword });
+    // Bumping token_version logs out every existing session.
+    await resetUser.update({
+      password: hashedPassword,
+      token_version: resetUser.token_version + 1,
+    });
   } catch (err) {
     console.log(err.message);
     return res.status(400).send("Missing");
@@ -303,27 +298,95 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
   return res.sendStatus(200);
 });
 
-router.route("/activateAccount/:username/:token").post(async (req, res) => {
-  const activationUser = await Users.findOne({
-    where: { username: req.params.username },
+router
+  .route("/activateAccount/:username/:token")
+  .post(lib.activationLimiter, async (req, res) => {
+    try {
+      const { username, token } = req.params;
+
+      // Accounts created before pending_registrations existed.
+      const legacyUser = await Users.findOne({ where: { username } });
+      if (legacyUser) {
+        try {
+          jwt.verify(
+            token,
+            process.env.ACTIVATION_TOKEN_SECRET + legacyUser.get("password")
+          );
+        } catch (err) {
+          return res.status(400).send("Missing");
+        }
+        await legacyUser.update({ activated: 1 });
+        lib.clearAuthCookies(res);
+        return res.sendStatus(200);
+      }
+
+      const candidates = await PendingRegistrations.findAll({
+        where: { username, expires_at: { [Op.gt]: new Date() } },
+      });
+      const pending = candidates.find((row) => {
+        try {
+          const payload = jwt.verify(
+            token,
+            process.env.ACTIVATION_TOKEN_SECRET + row.password
+          );
+          return payload.pending_id === row.pending_id;
+        } catch (err) {
+          return false;
+        }
+      });
+      if (!pending) {
+        return res.status(400).send("Missing");
+      }
+
+      // Only the person who chose the password can turn the sign-up into an
+      // account, so an emailed link alone isn't enough.
+      const passwordMatches =
+        typeof req.body.password === "string" &&
+        (await bcrypt.compare(req.body.password, pending.password));
+      if (!passwordMatches) {
+        return res
+          .status(401)
+          .send("That password doesn't match this sign-up.");
+      }
+
+      const emailTaken = await Users.findOne({
+        where: { email: pending.email },
+        attributes: ["user_id"],
+      });
+      if (emailTaken) {
+        await pending.destroy();
+        return res.status(400).send("Missing");
+      }
+
+      await sequelize.transaction(async (transaction) => {
+        const now = new Date();
+        await Users.create(
+          {
+            username: pending.username,
+            email: pending.email,
+            password: pending.password,
+            terms_accepted: pending.terms_accepted,
+            activated: 1,
+            createdAt: now,
+            updatedAt: now,
+          },
+          { transaction }
+        );
+        await PendingRegistrations.destroy({
+          where: {
+            [Op.or]: [{ username: pending.username }, { email: pending.email }],
+          },
+          transaction,
+        });
+      });
+
+      lib.clearAuthCookies(res);
+      return res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send("Activation failed");
+    }
   });
-  if (activationUser === null) {
-    return res.sendStatus(404);
-  }
-  const secret =
-    process.env.ACTIVATION_TOKEN_SECRET + activationUser.get("password");
-  try {
-    const payload = jwt.verify(req.params.token, secret);
-
-    await activationUser.update({ activated: 1 });
-  } catch (err) {
-    console.log(err.message);
-    return res.status(400).send("Missing");
-  }
-  res.clearCookie("access");
-  res.clearCookie("refresh");
-  return res.sendStatus(200);
-});
 
 router.route("/sendContactEmail").post(lib.limiter, async (req, res) => {
   try {

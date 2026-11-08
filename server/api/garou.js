@@ -24,7 +24,7 @@ const CharsInFolders = require("../models/char_folder/CharsInFolders.js");
 
 router.route("/new").post(lib.postLimiter, async (req, res) => {
   try {
-    const currentUser = lib.getCurrentUser(req, res)?.id ?? null;
+    const currentUser = (await lib.getCurrentUser(req, res))?.id ?? null;
 
     const newGarou = await Garou.create({
       charName: req.body.name,
@@ -66,7 +66,7 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
 
 router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
   try {
-    const currentUser = lib.getCurrentUser(req, res);
+    const currentUser = await lib.getCurrentUser(req, res);
 
     const garou = await Garou.findByPk(req.params.id);
 
@@ -318,7 +318,7 @@ router.route("/card").get(async (req, res) => {
 
 router.route("/delete/:id").delete(lib.postLimiter, async (req, res) => {
   try {
-    let currentUser = lib.getCurrentUser(req, res);
+    let currentUser = await lib.getCurrentUser(req, res);
 
     const garou = await Garou.findByPk(req.params.id);
 

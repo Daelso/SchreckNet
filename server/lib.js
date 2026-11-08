@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const rateLimit = require("express-rate-limit");
+const Users = require("./models/Users");
 
 //Other imports above
 
@@ -21,50 +22,14 @@ const getLimiter = rateLimit({
   message: "Rate limit exceeded, please wait 5 minutes and try again!",
 });
 
+// Blocks the route unless the caller is logged in.
 const authenticateToken = async (req, res, next) => {
-  let token = req.cookies.access;
-
-  if (!token) {
-    const refreshToken = req.cookies.refresh;
-    if (!refreshToken) {
-      return res.sendStatus(401); // Unauthorized, no refresh token
-    }
-
-    try {
-      const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-      token = jwt.sign(
-        {
-          username: user.username,
-          email: user.email,
-          id: user.id,
-          activated: user.activated,
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "5m" }
-      );
-
-      res.cookie("access", token, {
-        maxAge: 300000,
-        secure: true,
-        httpOnly: true,
-        sameSite: "None",
-      });
-
-      req.currentUser = user;
-      return next(); // Stop execution and move to the next middleware
-    } catch (err) {
-      return res.status(403).send("Invalid refresh token!");
-    }
+  const user = await getCurrentUser(req, res);
+  if (!user) {
+    return res.sendStatus(401);
   }
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      console.log(err);
-      return res.sendStatus(403); // Forbidden, invalid token
-    }
-    req.currentUser = user;
-    next();
-  });
+  req.currentUser = user;
+  return next();
 };
 
 // Limits routes that send email (register, forgot password, resend activation).
@@ -73,6 +38,16 @@ const emailLimiter = rateLimit({
   max: 10,
   message: "Too many requests, please wait 15 minutes and try again!",
 });
+
+// Activation asks for the sign-up password; this caps guessing.
+const activationLimiter = rateLimit({
+  windowMs: 900000, //15 min
+  max: 10,
+  message: "Too many attempts, please wait 15 minutes and try again!",
+});
+
+// Same options on set and clear, or browsers keep the old cookie.
+const COOKIE_OPTIONS = { secure: true, httpOnly: true, sameSite: "None" };
 
 const setAccessCookie = (res, user) => {
   const token = jwt.sign(
@@ -85,18 +60,27 @@ const setAccessCookie = (res, user) => {
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "5m" }
   );
-  res.cookie("access", token, {
-    maxAge: 300000,
-    secure: true,
-    httpOnly: true,
-    sameSite: "None",
+  res.cookie("access", token, { ...COOKIE_OPTIONS, maxAge: 300000 });
+};
+
+const clearAuthCookies = (res) => {
+  res.clearCookie("access", COOKIE_OPTIONS);
+  res.clearCookie("refresh", COOKIE_OPTIONS);
+};
+
+// A refresh token stays valid only while its tv matches the user's
+// token_version. Tokens issued before token_version existed count as 0.
+const refreshTokenIsCurrent = async (payload) => {
+  const row = await Users.findByPk(payload.id, {
+    attributes: ["token_version"],
   });
+  return Boolean(row) && row.token_version === (payload.tv ?? 0);
 };
 
 // Returns the logged-in user, or null. Never sends a response, so routes that
 // allow anonymous traffic can call it safely. Falls back to the refresh cookie
 // and reissues the access cookie when needed.
-const getCurrentUser = (req, res) => {
+const getCurrentUser = async (req, res) => {
   const { access, refresh } = req.cookies || {};
 
   if (access) {
@@ -111,6 +95,10 @@ const getCurrentUser = (req, res) => {
 
   try {
     const user = jwt.verify(refresh, process.env.REFRESH_TOKEN_SECRET);
+    if (!(await refreshTokenIsCurrent(user))) {
+      clearAuthCookies(res);
+      return null;
+    }
     setAccessCookie(res, user);
     return user;
   } catch (err) {
@@ -146,4 +134,8 @@ module.exports = {
   postLimiter,
   getLimiter,
   emailLimiter,
+  activationLimiter,
+  COOKIE_OPTIONS,
+  setAccessCookie,
+  clearAuthCookies,
 };

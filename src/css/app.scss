@@ -56,3 +56,15 @@
   font-family: monospace;
   font-size: clamp(9px, 1.4vw, 14px);
 }
+
+// iOS zooms into any focused field under 16px. Pinch-zoom is allowed now,
+// so keep text fields at 16px on touch screens instead of blocking zoom.
+@media (hover: none) and (pointer: coarse) {
+  input,
+  textarea,
+  select,
+  .q-field__native,
+  .q-field__input {
+    font-size: 16px;
+  }
+}

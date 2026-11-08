@@ -44,6 +44,7 @@ router.route("/remove").post(lib.authenticateToken, async (req, res) => {
     await Favorites.destroy({
       where: {
         id: req.body.favId,
+        favorited_by: req.currentUser.id,
       },
     });
     return res.sendStatus(200);

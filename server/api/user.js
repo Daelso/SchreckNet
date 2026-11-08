@@ -19,9 +19,14 @@ router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
   return res.json(req.currentUser);
 });
 
+// Only these fields are safe to return from public endpoints.
+const PUBLIC_USER_FIELDS = ["user_id", "username"];
+
 router.route("/getUser/:id").get(async (req, res) => {
   try {
-    const user = await Users.findByPk(req.params.id);
+    const user = await Users.findByPk(req.params.id, {
+      attributes: PUBLIC_USER_FIELDS,
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -35,11 +40,13 @@ router.route("/getUser/:id").get(async (req, res) => {
 });
 
 router.route("/users").get(async (req, res) => {
-  Users.findAll()
-    .then((users) => {
-      return res.status(200).send(users);
-    })
-    .catch((err) => console.log(err));
+  try {
+    const users = await Users.findAll({ attributes: PUBLIC_USER_FIELDS });
+    return res.status(200).send(users);
+  } catch (err) {
+    console.log(err);
+    return res.sendStatus(500);
+  }
 });
 
 //Below are various controller links
@@ -193,7 +200,7 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
 
   const resetUser = await Users.findByPk(req.params.user);
   if (resetUser === null) {
-    return sendStatus(404);
+    return res.sendStatus(404);
   }
 
   const secret = process.env.RESET_TOKEN_SECRET + resetUser.get("password");
@@ -238,7 +245,7 @@ router.route("/activateAccount/:username/:token").post(async (req, res) => {
     where: { username: req.params.username },
   });
   if (activationUser === null) {
-    return sendStatus(404);
+    return res.sendStatus(404);
   }
   const secret =
     process.env.ACTIVATION_TOKEN_SECRET + activationUser.get("password");

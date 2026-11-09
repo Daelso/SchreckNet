@@ -553,6 +553,7 @@
 </style>
 
 <script>
+import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
@@ -623,7 +624,7 @@ export default defineComponent({
           });
         })
         .catch((err) => {
-          if (err.response.status === 409) {
+          if (apiStatus(err) === 409) {
             return this.$q.notify({
               color: "red-5",
               textColor: "white",
@@ -635,7 +636,7 @@ export default defineComponent({
             color: "red-5",
             textColor: "white",
             icon: "warning",
-            message: err.message,
+            message: apiErrorMessage(err),
           });
         });
     },

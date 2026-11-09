@@ -568,6 +568,7 @@
 }
 </style>
 <script>
+import { apiErrorMessage } from "src/lib/apiErrors";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 
@@ -646,7 +647,13 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          elem.style.display = "";
+          this.$q.notify({
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+            message: `Couldn't unfavorite. ${apiErrorMessage(err)}`,
+          });
           return "Not found!";
         });
     },

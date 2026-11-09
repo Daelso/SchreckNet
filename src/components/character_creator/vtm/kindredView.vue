@@ -538,6 +538,7 @@
 </style>
 
 <script>
+import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
@@ -645,7 +646,7 @@ export default defineComponent({
               color: "red-5",
               textColor: "white",
               icon: "warning",
-              message: "Failed to delete! Try again later!",
+              message: `Couldn't delete the character. ${apiErrorMessage(err)}`,
             });
             console.log(err);
             return;
@@ -807,7 +808,7 @@ export default defineComponent({
         this.$q.notify({
           color: "red-5",
           icon: "warning",
-          message: "Failed to create folder",
+          message: `Couldn't create the folder. ${apiErrorMessage(err)}`,
         });
       }
     },
@@ -844,7 +845,7 @@ export default defineComponent({
         this.$q.notify({
           color: "red-5",
           icon: "warning",
-          message: "Failed to update folders",
+          message: `Couldn't update folders. ${apiErrorMessage(err)}`,
         });
 
         this.folder_choice = [...this.previous_folder];
@@ -1456,7 +1457,7 @@ export default defineComponent({
           });
         })
         .catch((err) => {
-          if (err.response.status === 409) {
+          if (apiStatus(err) === 409) {
             return this.$q.notify({
               color: "red-5",
               textColor: "white",
@@ -1468,7 +1469,7 @@ export default defineComponent({
             color: "red-5",
             textColor: "white",
             icon: "warning",
-            message: err.message,
+            message: apiErrorMessage(err),
           });
         });
     },

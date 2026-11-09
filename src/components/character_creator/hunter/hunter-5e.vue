@@ -508,6 +508,7 @@ import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
+import { notifyApiError } from "src/lib/apiErrors";
 import edgeComponent from "../hunter/edges.vue";
 
 const metaData = {
@@ -762,14 +763,7 @@ export default {
             params: { id: res.data },
           });
         })
-        .catch((err) =>
-          this.$q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: err.message,
-          })
-        )
+        .catch((err) => notifyApiError(this.$q, err))
         .finally(() => {
           this.saving = false;
           this.$q.loading.hide();

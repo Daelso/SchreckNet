@@ -192,43 +192,52 @@
     </q-btn>
   </div>
 
-  <!-- Pagination Buttons -->
-  <div
-    class="flex flex-center q-pa-sm"
-    style="flex-direction: column"
-    v-if="totalPages"
+  <!-- Pagination Buttons: rendered here and again below the results
+       (teleported into #search-paging-bottom on the search page) -->
+  <Teleport
+    v-for="placement in ['top', 'bottom']"
+    :key="placement"
+    to="#search-paging-bottom"
+    :disabled="placement === 'top'"
+    defer
   >
-    <div class="q-pa-md flex flex-center" style="gap: 10px">
-      <q-btn
-        label="First Page"
-        color="primary"
-        @click="goToPage(1)"
-        :disable="currentPage === 1"
-      />
-      <q-btn
-        label="Previous"
-        color="secondary"
-        @click="goToPage(currentPage - 1)"
-        :disable="currentPage === 1"
-      />
-      <q-btn
-        label="Next"
-        color="secondary"
-        @click="goToPage(currentPage + 1)"
-        :disable="currentPage === totalPages"
-      />
-      <q-btn
-        label="Last Page"
-        color="primary"
-        @click="goToPage(totalPages)"
-        :disable="currentPage === totalPages"
-      />
+    <div
+      class="flex flex-center q-pa-sm"
+      style="flex-direction: column"
+      v-if="totalPages"
+    >
+      <div class="q-pa-md flex flex-center" style="gap: 10px">
+        <q-btn
+          label="First Page"
+          color="primary"
+          @click="goToPage(1)"
+          :disable="currentPage === 1"
+        />
+        <q-btn
+          label="Previous"
+          color="secondary"
+          @click="goToPage(currentPage - 1)"
+          :disable="currentPage === 1"
+        />
+        <q-btn
+          label="Next"
+          color="secondary"
+          @click="goToPage(currentPage + 1)"
+          :disable="currentPage === totalPages"
+        />
+        <q-btn
+          label="Last Page"
+          color="primary"
+          @click="goToPage(totalPages)"
+          :disable="currentPage === totalPages"
+        />
+      </div>
+      <!-- Displaying Current Page and Total Pages -->
+      <div class="q-pa-md flex flex-center">
+        <p>Page {{ currentPage }} of {{ totalPages }}</p>
+      </div>
     </div>
-    <!-- Displaying Current Page and Total Pages -->
-    <div class="q-pa-md flex flex-center">
-      <p>Page {{ currentPage }} of {{ totalPages }}</p>
-    </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>

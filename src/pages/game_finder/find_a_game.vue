@@ -1,6 +1,13 @@
 <template>
   <div class="top-box">
     <h2 class="banner">Find Your Next Game</h2>
+    <div v-if="showLoginHint" class="login-hint q-mb-md" role="status">
+      <img :src="nosImage" alt="" class="login-hint__avatar" />
+      <span>
+        <router-link to="/login" class="login-hint__link">Log in</router-link>
+        to create a game!
+      </span>
+    </div>
     <div class="action">
       <q-btn
         v-if="this.currentUser"
@@ -338,7 +345,7 @@
   background-color: #222831;
   margin: auto;
   width: 400px;
-  height: 295px;
+  min-height: 295px;
   justify-content: start;
   align-items: center;
   border-radius: 3%;
@@ -346,13 +353,13 @@
   margin-bottom: 10px;
   @media (max-width: 768px) {
     width: 320px;
-    height: 300px;
+    min-height: 300px;
     font-size: 0.7em;
   }
 
   @media (max-width: 480px) {
     width: 320px;
-    height: 300px;
+    min-height: 300px;
     font-size: 0.7em;
   }
 }
@@ -375,11 +382,37 @@
 .checkboxes {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  column-gap: 8px;
   margin: auto;
   padding: 5px;
   font-family: monospace;
+}
+.checkboxes .q-checkbox__label {
+  white-space: nowrap;
+}
+.login-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 32px);
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #222831;
+  color: white;
+  font-family: monospace;
+  font-size: 16px;
+}
+.login-hint__avatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+.login-hint__link {
+  color: #e31c25;
+  font-weight: bold;
 }
 </style>
 
@@ -414,14 +447,7 @@ export default defineComponent({
       } catch (err) {
         this.currentUser = null;
         console.warn("User not logged in");
-        this.$q.notify({
-          color: "primary",
-          avatar: nosImage,
-          textColor: "white",
-          position: "top",
-          timeout: 6000,
-          message: "Log in to create a game!",
-        });
+        this.showLoginHint = true;
       }
 
       await this.loadPage();
@@ -433,6 +459,7 @@ export default defineComponent({
   data() {
     return {
       currentUser: null,
+      showLoginHint: false,
       selectedGame: null,
       nosImage,
       date,

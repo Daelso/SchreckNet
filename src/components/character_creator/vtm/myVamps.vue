@@ -78,7 +78,7 @@
         </q-item>
 
         <q-separator />
-        <div class="row">
+        <div class="row card-body">
           <q-card-section horizontal class="col">
             <q-card-section class="base-info">
               <q-list bordered separator>
@@ -274,6 +274,18 @@
   }
   .my-card {
     margin-bottom: 15px;
+  }
+}
+/* Narrow phones: stack the expanders above the summary column */
+@media (max-width: 500px) {
+  .card-body {
+    flex-direction: column;
+  }
+  .card-body > .col {
+    flex: 0 0 auto;
+  }
+  .card-body .right-side {
+    max-width: none;
   }
 }
 </style>

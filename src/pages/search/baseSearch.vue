@@ -505,6 +505,7 @@
         </q-card-actions>
       </q-card>
     </div>
+    <div id="search-paging-bottom"></div>
   </div>
 </template>
 
@@ -559,6 +560,19 @@
 @media (max-width: 800px) {
   .my-card {
     margin-bottom: 15px;
+  }
+}
+
+/* Narrow phones: stack the expanders above the summary column */
+@media (max-width: 500px) {
+  .cards .row:has(> .right-side) {
+    flex-direction: column;
+  }
+  .cards .row:has(> .right-side) > .col {
+    flex: 0 0 auto;
+  }
+  .cards .right-side {
+    max-width: none;
   }
 }
 </style>

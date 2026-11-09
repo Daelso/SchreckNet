@@ -144,3 +144,18 @@
     padding-right: 8px;
   }
 }
+
+// Google Auto Ads forces in-page ads to the full viewport width, even inside
+// padded containers, which made pages scroll sideways by the padding (16px)
+// on phones. The ad itself stays on screen; only the container's empty
+// padding sticks out, so clip it. "clip" (unlike "hidden") also stops mobile
+// browsers widening the layout viewport, and doesn't break sticky positioning.
+html,
+body {
+  overflow-x: clip;
+}
+
+// Game listings are user text; long links or unbroken words must wrap.
+.games-container .q-card {
+  overflow-wrap: anywhere;
+}

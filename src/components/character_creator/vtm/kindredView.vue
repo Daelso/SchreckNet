@@ -2,7 +2,6 @@
   <div v-if="!this.pageFound">
     <notfound />
   </div>
-  {{ updateMetaTags() }}
   {{ chunkArrays() }}
   <div
     v-if="this.pageFound"
@@ -559,33 +558,21 @@ export default defineComponent({
   components: { notfound },
 
   async setup() {
-    const siteTitle = ref("SchreckNet");
-    const meta = {
-      description: {
-        name: "description",
-        content: "Vampire: The Masquerade 5th Edition Character Generator",
+    const siteTitle = ref("VtM 5e Character | SchreckNet");
+    const siteDescription = ref(
+      "Vampire: The Masquerade 5th Edition character, built with SchreckNet."
+    );
+    useMeta(() => ({
+      title: siteTitle.value,
+      meta: {
+        description: { name: "description", content: siteDescription.value },
+        keywords: {
+          name: "keywords",
+          content:
+            "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse",
+        },
       },
-      keywords: {
-        name: "keywords",
-        content:
-          "vtm, character creator, vtm5e, vampire the masquerade, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse",
-      },
-    };
-    useMeta(() => {
-      return {
-        title: siteTitle.value,
-        meta,
-      };
-    });
-
-    function updateMetaTags() {
-      siteTitle.value = "SchreckNet - " + this.charName; // will automatically trigger a Meta update due to the binding
-      meta.description.content =
-        this.generation +
-        " Gen " +
-        this.clan +
-        "Created using SchreckNet, a Vampire: The Masquerade character creator.";
-    }
+    }));
 
     const axios = require("axios");
     let currentUser = ref(false);
@@ -613,6 +600,30 @@ export default defineComponent({
         console.log(err);
         return "blah";
       });
+
+    if (pageFound.value) {
+      const name = kindred.charName || "Unnamed character";
+      const summary = [
+        kindred.generation ? `${kindred.generation}-generation` : "",
+        kindred.clan,
+        kindred.predator_type,
+      ]
+        .filter(Boolean)
+        .join(" ");
+      siteTitle.value = [
+        name,
+        kindred.clan ? `Clan ${kindred.clan}` : "",
+        "VtM 5e | SchreckNet",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      siteDescription.value = [
+        summary ? `${name}, ${summary}.` : `${name}.`,
+        "Created using SchreckNet, a Vampire: The Masquerade character creator.",
+      ].join(" ");
+    } else {
+      siteTitle.value = "Character not found | SchreckNet";
+    }
 
     function deleteConfirm() {
       this.$q
@@ -713,7 +724,6 @@ export default defineComponent({
       rouseAmt: 0,
       feedPenalty: "",
       clanBane: "",
-      updateMetaTags,
     };
   },
   async created() {

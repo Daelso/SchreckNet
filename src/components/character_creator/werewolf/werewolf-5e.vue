@@ -551,8 +551,7 @@ import { useMeta } from "quasar";
 import tribeComponent from "../werewolf/tribes.vue";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - Werewolf: The Apocalypse Creator`,
+  title: "WtA 5e Creator | SchreckNet",
 
   // meta tags
   meta: {

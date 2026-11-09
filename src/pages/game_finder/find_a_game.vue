@@ -392,8 +392,7 @@ export default defineComponent({
   name: "findAGame",
   async created() {
     useMeta({
-      title: "SchreckNet - Find a Game",
-      titleTemplate: (title) => `${title}`,
+      title: "Find a Game | SchreckNet",
       meta: {
         keywords: {
           name: "keywords",

@@ -511,8 +511,7 @@ import { useMeta } from "quasar";
 import edgeComponent from "../hunter/edges.vue";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - Hunter 5e Creator`,
+  title: "HtR 5e Creator | SchreckNet",
 
   // meta tags
   meta: {

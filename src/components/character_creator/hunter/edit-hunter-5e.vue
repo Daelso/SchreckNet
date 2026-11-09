@@ -581,8 +581,7 @@ import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
 import { appendEntry, undoLast, isValidEntry } from "../../../lib/xp/xpLog.js";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - Hunter 5e Editor`,
+  title: "Edit Hunter | SchreckNet",
 
   // meta tags
   meta: {

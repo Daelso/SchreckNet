@@ -2,7 +2,6 @@
   <div v-if="!this.pageFound">
     <notfound />
   </div>
-  {{ updateMetaTags() }}
   {{ chunkArrays() }}
   <div
     v-if="this.pageFound"
@@ -539,33 +538,21 @@ export default defineComponent({
   components: { notfound },
 
   async setup() {
-    const siteTitle = ref("SchreckNet");
-    const meta = {
-      description: {
-        name: "description",
-        content: "Hunter: The Reckoning 5th Edition Character Generator",
+    const siteTitle = ref("HtR 5e Character | SchreckNet");
+    const siteDescription = ref(
+      "Hunter: The Reckoning 5th Edition character, built with SchreckNet."
+    );
+    useMeta(() => ({
+      title: siteTitle.value,
+      meta: {
+        description: { name: "description", content: siteDescription.value },
+        keywords: {
+          name: "keywords",
+          content:
+            "htr, character creator, htr5e, hunter the reckoning, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse, vtm, vampire the masquerade",
+        },
       },
-      keywords: {
-        name: "keywords",
-        content:
-          "htr, character creator, htr5e, hunter the reckoning, schrecknet, WoD, world of darkness, w5, werewolf the apocalypse, vtm, vampire the masquerade",
-      },
-    };
-
-    useMeta(() => {
-      return {
-        title: siteTitle.value,
-        meta,
-      };
-    });
-
-    function updateMetaTags() {
-      siteTitle.value = "SchreckNet - " + this.hunter.charName; // will automatically trigger a Meta update due to the binding
-      meta.description.content =
-        this.hunter.creed.name +
-        `(${hunter.drive})` +
-        "Created using SchreckNet, a Hunter: Reckoning character creator.";
-    }
+    }));
 
     let currentUser = ref(false);
     let pageFound = ref(false);
@@ -586,6 +573,31 @@ export default defineComponent({
         console.log(err);
         return "blah";
       });
+
+    if (pageFound.value) {
+      const name = hunter.charName || "Unnamed character";
+      const creed = hunter.creed && hunter.creed.name;
+      const drive = hunter.drive && hunter.drive.name;
+      const summary = [
+        creed ? `${creed} Hunter` : "",
+        drive ? `driven by ${drive}` : "",
+      ]
+        .filter(Boolean)
+        .join(", ");
+      siteTitle.value = [
+        name,
+        creed ? `${creed} Creed` : "",
+        "HtR 5e | SchreckNet",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      siteDescription.value = [
+        summary ? `${name}, ${summary}.` : `${name}.`,
+        "Created using SchreckNet, a Hunter: The Reckoning character creator.",
+      ].join(" ");
+    } else {
+      siteTitle.value = "Character not found | SchreckNet";
+    }
 
     function deleteConfirm() {
       this.$q
@@ -646,7 +658,6 @@ export default defineComponent({
       rouseAmt: 0,
       feedPenalty: "",
       clanBane: "",
-      updateMetaTags,
     };
   },
   async created() {

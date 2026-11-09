@@ -655,8 +655,7 @@ import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - VtM 5e Creator`,
+  title: "VtM 5e Creator | SchreckNet",
 
   // meta tags
   meta: {

@@ -11,6 +11,8 @@ body {
 
 <script>
 import { defineComponent } from "vue";
+import { useMeta } from "quasar";
+import { useRoute } from "vue-router";
 import axios from "axios";
 
 let baseUrl = "";
@@ -34,5 +36,15 @@ axios
 
 export default defineComponent({
   name: "App",
+  setup() {
+    // Default tab title per route. Registered first, so any page that calls
+    // useMeta itself wins while it is mounted.
+    const route = useRoute();
+    useMeta(() => ({
+      title: route.meta.title
+        ? `${route.meta.title} | SchreckNet`
+        : "SchreckNet",
+    }));
+  },
 });
 </script>

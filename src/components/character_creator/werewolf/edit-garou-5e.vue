@@ -627,8 +627,7 @@ import { appendEntry, undoLast, isValidEntry } from "../../../lib/xp/xpLog.js";
 import notFound from "../../../pages/ErrorNotFound.vue";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - Werewolf: The Apocalypse Creator`,
+  title: "Edit Werewolf | SchreckNet",
 
   // meta tags
   meta: {

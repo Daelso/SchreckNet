@@ -8,7 +8,6 @@
     class="q-pa-md column justify-center text-center"
     style="max-width: 900px"
   >
-    {{ updateMetaTags(this.garou) }}
     {{ chunkArrays() }}
     <div class="q-pa-md column text-center">
       <q-banner class="bg-primary text-white" rounded dark>
@@ -589,33 +588,21 @@ export default defineComponent({
   components: { notfound },
 
   async setup() {
-    const siteTitle = ref("SchreckNet");
-    const meta = {
-      description: {
-        name: "description",
-        content: "Werewolf: The Apocalypse 5th Edition Character Generator",
+    const siteTitle = ref("WtA 5e Character | SchreckNet");
+    const siteDescription = ref(
+      "Werewolf: The Apocalypse 5th Edition character, built with SchreckNet."
+    );
+    useMeta(() => ({
+      title: siteTitle.value,
+      meta: {
+        description: { name: "description", content: siteDescription.value },
+        keywords: {
+          name: "keywords",
+          content:
+            "werewolf, character creator, wta, wta5, werewolf the apocalypse, w5e, schrecknet, WoD, world of darkness",
+        },
       },
-      keywords: {
-        name: "keywords",
-        content:
-          "werewolf, character creator, wta, wta5, werewolf the apocalypse, w5e, schrecknet, WoD, world of darkness",
-      },
-    };
-
-    useMeta(() => {
-      return {
-        title: siteTitle.value,
-        meta,
-      };
-    });
-
-    function updateMetaTags(garou) {
-      siteTitle.value = "SchreckNet - " + garou.charName; // will automatically trigger a Meta update due to the binding
-      meta.description.content =
-        this.garou.tribe.tribe_name +
-        `(${garou.auspice.auspice_name})` +
-        "Created using SchreckNet, a Werewolf: The Apocalypse character creator.";
-    }
+    }));
 
     const axios = require("axios");
     let currentUser = ref(false);
@@ -646,6 +633,22 @@ export default defineComponent({
       .catch((err) => {
         return "blah";
       });
+
+    if (pageFound.value) {
+      const name = garou.charName || "Unnamed character";
+      const tribe = garou.tribe && garou.tribe.tribe_name;
+      const auspice = garou.auspice && garou.auspice.auspice_name;
+      const summary = [tribe, auspice].filter(Boolean).join(" ");
+      siteTitle.value = [name, tribe, "WtA 5e | SchreckNet"]
+        .filter(Boolean)
+        .join(" · ");
+      siteDescription.value = [
+        summary ? `${name}, ${summary}.` : `${name}.`,
+        "Created using SchreckNet, a Werewolf: The Apocalypse character creator.",
+      ].join(" ");
+    } else {
+      siteTitle.value = "Character not found | SchreckNet";
+    }
 
     function deleteConfirm() {
       this.$q
@@ -706,8 +709,6 @@ export default defineComponent({
       deleteConfirm,
       spentXp: 0,
       mendAmt: 0,
-
-      updateMetaTags,
     };
   },
   async created() {

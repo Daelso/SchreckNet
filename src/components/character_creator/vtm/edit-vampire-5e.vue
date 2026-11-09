@@ -697,8 +697,7 @@ import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
 import { appendEntry, undoLast, isValidEntry } from "../../../lib/xp/xpLog.js";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - VtM 5e Creator`,
+  title: "Edit Vampire | SchreckNet",
 
   // meta tags
   meta: {

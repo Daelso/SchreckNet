@@ -75,6 +75,9 @@ app.use(
 
 app.use(cookieParser());
 
+// Per-character <head> for shared links; must run before the SPA fallback.
+app.use(require("./server/sharePreview"));
+
 app.use(history());
 // Built files with a content hash in the name (app.1068dbee.js) never change,
 // so browsers and Cloudflare can keep them for a year. index.html must be

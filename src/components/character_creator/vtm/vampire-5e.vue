@@ -656,8 +656,7 @@ import { useMeta } from "quasar";
 import { notifyApiError } from "src/lib/apiErrors";
 
 const metaData = {
-  title: "SchreckNet",
-  titleTemplate: (title) => `${title} - VtM 5e Creator`,
+  title: "VtM 5e Creator | SchreckNet",
 
   // meta tags
   meta: {

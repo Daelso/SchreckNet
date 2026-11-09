@@ -103,3 +103,44 @@
 .load-state__links a {
   color: #e31c25;
 }
+
+// Phone layout guards shared by the creator, edit and view pages.
+@media (max-width: 600px) {
+  // Dialog titles wrap instead of truncating, so counts like the remaining XP
+  // in "Spend XP - 15 Remaining" stay visible.
+  .q-dialog .q-toolbar__title {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  // Character summary banners: let the 2/3-column grids shrink to the
+  // screen instead of sizing to their longest word.
+  .q-banner .info > *,
+  .q-banner .concept > *,
+  .q-banner .stats > *,
+  .q-banner .advantages > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .q-banner .attributes {
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  // Smallest phones: trim the nested gutters around character banners.
+  .q-pa-md:has(> .q-banner),
+  .q-pa-md:has(> .q-pa-md > .q-banner) {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .q-banner:has(.info) {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}

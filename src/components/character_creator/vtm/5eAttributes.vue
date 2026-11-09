@@ -98,25 +98,27 @@
               >
                 <q-separator vertical />
                 <div class="attName">{{ attribute }}</div>
-                <q-btn
-                  :id="attribute.toLowerCase()"
-                  round
-                  color="primary"
-                  icon="remove_circle"
-                  text-color="secondary"
-                  :size="this.isMobile() ? 6.5 + 'px' : 12 + 'px'"
-                  @click="subtractSkill($event.currentTarget.id)"
-                />
-                {{ this[attribute.toLowerCase()] }}/5
-                <q-btn
-                  :id="attribute.toLowerCase()"
-                  round
-                  color="primary"
-                  icon="add_circle"
-                  text-color="white"
-                  :size="this.isMobile() ? 6.5 + 'px' : 12 + 'px'"
-                  @click="addSkill($event.currentTarget.id)"
-                />
+                <div class="stat-controls">
+                  <q-btn
+                    :id="attribute.toLowerCase()"
+                    round
+                    color="primary"
+                    icon="remove_circle"
+                    text-color="secondary"
+                    :size="this.isMobile() ? 6.5 + 'px' : 12 + 'px'"
+                    @click="subtractSkill($event.currentTarget.id)"
+                  />
+                  {{ this[attribute.toLowerCase()] }}/5
+                  <q-btn
+                    :id="attribute.toLowerCase()"
+                    round
+                    color="primary"
+                    icon="add_circle"
+                    text-color="white"
+                    :size="this.isMobile() ? 6.5 + 'px' : 12 + 'px'"
+                    @click="addSkill($event.currentTarget.id)"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -127,6 +129,13 @@
 </template>
 
 <style scoped>
+.stat-controls {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
 .row {
   height: 8rem;
   background: #222831;
@@ -161,10 +170,26 @@
     background: #222831;
     width: 100%;
   }
+  .stat-controls {
+    gap: 2px;
+    font-size: 12px;
+  }
+  /* compact round buttons on any narrow screen, not just mobile user agents */
+  .stat-controls .q-btn {
+    font-size: 8px !important;
+  }
   .row > div {
     padding: 3px 5px;
     background: #222831;
     border: 1px solid #222831;
+  }
+}
+@media only screen and (max-width: 360px) {
+  .stat-controls {
+    gap: 0;
+  }
+  .stat-controls .q-btn {
+    font-size: 6.5px !important;
   }
 }
 </style>

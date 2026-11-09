@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md row justify-center text-center">
+  <div class="q-pa-md row justify-center text-center creator-tabs">
     <q-card class="bg-primary">
       <q-tabs
         v-model="tab"
@@ -8,14 +8,14 @@
         indicator-color="secondary"
         align="justify"
         narrow-indicator
+        outside-arrows
         mobile-arrows
       >
         <q-tab style="color: white" name="coreConcept" label="Core Concept" />
-        <q-tab
-          style="color: white"
-          name="touchstones"
-          label="Touchstones/Convictions"
-        />
+        <q-tab style="color: white" name="touchstones">
+          <!-- <wbr> lets the long label wrap after the slash on phones -->
+          <div class="q-tab__label">Touchstones/<wbr />Convictions</div>
+        </q-tab>
         <q-tab
           :disable="sortSkills().length < 1 && this.debug !== true"
           name="specialties"
@@ -847,6 +847,27 @@
   }
   .tabs {
     width: 300px;
+  }
+  /* Fit the tabs card inside narrow phones (the page wrapper already pads it) */
+  .creator-tabs {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .creator-tabs .tabs {
+    width: min(300px, calc(100vw - 32px));
+  }
+  .creator-tabs .select {
+    width: min(300px, calc(100vw - 64px));
+  }
+  .creator-tabs .q-tab {
+    padding: 0 10px;
+  }
+  /* long labels (e.g. Touchstones/Convictions) wrap instead of hiding */
+  .creator-tabs .q-tab__label {
+    max-width: 112px;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: normal;
   }
 }
 </style>

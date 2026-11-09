@@ -166,9 +166,10 @@ const renderHead = (shell, meta) => {
   // or at the top of <head> if the shell has none.
   const charset = html.match(/<meta\s+charset=["']?[\w-]+["']?\s*\/?>/i);
   if (charset) {
-    return html.replace(charset[0], charset[0] + tags.join(""));
+    // Replacer functions so "$&", "$'" etc. in user text are taken literally.
+    return html.replace(charset[0], () => charset[0] + tags.join(""));
   }
-  return html.replace(/<head>/i, "<head>" + tags.join(""));
+  return html.replace(/<head>/i, () => "<head>" + tags.join(""));
 };
 
 let shellCache = null;

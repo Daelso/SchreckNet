@@ -195,7 +195,10 @@
       </div>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="searchError" class="q-pa-md">
+    <LoadError :message="searchError" :loading="loading" @retry="loadPage" />
+  </div>
+  <div v-else-if="searched">
     <h2 class="banner">No Games Found!</h2>
   </div>
   <!-- Pagination Buttons -->
@@ -386,9 +389,11 @@ import { date } from "quasar";
 import nosImage from "../../assets/images/Nosfer_logo.png";
 import create_a_game from "../../components/game_finder/create_a_game.vue";
 import { useMeta } from "quasar";
+import LoadError from "../../components/common/LoadError.vue";
+import { apiErrorMessage } from "src/lib/apiErrors";
 
 export default defineComponent({
-  components: { create_a_game },
+  components: { create_a_game, LoadError },
   name: "findAGame",
   async created() {
     useMeta({
@@ -419,19 +424,7 @@ export default defineComponent({
         });
       }
 
-      const styleReq = await this.$api.get("/game_finder/styles");
-      this.style_options = styleReq.data;
-      this.style_options.push({ style: "Any", style_id: 100 });
-
-      const game_line_req = await this.$api.get("/game_finder/game_lines");
-      this.game_lines = game_line_req.data;
-      this.game_lines.push({ line_id: 100, game_line: "Any" });
-
-      const editions_req = await this.$api.get("/game_finder/editions");
-      this.editions = editions_req.data;
-      this.editions.push({ edition_id: 100, edition_name: "Any" });
-
-      await this.doSearch();
+      await this.loadPage();
     } catch (err) {
       console.error(err);
     }
@@ -445,6 +438,9 @@ export default defineComponent({
       date,
       createDialog: false,
       games: null,
+      loading: false,
+      searched: false,
+      searchError: "",
       currentPage: 1,
       totalPages: null,
       new_player: true,
@@ -459,6 +455,38 @@ export default defineComponent({
     };
   },
   methods: {
+    async loadFilters() {
+      const [styleReq, game_line_req, editions_req] = await Promise.all([
+        this.$api.get("/game_finder/styles"),
+        this.$api.get("/game_finder/game_lines"),
+        this.$api.get("/game_finder/editions"),
+      ]);
+      this.style_options = [...styleReq.data, { style: "Any", style_id: 100 }];
+      this.game_lines = [
+        ...game_line_req.data,
+        { line_id: 100, game_line: "Any" },
+      ];
+      this.editions = [
+        ...editions_req.data,
+        { edition_id: 100, edition_name: "Any" },
+      ];
+    },
+    // Loads the filter options (once) and the first page of games.
+    async loadPage() {
+      if (!this.game_lines.length) {
+        this.loading = true;
+        try {
+          await this.loadFilters();
+        } catch (err) {
+          console.error(err);
+          this.searchError = apiErrorMessage(err);
+          return;
+        } finally {
+          this.loading = false;
+        }
+      }
+      await this.doSearch();
+    },
     can_bump(updated_at) {
       const lastUpdated = new Date(updated_at);
       const now = new Date();
@@ -538,8 +566,14 @@ export default defineComponent({
         this.games = response.data.games;
         this.totalPages = response.data.total_pages;
         this.filter_games();
+        this.searchError = "";
+        this.searched = true;
       } catch (err) {
         console.error(err);
+        this.games = [];
+        this.filtered_games = [];
+        this.totalPages = null;
+        this.searchError = apiErrorMessage(err);
       } finally {
         this.loading = false;
         this.$q.loading.hide();

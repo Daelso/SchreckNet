@@ -1,9 +1,16 @@
 <template>
-  <div v-if="this.kindred === null || this.kindred.length === 0" class="banner">
+  <div v-if="loadError" class="q-pa-md full-width">
+    <LoadError :message="loadError" @retry="load_kindred" />
+  </div>
+  <div v-else-if="this.kindred === null" class="flex flex-center q-pa-xl">
+    <q-spinner color="secondary" size="3em" aria-label="Loading" />
+  </div>
+  <div v-else-if="this.kindred.length === 0" class="banner">
     No characters created yet!
   </div>
 
   <div
+    v-if="!loadError && this.kindred !== null"
     style="
       display: flex;
       flex-direction: column;
@@ -272,7 +279,9 @@
 </style>
 <script>
 import { apiErrorMessage } from "src/lib/apiErrors";
+import LoadError from "../../common/LoadError.vue";
 export default {
+  components: { LoadError },
   async created() {
     this.kindred_id = window.location.href.split("/")[6];
 
@@ -282,6 +291,7 @@ export default {
   data() {
     return {
       kindred: null,
+      loadError: "",
       selected: [],
       kindred_id: 0,
       selectedFolder: null,
@@ -299,6 +309,7 @@ export default {
     },
 
     async load_kindred() {
+      this.loadError = "";
       try {
         const kindred_req = await this.$api.get(
           "/vampires/myVampire/" + this.kindred_id,
@@ -325,6 +336,7 @@ export default {
         this.folderOptions = [...seen.values()];
       } catch (err) {
         console.log(err);
+        this.loadError = apiErrorMessage(err);
       }
     },
     update_selected(vamp) {

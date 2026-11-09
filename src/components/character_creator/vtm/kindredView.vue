@@ -1,5 +1,6 @@
 <template>
-  <div v-if="!this.pageFound">
+  <LoadError v-if="loadError" :message="loadError" @retry="$emit('retry')" />
+  <div v-else-if="!this.pageFound">
     <notfound />
   </div>
   {{ chunkArrays() }}
@@ -544,6 +545,7 @@ import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 import skillInfo from "../vtm/5eSkills.json";
 import notfound from "../../../pages/ErrorNotFound.vue";
+import LoadError from "../../common/LoadError.vue";
 import smallX from "../../../assets/images/small_x.png";
 
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
@@ -556,7 +558,8 @@ import { useMeta } from "quasar";
 
 export default defineComponent({
   name: "kindred-view",
-  components: { notfound },
+  components: { notfound, LoadError },
+  emits: ["retry"],
 
   async setup() {
     const siteTitle = ref("VtM 5e Character | SchreckNet");
@@ -578,6 +581,7 @@ export default defineComponent({
     const axios = require("axios");
     let currentUser = ref(false);
     let pageFound = ref(false);
+    const loadError = ref("");
 
     let creator = ref("Anonymous");
 
@@ -594,12 +598,14 @@ export default defineComponent({
         withCredentials: true,
       })
       .then((resp) => {
-        pageFound.value = true;
-        return resp.data;
+        pageFound.value = !!resp.data;
+        return resp.data || {};
       })
       .catch((err) => {
         console.log(err);
-        return "blah";
+        // Only a 404 means the character doesn't exist.
+        if (apiStatus(err) !== 404) loadError.value = apiErrorMessage(err);
+        return {};
       });
 
     if (pageFound.value) {
@@ -622,6 +628,8 @@ export default defineComponent({
         summary ? `${name}, ${summary}.` : `${name}.`,
         "Created using SchreckNet, a Vampire: The Masquerade character creator.",
       ].join(" ");
+    } else if (loadError.value) {
+      siteTitle.value = "Couldn't load character | SchreckNet";
     } else {
       siteTitle.value = "Character not found | SchreckNet";
     }
@@ -716,6 +724,7 @@ export default defineComponent({
       predatorType: kindred.predator_type,
       remaining_specialties: kindred.remaining_specialties,
       pageFound,
+      loadError,
       imgLink: kindred.image_link,
       spentXp: 0,
       baneseverity: 0,
@@ -728,6 +737,7 @@ export default defineComponent({
     };
   },
   async created() {
+    if (!this.pageFound) return;
     await this.$api
       .get("/user/getUser/" + this.created_by, {
         withCredentials: true,
@@ -773,6 +783,7 @@ export default defineComponent({
     };
   },
   async mounted() {
+    if (!this.pageFound) return;
     this.favCount = await this.$api
       .get("/favorites/favCount/" + this.kindredId, { params: { game_id: 1 } })
       .then((resp) => {

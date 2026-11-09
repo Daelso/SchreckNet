@@ -61,10 +61,11 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
 router.route("/vampire/:id").get(async (req, res) => {
   try {
     const kindred = await Vampires.findByPk(req.params.id);
+    if (!kindred) return res.status(404).send("Not found");
     return res.send(kindred.dataValues);
   } catch (err) {
     console.log(err);
-    return res.status(404).send("Not found");
+    return res.status(500).send("Server error");
   }
 });
 

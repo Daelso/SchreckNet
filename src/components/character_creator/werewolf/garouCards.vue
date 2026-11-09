@@ -1,4 +1,10 @@
 <template>
+  <LoadError
+    v-if="loadError"
+    :message="loadError"
+    :loading="retrying"
+    @retry="load"
+  />
   <q-card v-for="wolf in this.garou" :key="wolf" class="my-card" flat bordered>
     <q-item>
       <q-item-section avatar>
@@ -193,8 +199,11 @@
 <script>
 import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
+import LoadError from "../../common/LoadError.vue";
 
 export default {
+  components: { LoadError },
   props: ["currentUser"],
   async setup(props) {
     const router = useRouter();
@@ -207,19 +216,35 @@ export default {
       baseUrl = window.location.origin;
     }
 
-    let garou = await axios
-      .get(baseUrl + "/garou/card", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      })
-      .catch((err) => {
-        return "Not found!";
-      });
+    const garou = ref([]);
+    const loadError = ref("");
+    const retrying = ref(false);
+
+    async function load() {
+      retrying.value = true;
+      try {
+        const resp = await axios.get(baseUrl + "/garou/card", {
+          withCredentials: true,
+        });
+        garou.value = Array.isArray(resp.data) ? resp.data : [];
+        loadError.value = "";
+      } catch (err) {
+        console.log(err);
+        loadError.value = `Couldn't load these characters. ${apiErrorMessage(
+          err
+        )}`;
+      } finally {
+        retrying.value = false;
+      }
+    }
+
+    await load();
 
     return {
       garou,
+      loadError,
+      retrying,
+      load,
       router,
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",

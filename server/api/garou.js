@@ -113,10 +113,11 @@ router.route("/edit/:id").put(lib.postLimiter, async (req, res) => {
 router.route("/garou/:id").get(lib.getLimiter, async (req, res) => {
   try {
     const garou = await Garou.findByPk(req.params.id);
+    if (!garou) return res.status(404).send("Not found");
     return res.json(garou);
   } catch (err) {
     console.error(err);
-    return res.status(404).send("Not found");
+    return res.status(500).send("Server error");
   }
 });
 

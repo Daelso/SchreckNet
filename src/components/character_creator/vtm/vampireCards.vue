@@ -1,4 +1,10 @@
 <template>
+  <LoadError
+    v-if="loadError"
+    :message="loadError"
+    :loading="retrying"
+    @retry="load"
+  />
   <q-card
     v-for="vamp in this.kindred"
     :key="vamp"
@@ -196,8 +202,11 @@
 <script>
 import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
+import LoadError from "../../common/LoadError.vue";
 
 export default {
+  components: { LoadError },
   props: ["currentUser"],
   async setup(props) {
     const router = useRouter();
@@ -210,20 +219,35 @@ export default {
       baseUrl = window.location.origin;
     }
 
-    let kindred = await axios
-      .get(baseUrl + "/vampires/card", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      })
-      .catch((err) => {
+    const kindred = ref([]);
+    const loadError = ref("");
+    const retrying = ref(false);
+
+    async function load() {
+      retrying.value = true;
+      try {
+        const resp = await axios.get(baseUrl + "/vampires/card", {
+          withCredentials: true,
+        });
+        kindred.value = Array.isArray(resp.data) ? resp.data : [];
+        loadError.value = "";
+      } catch (err) {
         console.log(err);
-        return "Not found!";
-      });
+        loadError.value = `Couldn't load these characters. ${apiErrorMessage(
+          err
+        )}`;
+      } finally {
+        retrying.value = false;
+      }
+    }
+
+    await load();
 
     return {
       kindred,
+      loadError,
+      retrying,
+      load,
       router,
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",

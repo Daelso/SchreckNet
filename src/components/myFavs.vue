@@ -1,5 +1,14 @@
 <template>
-  <div class="q-pa-md" style="max-width: 1400px">
+  <div v-if="loggedOut || loadError" class="q-pa-md full-width">
+    <LoginRequired v-if="loggedOut" message="Log in to see your favorites." />
+    <LoadError
+      v-else
+      :message="loadError"
+      :loading="loading"
+      @retry="loadFavorites"
+    />
+  </div>
+  <div v-else-if="loaded" class="q-pa-md" style="max-width: 1400px">
     <div class="banner">Favorite Vampires</div>
 
     <div
@@ -568,11 +577,14 @@
 }
 </style>
 <script>
-import { apiErrorMessage } from "src/lib/apiErrors";
+import { apiErrorMessage, isSessionError } from "src/lib/apiErrors";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import LoadError from "./common/LoadError.vue";
+import LoginRequired from "./common/LoginRequired.vue";
 
 export default {
+  components: { LoadError, LoginRequired },
   async setup() {
     let baseUrl = ref("");
     if (window.location.href.includes("localhost")) {
@@ -594,34 +606,44 @@ export default {
       garouFavorites: null,
       hunterFavorites: null,
       currentUser: false,
+      loading: false,
+      loaded: false,
+      loggedOut: false,
+      loadError: "",
       game: { label: "Vampire: The Masquerade", game_id: 1 },
       gameOptions: [{ label: "Vampire: The Masquerade", game_id: 1 }],
     };
   },
 
   async mounted() {
-    this.$q.loading.show({
-      delay: 450, // ms
-    });
+    await this.loadFavorites();
+  },
 
-    await this.$axios
-      .get(this.baseUrl + "/favorites/my", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        this.$q.loading.hide();
+  methods: {
+    async loadFavorites() {
+      this.loading = true;
+      this.$q.loading.show({
+        delay: 450, // ms
+      });
+      try {
+        const resp = await this.$axios.get(this.baseUrl + "/favorites/my", {
+          withCredentials: true,
+        });
         this.currentUser = resp.data[3];
         this.vampireFavorites = resp.data[0];
         this.hunterFavorites = resp.data[1];
         this.garouFavorites = resp.data[2];
-      })
-      .catch((err) => {
+        this.loadError = "";
+        this.loaded = true;
+      } catch (err) {
         console.log(err);
-        return "Not found!";
-      });
-  },
-
-  methods: {
+        if (isSessionError(err)) this.loggedOut = true;
+        else this.loadError = apiErrorMessage(err);
+      } finally {
+        this.loading = false;
+        this.$q.loading.hide();
+      }
+    },
     truncate(value, length) {
       if (value.length > length) {
         return value.substring(0, length) + "...";

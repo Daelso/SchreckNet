@@ -1,8 +1,15 @@
 <template>
-  <div v-if="this.hunter === null || this.hunter.length === 0" class="banner">
+  <div v-if="loadError" class="q-pa-md full-width">
+    <LoadError :message="loadError" @retry="load_hunters" />
+  </div>
+  <div v-else-if="this.hunter === null" class="flex flex-center q-pa-xl">
+    <q-spinner color="secondary" size="3em" aria-label="Loading" />
+  </div>
+  <div v-else-if="this.hunter.length === 0" class="banner">
     No characters created yet!
   </div>
   <div
+    v-if="!loadError && this.hunter !== null"
     style="
       display: flex;
       flex-direction: column;
@@ -221,41 +228,18 @@
 </style>
 <script>
 import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
+import LoadError from "../../common/LoadError.vue";
 export default {
+  components: { LoadError },
   props: ["currentUser"],
   async created() {
-    let id = window.location.href.split("/")[6];
-    this.hunter = await this.$api
-      .get("/hunters/myHunter/" + id, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      })
-      .catch((err) => {
-        console.log(err);
-        return "Not found!";
-      });
-    this.hunter.forEach((hunt) => {
-      hunt.checked = false;
-    });
-
-    // build unique folder list
-    const seen = new Map();
-    this.hunter.forEach((v) => {
-      (v.folders || []).forEach((f) => {
-        if (!seen.has(f.folder_id)) {
-          seen.set(f.folder_id, f);
-        }
-      });
-    });
-
-    this.folderOptions = [...seen.values()];
+    await this.load_hunters();
   },
 
   data() {
     return {
-      hunter: [],
+      hunter: null,
+      loadError: "",
       selected: [],
       selectedFolder: null,
       folderOptions: [],
@@ -263,6 +247,36 @@ export default {
   },
 
   methods: {
+    async load_hunters() {
+      let id = window.location.href.split("/")[6];
+      this.loadError = "";
+      this.hunter = null;
+      try {
+        const resp = await this.$api.get("/hunters/myHunter/" + id, {
+          withCredentials: true,
+        });
+        this.hunter = resp.data;
+      } catch (err) {
+        console.log(err);
+        this.loadError = apiErrorMessage(err);
+        return;
+      }
+      this.hunter.forEach((hunt) => {
+        hunt.checked = false;
+      });
+
+      // build unique folder list
+      const seen = new Map();
+      this.hunter.forEach((v) => {
+        (v.folders || []).forEach((f) => {
+          if (!seen.has(f.folder_id)) {
+            seen.set(f.folder_id, f);
+          }
+        });
+      });
+
+      this.folderOptions = [...seen.values()];
+    },
     truncate(value, length) {
       if (value.length > length) {
         return value.substring(0, length) + "...";

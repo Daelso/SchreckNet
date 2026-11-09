@@ -68,3 +68,38 @@
     font-size: 16px;
   }
 }
+
+// Inline loading / error / logged-out notices (components/common).
+.load-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 520px;
+  margin: 16px auto;
+  padding: 20px 24px;
+  font-size: 15px;
+  background: #222831;
+  border: 1px solid rgba(227, 28, 37, 0.35);
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+}
+
+.load-state__message {
+  line-height: 1.5;
+}
+
+.load-state__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.load-state__links a {
+  color: #e31c25;
+}

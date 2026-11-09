@@ -1,14 +1,15 @@
 <template>
   <div class="top-box">
     <h2 class="banner">Your Games</h2>
-    <div class="action">
+    <LoginRequired v-if="loggedOut" message="Log in to see your games." />
+    <div v-if="!loggedOut" class="action">
       <q-btn
         label="Create a Game"
         @click="createDialog = true"
         style="background-color: #222831; color: white"
       />
     </div>
-    <div class="actions-container">
+    <div v-if="!loggedOut" class="actions-container">
       <div class="options-banner q-ma-sm">Filter Options</div>
 
       <div class="filter-options">
@@ -88,7 +89,7 @@
   </div>
   <div
     class="q-gutter-md q-pa-md games-container q-pa-lg"
-    v-if="this.filtered_games.length > 0"
+    v-if="!loggedOut && this.filtered_games.length > 0"
   >
     <div class="row q-col-gutter-md">
       <div
@@ -194,7 +195,10 @@
       </div>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="searchError" class="q-pa-md">
+    <LoadError :message="searchError" :loading="loading" @retry="loadPage" />
+  </div>
+  <div v-else-if="searched && !loggedOut">
     <h2 class="banner">No Games Found!</h2>
   </div>
   <!-- Pagination Buttons -->
@@ -384,43 +388,15 @@ import { defineComponent } from "vue";
 import { date } from "quasar";
 import nosImage from "../../assets/images/Nosfer_logo.png";
 import create_a_game from "../../components/game_finder/create_a_game.vue";
+import LoadError from "../../components/common/LoadError.vue";
+import LoginRequired from "../../components/common/LoginRequired.vue";
+import { apiErrorMessage, isSessionError } from "src/lib/apiErrors";
 
 export default defineComponent({
-  components: { create_a_game },
+  components: { create_a_game, LoadError, LoginRequired },
   name: "findAGame",
   async created() {
-    try {
-      try {
-        const curUser = await this.$api.get("/user/currentUser");
-        this.currentUser = curUser.data;
-      } catch (err) {
-        this.currentUser = null;
-        console.warn("User not logged in");
-      }
-
-      const styleReq = await this.$api.get("/game_finder/styles");
-      this.style_options = styleReq.data;
-      this.style_options.push({ style: "Any", style_id: 100 });
-
-      const game_line_req = await this.$api.get("/game_finder/game_lines");
-      this.game_lines = game_line_req.data;
-      this.game_lines.push({ line_id: 100, game_line: "Any" });
-
-      const editions_req = await this.$api.get("/game_finder/editions");
-      this.editions = editions_req.data;
-      this.editions.push({ edition_id: 100, edition_name: "Any" });
-
-      await this.doSearch();
-    } catch (err) {
-      this.$q.notify({
-        color: "primary",
-        avatar: nosImage,
-        textColor: "white",
-        position: "top",
-        timeout: 5000,
-      });
-      console.error(err);
-    }
+    await this.loadPage();
   },
 
   data() {
@@ -431,6 +407,10 @@ export default defineComponent({
       date,
       createDialog: false,
       games: null,
+      loading: false,
+      loggedOut: false,
+      searched: false,
+      searchError: "",
       currentPage: 1,
       totalPages: null,
       new_player: true,
@@ -445,6 +425,45 @@ export default defineComponent({
     };
   },
   methods: {
+    async loadFilters() {
+      const [styleReq, game_line_req, editions_req] = await Promise.all([
+        this.$api.get("/game_finder/styles"),
+        this.$api.get("/game_finder/game_lines"),
+        this.$api.get("/game_finder/editions"),
+      ]);
+      this.style_options = [...styleReq.data, { style: "Any", style_id: 100 }];
+      this.game_lines = [
+        ...game_line_req.data,
+        { line_id: 100, game_line: "Any" },
+      ];
+      this.editions = [
+        ...editions_req.data,
+        { edition_id: 100, edition_name: "Any" },
+      ];
+    },
+    // Checks who's logged in, loads the filter options (once), then games.
+    async loadPage() {
+      this.loading = true;
+      try {
+        if (!this.currentUser) {
+          const curUser = await this.$api.get("/user/currentUser");
+          this.currentUser = curUser.data;
+        }
+        if (!this.game_lines.length) await this.loadFilters();
+      } catch (err) {
+        console.error(err);
+        if (isSessionError(err)) {
+          this.currentUser = null;
+          this.loggedOut = true;
+        } else {
+          this.searchError = apiErrorMessage(err);
+        }
+        return;
+      } finally {
+        this.loading = false;
+      }
+      await this.doSearch();
+    },
     can_bump(updated_at) {
       const lastUpdated = new Date(updated_at);
       const now = new Date();
@@ -520,8 +539,15 @@ export default defineComponent({
         this.games = response.data.games;
         this.totalPages = response.data.total_pages;
         this.filter_games();
+        this.searchError = "";
+        this.searched = true;
       } catch (err) {
         console.error(err);
+        this.games = [];
+        this.filtered_games = [];
+        this.totalPages = null;
+        if (isSessionError(err)) this.loggedOut = true;
+        else this.searchError = apiErrorMessage(err);
       } finally {
         this.loading = false;
         this.$q.loading.hide();

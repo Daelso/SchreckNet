@@ -17,6 +17,12 @@
       <q-page-container>
         <q-page padding class="bg-dark">
           <div class="q-pa-md">
+            <LoadError
+              v-if="optionsError"
+              :message="optionsError"
+              :loading="tribeLoad"
+              @retry="loadOptions"
+            />
             <q-stepper
               v-model="step"
               color="red"
@@ -369,9 +375,21 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
+import LoadError from "../../common/LoadError.vue";
+import { apiErrorMessage } from "src/lib/apiErrors";
+
+// Option lists the dialog needs, by the data key they fill.
+const OPTION_SOURCES = {
+  tribeOptions: "/garou/tribes",
+  auspiceOptions: "/garou/auspices",
+  nativeOptions: "/garou/native_gifts/2",
+  renownTypeOptions: "/garou/renown_types",
+  riteOptions: "/garou/rites",
+};
 
 export default defineComponent({
   name: "5eTribeSelect",
+  components: { LoadError },
   props: ["info"],
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
@@ -404,36 +422,14 @@ export default defineComponent({
   },
 
   async created() {
-    try {
-      const [
-        tribesResponse,
-        auspicesResponse,
-        nativeResponse,
-        renown_types_response,
-        rites_response,
-      ] = await Promise.all([
-        this.$axios.get(this.baseUrl + "/garou/tribes"),
-        this.$axios.get(this.baseUrl + "/garou/auspices"),
-        this.$axios.get(this.baseUrl + `/garou/native_gifts/${2}`),
-        this.$axios.get(this.baseUrl + "/garou/renown_types"),
-        this.$axios.get(this.baseUrl + "/garou/rites"),
-      ]);
-
-      this.tribeOptions = tribesResponse.data;
-      this.auspiceOptions = auspicesResponse.data;
-      this.nativeOptions = nativeResponse.data;
-      this.renownTypeOptions = renown_types_response.data;
-      this.riteOptions = rites_response.data;
-      this.clonedRiteOptions = structuredClone(rites_response.data);
-      this.tribeLoad = false;
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-    }
+    await this.loadOptions();
   },
 
   data(props) {
     return {
       tribeLoad: true,
+      optionsError: "",
+      loadedOptions: [],
       tribe: props.info.tribe,
       auspice: props.info.auspice,
       renown: props.info.renown,
@@ -450,6 +446,35 @@ export default defineComponent({
     };
   },
   methods: {
+    // Fetches every option list not loaded yet; keeps whatever succeeds.
+    async loadOptions() {
+      this.tribeLoad = true;
+      const keys = Object.keys(OPTION_SOURCES).filter(
+        (key) => !this.loadedOptions.includes(key)
+      );
+      const results = await Promise.allSettled(
+        keys.map((key) => this.$axios.get(this.baseUrl + OPTION_SOURCES[key]))
+      );
+      let failure = null;
+      results.forEach((result, i) => {
+        const key = keys[i];
+        if (result.status === "fulfilled") {
+          this[key] = result.value.data;
+          if (key === "riteOptions") {
+            this.clonedRiteOptions = structuredClone(result.value.data);
+          }
+          this.loadedOptions.push(key);
+        } else {
+          console.error("Error fetching " + OPTION_SOURCES[key], result.reason);
+          failure = result.reason;
+        }
+      });
+      this.optionsError = failure
+        ? `Some choices didn't load. ${apiErrorMessage(failure)}`
+        : "";
+      this.tribeLoad = false;
+    },
+
     onOKClick() {
       this.onDialogOK({
         tribe: this.tribe,

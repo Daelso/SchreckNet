@@ -1,5 +1,6 @@
 <template>
-  <div v-if="!this.pageFound">
+  <LoadError v-if="loadError" :message="loadError" @retry="$emit('retry')" />
+  <div v-else-if="!this.pageFound">
     <notfound />
   </div>
 
@@ -576,6 +577,7 @@ import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import notfound from "../../../pages/ErrorNotFound.vue";
+import LoadError from "../../common/LoadError.vue";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 
@@ -585,7 +587,8 @@ import { useMeta } from "quasar";
 
 export default defineComponent({
   name: "garou-view",
-  components: { notfound },
+  components: { notfound, LoadError },
+  emits: ["retry"],
 
   async setup() {
     const siteTitle = ref("WtA 5e Character | SchreckNet");
@@ -607,6 +610,7 @@ export default defineComponent({
     const axios = require("axios");
     let currentUser = ref(false);
     let pageFound = ref(false);
+    const loadError = ref("");
 
     let creator = ref("Anonymous");
 
@@ -623,15 +627,15 @@ export default defineComponent({
         withCredentials: true,
       })
       .then((resp) => {
-        if (resp.data === null) {
-          pageFound.value = false;
-        } else {
-          pageFound.value = true;
-        }
-        return resp.data;
+        // The API answers 200 null for an id that doesn't exist.
+        pageFound.value = !!resp.data;
+        return resp.data || {};
       })
       .catch((err) => {
-        return "blah";
+        console.log(err);
+        // Only a 404 means the character doesn't exist.
+        if (apiStatus(err) !== 404) loadError.value = apiErrorMessage(err);
+        return {};
       });
 
     if (pageFound.value) {
@@ -646,6 +650,8 @@ export default defineComponent({
         summary ? `${name}, ${summary}.` : `${name}.`,
         "Created using SchreckNet, a Werewolf: The Apocalypse character creator.",
       ].join(" ");
+    } else if (loadError.value) {
+      siteTitle.value = "Couldn't load character | SchreckNet";
     } else {
       siteTitle.value = "Character not found | SchreckNet";
     }
@@ -703,15 +709,17 @@ export default defineComponent({
       attributeInfo,
 
       skillInfo,
-      created_by: garou !== null ? garou.created_by : "Anonymous",
+      created_by: garou.created_by,
       creator,
       pageFound,
+      loadError,
       deleteConfirm,
       spentXp: 0,
       mendAmt: 0,
     };
   },
   async created() {
+    if (!this.pageFound) return;
     await this.$api
       .get("/user/getUser/" + this.created_by, {
         withCredentials: true,
@@ -754,6 +762,7 @@ export default defineComponent({
     };
   },
   async mounted() {
+    if (!this.pageFound) return;
     this.favCount = await this.$api
       .get("/favorites/favCount/" + this.garouId, { params: { game_id: 2 } })
       .then((resp) => {

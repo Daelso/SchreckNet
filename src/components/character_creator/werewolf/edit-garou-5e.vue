@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
+  <LoadError v-if="loadError" :message="loadError" @retry="$emit('retry')" />
   <div
-    v-if="
+    v-else-if="
       !this.pageFound ||
       !this.currentUser ||
       this.currentUser.id !== this.garou.created_by
@@ -618,7 +619,12 @@ import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
-import { isSessionError, notifyApiError } from "src/lib/apiErrors";
+import {
+  apiErrorMessage,
+  apiStatus,
+  isSessionError,
+  notifyApiError,
+} from "src/lib/apiErrors";
 import { promptLogin, RETRY_AFTER_LOGIN } from "src/lib/loginAgain";
 import tribeComponent from "../werewolf/tribes.vue";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
@@ -626,6 +632,7 @@ import werewolfHandlers from "../../../lib/xp/handlers/werewolf.js";
 import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
 import { appendEntry, undoLast, isValidEntry } from "../../../lib/xp/xpLog.js";
 import notFound from "../../../pages/ErrorNotFound.vue";
+import LoadError from "../../common/LoadError.vue";
 
 const metaData = {
   title: "Edit Werewolf | SchreckNet",
@@ -645,7 +652,9 @@ export default {
     tabs,
     XpLogDialog,
     notFound,
+    LoadError,
   },
+  emits: ["retry"],
   async setup() {
     const unsavedGuard = useUnsavedGuard();
     const router = useRouter();
@@ -660,6 +669,7 @@ export default {
     }
 
     let pageFound = ref(false);
+    const loadError = ref("");
 
     const url = window.location.href;
     const regex = /\/edit\/(\d+)$/; // Match "/edit/" followed by one or more digits at the end of the string
@@ -671,10 +681,13 @@ export default {
         const garouResponse = await axios.get(
           baseUrl + `/garou/garou/${capturedNumber}`
         );
-        garou = garouResponse.data;
-        pageFound.value = true;
+        // The API answers 200 null for an id that doesn't exist.
+        garou = garouResponse.data || null;
+        pageFound.value = !!garou;
       } catch (err) {
         garou = null;
+        // Only a 404 means the character doesn't exist.
+        if (apiStatus(err) !== 404) loadError.value = apiErrorMessage(err);
       }
     }
 
@@ -690,11 +703,14 @@ export default {
       baseUrl: ref(baseUrl),
       garou: ref(garou),
       pageFound,
+      loadError,
       currentUser: ref(currentUser),
     };
   },
 
   data() {
+    // Nothing loaded: the template shows not-found or the error instead.
+    if (!this.pageFound) return {};
     return {
       debug: false,
       nosImage,

@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
+  <LoadError v-if="loadError" :message="loadError" @retry="$emit('retry')" />
   <div
-    v-if="
+    v-else-if="
       !this.pageFound ||
       !this.currentUser ||
       this.currentUser.id !== this.kindred.created_by
@@ -687,11 +688,17 @@ import skills from "./5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
-import { isSessionError, notifyApiError } from "src/lib/apiErrors";
+import {
+  apiErrorMessage,
+  apiStatus,
+  isSessionError,
+  notifyApiError,
+} from "src/lib/apiErrors";
 import { promptLogin, RETRY_AFTER_LOGIN } from "src/lib/loginAgain";
 import nosImage from "../../../assets/images/Nosfer_logo.png";
 
 import notFound from "../../../pages/ErrorNotFound.vue";
+import LoadError from "../../common/LoadError.vue";
 import manageDisciplineFlaw from "../vtm/manageDisciplineFlaw.vue";
 import vtmHandlers from "../../../lib/xp/handlers/vtm.js";
 import XpLogDialog from "../../../lib/xp/XpLogDialog.vue";
@@ -715,7 +722,9 @@ export default {
     tabs,
     notFound,
     XpLogDialog,
+    LoadError,
   },
+  emits: ["retry"],
   async setup() {
     const unsavedGuard = useUnsavedGuard();
     const axios = require("axios");
@@ -729,6 +738,7 @@ export default {
     }
 
     let pageFound = ref(false);
+    const loadError = ref("");
 
     const kindredId = ref(window.location.href.split("/")[6]);
 
@@ -737,12 +747,14 @@ export default {
         withCredentials: true,
       })
       .then((resp) => {
-        pageFound.value = true;
-        return resp.data;
+        pageFound.value = !!resp.data;
+        return resp.data || null;
       })
       .catch((err) => {
         console.log(err);
-        return "blah";
+        // Only a 404 means the character doesn't exist.
+        if (apiStatus(err) !== 404) loadError.value = apiErrorMessage(err);
+        return null;
       });
 
     const currentUser = await axios
@@ -751,19 +763,23 @@ export default {
       })
       .then((resp) => {
         return resp.data;
-      });
+      })
+      .catch(() => null);
 
     return {
       ...unsavedGuard,
       tab: ref("coreConcept"),
       layout: ref(false),
       pageFound,
+      loadError,
       kindred: ref(kindred),
       currentUser: ref(currentUser),
       edit: ref(true),
     };
   },
   data() {
+    // Nothing loaded: the template shows not-found or the error instead.
+    if (!this.pageFound) return {};
     return {
       zoomed: false,
       debug: false,

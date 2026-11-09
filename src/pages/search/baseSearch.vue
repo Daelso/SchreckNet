@@ -2,6 +2,8 @@
   <div class="q-pa-md">
     <Suspense>
       <searchBox
+        ref="searchBox"
+        @searched="onSearched"
         v-model:splat="splat"
         v-model:user="user"
         v-model:clan="clan"
@@ -15,8 +17,17 @@
         v-model:garou="garou"
       />
     </Suspense>
+    <LoadError
+      v-if="searchError"
+      :message="searchError"
+      :loading="retrying"
+      @retry="retrySearch"
+    />
+    <div v-else-if="!searched" class="text-center text-grey-5 q-my-md">
+      Pick a game line and search.
+    </div>
     <div
-      v-if="
+      v-else-if="
         this.kindred.length === 0 &&
         this.hunter.length === 0 &&
         this.garou.length === 0
@@ -559,9 +570,10 @@ import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import searchBox from "../../components/search/searchBox.vue";
+import LoadError from "../../components/common/LoadError.vue";
 
 export default defineComponent({
-  components: { searchBox },
+  components: { searchBox, LoadError },
   name: "searchPage",
   setup() {
     const $q = useQuasar();
@@ -595,9 +607,24 @@ export default defineComponent({
       hunter: [],
       tribe: "",
       auspice: "",
+      searched: false,
+      searchError: "",
+      retrying: false,
     };
   },
   methods: {
+    onSearched(error) {
+      this.searched = true;
+      this.searchError = error;
+    },
+    async retrySearch() {
+      this.retrying = true;
+      try {
+        await this.$refs.searchBox.doSearch();
+      } finally {
+        this.retrying = false;
+      }
+    },
     truncate(value, length) {
       if (value.length > length) {
         return value.substring(0, length) + "...";

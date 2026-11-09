@@ -1,8 +1,15 @@
 <template>
-  <div v-if="this.garou === null || this.garou.length === 0" class="banner">
+  <div v-if="loadError" class="q-pa-md full-width">
+    <LoadError :message="loadError" @retry="load_garou" />
+  </div>
+  <div v-else-if="this.garou === null" class="flex flex-center q-pa-xl">
+    <q-spinner color="secondary" size="3em" aria-label="Loading" />
+  </div>
+  <div v-else-if="this.garou.length === 0" class="banner">
     No characters created yet!
   </div>
   <div
+    v-if="!loadError && this.garou !== null"
     style="
       display: flex;
       flex-direction: column;
@@ -259,62 +266,54 @@
 </style>
 <script>
 import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
+import LoadError from "../../common/LoadError.vue";
 export default {
+  components: { LoadError },
   props: ["currentUser"],
-  async created() {
-    let id = window.location.href.split("/")[6];
-
-    this.garou = await this.$api
-      .get("/garou/myGarou/" + id, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      })
-      .catch((err) => {
-        return "Not found!";
-      });
-  },
-
   data() {
-    return { selected: [], garou: [], selectedFolder: null, folderOptions: [] };
+    return {
+      selected: [],
+      garou: null,
+      loadError: "",
+      selectedFolder: null,
+      folderOptions: [],
+    };
   },
   async mounted() {
-    let kindredId = window.location.href.split("/")[6];
-
-    this.$q.loading.show({
-      delay: 150, // ms
-    });
-
-    this.garou = await this.$api
-      .get("/garou/myGarou/" + kindredId, {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        this.$q.loading.hide();
-        return resp.data;
-      })
-      .catch((err) => {
-        return "Not found!";
-      });
-    this.garou.forEach((wolf) => {
-      wolf.checked = false;
-    });
-
-    // build unique folder list
-    const seen = new Map();
-    this.garou.forEach((v) => {
-      (v.folders || []).forEach((f) => {
-        if (!seen.has(f.folder_id)) {
-          seen.set(f.folder_id, f);
-        }
-      });
-    });
-
-    this.folderOptions = [...seen.values()];
+    await this.load_garou();
   },
 
   methods: {
+    async load_garou() {
+      let kindredId = window.location.href.split("/")[6];
+      this.loadError = "";
+      this.garou = null;
+      try {
+        const resp = await this.$api.get("/garou/myGarou/" + kindredId, {
+          withCredentials: true,
+        });
+        this.garou = resp.data;
+      } catch (err) {
+        console.log(err);
+        this.loadError = apiErrorMessage(err);
+        return;
+      }
+      this.garou.forEach((wolf) => {
+        wolf.checked = false;
+      });
+
+      // build unique folder list
+      const seen = new Map();
+      this.garou.forEach((v) => {
+        (v.folders || []).forEach((f) => {
+          if (!seen.has(f.folder_id)) {
+            seen.set(f.folder_id, f);
+          }
+        });
+      });
+
+      this.folderOptions = [...seen.values()];
+    },
     truncate(value, length) {
       if (value.length > length) {
         return value.substring(0, length) + "...";

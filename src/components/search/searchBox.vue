@@ -1,5 +1,8 @@
 <template>
   <div class="searchContainer flex flex-center">
+    <div v-if="optionsError" class="q-px-md q-pt-md text-center">
+      Some filter lists didn't load. {{ optionsError }}
+    </div>
     <div class="q-pa-md">
       <q-select
         class="select"
@@ -257,6 +260,7 @@
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { apiErrorMessage } from "src/lib/apiErrors";
 
 import clans from "../character_creator/vtm/5eClanBanes.json";
 import predatorTypes from "../character_creator/vtm/predatorTypes.json";
@@ -290,6 +294,7 @@ export default defineComponent({
     "update:garou",
     "update:tribe",
     "update:auspice",
+    "searched",
   ],
   async setup() {
     let baseUrl = "";
@@ -300,12 +305,19 @@ export default defineComponent({
     }
     const $q = useQuasar();
     const axios = require("axios");
+    // Filter lists are optional: if one fails, search still works without it.
+    const optionsError = ref("");
     const stringOptions = await axios
       .get(baseUrl + "/user/users", {
         withCredentials: true,
       })
       .then((resp) => {
         return resp.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        optionsError.value = apiErrorMessage(err);
+        return [];
       });
     const splatOptions = ref([
       "Vampire: the Masquerade",
@@ -313,18 +325,29 @@ export default defineComponent({
       "Werewolf: the Apocalypse",
     ]);
 
-    const [tribesResponse, auspicesResponse] = await Promise.all([
+    const [tribesResponse, auspicesResponse] = await Promise.allSettled([
       axios.get(baseUrl + "/garou/tribes"),
       axios.get(baseUrl + "/garou/auspices"),
     ]);
+    [tribesResponse, auspicesResponse].forEach((result) => {
+      if (result.status === "rejected") {
+        console.log(result.reason);
+        optionsError.value = apiErrorMessage(result.reason);
+      }
+    });
 
-    const tribeOptions = tribesResponse.data;
-    const auspiceOptions = auspicesResponse.data;
+    const tribeOptions =
+      tribesResponse.status === "fulfilled" ? tribesResponse.value.data : [];
+    const auspiceOptions =
+      auspicesResponse.status === "fulfilled"
+        ? auspicesResponse.value.data
+        : [];
 
     const userList = ref(stringOptions);
 
     return {
       splatOptions,
+      optionsError,
       currentPage: 1,
       totalPages: null,
       tribeOptions,
@@ -459,8 +482,14 @@ export default defineComponent({
           this.$emit("update:garou", this.garous.data.results);
           this.totalPages = this.garous.data.total_pages;
         }
+        this.$emit("searched", "");
       } catch (err) {
         console.log(err);
+        this.$emit("update:kindred", []);
+        this.$emit("update:hunter", []);
+        this.$emit("update:garou", []);
+        this.totalPages = null;
+        this.$emit("searched", apiErrorMessage(err));
       } finally {
         this.loading = false;
         this.$q.loading.hide();

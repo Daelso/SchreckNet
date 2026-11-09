@@ -1,5 +1,6 @@
 <template>
-  <div v-if="!this.pageFound">
+  <LoadError v-if="loadError" :message="loadError" @retry="$emit('retry')" />
+  <div v-else-if="!this.pageFound">
     <notfound />
   </div>
   {{ chunkArrays() }}
@@ -524,6 +525,7 @@ import { defineComponent } from "vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import notfound from "../../../pages/ErrorNotFound.vue";
+import LoadError from "../../common/LoadError.vue";
 
 import ubuntuFont from "../../../css/fonts/Ubuntu-R.ttf";
 import clanBanes from "../vtm/5eClanBanes.json";
@@ -536,7 +538,8 @@ import { api } from "src/boot/axios";
 
 export default defineComponent({
   name: "hunter-view",
-  components: { notfound },
+  components: { notfound, LoadError },
+  emits: ["retry"],
 
   async setup() {
     const siteTitle = ref("HtR 5e Character | SchreckNet");
@@ -557,6 +560,7 @@ export default defineComponent({
 
     let currentUser = ref(false);
     let pageFound = ref(false);
+    const loadError = ref("");
 
     let creator = ref("Anonymous");
 
@@ -567,12 +571,14 @@ export default defineComponent({
         withCredentials: true,
       })
       .then((resp) => {
-        pageFound.value = true;
-        return resp.data;
+        pageFound.value = !!resp.data;
+        return resp.data || {};
       })
       .catch((err) => {
         console.log(err);
-        return "blah";
+        // Only a 404 means the character doesn't exist.
+        if (apiStatus(err) !== 404) loadError.value = apiErrorMessage(err);
+        return {};
       });
 
     if (pageFound.value) {
@@ -596,6 +602,8 @@ export default defineComponent({
         summary ? `${name}, ${summary}.` : `${name}.`,
         "Created using SchreckNet, a Hunter: The Reckoning character creator.",
       ].join(" ");
+    } else if (loadError.value) {
+      siteTitle.value = "Couldn't load character | SchreckNet";
     } else {
       siteTitle.value = "Character not found | SchreckNet";
     }
@@ -650,6 +658,7 @@ export default defineComponent({
       imgLink: hunter.image_link,
       creator,
       pageFound,
+      loadError,
       deleteConfirm,
       spentXp: 0,
       baneseverity: 0,
@@ -662,6 +671,7 @@ export default defineComponent({
     };
   },
   async created() {
+    if (!this.pageFound) return;
     await this.$api
       .get("/user/getUser/" + this.created_by, {
         withCredentials: true,
@@ -706,6 +716,7 @@ export default defineComponent({
     };
   },
   async mounted() {
+    if (!this.pageFound) return;
     this.favCount = await this.$api
       .get("/favorites/favCount/" + this.hunterId, { params: { game_id: 3 } })
       .then((resp) => {

@@ -1,7 +1,12 @@
 <template>
   <q-page class="flex flex-center">
     <suspense>
-      <mine />
+      <template #default>
+        <mine />
+      </template>
+      <template #fallback>
+        <q-spinner color="secondary" size="3em" aria-label="Loading" />
+      </template>
     </suspense>
   </q-page>
 </template>

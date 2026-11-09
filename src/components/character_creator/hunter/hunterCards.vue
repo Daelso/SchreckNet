@@ -1,4 +1,10 @@
 <template>
+  <LoadError
+    v-if="loadError"
+    :message="loadError"
+    :loading="retrying"
+    @retry="load"
+  />
   <q-card v-for="hunt in this.hunter" :key="hunt" class="my-card" flat bordered>
     <q-item>
       <q-item-section avatar>
@@ -171,8 +177,11 @@
 <script>
 import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
+import LoadError from "../../common/LoadError.vue";
 
 export default {
+  components: { LoadError },
   props: ["currentUser"],
   async setup(props) {
     const router = useRouter();
@@ -185,20 +194,35 @@ export default {
       baseUrl = window.location.origin;
     }
 
-    let hunter = await axios
-      .get(baseUrl + "/hunters/card", {
-        withCredentials: true,
-      })
-      .then((resp) => {
-        return resp.data;
-      })
-      .catch((err) => {
+    const hunter = ref([]);
+    const loadError = ref("");
+    const retrying = ref(false);
+
+    async function load() {
+      retrying.value = true;
+      try {
+        const resp = await axios.get(baseUrl + "/hunters/card", {
+          withCredentials: true,
+        });
+        hunter.value = Array.isArray(resp.data) ? resp.data : [];
+        loadError.value = "";
+      } catch (err) {
         console.log(err);
-        return "Not found!";
-      });
+        loadError.value = `Couldn't load these characters. ${apiErrorMessage(
+          err
+        )}`;
+      } finally {
+        retrying.value = false;
+      }
+    }
+
+    await load();
 
     return {
       hunter,
+      loadError,
+      retrying,
+      load,
       router,
       lorem:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",

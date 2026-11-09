@@ -53,10 +53,11 @@ router.route("/new").post(lib.postLimiter, async (req, res) => {
 router.route("/hunter/:id").get(async (req, res) => {
   try {
     const hunter = await Hunters.findByPk(req.params.id);
+    if (!hunter) return res.status(404).send("Not found");
     return res.send(hunter.dataValues);
   } catch (err) {
     console.log(err);
-    return res.status(404).send("Not found");
+    return res.status(500).send("Server error");
   }
 });
 

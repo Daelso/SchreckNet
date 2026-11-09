@@ -643,6 +643,7 @@
 </style>
 
 <script>
+import { useUnsavedGuard } from "../../../lib/useUnsavedGuard.js";
 import { ref } from "vue";
 import clanSelect from "../vtm/5eClanSelect.vue";
 import tabs from "../vtm/tabs.vue";
@@ -674,9 +675,11 @@ export default {
   },
 
   setup() {
+    const unsavedGuard = useUnsavedGuard();
     useMeta(metaData);
 
     return {
+      ...unsavedGuard,
       tab: ref("coreConcept"),
       layout: ref(false),
       edit: ref(false),
@@ -947,6 +950,7 @@ export default {
             icon: "cloud_done",
             message: "Kindred created!",
           });
+          this.markSaved();
           this.$router.push({
             name: "vampire5eView",
             params: { id: res.data },

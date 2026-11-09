@@ -499,6 +499,7 @@
 </style>
 
 <script>
+import { useUnsavedGuard } from "../../../lib/useUnsavedGuard.js";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import tabs from "../hunter/tabs.vue";
@@ -529,6 +530,7 @@ export default {
     tabs,
   },
   setup() {
+    const unsavedGuard = useUnsavedGuard();
     const router = useRouter();
     const axios = require("axios");
     useMeta(metaData);
@@ -541,6 +543,7 @@ export default {
     }
 
     return {
+      ...unsavedGuard,
       tab: ref("coreConcept"),
       layout: ref(false),
     };
@@ -757,6 +760,7 @@ export default {
             icon: "cloud_done",
             message: "Hunter created!",
           });
+          this.markSaved();
           this.$router.push({
             name: "hunter5eView",
             params: { id: res.data },

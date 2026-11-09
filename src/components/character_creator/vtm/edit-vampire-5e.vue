@@ -677,6 +677,7 @@
 </style>
 
 <script>
+import { useUnsavedGuard } from "../../../lib/useUnsavedGuard.js";
 import { ref } from "vue";
 import clanSelect from "./5eClanSelect.vue";
 import tabs from "./tabs.vue";
@@ -716,6 +717,7 @@ export default {
     XpLogDialog,
   },
   async setup() {
+    const unsavedGuard = useUnsavedGuard();
     const axios = require("axios");
     useMeta(metaData);
 
@@ -752,6 +754,7 @@ export default {
       });
 
     return {
+      ...unsavedGuard,
       tab: ref("coreConcept"),
       layout: ref(false),
       pageFound,
@@ -1132,6 +1135,7 @@ export default {
             icon: "cloud_done",
             message: "Kindred updated!",
           });
+          this.markSaved();
           this.$router.push({
             name: "vampire5eView",
             params: { id: this.kindred.id },

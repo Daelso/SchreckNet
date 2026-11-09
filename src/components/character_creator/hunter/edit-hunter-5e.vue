@@ -574,6 +574,8 @@ import skills from "../vtm/5eSkills.vue";
 import attributeInfo from "../vtm/5eAttributes.json";
 import skillInfo from "../vtm/5eSkills.json";
 import { useMeta } from "quasar";
+import { isSessionError, notifyApiError } from "src/lib/apiErrors";
+import { promptLogin, RETRY_AFTER_LOGIN } from "src/lib/loginAgain";
 import edgeComponent from "./edges.vue";
 import notFound from "../../../pages/ErrorNotFound.vue";
 import hunterHandlers from "../../../lib/xp/handlers/hunter.js";
@@ -782,7 +784,7 @@ export default {
         return false;
       }
     },
-    onSubmit() {
+    onSubmit(retry) {
       if (this.saving === true) {
         this.$q.notify({
           color: "red-5",
@@ -858,14 +860,16 @@ export default {
             params: { id: this.hunter.id },
           });
         })
-        .catch((err) =>
-          this.$q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: err.message,
-          })
-        )
+        .catch((err) => {
+          // Keep the form mounted: log in over it, then save once more.
+          if (isSessionError(err) && retry !== RETRY_AFTER_LOGIN) {
+            promptLogin(this.$q).then((loggedIn) => {
+              if (loggedIn) this.onSubmit(RETRY_AFTER_LOGIN);
+            });
+            return;
+          }
+          notifyApiError(this.$q, err);
+        })
         .finally(() => {
           this.saving = false;
           this.$q.loading.hide();

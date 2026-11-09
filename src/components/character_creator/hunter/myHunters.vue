@@ -220,6 +220,7 @@
 }
 </style>
 <script>
+import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 export default {
   props: ["currentUser"],
   async created() {
@@ -293,31 +294,34 @@ export default {
         })
         .onOk(async () => {
           try {
-            this.selected.forEach(async (id) => {
-              await this.$api.delete("/hunters/delete/" + id, {
-                withCredentials: true,
-              });
-            });
+            await Promise.all(
+              this.selected.map((id) =>
+                this.$api.delete("/hunters/delete/" + id, {
+                  withCredentials: true,
+                })
+              )
+            );
           } catch (err) {
             this.$q.notify({
               color: "red-5",
               textColor: "white",
               icon: "warning",
-              message: "Failed to delete! Try again later!",
+              message: `Couldn't delete the selected characters. ${apiErrorMessage(
+                err
+              )}`,
             });
             console.log(err);
             return;
-          } finally {
-            this.$q.notify({
-              color: "green-5",
-              textColor: "white",
-              icon: "check",
-              message: "Character deleted!",
-            });
-            setTimeout(async () => {
-              window.location.reload();
-            }, "4 second");
           }
+          this.$q.notify({
+            color: "green-5",
+            textColor: "white",
+            icon: "check",
+            message: "Character deleted!",
+          });
+          setTimeout(async () => {
+            window.location.reload();
+          }, "4 second");
         })
         .onCancel(() => {
           return;
@@ -342,7 +346,7 @@ export default {
           });
         })
         .catch((err) => {
-          if (err.response.status === 409) {
+          if (apiStatus(err) === 409) {
             return this.$q.notify({
               color: "red-5",
               textColor: "white",
@@ -354,7 +358,7 @@ export default {
             color: "red-5",
             textColor: "white",
             icon: "warning",
-            message: err.message,
+            message: apiErrorMessage(err),
           });
         });
     },

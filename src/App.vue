@@ -21,13 +21,16 @@ if (window.location.href.includes("localhost")) {
 }
 
 //Generates a new access token on every page from existing refresh token
-axios.post(
-  baseUrl + "/user/token",
-  {},
-  {
-    withCredentials: true,
-  }
-);
+// Logged-out visitors have no refresh token, so a 401 here is expected.
+axios
+  .post(
+    baseUrl + "/user/token",
+    {},
+    {
+      withCredentials: true,
+    }
+  )
+  .catch(() => {});
 
 export default defineComponent({
   name: "App",

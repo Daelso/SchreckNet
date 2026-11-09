@@ -169,6 +169,7 @@
 }
 </style>
 <script>
+import { apiErrorMessage, apiStatus } from "src/lib/apiErrors";
 import { useRouter } from "vue-router";
 
 export default {
@@ -237,7 +238,7 @@ export default {
           });
         })
         .catch((err) => {
-          if (err.response.status === 409) {
+          if (apiStatus(err) === 409) {
             return this.$q.notify({
               color: "red-5",
               textColor: "white",
@@ -249,7 +250,7 @@ export default {
             color: "red-5",
             textColor: "white",
             icon: "warning",
-            message: err.message,
+            message: apiErrorMessage(err),
           });
         });
     },

@@ -271,6 +271,7 @@
 }
 </style>
 <script>
+import { apiErrorMessage } from "src/lib/apiErrors";
 export default {
   async created() {
     this.kindred_id = window.location.href.split("/")[6];
@@ -351,31 +352,34 @@ export default {
         })
         .onOk(async () => {
           try {
-            this.selected.forEach(async (id) => {
-              await this.$api.delete("/vampires/delete/" + id, {
-                withCredentials: true,
-              });
-            });
+            await Promise.all(
+              this.selected.map((id) =>
+                this.$api.delete("/vampires/delete/" + id, {
+                  withCredentials: true,
+                })
+              )
+            );
           } catch (err) {
             this.$q.notify({
               color: "red-5",
               textColor: "white",
               icon: "warning",
-              message: "Failed to delete! Try again later!",
+              message: `Couldn't delete the selected characters. ${apiErrorMessage(
+                err
+              )}`,
             });
             console.log(err);
             return;
-          } finally {
-            this.$q.notify({
-              color: "green-5",
-              textColor: "white",
-              icon: "check",
-              message: "Character deleted!",
-            });
-            setTimeout(async () => {
-              window.location.reload();
-            }, "4 second");
           }
+          this.$q.notify({
+            color: "green-5",
+            textColor: "white",
+            icon: "check",
+            message: "Character deleted!",
+          });
+          setTimeout(async () => {
+            window.location.reload();
+          }, "4 second");
         })
         .onCancel(() => {
           return;
